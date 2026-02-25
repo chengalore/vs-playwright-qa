@@ -109,8 +109,15 @@ function logStructuredResult(data) {
 
 async function waitForPDC(pdcData) {
   const start = Date.now();
+
   while (Date.now() - start < 5000) {
-    if (pdcData.store !== "unknown") break;
+    if (
+      pdcData.store !== "unknown" &&
+      typeof pdcData.validProduct !== "undefined"
+    ) {
+      return;
+    }
+
     await new Promise((r) => setTimeout(r, 100));
   }
 }
