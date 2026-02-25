@@ -4,7 +4,7 @@ export function startVirtusizeEventWatcher(page) {
   page.on("request", (request) => {
     if (
       request.method() === "POST" &&
-      request.url().match(/events\.virtusize\.(jp|com|kr)/)
+      request.url().match(/events\.(?:[\w-]+\.)?virtusize\.(jp|com|kr)/) //it should work on staging
     ) {
       try {
         const body = request.postDataJSON();
