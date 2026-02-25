@@ -6,6 +6,9 @@ export const expectedEvents = {
       "user-opened-widget",
     ],
     recommendation: ["user-got-size-recommendation"],
+    size: [
+      "user-selected-size", // only required if multiple sizes
+    ],
     panels: ["user-opened-panel-tryiton"],
   },
 };
