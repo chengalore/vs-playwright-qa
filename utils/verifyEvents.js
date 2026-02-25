@@ -13,7 +13,7 @@ export async function verifyEvents(
 
     if (allPresent) break;
 
-    await page.waitForTimeout(250);
+    await page.waitForTimeout(100);
   }
 
   return expected.filter((e) => !firedEvents.some((f) => f.startsWith(e)));

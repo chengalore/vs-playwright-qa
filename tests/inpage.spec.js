@@ -13,8 +13,8 @@ import { addItemToWardrobe } from "../utils/addItemToWardrobe.js";
 test.setTimeout(120000);
 
 test("Inpage basic flow", async ({ page }) => {
-  // ✅ Start watchers BEFORE navigation
-  const firedEvents = startVirtusizeEventWatcher(page);
+  // Start watchers BEFORE navigation
+  const eventWatcher = startVirtusizeEventWatcher(page);
   const pdcData = startPDCWatcher(page);
   const recommendationAPI = startRecommendationWatcher(page);
   const bodyAPI = startBodyMeasurementWatcher(page);
@@ -71,31 +71,36 @@ test("Inpage basic flow", async ({ page }) => {
     console.log("Returning user → skip onboarding");
   }
 
-  // ✅ Recommendation validation
-  await validateRecommendation(page, firedEvents, recommendationAPI, isNewUser);
+  // Recommendation validation
+  await validateRecommendation(
+    page,
+    eventWatcher.getEvents(),
+    recommendationAPI,
+    isNewUser
+  );
 
   // Size selection
-  await selectSizeIfMultiple(page, firedEvents);
+  await selectSizeIfMultiple(page, eventWatcher.getEvents());
 
   // Wardrobe action
-  await addItemToWardrobe(page, firedEvents);
+  await addItemToWardrobe(page, eventWatcher.getEvents());
 
   // Strict event validation
   const baselineFailures = await verifyEvents(
     page,
-    firedEvents,
+    eventWatcher.getEvents(),
     expectedEvents.strict.baseline
   );
 
   const recommendationFailures = await verifyEvents(
     page,
-    firedEvents,
+    eventWatcher.getEvents(),
     expectedEvents.strict.recommendation
   );
 
   const panelFailures = await verifyEvents(
     page,
-    firedEvents,
+    eventWatcher.getEvents(),
     expectedEvents.strict.panels
   );
 

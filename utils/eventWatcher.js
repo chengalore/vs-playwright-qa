@@ -1,13 +1,14 @@
 export function startVirtusizeEventWatcher(page) {
-  const firedEvents = [];
+  let firedEvents = [];
 
   page.on("request", (request) => {
     if (
       request.method() === "POST" &&
-      request.url().match(/events\.(?:[\w-]+\.)?virtusize\.(jp|com|kr)/) //it should work on staging
+      request.url().match(/events\.(?:[\w-]+\.)?virtusize\.(jp|com|kr)/)
     ) {
       try {
         const body = request.postDataJSON();
+
         if (body?.name && !firedEvents.includes(body.name)) {
           firedEvents.push(body.name);
           console.log("Captured Event:", body.name);
@@ -16,5 +17,10 @@ export function startVirtusizeEventWatcher(page) {
     }
   });
 
-  return firedEvents;
+  return {
+    getEvents: () => firedEvents,
+    reset: () => {
+      firedEvents = [];
+    },
+  };
 }
