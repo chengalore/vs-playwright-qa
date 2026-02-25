@@ -59,7 +59,7 @@ jobs:
         run: |
           RESULTS=$(grep "QA_RESULT:" qa-output.log | sed 's/QA_RESULT: //')
 
-          TEXT="*VS QA Multi-Browser Result*\n"
+          TEXT="*VS Inpage Events — Multi-Browser Result*\n"
 
           while read -r line; do
             STATUS=$(echo "$line" | jq -r '.status')
