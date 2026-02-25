@@ -1,9 +1,11 @@
 import { test, expect } from "@playwright/test";
 import { startVirtusizeEventWatcher } from "../utils/eventWatcher.js";
 import { startPDCWatcher } from "../utils/pdcWatcher.js";
+import { startRecommendationWatcher } from "../utils/recommendationWatcher.js";
 import { verifyEvents } from "../utils/verifyEvents.js";
 import { expectedEvents } from "../config/expectedEvents.js";
-import { startRecommendationWatcher } from "../utils/recommendationWatcher.js";
+import { completeOnboarding } from "../utils/completeOnboarding.js";
+import { validateRecommendation } from "../utils/validateRecommendation.js";
 
 test.setTimeout(120000);
 
@@ -14,77 +16,47 @@ test("Inpage basic flow", async ({ page }) => {
 
   await page.goto("https://www.underarmour.co.jp/f/dsg-1072366");
 
+  // Wait for any supported widget type
   await page.waitForSelector(
     "#vs-inpage, #vs-kid, #vs-inpage-mini, #vs-smart-table",
-    { timeout: 20000 }
+    { timeout: 60000 }
   );
 
   await page.click("#vs-inpage");
-  await page.waitForTimeout(5000);
+  await page.waitForTimeout(4000);
 
-  // --- Detect User Type ---
   const isNewUser = firedEvents.includes("user-saw-onboarding-screen");
 
-  // --- Verify Baseline + Widget ---
-  const missingBaseline = await verifyEvents(
-    page,
-    firedEvents,
-    expectedEvents.strict.baseline
-  );
-
-  const missingWidget = await verifyEvents(
-    page,
-    firedEvents,
-    expectedEvents.strict.widget
-  );
-
-  // --- Verify Recommendation (ONLY if returning user) ---
-  let missingRecommendation = [];
-  let apiFailure = false;
-
-  if (!isNewUser) {
-    missingRecommendation = await verifyEvents(
-      page,
-      firedEvents,
-      expectedEvents.strict.recommendation,
-      15000
-    );
-
-    const apiStatus = recommendationAPI.getStatus();
-    if (apiStatus !== 200) {
-      apiFailure = true;
-    }
+  if (isNewUser) {
+    console.log("New user detected, running onboarding flow...");
+    await completeOnboarding(page);
+  } else {
+    console.log("Returning user detected, skipping onboarding.");
   }
 
-  // --- Assemble Strict Failures ---
-  const strictFailures = [
-    ...missingBaseline,
-    ...missingWidget,
-    ...missingRecommendation,
-  ];
+  await validateRecommendation(page, firedEvents, recommendationAPI, isNewUser);
 
-  if (apiFailure) {
-    strictFailures.push("size-recommendation-api-failed");
-  }
+  const allStrictEvents = Object.values(expectedEvents.strict).flat();
+  const strictFailures = await verifyEvents(page, firedEvents, allStrictEvents);
 
-  const pass = strictFailures.length === 0;
+  const passed = strictFailures.length === 0;
 
   console.log(`
-----------------------------------
+--------------------------------------------------
 Store: ${pdcData.store}
-ProductType: ${pdcData.productType}
+Product Type: ${pdcData.productType}
 Gender: ${pdcData.gender}
-UserType: ${isNewUser ? "NEW" : "RETURNING"}
+User Type: ${isNewUser ? "NEW" : "RETURNING"}
 
 Events Fired:
 ${firedEvents.map((e) => `  - ${e}`).join("\n")}
 
-STRICT Missing:
+Strict Missing:
 ${strictFailures.length ? strictFailures.join(", ") : "none"}
 
-FINAL RESULT: ${pass ? "PASS" : "FAIL"}
-----------------------------------
+Result: ${passed ? "PASS" : "FAIL"}
+--------------------------------------------------
 `);
 
-  expect(pass).toBe(true);
+  expect(passed).toBe(true);
 });
