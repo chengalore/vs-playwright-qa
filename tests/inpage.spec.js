@@ -38,6 +38,7 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
         productType: pdcData.productType,
         status: "SKIPPED",
         reason: skipReason,
+        browser: testInfo.project.name,
         durationMs: Date.now() - startTime,
       });
       return;
@@ -78,6 +79,7 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
       productType: pdcData.productType,
       userType: isNewUser ? "NEW" : "RETURNING",
       status: "PASS",
+      browser: testInfo.project.name,
       durationMs: Date.now() - startTime,
     });
   } catch (error) {
