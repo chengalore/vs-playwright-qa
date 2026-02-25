@@ -25,54 +25,87 @@ test("Inpage basic flow", async ({ page }) => {
 
   await page.goto(url);
 
-  /* ---------------------------------
-     Wait briefly for PDC to populate
-  ---------------------------------- */
+  await waitForPDC(pdcData);
 
-  const pdcStart = Date.now();
-  while (Date.now() - pdcStart < 5000) {
-    if (pdcData.store !== "unknown") break;
-    await page.waitForTimeout(100);
+  const skipReason = getSkipReason(pdcData);
+  if (skipReason) {
+    logSkip(pdcData, skipReason);
+    return;
   }
 
-  console.log("PDC:", pdcData);
+  await page.waitForSelector("#vs-inpage", { timeout: 15000 });
+  await page.click("#vs-inpage");
 
-  /* ---------------------------------
-     Early Gatekeeping
-  ---------------------------------- */
+  await waitForWidgetRender(page);
 
+  const isNewUser = await isOnboardingVisible(page);
+
+  if (isNewUser) {
+    console.log("New user → running onboarding");
+    await completeOnboarding(page);
+
+    const bodyStatus = await waitForStatus(() => bodyAPI.getStatus(), 5000);
+
+    expect(bodyStatus).toBe(200);
+  } else {
+    console.log("Returning user → skip onboarding");
+  }
+
+  await validateRecommendation(
+    page,
+    eventWatcher.getEvents(),
+    recommendationAPI,
+    isNewUser
+  );
+
+  await selectSizeIfMultiple(page, eventWatcher.getEvents());
+  await addItemToWardrobe(page, eventWatcher.getEvents());
+
+  await validateStrictEvents(page, eventWatcher.getEvents());
+
+  await validateRefresh(page, eventWatcher);
+
+  console.log(`
+Store: ${pdcData.store}
+Product Type: ${pdcData.productType}
+User Type: ${isNewUser ? "NEW" : "RETURNING"}
+Result: PASS
+`);
+});
+
+/* ---------- Helpers ---------- */
+
+async function waitForPDC(pdcData) {
+  const start = Date.now();
+  while (Date.now() - start < 5000) {
+    if (pdcData.store !== "unknown") break;
+    await new Promise((r) => setTimeout(r, 100));
+  }
+}
+
+function getSkipReason(pdcData) {
   const excludedTypes = ["shoe", "bag", "wallet", "clutch", "panties"];
 
   if (excludedTypes.includes(pdcData.productType?.toLowerCase())) {
-    console.log(`
-Store: ${pdcData.store}
-Product Type: ${pdcData.productType}
-Result: SKIPPED (Unsupported Product Type)
-`);
-    return;
+    return "Unsupported Product Type";
   }
 
   if (pdcData.noVisor) {
-    console.log(`
-Store: ${pdcData.store}
-Product Type: ${pdcData.productType}
-Result: SKIPPED (Non-Visor)
-`);
-    return;
+    return "Non-Visor";
   }
 
-  /* ---------------------------------
-     Wait for Regular Inpage Only
-  ---------------------------------- */
+  return null;
+}
 
-  await page.waitForSelector("#vs-inpage", { timeout: 15000 });
+function logSkip(pdcData, reason) {
+  console.log(`
+Store: ${pdcData.store}
+Product Type: ${pdcData.productType}
+Result: SKIPPED (${reason})
+`);
+}
 
-  await page.click("#vs-inpage");
-
-  /* ---------------------------------
-     Wait for Onboarding or Recommendation
-  ---------------------------------- */
-
+async function waitForWidgetRender(page) {
   await page.waitForFunction(
     () => {
       const host =
@@ -90,12 +123,10 @@ Result: SKIPPED (Non-Visor)
     },
     { timeout: 8000 }
   );
+}
 
-  /* ---------------------------------
-     Detect User State
-  ---------------------------------- */
-
-  const isNewUser = await page.evaluate(() => {
+async function isOnboardingVisible(page) {
+  return await page.evaluate(() => {
     const host =
       document.querySelector("#router-view-wrapper") ||
       document.querySelector("#vs-aoyama")?.nextElementSibling;
@@ -103,67 +134,27 @@ Result: SKIPPED (Non-Visor)
     const root = host?.shadowRoot;
     return !!root?.querySelector('[data-test-id="input-age"]');
   });
+}
 
-  if (isNewUser) {
-    console.log("New user → running onboarding");
-
-    await completeOnboarding(page);
-
-    const bodyStatus = await waitForStatus(() => bodyAPI.getStatus(), 5000);
-
-    expect(bodyStatus).toBe(200);
-  } else {
-    console.log("Returning user → skip onboarding");
-  }
-
-  /* ---------------------------------
-     Recommendation Validation
-  ---------------------------------- */
-
-  await validateRecommendation(
+async function validateStrictEvents(page, events) {
+  const baseline = await verifyEvents(
     page,
-    eventWatcher.getEvents(),
-    recommendationAPI,
-    isNewUser
-  );
-
-  /* ---------------------------------
-     Size + Wardrobe
-  ---------------------------------- */
-
-  await selectSizeIfMultiple(page, eventWatcher.getEvents());
-  await addItemToWardrobe(page, eventWatcher.getEvents());
-
-  /* ---------------------------------
-     Strict Event Validation
-  ---------------------------------- */
-
-  const baselineFailures = await verifyEvents(
-    page,
-    eventWatcher.getEvents(),
+    events,
     expectedEvents.strict.baseline
   );
 
-  const recommendationFailures = await verifyEvents(
+  const recommendation = await verifyEvents(
     page,
-    eventWatcher.getEvents(),
+    events,
     expectedEvents.strict.recommendation
   );
 
-  const panelFailures = await verifyEvents(
-    page,
-    eventWatcher.getEvents(),
-    expectedEvents.strict.panels
-  );
+  const panels = await verifyEvents(page, events, expectedEvents.strict.panels);
 
-  expect(
-    [...baselineFailures, ...recommendationFailures, ...panelFailures].length
-  ).toBe(0);
+  expect([...baseline, ...recommendation, ...panels].length).toBe(0);
+}
 
-  /* ---------------------------------
-     Refresh Validation
-  ---------------------------------- */
-
+async function validateRefresh(page, eventWatcher) {
   console.log("Validating PDP refresh behavior");
 
   eventWatcher.reset();
@@ -180,7 +171,7 @@ Result: SKIPPED (Non-Visor)
 
   const refreshedEvents = eventWatcher.getEvents();
 
-  const refreshFailures = [
+  const failures = [
     ...(await verifyEvents(
       page,
       refreshedEvents,
@@ -194,19 +185,8 @@ Result: SKIPPED (Non-Visor)
     ...(await verifyEvents(page, refreshedEvents, expectedEvents.strict.size)),
   ];
 
-  expect(refreshFailures.length).toBe(0);
-
-  console.log(`
-Store: ${pdcData.store}
-Product Type: ${pdcData.productType}
-User Type: ${isNewUser ? "NEW" : "RETURNING"}
-Result: PASS
-`);
-});
-
-/* ---------------------------------
-   Helper
----------------------------------- */
+  expect(failures.length).toBe(0);
+}
 
 async function waitForStatus(getter, timeout = 5000) {
   const start = Date.now();
