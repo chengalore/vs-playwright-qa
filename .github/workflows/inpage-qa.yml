@@ -41,10 +41,11 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
 
-      - name: Run Playwright test
-        run: npx playwright test tests/inpage.spec.js --workers=1
-        env:
-          TEST_URL: ${{ github.event.inputs.url }}
+  - name: Run Playwright test
+  run: |
+    npx playwright test tests/inpage.spec.js --workers=1 | tee qa-output.log
+  env:
+    TEST_URL: ${{ github.event.inputs.url }}
 
       - name: Upload Playwright report
         if: always()
@@ -56,7 +57,7 @@ jobs:
       - name: Send result to Slack
         if: always()
         run: |
-          RESULT=$(grep "QA_RESULT:" -r . | tail -1 | sed 's/QA_RESULT: //')
+       RESULT=$(grep "QA_RESULT:" qa-output.log | tail -1 | sed 's/QA_RESULT: //')
 
           TEXT=$(echo "$RESULT" | jq -r '
           if .status == "PASS" then
