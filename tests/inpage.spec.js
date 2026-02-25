@@ -117,6 +117,9 @@ async function waitForPDC(pdcData) {
 
 function getSkipReason(pdcData) {
   const excludedTypes = ["shoe", "bag", "wallet", "clutch", "panties"];
+  if (pdcData.validProduct === false) {
+    return "Invalid Product (PDC validProduct=false)";
+  }
 
   if (excludedTypes.includes(pdcData.productType?.toLowerCase())) {
     return "Unsupported Product Type";
