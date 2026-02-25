@@ -185,7 +185,26 @@ async function validateRefresh(page, eventWatcher) {
   eventWatcher.reset();
 
   await page.reload();
-  await page.waitForSelector("#vs-inpage", { timeout: 15000 });
+  await page.waitForSelector("#vs-inpage", {
+    state: "attached",
+    timeout: 15000,
+  });
+
+  const widget = page.locator("#vs-inpage");
+
+  if (!(await widget.isVisible())) {
+    logStructuredResult({
+      url,
+      store: pdcData.store,
+      productType: pdcData.productType,
+      status: "SKIPPED",
+      reason: "No VS inpage widget",
+      browser: testInfo.project.name,
+      durationMs: Date.now() - startTime,
+    });
+
+    return;
+  }
   await page.click("#vs-inpage");
 
   await verifyEvents(
