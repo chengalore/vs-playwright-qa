@@ -29,7 +29,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
 
-      - name: Cache Playwright
+      - name: Cache Playwright browsers
         uses: actions/cache@v4
         with:
           path: ~/.cache/ms-playwright
@@ -41,11 +41,11 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
 
-  - name: Run Playwright test
-  run: |
-    npx playwright test tests/inpage.spec.js --workers=1 | tee qa-output.log
-  env:
-    TEST_URL: ${{ github.event.inputs.url }}
+      - name: Run Playwright test (all browsers)
+        run: |
+          npx playwright test tests/inpage.spec.js --workers=1 | tee qa-output.log
+        env:
+          TEST_URL: ${{ github.event.inputs.url }}
 
       - name: Upload Playwright report
         if: always()
@@ -54,21 +54,31 @@ jobs:
           name: playwright-report
           path: playwright-report
 
-      - name: Send result to Slack
+      - name: Send result to Slack (multi-browser summary)
         if: always()
         run: |
-       RESULT=$(grep "QA_RESULT:" qa-output.log | tail -1 | sed 's/QA_RESULT: //')
+          RESULTS=$(grep "QA_RESULT:" qa-output.log | sed 's/QA_RESULT: //')
 
-          TEXT=$(echo "$RESULT" | jq -r '
-          if .status == "PASS" then
-            "*VS QA Result*\nURL: \(.url)\nStore: \(.store)\nProduct: \(.productType)\nUser: \(.userType)\nStatus: PASS\nDuration: \(.durationMs) ms"
-          elif .status == "SKIPPED" then
-            "*VS QA Result*\nURL: \(.url)\nStore: \(.store)\nProduct: \(.productType)\nStatus: SKIPPED (\(.reason))"
-          else
-            "*VS QA Result*\nURL: \(.url)\nStatus: FAIL\nError: \(.error)"
-          end
-          ')
+          TEXT="*VS QA Multi-Browser Result*\n"
+
+          while read -r line; do
+            STATUS=$(echo "$line" | jq -r '.status')
+            BROWSER=$(echo "$line" | jq -r '.browser')
+            URL=$(echo "$line" | jq -r '.url')
+
+            if [ "$STATUS" = "PASS" ]; then
+              TEXT="$TEXT\n• $BROWSER: PASS"
+            elif [ "$STATUS" = "SKIPPED" ]; then
+              REASON=$(echo "$line" | jq -r '.reason // empty')
+              TEXT="$TEXT\n• $BROWSER: SKIPPED $REASON"
+            else
+              ERROR=$(echo "$line" | jq -r '.error // "Unknown error"')
+              TEXT="$TEXT\n• $BROWSER: FAIL ($ERROR)"
+            fi
+          done <<< "$RESULTS"
+
+          TEXT="$TEXT\n\nURL: $URL"
 
           curl -X POST -H 'Content-type: application/json' \
-          --data "{\"text\": \"$TEXT\"}" \
-          ${{ secrets.SLACK_WEBHOOK_URL }}
+            --data "{\"text\": \"$TEXT\"}" \
+            ${{ secrets.SLACK_WEBHOOK_URL }}
