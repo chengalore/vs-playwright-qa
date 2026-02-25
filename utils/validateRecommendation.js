@@ -6,7 +6,7 @@ export async function validateRecommendation(
 ) {
   console.log("Validating recommendation result...");
 
-  // Wait until recommendation UI renders inside the shadow DOM
+  // Wait for recommendation UI inside shadow DOM
   await page.waitForFunction(
     () => {
       const host =
@@ -26,7 +26,7 @@ export async function validateRecommendation(
     { timeout: 20000 }
   );
 
-  // Fail early if error screen is rendered
+  // Fail early if error screen exists
   const hasErrorScreen = await page.evaluate(() => {
     const host =
       document.querySelector("#router-view-wrapper") ||
@@ -43,7 +43,7 @@ export async function validateRecommendation(
 
   console.log("Recommendation screen detected.");
 
-  // Wait for recommendation API watcher to capture response
+  // Wait for API status from watcher
   let apiStatus = null;
   const start = Date.now();
   const maxWait = 10000;
@@ -51,7 +51,7 @@ export async function validateRecommendation(
   while (Date.now() - start < maxWait) {
     apiStatus = recommendationAPI.getStatus();
     if (apiStatus !== null) break;
-    await page.waitForTimeout(200);
+    await page.waitForTimeout(100);
   }
 
   if (apiStatus !== 200) {

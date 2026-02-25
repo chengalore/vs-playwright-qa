@@ -6,9 +6,8 @@ export const expectedEvents = {
       "user-opened-widget",
     ],
     recommendation: ["user-got-size-recommendation"],
-    size: [
-      "user-selected-size", // only required if multiple sizes
-    ],
+    size: ["user-selected-size"],
     panels: ["user-opened-panel-tryiton"],
+    wardrobe: ["user-opened-panel-compare"],
   },
 };
