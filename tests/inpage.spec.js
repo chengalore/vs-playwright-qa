@@ -107,7 +107,51 @@ test("Inpage basic flow", async ({ page }) => {
   expect(
     [...baselineFailures, ...recommendationFailures, ...panelFailures].length
   ).toBe(0);
+  console.log("Validating PDP refresh behavior");
 
+  // Reset events
+  eventWatcher.reset();
+
+  // Reload PDP
+  await page.reload();
+
+  // Wait for VS mount
+  await page.waitForSelector(
+    "#vs-inpage, #vs-kid, #vs-inpage-mini, #vs-smart-table",
+    { timeout: 60000 }
+  );
+
+  // Re-open widget
+  await page.click("#vs-inpage");
+
+  // Wait until recommendation event appears
+  await verifyEvents(
+    page,
+    eventWatcher.getEvents(),
+    expectedEvents.strict.recommendation
+  );
+
+  // Collect refreshed events
+  const refreshedEvents = eventWatcher.getEvents();
+
+  // Validate baseline + recommendation + size
+  const refreshFailures = [
+    ...(await verifyEvents(
+      page,
+      refreshedEvents,
+      expectedEvents.strict.baseline
+    )),
+    ...(await verifyEvents(
+      page,
+      refreshedEvents,
+      expectedEvents.strict.recommendation
+    )),
+    ...(await verifyEvents(page, refreshedEvents, expectedEvents.strict.size)),
+  ];
+
+  expect(refreshFailures.length).toBe(0);
+
+  console.log("Refresh validation passed");
   console.log(`
 Store: ${pdcData.store}
 Product Type: ${pdcData.productType}
