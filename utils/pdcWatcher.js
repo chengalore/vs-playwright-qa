@@ -15,6 +15,7 @@ export function startPDCWatcher(page) {
         pdcData.productType = json.data.productTypeName || "unknown";
         pdcData.gender =
           json.productData?.storeProductMeta?.gender || "unknown";
+        pdcData.validProduct = json.data.validProduct !== false;
         pdcData.noVisor =
           json.data.noVisor ||
           json.productData?.storeProductMeta?.noVisor ||
