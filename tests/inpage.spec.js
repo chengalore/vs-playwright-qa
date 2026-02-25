@@ -12,7 +12,7 @@ import { addItemToWardrobe } from "../utils/addItemToWardrobe.js";
 
 test.setTimeout(60000);
 
-test("Inpage basic flow", async ({ page }) => {
+test("Inpage basic flow", async ({ page }, testInfo) => {
   const url =
     process.env.TEST_URL || "https://www.underarmour.co.jp/f/dsg-1072366";
 
@@ -84,10 +84,10 @@ test("Inpage basic flow", async ({ page }) => {
     logStructuredResult({
       url,
       status: "FAIL",
+      browser: testInfo.project.name,
       error: error.message,
       durationMs: Date.now() - startTime,
     });
-
     throw error; // keep CI failing correctly
   }
 });
