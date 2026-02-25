@@ -13,65 +13,95 @@ import { addItemToWardrobe } from "../utils/addItemToWardrobe.js";
 test.setTimeout(60000);
 
 test("Inpage basic flow", async ({ page }) => {
-  const eventWatcher = startVirtusizeEventWatcher(page);
-  const pdcData = startPDCWatcher(page);
-  const recommendationAPI = startRecommendationWatcher(page);
-  const bodyAPI = startBodyMeasurementWatcher(page);
-
   const url =
     process.env.TEST_URL || "https://www.underarmour.co.jp/f/dsg-1072366";
 
-  console.log("Testing URL:", url);
+  const startTime = Date.now();
 
-  await page.goto(url);
+  try {
+    const eventWatcher = startVirtusizeEventWatcher(page);
+    const pdcData = startPDCWatcher(page);
+    const recommendationAPI = startRecommendationWatcher(page);
+    const bodyAPI = startBodyMeasurementWatcher(page);
 
-  await waitForPDC(pdcData);
+    console.log("Testing URL:", url);
 
-  const skipReason = getSkipReason(pdcData);
-  if (skipReason) {
-    logSkip(pdcData, skipReason);
-    return;
+    await page.goto(url);
+
+    await waitForPDC(pdcData);
+
+    const skipReason = getSkipReason(pdcData);
+    if (skipReason) {
+      logStructuredResult({
+        url,
+        store: pdcData.store,
+        productType: pdcData.productType,
+        status: "SKIPPED",
+        reason: skipReason,
+        durationMs: Date.now() - startTime,
+      });
+      return;
+    }
+
+    await page.waitForSelector("#vs-inpage", { timeout: 15000 });
+    await page.click("#vs-inpage");
+
+    await waitForWidgetRender(page);
+
+    const isNewUser = await isOnboardingVisible(page);
+
+    if (isNewUser) {
+      await completeOnboarding(page);
+
+      const bodyStatus = await waitForStatus(() => bodyAPI.getStatus(), 5000);
+
+      expect(bodyStatus).toBe(200);
+    }
+
+    await validateRecommendation(
+      page,
+      eventWatcher.getEvents(),
+      recommendationAPI,
+      isNewUser
+    );
+
+    await selectSizeIfMultiple(page, eventWatcher.getEvents());
+    await addItemToWardrobe(page, eventWatcher.getEvents());
+
+    await validateStrictEvents(page, eventWatcher.getEvents());
+
+    await validateRefresh(page, eventWatcher);
+
+    logStructuredResult({
+      url,
+      store: pdcData.store,
+      productType: pdcData.productType,
+      userType: isNewUser ? "NEW" : "RETURNING",
+      status: "PASS",
+      durationMs: Date.now() - startTime,
+    });
+  } catch (error) {
+    logStructuredResult({
+      url,
+      status: "FAIL",
+      error: error.message,
+      durationMs: Date.now() - startTime,
+    });
+
+    throw error; // keep CI failing correctly
   }
-
-  await page.waitForSelector("#vs-inpage", { timeout: 15000 });
-  await page.click("#vs-inpage");
-
-  await waitForWidgetRender(page);
-
-  const isNewUser = await isOnboardingVisible(page);
-
-  if (isNewUser) {
-    console.log("New user → running onboarding");
-    await completeOnboarding(page);
-
-    const bodyStatus = await waitForStatus(() => bodyAPI.getStatus(), 5000);
-
-    expect(bodyStatus).toBe(200);
-  } else {
-    console.log("Returning user → skip onboarding");
-  }
-
-  await validateRecommendation(
-    page,
-    eventWatcher.getEvents(),
-    recommendationAPI,
-    isNewUser
-  );
-
-  await selectSizeIfMultiple(page, eventWatcher.getEvents());
-  await addItemToWardrobe(page, eventWatcher.getEvents());
-
-  await validateStrictEvents(page, eventWatcher.getEvents());
-
-  await validateRefresh(page, eventWatcher);
-
-  console.log(`
-Store: ${pdcData.store}
-Product Type: ${pdcData.productType}
-User Type: ${isNewUser ? "NEW" : "RETURNING"}
-Result: PASS
-`);
 });
+
+/* ---------- Structured Result ---------- */
+
+function logStructuredResult(data) {
+  const result = {
+    ...data,
+    timestamp: new Date().toISOString(),
+  };
+
+  console.log("QA_RESULT:", JSON.stringify(result));
+}
 
 /* ---------- Helpers ---------- */
 
@@ -95,14 +125,6 @@ function getSkipReason(pdcData) {
   }
 
   return null;
-}
-
-function logSkip(pdcData, reason) {
-  console.log(`
-Store: ${pdcData.store}
-Product Type: ${pdcData.productType}
-Result: SKIPPED (${reason})
-`);
 }
 
 async function waitForWidgetRender(page) {
@@ -155,8 +177,6 @@ async function validateStrictEvents(page, events) {
 }
 
 async function validateRefresh(page, eventWatcher) {
-  console.log("Validating PDP refresh behavior");
-
   eventWatcher.reset();
 
   await page.reload();
