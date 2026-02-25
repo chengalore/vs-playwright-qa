@@ -10,25 +10,69 @@ import { startBodyMeasurementWatcher } from "../utils/bodyMeasurementWatcher.js"
 import { selectSizeIfMultiple } from "../utils/selectSizeIfMultiple.js";
 import { addItemToWardrobe } from "../utils/addItemToWardrobe.js";
 
-test.setTimeout(120000);
+test.setTimeout(60000);
 
 test("Inpage basic flow", async ({ page }) => {
-  // Start watchers BEFORE navigation
   const eventWatcher = startVirtusizeEventWatcher(page);
   const pdcData = startPDCWatcher(page);
   const recommendationAPI = startRecommendationWatcher(page);
   const bodyAPI = startBodyMeasurementWatcher(page);
 
-  await page.goto("https://www.underarmour.co.jp/f/dsg-1072366");
+  const url =
+    process.env.TEST_URL || "https://www.underarmour.co.jp/f/dsg-1072366";
 
-  await page.waitForSelector(
-    "#vs-inpage, #vs-kid, #vs-inpage-mini, #vs-smart-table",
-    { timeout: 60000 }
-  );
+  console.log("Testing URL:", url);
+
+  await page.goto(url);
+
+  /* ---------------------------------
+     Wait briefly for PDC to populate
+  ---------------------------------- */
+
+  const pdcStart = Date.now();
+  while (Date.now() - pdcStart < 5000) {
+    if (pdcData.store !== "unknown") break;
+    await page.waitForTimeout(100);
+  }
+
+  console.log("PDC:", pdcData);
+
+  /* ---------------------------------
+     Early Gatekeeping
+  ---------------------------------- */
+
+  const excludedTypes = ["shoe", "bag", "wallet", "clutch", "panties"];
+
+  if (excludedTypes.includes(pdcData.productType?.toLowerCase())) {
+    console.log(`
+Store: ${pdcData.store}
+Product Type: ${pdcData.productType}
+Result: SKIPPED (Unsupported Product Type)
+`);
+    return;
+  }
+
+  if (pdcData.noVisor) {
+    console.log(`
+Store: ${pdcData.store}
+Product Type: ${pdcData.productType}
+Result: SKIPPED (Non-Visor)
+`);
+    return;
+  }
+
+  /* ---------------------------------
+     Wait for Regular Inpage Only
+  ---------------------------------- */
+
+  await page.waitForSelector("#vs-inpage", { timeout: 15000 });
 
   await page.click("#vs-inpage");
 
-  // Wait until either onboarding OR recommendation renders
+  /* ---------------------------------
+     Wait for Onboarding or Recommendation
+  ---------------------------------- */
+
   await page.waitForFunction(
     () => {
       const host =
@@ -40,21 +84,23 @@ test("Inpage basic flow", async ({ page }) => {
       const root = host.shadowRoot;
 
       return (
-        root.querySelector('[data-test-id="input-age"]') || // onboarding
-        root.querySelector('[data-test-id="size-btn"]') // recommendation
+        root.querySelector('[data-test-id="input-age"]') ||
+        root.querySelector('[data-test-id="size-btn"]')
       );
     },
-    { timeout: 10000 }
+    { timeout: 8000 }
   );
 
-  // Determine user state from DOM
+  /* ---------------------------------
+     Detect User State
+  ---------------------------------- */
+
   const isNewUser = await page.evaluate(() => {
     const host =
       document.querySelector("#router-view-wrapper") ||
       document.querySelector("#vs-aoyama")?.nextElementSibling;
 
     const root = host?.shadowRoot;
-
     return !!root?.querySelector('[data-test-id="input-age"]');
   });
 
@@ -63,15 +109,17 @@ test("Inpage basic flow", async ({ page }) => {
 
     await completeOnboarding(page);
 
-    const bodyStatus = await waitForStatus(() => bodyAPI.getStatus(), 10000);
+    const bodyStatus = await waitForStatus(() => bodyAPI.getStatus(), 5000);
 
     expect(bodyStatus).toBe(200);
-    console.log("Body measurement saved");
   } else {
     console.log("Returning user → skip onboarding");
   }
 
-  // Recommendation validation
+  /* ---------------------------------
+     Recommendation Validation
+  ---------------------------------- */
+
   await validateRecommendation(
     page,
     eventWatcher.getEvents(),
@@ -79,13 +127,17 @@ test("Inpage basic flow", async ({ page }) => {
     isNewUser
   );
 
-  // Size selection
-  await selectSizeIfMultiple(page, eventWatcher.getEvents());
+  /* ---------------------------------
+     Size + Wardrobe
+  ---------------------------------- */
 
-  // Wardrobe action
+  await selectSizeIfMultiple(page, eventWatcher.getEvents());
   await addItemToWardrobe(page, eventWatcher.getEvents());
 
-  // Strict event validation
+  /* ---------------------------------
+     Strict Event Validation
+  ---------------------------------- */
+
   const baselineFailures = await verifyEvents(
     page,
     eventWatcher.getEvents(),
@@ -107,34 +159,27 @@ test("Inpage basic flow", async ({ page }) => {
   expect(
     [...baselineFailures, ...recommendationFailures, ...panelFailures].length
   ).toBe(0);
+
+  /* ---------------------------------
+     Refresh Validation
+  ---------------------------------- */
+
   console.log("Validating PDP refresh behavior");
 
-  // Reset events
   eventWatcher.reset();
 
-  // Reload PDP
   await page.reload();
-
-  // Wait for VS mount
-  await page.waitForSelector(
-    "#vs-inpage, #vs-kid, #vs-inpage-mini, #vs-smart-table",
-    { timeout: 60000 }
-  );
-
-  // Re-open widget
+  await page.waitForSelector("#vs-inpage", { timeout: 15000 });
   await page.click("#vs-inpage");
 
-  // Wait until recommendation event appears
   await verifyEvents(
     page,
     eventWatcher.getEvents(),
     expectedEvents.strict.recommendation
   );
 
-  // Collect refreshed events
   const refreshedEvents = eventWatcher.getEvents();
 
-  // Validate baseline + recommendation + size
   const refreshFailures = [
     ...(await verifyEvents(
       page,
@@ -151,7 +196,6 @@ test("Inpage basic flow", async ({ page }) => {
 
   expect(refreshFailures.length).toBe(0);
 
-  console.log("Refresh validation passed");
   console.log(`
 Store: ${pdcData.store}
 Product Type: ${pdcData.productType}
@@ -160,14 +204,17 @@ Result: PASS
 `);
 });
 
-// Helper
-async function waitForStatus(getter, timeout = 10000) {
+/* ---------------------------------
+   Helper
+---------------------------------- */
+
+async function waitForStatus(getter, timeout = 5000) {
   const start = Date.now();
 
   while (Date.now() - start < timeout) {
     const value = getter();
     if (value !== null && value !== undefined) return value;
-    await new Promise((r) => setTimeout(r, 200));
+    await new Promise((r) => setTimeout(r, 100));
   }
 
   return null;
