@@ -99,7 +99,7 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
     // Refresh Validation
     // -----------------------------
 
-    await validateRefresh(page, eventWatcher);
+    await validateRefresh(page, eventWatcher, recommendationAPI);
 
     // -----------------------------
     // PASS
@@ -175,7 +175,7 @@ async function validateCoreEvents(page, eventWatcher) {
   validateStrictDuplicates(eventWatcher);
 }
 
-async function validateRefresh(page, eventWatcher) {
+async function validateRefresh(page, eventWatcher, recommendationAPI) {
   console.log("Validating PDP refresh behavior");
 
   eventWatcher.reset();
@@ -183,6 +183,25 @@ async function validateRefresh(page, eventWatcher) {
   await page.reload();
   await page.waitForSelector("#vs-inpage", { timeout: 15000 });
   await page.click("#vs-inpage");
+
+  // -----------------------------------------
+  // CHECK RECOMMENDATION API REFIRE
+  // -----------------------------------------
+
+  const recStatus = await waitForStatus(
+    () => recommendationAPI.getStatus(),
+    5000
+  );
+
+  if (recStatus !== 200) {
+    throw new Error(
+      `Recommendation API did not refire after refresh (status: ${recStatus})`
+    );
+  }
+
+  // -----------------------------------------
+  // CHECK EVENTS
+  // -----------------------------------------
 
   await verifyEvents(
     page,
