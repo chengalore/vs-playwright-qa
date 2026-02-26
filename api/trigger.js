@@ -31,7 +31,7 @@ export default async function handler(req, res) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          ref: "main", // change to "master" if your default branch is master
+          ref: "main",
           inputs: { url },
         }),
       }
