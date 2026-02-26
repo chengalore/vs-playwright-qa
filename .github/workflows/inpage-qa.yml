@@ -27,7 +27,7 @@ jobs:
         env:
           TEST_URL: ${{ github.event.inputs.url }}
 
-            - name: Send result to Slack
+      - name: Send result to Slack
         if: always()
         run: |
           RESULTS=$(grep 'QA_RESULT:' test-output.log | sed 's/.*QA_RESULT: //')
