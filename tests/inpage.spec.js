@@ -97,7 +97,7 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
     // Core Event Validation
     // -----------------------------
 
-    await validateCoreEvents(page, eventWatcher.getEvents());
+    await validateCoreEvents(page, eventWatcher);
 
     // -----------------------------
     // Refresh Validation
@@ -148,7 +148,7 @@ function getSkipReason(pdc) {
   }
 
   if (excludedTypes.includes(pdc.productType?.toLowerCase())) {
-    return "Unsupported Product Type";
+    return "Non apparel item";
   }
 
   return null;
@@ -158,7 +158,9 @@ function getSkipReason(pdc) {
    Validators
 -------------------------------------------------- */
 
-async function validateCoreEvents(page, events) {
+async function validateCoreEvents(page, eventWatcher) {
+  const events = eventWatcher.getEvents();
+
   const baseline = await verifyEvents(
     page,
     events,
@@ -214,6 +216,18 @@ async function validateRefresh(page, eventWatcher) {
     error.missingEvents = failures;
     throw error;
   }
+}
+// -----------------------------------------
+// CHECKS DUPE EVENTS
+// -----------------------------------------
+
+const counts = eventWatcher.getCounts();
+const key = "user-selected-size::inpage";
+
+if (counts[key] > 1) {
+  throw new Error(
+    `Duplicate after refresh: user-selected-size (source: inpage) x${counts[key]}`
+  );
 }
 
 /* --------------------------------------------------
