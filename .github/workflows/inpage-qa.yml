@@ -42,9 +42,7 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: Run Playwright test
-        run: |
-          npx playwright test tests/inpage.spec.js
-
+        run: npx playwright test tests/inpage.spec.js
         env:
           TEST_URL: ${{ github.event.inputs.url }}
 
@@ -61,32 +59,41 @@ jobs:
           TEXT="*🧪 VS Inpage QA — Result*"
 
           if [ -f test-results.json ]; then
-            jq -r '
+
+            RESULTS=$(jq -r '
               .suites[].specs[].tests[] |
-              .projectName as $browser |
-              .results[-1].status as $status |
-              "\($browser)|\($status)"
-            ' test-results.json | while IFS="|" read browser status; do
+              "\(.projectName)|\(.results[-1].status)"
+            ' test-results.json | sort -u)
 
-              if [ "$status" = "passed" ]; then
-                ICON="✅"
-              elif [ "$status" = "flaky" ]; then
-                ICON="🟡"
-              else
-                ICON="❌"
-              fi
+            if [ -z "$RESULTS" ]; then
+              TEXT="${TEXT}
+❌ No test results found in JSON"
+            else
+              while IFS="|" read -r browser status; do
+                if [ "$status" = "passed" ]; then
+                  ICON="✅"
+                elif [ "$status" = "flaky" ]; then
+                  ICON="🟡"
+                else
+                  ICON="❌"
+                fi
 
-              TEXT="${TEXT}\n${ICON} ${browser}: ${status}"
-            done
+                TEXT="${TEXT}
+${ICON} ${browser}: ${status}"
+              done <<< "$RESULTS"
+            fi
+
           else
-            TEXT="${TEXT}\n❌ No test-results.json found"
+            TEXT="${TEXT}
+❌ No test-results.json found"
           fi
 
-          TEXT="${TEXT}\n\n🔗 URL: ${{ github.event.inputs.url }}"
-          TEXT="${TEXT}\n🏃 Run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          TEXT="${TEXT}
 
-          jq -n --arg text "$TEXT" '{text: $text}' \
-            | curl -X POST \
-              -H "Content-type: application/json" \
-              --data @- \
-              ${{ secrets.SLACK_WEBHOOK_URL }}
+🔗 URL: ${{ github.event.inputs.url }}
+🏃 Run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+
+          curl -X POST \
+            -H "Content-type: application/json" \
+            --data "$(jq -n --arg text "$TEXT" '{text: $text}')" \
+            ${{ secrets.SLACK_WEBHOOK_URL }}
