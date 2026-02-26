@@ -47,7 +47,13 @@ jobs:
             process.exit(0);
           }
 
-          const lines = fs.readFileSync('test-output.log', 'utf8')
+          const fullLog = fs.readFileSync('test-output.log', 'utf8');
+
+          // Detect flaky count from Playwright summary
+          const flakyMatch = fullLog.match(/(\d+)\s+flaky/);
+          const flakyCount = flakyMatch ? parseInt(flakyMatch[1], 10) : 0;
+
+          const lines = fullLog
             .split('\n')
             .filter(l => l.includes('QA_RESULT:'));
 
@@ -71,16 +77,24 @@ jobs:
 
           let message = "🧪 VS Inpage QA — Result\n\n";
 
-          if (failed.length === 0 && skipped.length === 0) {
-            message += "✅ All browsers passed\n";
+          // Clean pass
+          if (failed.length === 0 && skipped.length === 0 && flakyCount === 0) {
+            message += "✅ All browsers passed cleanly\n";
           }
 
+          // Flaky detected
+          if (flakyCount > 0) {
+            message += `⚠️ ${flakyCount} Flaky test detected (passed on retry)\n`;
+          }
+
+          // Skipped
           if (skipped.length > 0) {
             skipped.forEach(r => {
               message += `⏭ ${r.browser}: skipped (${r.reason || "No reason"})\n`;
             });
           }
 
+          // Failed
           if (failed.length > 0) {
             failed.forEach(r => {
               message += `❌ ${r.browser}: failed\n`;
