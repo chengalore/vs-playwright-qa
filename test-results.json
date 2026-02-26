@@ -1,0 +1,577 @@
+{
+  "config": {
+    "configFile": "/Users/rachel/Documents/Playwright/playwright.config.js",
+    "rootDir": "/Users/rachel/Documents/Playwright/tests",
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 3
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/Users/rachel/Documents/Playwright/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 3
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "/Users/rachel/Documents/Playwright/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Users/rachel/Documents/Playwright/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 3
+        },
+        "id": "firefox",
+        "name": "firefox",
+        "testDir": "/Users/rachel/Documents/Playwright/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Users/rachel/Documents/Playwright/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 3
+        },
+        "id": "webkit",
+        "name": "webkit",
+        "testDir": "/Users/rachel/Documents/Playwright/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "html",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "test-results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "runAgents": "none",
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.58.2",
+    "workers": 4,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "inpage.spec.js",
+      "file": "inpage.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "Inpage basic flow",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 19537,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "Testing URL: https://www.underarmour.co.jp/f/dsg-1072366\n"
+                    },
+                    {
+                      "text": "Captured Event: user-saw-product\n"
+                    },
+                    {
+                      "text": "Captured Event: user-saw-widget-button\n"
+                    },
+                    {
+                      "text": "Captured Event: inpage-mounted\n"
+                    },
+                    {
+                      "text": "Captured Event: user-opened-widget\n"
+                    },
+                    {
+                      "text": "Captured Event: user-saw-onboarding-screen\n"
+                    },
+                    {
+                      "text": "New user → running onboarding\n"
+                    },
+                    {
+                      "text": "Completing onboarding (shadow DOM)...\n"
+                    },
+                    {
+                      "text": "Captured Event: user-selected-age\n"
+                    },
+                    {
+                      "text": "Captured Event: user-selected-height\n"
+                    },
+                    {
+                      "text": "Captured Event: user-selected-weight\n"
+                    },
+                    {
+                      "text": "Captured Event: user-completed-onboarding\n"
+                    },
+                    {
+                      "text": "Captured Event: user-created-silhouette\n"
+                    },
+                    {
+                      "text": "Onboarding finished.\n"
+                    },
+                    {
+                      "text": "Body Measurement API Status: \u001b[33m200\u001b[39m\n"
+                    },
+                    {
+                      "text": "Validating recommendation result...\n"
+                    },
+                    {
+                      "text": "Recommendation API Status: \u001b[33m200\u001b[39m\n"
+                    },
+                    {
+                      "text": "Captured Event: user-got-size-recommendation\n"
+                    },
+                    {
+                      "text": "Captured Event: user-opened-panel-tryiton\n"
+                    },
+                    {
+                      "text": "Recommendation screen detected.\n"
+                    },
+                    {
+                      "text": "Recommendation API returned 200.\n"
+                    },
+                    {
+                      "text": "Recommendation events validated.\n"
+                    },
+                    {
+                      "text": "Detected size count: \u001b[33m7\u001b[39m\n"
+                    },
+                    {
+                      "text": "Captured Event: user-selected-size\n"
+                    },
+                    {
+                      "text": "Size selected successfully.\n"
+                    },
+                    {
+                      "text": "Attempting to add item to wardrobe...\n"
+                    },
+                    {
+                      "text": "Captured Event: user-opened-panel-details\n"
+                    },
+                    {
+                      "text": "Captured Event: user-opened-panel-compare\n"
+                    },
+                    {
+                      "text": "Captured Event: user-added-product\n"
+                    },
+                    {
+                      "text": "Item added to wardrobe successfully.\n"
+                    },
+                    {
+                      "text": "Validating PDP refresh behavior\n"
+                    },
+                    {
+                      "text": "Captured Event: user-saw-product\n"
+                    },
+                    {
+                      "text": "Captured Event: user-saw-widget-button\n"
+                    },
+                    {
+                      "text": "Captured Event: inpage-mounted\n"
+                    },
+                    {
+                      "text": "Captured Event: user-opened-widget\n"
+                    },
+                    {
+                      "text": "Captured Event: user-opened-panel-tryiton\n"
+                    },
+                    {
+                      "text": "Recommendation API Status: \u001b[33m200\u001b[39m\n"
+                    },
+                    {
+                      "text": "Captured Event: user-selected-size\n"
+                    },
+                    {
+                      "text": "Captured Event: user-got-size-recommendation\n"
+                    },
+                    {
+                      "text": "QA_RESULT: {\"url\":\"https://www.underarmour.co.jp/f/dsg-1072366\",\"store\":\"under_armour\",\"productType\":\"tShirt\",\"userType\":\"NEW\",\"status\":\"passed\",\"browser\":\"chromium\",\"durationMs\":19260}\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-02-26T05:01:43.834Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "4b94f1d2e5793e5150b0-f2c92c2862e29089a395",
+          "file": "inpage.spec.js",
+          "line": 15,
+          "column": 5
+        },
+        {
+          "title": "Inpage basic flow",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "firefox",
+              "projectName": "firefox",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 32059,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "Testing URL: https://www.underarmour.co.jp/f/dsg-1072366\n"
+                    },
+                    {
+                      "text": "Captured Event: user-saw-product\n"
+                    },
+                    {
+                      "text": "Captured Event: user-saw-widget-button\n"
+                    },
+                    {
+                      "text": "Captured Event: inpage-mounted\n"
+                    },
+                    {
+                      "text": "Captured Event: user-opened-widget\n"
+                    },
+                    {
+                      "text": "Captured Event: user-saw-onboarding-screen\n"
+                    },
+                    {
+                      "text": "New user → running onboarding\n"
+                    },
+                    {
+                      "text": "Completing onboarding (shadow DOM)...\n"
+                    },
+                    {
+                      "text": "Captured Event: user-selected-age\n"
+                    },
+                    {
+                      "text": "Captured Event: user-selected-height\n"
+                    },
+                    {
+                      "text": "Captured Event: user-selected-weight\n"
+                    },
+                    {
+                      "text": "Captured Event: user-completed-onboarding\n"
+                    },
+                    {
+                      "text": "Onboarding finished.\n"
+                    },
+                    {
+                      "text": "Captured Event: user-created-silhouette\n"
+                    },
+                    {
+                      "text": "Body Measurement API Status: \u001b[33m200\u001b[39m\n"
+                    },
+                    {
+                      "text": "Validating recommendation result...\n"
+                    },
+                    {
+                      "text": "Recommendation API Status: \u001b[33m200\u001b[39m\n"
+                    },
+                    {
+                      "text": "Captured Event: user-got-size-recommendation\n"
+                    },
+                    {
+                      "text": "Captured Event: user-opened-panel-tryiton\n"
+                    },
+                    {
+                      "text": "Recommendation screen detected.\n"
+                    },
+                    {
+                      "text": "Recommendation API returned 200.\n"
+                    },
+                    {
+                      "text": "Recommendation events validated.\n"
+                    },
+                    {
+                      "text": "Detected size count: \u001b[33m7\u001b[39m\n"
+                    },
+                    {
+                      "text": "Captured Event: user-selected-size\n"
+                    },
+                    {
+                      "text": "Size selected successfully.\n"
+                    },
+                    {
+                      "text": "Attempting to add item to wardrobe...\n"
+                    },
+                    {
+                      "text": "Captured Event: user-opened-panel-details\n"
+                    },
+                    {
+                      "text": "Captured Event: user-opened-panel-compare\n"
+                    },
+                    {
+                      "text": "Captured Event: user-added-product\n"
+                    },
+                    {
+                      "text": "Item added to wardrobe successfully.\n"
+                    },
+                    {
+                      "text": "Validating PDP refresh behavior\n"
+                    },
+                    {
+                      "text": "Captured Event: user-saw-product\n"
+                    },
+                    {
+                      "text": "Captured Event: user-saw-widget-button\n"
+                    },
+                    {
+                      "text": "Captured Event: inpage-mounted\n"
+                    },
+                    {
+                      "text": "Captured Event: user-opened-widget\n"
+                    },
+                    {
+                      "text": "Recommendation API Status: \u001b[33m200\u001b[39m\n"
+                    },
+                    {
+                      "text": "Captured Event: user-opened-panel-tryiton\n"
+                    },
+                    {
+                      "text": "Captured Event: user-selected-size\n"
+                    },
+                    {
+                      "text": "Captured Event: user-got-size-recommendation\n"
+                    },
+                    {
+                      "text": "QA_RESULT: {\"url\":\"https://www.underarmour.co.jp/f/dsg-1072366\",\"store\":\"under_armour\",\"productType\":\"tShirt\",\"userType\":\"NEW\",\"status\":\"passed\",\"browser\":\"firefox\",\"durationMs\":31200}\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-02-26T05:01:43.839Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "4b94f1d2e5793e5150b0-e518253adf71baf1ff19",
+          "file": "inpage.spec.js",
+          "line": 15,
+          "column": 5
+        },
+        {
+          "title": "Inpage basic flow",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit",
+              "projectName": "webkit",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 2,
+                  "status": "passed",
+                  "duration": 31804,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "Testing URL: https://www.underarmour.co.jp/f/dsg-1072366\n"
+                    },
+                    {
+                      "text": "Captured Event: user-saw-product\n"
+                    },
+                    {
+                      "text": "Captured Event: user-saw-widget-button\n"
+                    },
+                    {
+                      "text": "Captured Event: inpage-mounted\n"
+                    },
+                    {
+                      "text": "Captured Event: user-opened-widget\n"
+                    },
+                    {
+                      "text": "Captured Event: user-saw-onboarding-screen\n"
+                    },
+                    {
+                      "text": "New user → running onboarding\n"
+                    },
+                    {
+                      "text": "Completing onboarding (shadow DOM)...\n"
+                    },
+                    {
+                      "text": "Captured Event: user-selected-age\n"
+                    },
+                    {
+                      "text": "Captured Event: user-selected-height\n"
+                    },
+                    {
+                      "text": "Captured Event: user-selected-weight\n"
+                    },
+                    {
+                      "text": "Captured Event: user-completed-onboarding\n"
+                    },
+                    {
+                      "text": "Captured Event: user-created-silhouette\n"
+                    },
+                    {
+                      "text": "Onboarding finished.\n"
+                    },
+                    {
+                      "text": "Body Measurement API Status: \u001b[33m200\u001b[39m\n"
+                    },
+                    {
+                      "text": "Validating recommendation result...\n"
+                    },
+                    {
+                      "text": "Recommendation API Status: \u001b[33m200\u001b[39m\n"
+                    },
+                    {
+                      "text": "Captured Event: user-got-size-recommendation\n"
+                    },
+                    {
+                      "text": "Captured Event: user-opened-panel-tryiton\n"
+                    },
+                    {
+                      "text": "Recommendation screen detected.\n"
+                    },
+                    {
+                      "text": "Recommendation API returned 200.\n"
+                    },
+                    {
+                      "text": "Recommendation events validated.\n"
+                    },
+                    {
+                      "text": "Detected size count: \u001b[33m7\u001b[39m\n"
+                    },
+                    {
+                      "text": "Captured Event: user-selected-size\n"
+                    },
+                    {
+                      "text": "Size selected successfully.\n"
+                    },
+                    {
+                      "text": "Attempting to add item to wardrobe...\n"
+                    },
+                    {
+                      "text": "Captured Event: user-opened-panel-details\n"
+                    },
+                    {
+                      "text": "Captured Event: user-opened-panel-compare\n"
+                    },
+                    {
+                      "text": "Captured Event: user-added-product\n"
+                    },
+                    {
+                      "text": "Item added to wardrobe successfully.\n"
+                    },
+                    {
+                      "text": "Validating PDP refresh behavior\n"
+                    },
+                    {
+                      "text": "Captured Event: user-saw-product\n"
+                    },
+                    {
+                      "text": "Captured Event: user-saw-widget-button\n"
+                    },
+                    {
+                      "text": "Captured Event: inpage-mounted\n"
+                    },
+                    {
+                      "text": "Recommendation API Status: \u001b[33m200\u001b[39m\n"
+                    },
+                    {
+                      "text": "Captured Event: user-got-size-recommendation\n"
+                    },
+                    {
+                      "text": "Captured Event: user-selected-size\n"
+                    },
+                    {
+                      "text": "Captured Event: user-opened-widget\n"
+                    },
+                    {
+                      "text": "Captured Event: user-opened-panel-tryiton\n"
+                    },
+                    {
+                      "text": "QA_RESULT: {\"url\":\"https://www.underarmour.co.jp/f/dsg-1072366\",\"store\":\"under_armour\",\"productType\":\"tShirt\",\"userType\":\"NEW\",\"status\":\"passed\",\"browser\":\"webkit\",\"durationMs\":30955}\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-02-26T05:01:43.836Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "4b94f1d2e5793e5150b0-2c8098a0e7394a03157f",
+          "file": "inpage.spec.js",
+          "line": 15,
+          "column": 5
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-02-26T05:01:43.184Z",
+    "duration": 34599.007999999994,
+    "expected": 3,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}
