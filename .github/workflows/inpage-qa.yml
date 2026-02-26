@@ -41,9 +41,9 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
 
-      - name: Run Playwright test (all browsers)
+      - name: Run Playwright test
         run: |
-          npx playwright test tests/inpage.spec.js --workers=1 | tee qa-output.log
+          npx playwright test tests/inpage.spec.js --workers=1 --reporter=json > report.json
         env:
           TEST_URL: ${{ github.event.inputs.url }}
 
@@ -57,23 +57,35 @@ jobs:
       - name: Send result to Slack
         if: always()
         run: |
-          RESULTS=$(grep "QA_RESULT:" qa-output.log | sed 's/QA_RESULT: //')
+          TEXT="*🧪 VS Inpage QA — Final Result*"
 
-          TEXT="VS Inpage Events — Multi-Browser Result"
+          if [ -f report.json ]; then
+            jq -r '
+              .suites[].specs[].tests[] |
+              .projectName as $browser |
+              .results[-1].status as $status |
+              "\($browser)|\($status)"
+            ' report.json | while IFS="|" read browser status; do
 
-          while read -r line; do
-            STATUS=$(echo "$line" | jq -r '.status')
-            BROWSER=$(echo "$line" | jq -r '.browser')
-            URL=$(echo "$line" | jq -r '.url')
+              if [ "$status" = "passed" ]; then
+                ICON="✅"
+              elif [ "$status" = "flaky" ]; then
+                ICON="🟡"
+              else
+                ICON="❌"
+              fi
 
-          TEXT="$TEXT\n•$BROWSER: $STATUS"
-          done <<< "$RESULTS"
+              TEXT="${TEXT}\n${ICON} ${browser}: ${status}"
+            done
+          else
+            TEXT="${TEXT}\n❌ No report.json found"
+          fi
 
-          TEXT="$TEXT\n\nURL: $URL"
-          TEXT="$TEXT\nRun: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          TEXT="${TEXT}\n\n🔗 URL: ${{ github.event.inputs.url }}"
+          TEXT="${TEXT}\n🏃 Run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
 
           jq -n --arg text "$TEXT" '{text: $text}' \
             | curl -X POST \
-              -H 'Content-type: application/json' \
+              -H "Content-type: application/json" \
               --data @- \
               ${{ secrets.SLACK_WEBHOOK_URL }}
