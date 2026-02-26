@@ -27,7 +27,6 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
 
   try {
     await page.goto(url);
-
     await waitForPDC(pdc);
 
     // -----------------------------
@@ -69,10 +68,7 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
       await completeOnboarding(page);
 
       const bodyStatus = await waitForStatus(() => bodyAPI.getStatus(), 5000);
-
       expect(bodyStatus).toBe(200);
-    } else {
-      console.log("Returning user → skip onboarding");
     }
 
     // -----------------------------
@@ -132,31 +128,24 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
   }
 });
 
-/* --------------------------------------------------
-   Gatekeeping
--------------------------------------------------- */
+// --------------------------------------------------
+// Gatekeeping
+// --------------------------------------------------
 
 function getSkipReason(pdc) {
   const excludedTypes = ["shoe", "bag", "wallet", "clutch", "panties"];
 
-  if (pdc.validProduct === false) {
-    return "Invalid Product (validProduct=false)";
-  }
-
-  if (pdc.noVisor) {
-    return "Non-Visor";
-  }
-
-  if (excludedTypes.includes(pdc.productType?.toLowerCase())) {
+  if (pdc.validProduct === false) return "Invalid Product (validProduct=false)";
+  if (pdc.noVisor) return "Non-Visor";
+  if (excludedTypes.includes(pdc.productType?.toLowerCase()))
     return "Non apparel item";
-  }
 
   return null;
 }
 
-/* --------------------------------------------------
-   Validators
--------------------------------------------------- */
+// --------------------------------------------------
+// Validators
+// --------------------------------------------------
 
 async function validateCoreEvents(page, eventWatcher) {
   const events = eventWatcher.getEvents();
@@ -182,6 +171,8 @@ async function validateCoreEvents(page, eventWatcher) {
     error.missingEvents = missing;
     throw error;
   }
+
+  validateStrictDuplicates(eventWatcher);
 }
 
 async function validateRefresh(page, eventWatcher) {
@@ -216,23 +207,37 @@ async function validateRefresh(page, eventWatcher) {
     error.missingEvents = failures;
     throw error;
   }
-}
-// -----------------------------------------
-// CHECKS DUPE EVENTS
-// -----------------------------------------
 
-const counts = eventWatcher.getCounts();
-const key = "user-selected-size::inpage";
-
-if (counts[key] > 1) {
-  throw new Error(
-    `Duplicate after refresh: user-selected-size (source: inpage) x${counts[key]}`
-  );
+  validateStrictDuplicates(eventWatcher);
 }
 
-/* --------------------------------------------------
-   Helpers
--------------------------------------------------- */
+// --------------------------------------------------
+// Strict Duplicate Validation
+// --------------------------------------------------
+
+function validateStrictDuplicates(eventWatcher) {
+  const counts = eventWatcher.getCounts();
+
+  const strictKeys = [
+    "user-saw-product::inpage",
+    "user-saw-widget-button::inpage",
+    "user-opened-widget::inpage",
+    "user-got-size-recommendation::inpage",
+    "user-selected-size::inpage",
+  ];
+
+  const failures = strictKeys
+    .filter((key) => counts[key] > 1)
+    .map((key) => `${key} x${counts[key]}`);
+
+  if (failures.length > 0) {
+    throw new Error(`Strict duplicate events detected: ${failures.join(", ")}`);
+  }
+}
+
+// --------------------------------------------------
+// Helpers
+// --------------------------------------------------
 
 async function waitForPDC(pdc) {
   const start = Date.now();
