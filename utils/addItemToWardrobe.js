@@ -30,13 +30,16 @@ export async function addItemToWardrobe(page, firedEvents) {
   await page.waitForTimeout(2000);
 
   // Check if toggle button exists
-  const hasToggleButton = await page.evaluate(() => {
-    const host = document.querySelector("#router-view-wrapper");
-    const root = host?.shadowRoot;
-    if (!root) return false;
-
-    return !!root.querySelector('[data-test-id="toggle-item-to-wardrobe-btn"]');
-  });
+  await page.waitForFunction(
+    () => {
+      const host = document.querySelector("#router-view-wrapper");
+      const root = host?.shadowRoot;
+      return !!root?.querySelector(
+        '[data-test-id="toggle-item-to-wardrobe-btn"]'
+      );
+    },
+    { timeout: 5000 }
+  );
 
   if (!hasToggleButton) {
     console.log("Toggle wardrobe button not found.");
