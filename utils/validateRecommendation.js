@@ -1,12 +1,11 @@
 export async function validateRecommendation(
   page,
-  firedEvents,
+  eventWatcher,
   recommendationAPI,
   isNewUser
 ) {
   console.log("Validating recommendation result...");
 
-  // Wait for recommendation UI inside shadow DOM
   await page.waitForFunction(
     () => {
       const host =
@@ -26,7 +25,6 @@ export async function validateRecommendation(
     { timeout: 20000 }
   );
 
-  // Fail early if error screen exists
   const hasErrorScreen = await page.evaluate(() => {
     const host =
       document.querySelector("#router-view-wrapper") ||
@@ -43,12 +41,11 @@ export async function validateRecommendation(
 
   console.log("Recommendation screen detected.");
 
-  // Wait for API status from watcher
   let apiStatus = null;
-  const start = Date.now();
-  const maxWait = 10000;
+  const apiStart = Date.now();
+  const apiTimeout = 10000;
 
-  while (Date.now() - start < maxWait) {
+  while (Date.now() - apiStart < apiTimeout) {
     apiStatus = recommendationAPI.getStatus();
     if (apiStatus !== null) break;
     await page.waitForTimeout(100);
@@ -62,13 +59,31 @@ export async function validateRecommendation(
 
   console.log("Recommendation API returned 200.");
 
-  // Event validation
-  if (isNewUser && !firedEvents.includes("user-created-silhouette")) {
-    throw new Error("Missing event: user-created-silhouette");
+  const eventStart = Date.now();
+  const eventTimeout = 5000;
+  let foundRecommendation = false;
+
+  while (Date.now() - eventStart < eventTimeout) {
+    const events = eventWatcher.getEvents();
+
+    if (events.includes("user-got-size-recommendation")) {
+      foundRecommendation = true;
+      break;
+    }
+
+    await page.waitForTimeout(100);
   }
 
-  if (!firedEvents.includes("user-got-size-recommendation")) {
+  if (!foundRecommendation) {
     throw new Error("Missing event: user-got-size-recommendation");
+  }
+
+  if (isNewUser) {
+    const events = eventWatcher.getEvents();
+
+    if (!events.includes("user-created-silhouette")) {
+      throw new Error("Missing event: user-created-silhouette");
+    }
   }
 
   console.log("Recommendation events validated.");

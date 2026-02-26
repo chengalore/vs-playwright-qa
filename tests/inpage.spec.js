@@ -77,7 +77,7 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
 
     await validateRecommendation(
       page,
-      eventWatcher.getEvents(),
+      eventWatcher,
       recommendationAPI,
       isNewUser
     );
@@ -236,18 +236,40 @@ async function validateRefresh(page, eventWatcher, recommendationAPI) {
 
 function validateStrictDuplicates(eventWatcher) {
   const counts = eventWatcher.getCounts();
+  const failures = [];
 
-  const strictKeys = [
+  // Baseline events (integration only)
+  const baselineKeys = [
     "user-saw-product::integration",
     "user-saw-widget-button::integration",
     "user-opened-widget::integration",
-    "user-got-size-recommendation::integration",
-    "user-selected-size::inpage",
   ];
 
-  const failures = strictKeys
-    .filter((key) => counts[key] > 1)
-    .map((key) => `${key} x${counts[key]}`);
+  baselineKeys.forEach((key) => {
+    if ((counts[key] || 0) > 1) {
+      failures.push(`${key} x${counts[key]}`);
+    }
+  });
+
+  // Recommendation (integration only, max 1)
+  const recCount = counts["user-got-size-recommendation::integration"] || 0;
+
+  if (recCount > 1) {
+    failures.push(`user-got-size-recommendation::integration x${recCount}`);
+  }
+
+  // Size strict rules
+  const sizeIntegration = counts["user-selected-size::integration"] || 0;
+
+  const sizeInpage = counts["user-selected-size::inpage"] || 0;
+
+  if (sizeIntegration > 1) {
+    failures.push(`user-selected-size::integration x${sizeIntegration}`);
+  }
+
+  if (sizeInpage > 1) {
+    failures.push(`user-selected-size::inpage x${sizeInpage}`);
+  }
 
   if (failures.length > 0) {
     throw new Error(`Strict duplicate events detected: ${failures.join(", ")}`);
