@@ -26,3 +26,20 @@ jobs:
       - run: npx playwright test tests/inpage.spec.js
         env:
           TEST_URL: ${{ github.event.inputs.url }}
+      - name: Send result to Slack
+        if: always()
+        run: |
+          STATUS="${{ job.status }}"
+
+          if [ "$STATUS" = "success" ]; then
+            ICON="✅"
+          else
+            ICON="❌"
+          fi
+
+          MESSAGE="VS Inpage QA: ${ICON} ${STATUS}"
+
+          curl -X POST \
+            -H "Content-type: application/json" \
+            --data "{\"text\":\"${MESSAGE}\"}" \
+            ${{ secrets.SLACK_WEBHOOK_URL }}
