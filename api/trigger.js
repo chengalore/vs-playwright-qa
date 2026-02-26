@@ -8,7 +8,7 @@ export default async function handler(req, res) {
       if (contentType.includes("application/json")) {
         url = req.body?.url;
       } else if (contentType.includes("application/x-www-form-urlencoded")) {
-        url = req.body?.text; // Slack sends the URL here
+        url = req.body?.text;
       }
     } else {
       url = req.query?.url;
@@ -21,8 +21,7 @@ export default async function handler(req, res) {
       });
     }
 
-    // Fire and forget (do NOT await)
-    fetch(
+    const gh = await fetch(
       `https://api.github.com/repos/${process.env.GITHUB_REPO}/actions/workflows/inpage-qa.yml/dispatches`,
       {
         method: "POST",
@@ -32,21 +31,33 @@ export default async function handler(req, res) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          ref: "main",
+          ref: "main", // change to "master" if your default branch is master
           inputs: { url },
         }),
       }
-    ).catch(console.error);
+    );
 
-    // Immediate Slack response
+    const text = await gh.text();
+
+    if (!gh.ok) {
+      console.error("GitHub dispatch failed:", gh.status, text);
+
+      return res.status(200).json({
+        response_type: "ephemeral",
+        text: `GitHub dispatch failed (${gh.status})`,
+      });
+    }
+
     return res.status(200).json({
       response_type: "ephemeral",
-      text: `🚀 QA started for:\n${url}`,
+      text: `QA started for:\n${url}`,
     });
   } catch (err) {
+    console.error("Server error:", err);
+
     return res.status(200).json({
       response_type: "ephemeral",
-      text: `Error: ${err.message}`,
+      text: `Server error: ${err.message}`,
     });
   }
 }
