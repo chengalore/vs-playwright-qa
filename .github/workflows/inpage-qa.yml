@@ -54,31 +54,26 @@ jobs:
           name: playwright-report
           path: playwright-report
 
-      - name: Send result to Slack (multi-browser summary)
+      - name: Send result to Slack
         if: always()
         run: |
           RESULTS=$(grep "QA_RESULT:" qa-output.log | sed 's/QA_RESULT: //')
 
-          TEXT="*VS Inpage Events — Multi-Browser Result*\n"
+          TEXT="VS Inpage Events — Multi-Browser Result"
 
           while read -r line; do
             STATUS=$(echo "$line" | jq -r '.status')
             BROWSER=$(echo "$line" | jq -r '.browser')
             URL=$(echo "$line" | jq -r '.url')
 
-            if [ "$STATUS" = "PASS" ]; then
-              TEXT="$TEXT\n• $BROWSER: PASS"
-            elif [ "$STATUS" = "SKIPPED" ]; then
-              REASON=$(echo "$line" | jq -r '.reason // empty')
-              TEXT="$TEXT\n• $BROWSER: SKIPPED $REASON"
-            else
-              ERROR=$(echo "$line" | jq -r '.error // "Unknown error"')
-              TEXT="$TEXT\n• $BROWSER: FAIL ($ERROR)"
-            fi
+            TEXT="$TEXT\n• $BROWSER: $STATUS"
           done <<< "$RESULTS"
 
           TEXT="$TEXT\n\nURL: $URL"
+          TEXT="$TEXT\nRun: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
 
-          curl -X POST -H 'Content-type: application/json' \
-            --data "{\"text\": \"$TEXT\"}" \
-            ${{ secrets.SLACK_WEBHOOK_URL }}
+          jq -n --arg text "$TEXT" '{text: $text}' \
+            | curl -X POST \
+              -H 'Content-type: application/json' \
+              --data @- \
+              ${{ secrets.SLACK_WEBHOOK_URL }}
