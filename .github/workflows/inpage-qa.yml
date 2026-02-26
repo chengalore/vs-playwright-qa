@@ -43,7 +43,9 @@ jobs:
 
       - name: Run Playwright test
         run: |
-          npx playwright test tests/inpage.spec.js --workers=1 --reporter=line,json,html
+          npx playwright test tests/inpage.spec.js \
+            --workers=1 \
+            --reporter=line,html,json=./test-results.json
         env:
           TEST_URL: ${{ github.event.inputs.url }}
 
@@ -57,7 +59,7 @@ jobs:
       - name: Send result to Slack
         if: always()
         run: |
-          TEXT="*🧪 VS Inpage QA — Final Result*"
+          TEXT="*🧪 VS Inpage QA — Result*"
 
           if [ -f test-results.json ]; then
             jq -r '
@@ -78,7 +80,7 @@ jobs:
               TEXT="${TEXT}\n${ICON} ${browser}: ${status}"
             done
           else
-            TEXT="${TEXT}\n No test-results.json found"
+            TEXT="${TEXT}\n❌ No test-results.json found"
           fi
 
           TEXT="${TEXT}\n\n🔗 URL: ${{ github.event.inputs.url }}"
