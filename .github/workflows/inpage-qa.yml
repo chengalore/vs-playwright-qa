@@ -38,7 +38,7 @@ jobs:
             ICON="❌"
           fi
 
-          MESSAGE="VS Inpage QA: ${ICON} ${STATUS}"
+          MESSAGE="VS Inpage QA ${ICON} ${STATUS}"
 
           curl -X POST \
             -H "Content-type: application/json" \
