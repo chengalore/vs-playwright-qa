@@ -55,39 +55,23 @@ jobs:
 
       - name: Send result to Slack
         if: always()
-        run: |
-          TEXT="*🧪 VS Inpage QA — Result*"
+  run: |
+    STATUS="${{ job.status }}"
 
-          if [ -f test-results.json ]; then
-            BROWSERS=$(jq -r '.suites[].specs[].tests[].projectName' test-results.json | sort -u)
+    if [ "$STATUS" = "success" ]; then
+      ICON="✅"
+    else
+      ICON="❌"
+    fi
 
-            for browser in $BROWSERS; do
-              STATUS=$(jq -r \
-                ".suites[].specs[].tests[] | select(.projectName==\"$browser\") | .results[-1].status" \
-                test-results.json | tail -n 1)
+    TEXT="*🧪 VS Inpage QA — Result*
 
-              if [ "$STATUS" = "passed" ]; then
-                ICON="✅"
-              elif [ "$STATUS" = "flaky" ]; then
-                ICON="🟡"
-              else
-                ICON="❌"
-              fi
-
-              TEXT="${TEXT}
-${ICON} ${browser}: ${STATUS}"
-            done
-          else
-            TEXT="${TEXT}
-❌ test-results.json not found"
-          fi
-
-          TEXT="${TEXT}
+${ICON} Overall status: ${STATUS}
 
 🔗 URL: ${{ github.event.inputs.url }}
 🏃 Run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
 
-          curl -X POST \
-            -H "Content-type: application/json" \
-            --data "$(jq -n --arg text "$TEXT" '{text: $text}')" \
-            ${{ secrets.SLACK_WEBHOOK_URL }}
+    curl -X POST \
+      -H "Content-type: application/json" \
+      --data "$(jq -n --arg text "$TEXT" '{text: $text}')" \
+      ${{ secrets.SLACK_WEBHOOK_URL }}
