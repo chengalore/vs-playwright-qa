@@ -1,12 +1,28 @@
 export default async function handler(req, res) {
   try {
-    const url = req.method === "POST" ? req.body?.url : req.query?.url;
+    let url;
+
+    if (req.method === "POST") {
+      const contentType = req.headers["content-type"] || "";
+
+      if (contentType.includes("application/json")) {
+        url = req.body?.url;
+      } else if (contentType.includes("application/x-www-form-urlencoded")) {
+        url = req.body?.text; // Slack sends the URL here
+      }
+    } else {
+      url = req.query?.url;
+    }
 
     if (!url) {
-      return res.status(400).json({ error: "No URL provided." });
+      return res.status(200).json({
+        response_type: "ephemeral",
+        text: "No URL provided.",
+      });
     }
-    console.log("Repo:", process.env.GITHUB_REPO);
-    const response = await fetch(
+
+    // Fire and forget (do NOT await)
+    fetch(
       `https://api.github.com/repos/${process.env.GITHUB_REPO}/actions/workflows/inpage-qa.yml/dispatches`,
       {
         method: "POST",
@@ -20,19 +36,17 @@ export default async function handler(req, res) {
           inputs: { url },
         }),
       }
-    );
+    ).catch(console.error);
 
-    if (!response.ok) {
-      const text = await response.text();
-      return res.status(500).json({ error: text });
-    }
-
+    // Immediate Slack response
     return res.status(200).json({
-      success: true,
-      message: "Workflow triggered",
-      url,
+      response_type: "ephemeral",
+      text: `🚀 QA started for:\n${url}`,
     });
   } catch (err) {
-    return res.status(500).json({ error: err.message });
+    return res.status(200).json({
+      response_type: "ephemeral",
+      text: `Error: ${err.message}`,
+    });
   }
 }
