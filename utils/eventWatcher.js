@@ -1,5 +1,6 @@
 export function startVirtusizeEventWatcher(page) {
-  let firedEvents = [];
+  let events = [];
+  let counts = {};
 
   page.on("request", (request) => {
     if (
@@ -8,19 +9,32 @@ export function startVirtusizeEventWatcher(page) {
     ) {
       try {
         const body = request.postDataJSON();
+        const name = body?.name;
+        const source = body?.source || "unknown";
 
-        if (body?.name && !firedEvents.includes(body.name)) {
-          firedEvents.push(body.name);
-          console.log("Captured Event:", body.name);
-        }
+        if (!name) return;
+
+        const key = `${name}::${source}`;
+
+        // store all events (no deduping)
+        events.push({ name, source });
+
+        // count occurrences
+        counts[key] = (counts[key] || 0) + 1;
+
+        console.log(
+          `Captured Event: ${name} (source: ${source}) x${counts[key]}`
+        );
       } catch {}
     }
   });
 
   return {
-    getEvents: () => firedEvents,
+    getEvents: () => events.map((e) => e.name),
+    getCounts: () => counts,
     reset: () => {
-      firedEvents = [];
+      events = [];
+      counts = {};
     },
   };
 }
