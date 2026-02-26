@@ -61,19 +61,28 @@ jobs:
 
           TEXT="VS Inpage Events — Multi-Browser Result"
 
-          while read -r line; do
-            STATUS=$(echo "$line" | jq -r '.status')
-            BROWSER=$(echo "$line" | jq -r '.browser')
-            URL=$(echo "$line" | jq -r '.url')
+          if [ -z "$RESULTS" ]; then
+            TEXT="$TEXT
 
-            TEXT="$TEXT\n• $BROWSER: $STATUS"
-          done <<< "$RESULTS"
+No QA_RESULT entries found."
+          else
+            while read -r line; do
+              STATUS=$(echo "$line" | jq -r '.status')
+              BROWSER=$(echo "$line" | jq -r '.browser')
+              URL=$(echo "$line" | jq -r '.url')
 
-          TEXT="$TEXT\n\nURL: $URL"
-          TEXT="$TEXT\nRun: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+              TEXT="$TEXT
+• $BROWSER: $STATUS"
+            done <<< "$RESULTS"
+
+            TEXT="$TEXT
+
+URL: $URL
+Run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          fi
 
           jq -n --arg text "$TEXT" '{text: $text}' \
             | curl -X POST \
-              -H 'Content-type: application/json' \
+              -H "Content-type: application/json" \
               --data @- \
               ${{ secrets.SLACK_WEBHOOK_URL }}
