@@ -36,11 +36,14 @@ jobs:
           const fs = require('fs');
           const { execSync } = require('child_process');
 
+          const webhook = process.env.SLACK_WEBHOOK_URL;
+          const runUrl = process.env.GITHUB_RUN_URL;
+
           if (!fs.existsSync('test-output.log')) {
             execSync(`curl -X POST \
               -H "Content-type: application/json" \
               --data '{"text":"❌ QA_RESULT not found"}' \
-              ${process.env.SLACK_WEBHOOK_URL}`);
+              ${webhook}`);
             process.exit(0);
           }
 
@@ -52,30 +55,48 @@ jobs:
             execSync(`curl -X POST \
               -H "Content-type: application/json" \
               --data '{"text":"❌ QA_RESULT not found"}' \
-              ${process.env.SLACK_WEBHOOK_URL}`);
+              ${webhook}`);
             process.exit(0);
           }
 
-          let message = "🧪 VS Inpage QA — Result\n\n";
-          let overall = "passed";
-
+          const finalResults = {};
           lines.forEach(line => {
             const json = JSON.parse(line.replace(/^.*QA_RESULT:\s*/, ''));
-
-            const icon =
-              json.status === "passed" ? "✅" :
-              json.status === "skipped" ? "⏭" :
-              (overall = "failed", "❌");
-
-            message += `${icon} ${json.browser}: ${json.status}\n`;
+            finalResults[json.browser] = json;
           });
 
-          message += `\nOverall: ${overall}`;
+          const results = Object.values(finalResults);
+          const failed = results.filter(r => r.status === "failed");
+          const skipped = results.filter(r => r.status === "skipped");
+
+          let message = "🧪 VS Inpage QA — Result\n\n";
+
+          if (failed.length === 0 && skipped.length === 0) {
+            message += "✅ All browsers passed\n";
+          }
+
+          if (skipped.length > 0) {
+            skipped.forEach(r => {
+              message += `⏭ ${r.browser}: skipped (${r.reason || "No reason"})\n`;
+            });
+          }
+
+          if (failed.length > 0) {
+            failed.forEach(r => {
+              message += `❌ ${r.browser}: failed\n`;
+              if (r.error) {
+                message += `   ↳ ${r.error}\n`;
+              }
+            });
+          }
+
+          message += `\n🔗 ${runUrl}`;
 
           execSync(`curl -X POST \
             -H "Content-type: application/json" \
             --data '${JSON.stringify({ text: message })}' \
-            ${process.env.SLACK_WEBHOOK_URL}`);
+            ${webhook}`);
           EOF
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          GITHUB_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
