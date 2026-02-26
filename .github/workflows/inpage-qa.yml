@@ -23,7 +23,7 @@ jobs:
 
       - run: npx playwright install --with-deps
 
-       - name: Run Playwright test
+      - name: Run Playwright test
         run: |
           npx playwright test tests/inpage.spec.js | tee test-output.log
         env:
@@ -42,7 +42,6 @@ jobs:
             MESSAGE="❌ QA_RESULT not found"
           else
             MESSAGE="🧪 VS Inpage QA — Result\n\n"
-
             OVERALL="passed"
 
             while read -r line; do
