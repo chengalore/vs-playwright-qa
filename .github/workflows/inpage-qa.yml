@@ -1,21 +1,3 @@
-Skip to content
-chengalore
-vs-playwright-qa
-Repository navigation
-Code
-Issues
-Pull requests
-Actions
-Projects
-Security
-Insights
-Settings
-Inpage QA
-Inpage QA #33
-All jobs
-Run details
-Workflow file for this run
-.github/workflows/inpage-qa.yml at ec1026a
 name: Inpage QA
 
 on:
