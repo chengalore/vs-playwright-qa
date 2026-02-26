@@ -86,7 +86,7 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
     // Size + Wardrobe
     // -----------------------------
 
-    await selectSizeIfMultiple(page, eventWatcher.getEvents());
+    await selectSizeIfMultiple(page, eventWatcher);
     await addItemToWardrobe(page, eventWatcher.getEvents());
 
     // -----------------------------
