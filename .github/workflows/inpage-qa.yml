@@ -62,12 +62,12 @@ jobs:
           TEXT="VS Inpage Events — Multi-Browser Result"
 
           while read -r line; do
-          STATUS=$(echo "$line" | jq -r '.status')
-           BROWSER=$(echo "$line" | jq -r '.browser')
-           URL=$(echo "$line" | jq -r '.url')
+            STATUS=$(echo "$line" | jq -r '.status')
+            BROWSER=$(echo "$line" | jq -r '.browser')
+            URL=$(echo "$line" | jq -r '.url')
 
-      TEXT="${TEXT}\n• ${BROWSER}: ${STATUS}"
-    done <<< "$RESULTS"
+            TEXT="$TEXT\n•$BROWSER: $STATUS"
+          done <<< "$RESULTS"
 
           TEXT="$TEXT\n\nURL: $URL"
           TEXT="$TEXT\nRun: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
