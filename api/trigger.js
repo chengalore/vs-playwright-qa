@@ -5,7 +5,7 @@ export default async function handler(req, res) {
     if (!url) {
       return res.status(400).json({ error: "No URL provided." });
     }
-
+    console.log("Repo:", process.env.GITHUB_REPO);
     const response = await fetch(
       `https://api.github.com/repos/${process.env.GITHUB_REPO}/actions/workflows/inpage-qa.yml/dispatches`,
       {
