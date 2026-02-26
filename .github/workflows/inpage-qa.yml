@@ -59,33 +59,27 @@ jobs:
           TEXT="*🧪 VS Inpage QA — Result*"
 
           if [ -f test-results.json ]; then
+            BROWSERS=$(jq -r '.suites[].specs[].tests[].projectName' test-results.json | sort -u)
 
-            RESULTS=$(jq -r '
-              .suites[].specs[].tests[] |
-              "\(.projectName)|\(.results[-1].status)"
-            ' test-results.json | sort -u)
+            for browser in $BROWSERS; do
+              STATUS=$(jq -r \
+                ".suites[].specs[].tests[] | select(.projectName==\"$browser\") | .results[-1].status" \
+                test-results.json | tail -n 1)
 
-            if [ -z "$RESULTS" ]; then
+              if [ "$STATUS" = "passed" ]; then
+                ICON="✅"
+              elif [ "$STATUS" = "flaky" ]; then
+                ICON="🟡"
+              else
+                ICON="❌"
+              fi
+
               TEXT="${TEXT}
-❌ No test results found in JSON"
-            else
-              while IFS="|" read -r browser status; do
-                if [ "$status" = "passed" ]; then
-                  ICON="✅"
-                elif [ "$status" = "flaky" ]; then
-                  ICON="🟡"
-                else
-                  ICON="❌"
-                fi
-
-                TEXT="${TEXT}
-${ICON} ${browser}: ${status}"
-              done <<< "$RESULTS"
-            fi
-
+${ICON} ${browser}: ${STATUS}"
+            done
           else
             TEXT="${TEXT}
-❌ No test-results.json found"
+❌ test-results.json not found"
           fi
 
           TEXT="${TEXT}
