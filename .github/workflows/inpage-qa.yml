@@ -21,20 +21,6 @@ jobs:
         with:
           node-version: 18
 
-      - name: Cache node modules
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
-      - name: Cache Playwright browsers
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/ms-playwright
-          key: ${{ runner.os }}-playwright
-
       - name: Install dependencies
         run: npm ci
 
@@ -53,25 +39,27 @@ jobs:
           name: playwright-report
           path: playwright-report
 
+      - name: Install jq
+        if: always()
+        run: sudo apt-get update && sudo apt-get install -y jq
+
       - name: Send result to Slack
         if: always()
-  run: |
-    STATUS="${{ job.status }}"
+        run: |
+          STATUS="${{ job.status }}"
 
-    if [ "$STATUS" = "success" ]; then
-      ICON="✅"
-    else
-      ICON="❌"
-    fi
+          if [ "$STATUS" = "success" ]; then
+            ICON="✅"
+          else
+            ICON="❌"
+          fi
 
-    TEXT="*🧪 VS Inpage QA — Result*
+          MESSAGE="*🧪 VS Inpage QA — Result*\n\n"
+          MESSAGE="${MESSAGE}${ICON} Overall status: ${STATUS}\n\n"
+          MESSAGE="${MESSAGE}🔗 URL: ${{ github.event.inputs.url }}\n"
+          MESSAGE="${MESSAGE}🏃 Run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
 
-${ICON} Overall status: ${STATUS}
-
-🔗 URL: ${{ github.event.inputs.url }}
-🏃 Run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-
-    curl -X POST \
-      -H "Content-type: application/json" \
-      --data "$(jq -n --arg text "$TEXT" '{text: $text}')" \
-      ${{ secrets.SLACK_WEBHOOK_URL }}
+          curl -X POST \
+            -H "Content-type: application/json" \
+            --data "$(jq -n --arg text "$MESSAGE" '{text: $text}')" \
+            ${{ secrets.SLACK_WEBHOOK_URL }}
