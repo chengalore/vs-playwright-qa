@@ -21,6 +21,20 @@ jobs:
         with:
           node-version: 18
 
+      - name: Cache node modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright
+
       - name: Install dependencies
         run: npm ci
 
@@ -28,7 +42,9 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: Run Playwright test
-        run: npx playwright test tests/inpage.spec.js
+        run: |
+          npx playwright test tests/inpage.spec.js
+
         env:
           TEST_URL: ${{ github.event.inputs.url }}
 
@@ -39,27 +55,38 @@ jobs:
           name: playwright-report
           path: playwright-report
 
-      - name: Install jq
-        if: always()
-        run: sudo apt-get update && sudo apt-get install -y jq
-
       - name: Send result to Slack
         if: always()
         run: |
-          STATUS="${{ job.status }}"
+          TEXT="*🧪 VS Inpage QA — Result*"
 
-          if [ "$STATUS" = "success" ]; then
-            ICON="✅"
+          if [ -f test-results.json ]; then
+            jq -r '
+              .suites[].specs[].tests[] |
+              .projectName as $browser |
+              .results[-1].status as $status |
+              "\($browser)|\($status)"
+            ' test-results.json | while IFS="|" read browser status; do
+
+              if [ "$status" = "passed" ]; then
+                ICON="✅"
+              elif [ "$status" = "flaky" ]; then
+                ICON="🟡"
+              else
+                ICON="❌"
+              fi
+
+              TEXT="${TEXT}\n${ICON} ${browser}: ${status}"
+            done
           else
-            ICON="❌"
+            TEXT="${TEXT}\n❌ No test-results.json found"
           fi
 
-          MESSAGE="*🧪 VS Inpage QA — Result*\n\n"
-          MESSAGE="${MESSAGE}${ICON} Overall status: ${STATUS}\n\n"
-          MESSAGE="${MESSAGE}🔗 URL: ${{ github.event.inputs.url }}\n"
-          MESSAGE="${MESSAGE}🏃 Run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          TEXT="${TEXT}\n\n🔗 URL: ${{ github.event.inputs.url }}"
+          TEXT="${TEXT}\n🏃 Run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
 
-          curl -X POST \
-            -H "Content-type: application/json" \
-            --data "$(jq -n --arg text "$MESSAGE" '{text: $text}')" \
-            ${{ secrets.SLACK_WEBHOOK_URL }}
+          jq -n --arg text "$TEXT" '{text: $text}' \
+            | curl -X POST \
+              -H "Content-type: application/json" \
+              --data @- \
+              ${{ secrets.SLACK_WEBHOOK_URL }}
