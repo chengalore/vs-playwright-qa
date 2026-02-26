@@ -27,22 +27,40 @@ jobs:
         env:
           TEST_URL: ${{ github.event.inputs.url }}
 
-      - name: Send result to Slack
+            - name: Send result to Slack
         if: always()
         run: |
-          STATUS="${{ job.status }}"
+          RESULTS=$(grep 'QA_RESULT:' test-output.log | sed 's/.*QA_RESULT: //')
 
-          if [ "$STATUS" = "success" ]; then
-            ICON="✅"
+          if [ -z "$RESULTS" ]; then
+            MESSAGE="❌ QA_RESULT not found"
           else
-            ICON="❌"
-          fi
+            MESSAGE="🧪 VS Inpage QA — Result\n\n"
 
-          MESSAGE="VS Inpage QA ${ICON} ${STATUS}"
+            OVERALL="passed"
+
+            while read -r line; do
+              STATUS=$(echo "$line" | jq -r '.status')
+              BROWSER=$(echo "$line" | jq -r '.browser')
+
+              if [ "$STATUS" = "passed" ]; then
+                ICON="✅"
+              elif [ "$STATUS" = "skipped" ]; then
+                ICON="⏭"
+              else
+                ICON="❌"
+                OVERALL="failed"
+              fi
+
+              MESSAGE="${MESSAGE}${ICON} ${BROWSER}: ${STATUS}\n"
+            done <<< "$RESULTS"
+
+            MESSAGE="${MESSAGE}\nOverall: ${OVERALL}"
+          fi
 
           curl -X POST \
             -H "Content-type: application/json" \
-            --data "{\"text\":\"${MESSAGE}\"}" \
+            --data "$(jq -n --arg text "$MESSAGE" '{text: $text}')" \
             ${{ secrets.SLACK_WEBHOOK_URL }}
       - name: Upload Playwright HTML report
         if: always()
