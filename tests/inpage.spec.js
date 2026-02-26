@@ -238,10 +238,10 @@ function validateStrictDuplicates(eventWatcher) {
   const counts = eventWatcher.getCounts();
 
   const strictKeys = [
-    "user-saw-product::inpage",
-    "user-saw-widget-button::inpage",
-    "user-opened-widget::inpage",
-    "user-got-size-recommendation::inpage",
+    "user-saw-product::integration",
+    "user-saw-widget-button::integration",
+    "user-opened-widget::integration",
+    "user-got-size-recommendation::integration",
     "user-selected-size::inpage",
   ];
 
