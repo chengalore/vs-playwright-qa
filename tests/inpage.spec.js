@@ -43,9 +43,10 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
         url,
         store: pdc.store,
         productType: pdc.productType,
-        status: "SKIPPED",
+        status: "skipped",
         browser: testInfo.project.name,
         reason: skipReason,
+        durationMs: Date.now() - startTime,
       });
 
       return;
@@ -113,16 +114,17 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
       store: pdc.store,
       productType: pdc.productType,
       userType: isNewUser ? "NEW" : "RETURNING",
-      status: "PASS",
+      status: testInfo.status,
       browser: testInfo.project.name,
       durationMs: Date.now() - startTime,
     });
   } catch (error) {
     logResult({
       url,
-      status: "FAIL",
+      status: testInfo.status,
       browser: testInfo.project.name,
       error: error.message,
+      missingEvents: error.missingEvents || [],
       durationMs: Date.now() - startTime,
     });
 
@@ -171,7 +173,13 @@ async function validateCoreEvents(page, events) {
 
   const panels = await verifyEvents(page, events, expectedEvents.strict.panels);
 
-  expect([...baseline, ...recommendation, ...panels].length).toBe(0);
+  const missing = [...baseline, ...recommendation, ...panels];
+
+  if (missing.length > 0) {
+    const error = new Error(`Missing events: ${missing.join(", ")}`);
+    error.missingEvents = missing;
+    throw error;
+  }
 }
 
 async function validateRefresh(page, eventWatcher) {
@@ -201,7 +209,11 @@ async function validateRefresh(page, eventWatcher) {
     ...(await verifyEvents(page, refreshed, expectedEvents.strict.size)),
   ];
 
-  expect(failures.length).toBe(0);
+  if (failures.length > 0) {
+    const error = new Error(`Refresh missing events: ${failures.join(", ")}`);
+    error.missingEvents = failures;
+    throw error;
+  }
 }
 
 /* --------------------------------------------------
