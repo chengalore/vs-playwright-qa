@@ -121,7 +121,7 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
   } catch (error) {
     logResult({
       url,
-      status: testInfo.status,
+      status: "failed",
       browser: testInfo.project.name,
       error: error.message,
       missingEvents: error.missingEvents || [],

@@ -29,41 +29,53 @@ jobs:
         env:
           TEST_URL: ${{ github.event.inputs.url }}
 
-      - name: Install jq
-        if: always()
-        run: sudo apt-get update && sudo apt-get install -y jq
-
       - name: Send result to Slack
         if: always()
         run: |
-          RESULTS=$(grep 'QA_RESULT:' test-output.log | sed 's/.*QA_RESULT: //')
+          node <<'EOF'
+          const fs = require('fs');
+          const { execSync } = require('child_process');
 
-          if [ -z "$RESULTS" ]; then
-            MESSAGE="❌ QA_RESULT not found"
-          else
-            MESSAGE="🧪 VS Inpage QA — Result\n\n"
-            OVERALL="passed"
+          if (!fs.existsSync('test-output.log')) {
+            execSync(`curl -X POST \
+              -H "Content-type: application/json" \
+              --data '{"text":"❌ QA_RESULT not found"}' \
+              ${process.env.SLACK_WEBHOOK_URL}`);
+            process.exit(0);
+          }
 
-            while read -r line; do
-              STATUS=$(echo "$line" | jq -r '.status')
-              BROWSER=$(echo "$line" | jq -r '.browser')
+          const lines = fs.readFileSync('test-output.log', 'utf8')
+            .split('\n')
+            .filter(l => l.includes('QA_RESULT:'));
 
-              if [ "$STATUS" = "passed" ]; then
-                ICON="✅"
-              elif [ "$STATUS" = "skipped" ]; then
-                ICON="⏭"
-              else
-                ICON="❌"
-                OVERALL="failed"
-              fi
+          if (lines.length === 0) {
+            execSync(`curl -X POST \
+              -H "Content-type: application/json" \
+              --data '{"text":"❌ QA_RESULT not found"}' \
+              ${process.env.SLACK_WEBHOOK_URL}`);
+            process.exit(0);
+          }
 
-              MESSAGE="${MESSAGE}${ICON} ${BROWSER}: ${STATUS}\n"
-            done <<< "$RESULTS"
+          let message = "🧪 VS Inpage QA — Result\n\n";
+          let overall = "passed";
 
-            MESSAGE="${MESSAGE}\nOverall: ${OVERALL}"
-          fi
+          lines.forEach(line => {
+            const json = JSON.parse(line.replace(/^.*QA_RESULT:\s*/, ''));
 
-          curl -X POST \
+            const icon =
+              json.status === "passed" ? "✅" :
+              json.status === "skipped" ? "⏭" :
+              (overall = "failed", "❌");
+
+            message += `${icon} ${json.browser}: ${json.status}\n`;
+          });
+
+          message += `\nOverall: ${overall}`;
+
+          execSync(`curl -X POST \
             -H "Content-type: application/json" \
-            --data "$(jq -n --arg text "$MESSAGE" '{text: $text}')" \
-            ${{ secrets.SLACK_WEBHOOK_URL }}
+            --data '${JSON.stringify({ text: message })}' \
+            ${process.env.SLACK_WEBHOOK_URL}`);
+          EOF
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
