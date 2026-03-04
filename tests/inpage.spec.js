@@ -56,6 +56,10 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
     // -----------------------------
 
     await page.waitForSelector("#vs-inpage", { timeout: 15000 });
+
+    // remove overlays again (they may appear late)
+    await removeMarketingOverlays(page);
+
     await page.click("#vs-inpage");
 
     await waitForWidgetRender(page);
@@ -79,7 +83,7 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
       page,
       eventWatcher,
       recommendationAPI,
-      isNewUser
+      isNewUser,
     );
 
     // -----------------------------
@@ -153,13 +157,13 @@ async function validateCoreEvents(page, eventWatcher) {
   const baseline = await verifyEvents(
     page,
     events,
-    expectedEvents.strict.baseline
+    expectedEvents.strict.baseline,
   );
 
   const recommendation = await verifyEvents(
     page,
     events,
-    expectedEvents.strict.recommendation
+    expectedEvents.strict.recommendation,
   );
 
   const panels = await verifyEvents(page, events, expectedEvents.strict.panels);
@@ -190,12 +194,12 @@ async function validateRefresh(page, eventWatcher, recommendationAPI) {
 
   const recStatus = await waitForStatus(
     () => recommendationAPI.getStatus(),
-    5000
+    5000,
   );
 
   if (recStatus !== 200) {
     throw new Error(
-      `Recommendation API did not refire after refresh (status: ${recStatus})`
+      `Recommendation API did not refire after refresh (status: ${recStatus})`,
     );
   }
 
@@ -206,7 +210,7 @@ async function validateRefresh(page, eventWatcher, recommendationAPI) {
   await verifyEvents(
     page,
     eventWatcher.getEvents(),
-    expectedEvents.strict.recommendation
+    expectedEvents.strict.recommendation,
   );
 
   const refreshed = eventWatcher.getEvents();
@@ -216,7 +220,7 @@ async function validateRefresh(page, eventWatcher, recommendationAPI) {
     ...(await verifyEvents(
       page,
       refreshed,
-      expectedEvents.strict.recommendation
+      expectedEvents.strict.recommendation,
     )),
     ...(await verifyEvents(page, refreshed, expectedEvents.strict.size)),
   ];
@@ -302,7 +306,7 @@ async function waitForWidgetRender(page) {
         root?.querySelector('[data-test-id="size-btn"]')
       );
     },
-    { timeout: 8000 }
+    { timeout: 8000 },
   );
 }
 
@@ -324,6 +328,27 @@ async function waitForStatus(getter, timeout = 5000) {
     await new Promise((r) => setTimeout(r, 100));
   }
   return null;
+}
+
+// --------------------------------------------------
+// Overlay Cleanup
+// --------------------------------------------------
+
+async function removeMarketingOverlays(page) {
+  await page.waitForTimeout(2000); // wait for overlays to appear
+
+  await page.evaluate(() => {
+    // Buyee
+    document
+      .querySelectorAll("#buyee-bcFrame, #buyee-bcSection, .bcModalBase")
+      .forEach((el) => el.remove());
+
+    // WorldShopping
+    document.querySelector("#zigzag-worldshopping-checkout")?.remove();
+
+    // KARTE
+    document.querySelectorAll(".karte-close").forEach((el) => el.click());
+  });
 }
 
 function logResult(result) {

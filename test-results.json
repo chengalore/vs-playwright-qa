@@ -1,7 +1,7 @@
 {
   "config": {
-    "configFile": "/Users/rachel/Documents/Playwright/playwright.config.js",
-    "rootDir": "/Users/rachel/Documents/Playwright/tests",
+    "configFile": "/Users/rachel/virtusize/Playwright/playwright.config.js",
+    "rootDir": "/Users/rachel/virtusize/Playwright/tests",
     "forbidOnly": false,
     "fullyParallel": true,
     "globalSetup": null,
@@ -16,7 +16,7 @@
     "preserveOutput": "always",
     "projects": [
       {
-        "outputDir": "/Users/rachel/Documents/Playwright/test-results",
+        "outputDir": "/Users/rachel/virtusize/Playwright/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {
@@ -24,7 +24,7 @@
         },
         "id": "chromium",
         "name": "chromium",
-        "testDir": "/Users/rachel/Documents/Playwright/tests",
+        "testDir": "/Users/rachel/virtusize/Playwright/tests",
         "testIgnore": [],
         "testMatch": [
           "**/*.@(spec|test).?(c|m)[jt]s?(x)"
@@ -32,7 +32,7 @@
         "timeout": 30000
       },
       {
-        "outputDir": "/Users/rachel/Documents/Playwright/test-results",
+        "outputDir": "/Users/rachel/virtusize/Playwright/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {
@@ -40,7 +40,7 @@
         },
         "id": "firefox",
         "name": "firefox",
-        "testDir": "/Users/rachel/Documents/Playwright/tests",
+        "testDir": "/Users/rachel/virtusize/Playwright/tests",
         "testIgnore": [],
         "testMatch": [
           "**/*.@(spec|test).?(c|m)[jt]s?(x)"
@@ -48,7 +48,7 @@
         "timeout": 30000
       },
       {
-        "outputDir": "/Users/rachel/Documents/Playwright/test-results",
+        "outputDir": "/Users/rachel/virtusize/Playwright/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {
@@ -56,7 +56,7 @@
         },
         "id": "webkit",
         "name": "webkit",
-        "testDir": "/Users/rachel/Documents/Playwright/tests",
+        "testDir": "/Users/rachel/virtusize/Playwright/tests",
         "testIgnore": [],
         "testMatch": [
           "**/*.@(spec|test).?(c|m)[jt]s?(x)"
@@ -113,11 +113,11 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 20386,
+                  "duration": 30390,
                   "errors": [],
                   "stdout": [
                     {
-                      "text": "Testing URL: https://www.underarmour.co.jp/f/dsg-1072366\n"
+                      "text": "Testing URL: https://www.buyma.com/item/114946065/\n"
                     },
                     {
                       "text": "Captured Event: user-saw-product (source: integration) x1\n"
@@ -130,6 +130,9 @@
                     },
                     {
                       "text": "Captured Event: user-opened-widget (source: inpage) x1\n"
+                    },
+                    {
+                      "text": "Captured Event: user-saw-measurements-view (source: smart-table) x1\n"
                     },
                     {
                       "text": "Captured Event: user-saw-onboarding-screen (source: fit-illustrator) x1\n"
@@ -186,7 +189,7 @@
                       "text": "Checking for multiple sizes...\n"
                     },
                     {
-                      "text": "Detected size count: \u001b[33m7\u001b[39m\n"
+                      "text": "Detected size count: \u001b[33m5\u001b[39m\n"
                     },
                     {
                       "text": "Captured Event: user-selected-size (source: fit-illustrator) x1\n"
@@ -237,12 +240,15 @@
                       "text": "Captured Event: user-opened-panel-tryiton (source: fit-illustrator) x1\n"
                     },
                     {
-                      "text": "QA_RESULT: {\"url\":\"https://www.underarmour.co.jp/f/dsg-1072366\",\"store\":\"under_armour\",\"productType\":\"tShirt\",\"userType\":\"NEW\",\"status\":\"passed\",\"browser\":\"chromium\",\"durationMs\":19839}\n"
+                      "text": "Captured Event: user-saw-measurements-view (source: smart-table) x1\n"
+                    },
+                    {
+                      "text": "QA_RESULT: {\"url\":\"https://www.buyma.com/item/114946065/\",\"store\":\"buyma\",\"productType\":\"sweater\",\"userType\":\"NEW\",\"status\":\"passed\",\"browser\":\"chromium\",\"durationMs\":29173}\n"
                     }
                   ],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-02-26T16:09:54.421Z",
+                  "startTime": "2026-03-04T15:53:49.006Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -271,11 +277,11 @@
                   "workerIndex": 1,
                   "parallelIndex": 1,
                   "status": "passed",
-                  "duration": 23904,
+                  "duration": 35681,
                   "errors": [],
                   "stdout": [
                     {
-                      "text": "Testing URL: https://www.underarmour.co.jp/f/dsg-1072366\n"
+                      "text": "Testing URL: https://www.buyma.com/item/114946065/\n"
                     },
                     {
                       "text": "Captured Event: user-saw-product (source: integration) x1\n"
@@ -285,6 +291,9 @@
                     },
                     {
                       "text": "Captured Event: inpage-mounted (source: integration) x1\n"
+                    },
+                    {
+                      "text": "Captured Event: user-saw-measurements-view (source: smart-table) x1\n"
                     },
                     {
                       "text": "Captured Event: user-opened-widget (source: inpage) x1\n"
@@ -344,7 +353,7 @@
                       "text": "Checking for multiple sizes...\n"
                     },
                     {
-                      "text": "Detected size count: \u001b[33m7\u001b[39m\n"
+                      "text": "Detected size count: \u001b[33m5\u001b[39m\n"
                     },
                     {
                       "text": "Captured Event: user-selected-size (source: fit-illustrator) x1\n"
@@ -389,18 +398,21 @@
                       "text": "Captured Event: user-selected-size (source: inpage) x1\n"
                     },
                     {
+                      "text": "Captured Event: user-saw-measurements-view (source: smart-table) x1\n"
+                    },
+                    {
                       "text": "Captured Event: user-opened-widget (source: inpage) x1\n"
                     },
                     {
                       "text": "Captured Event: user-opened-panel-tryiton (source: fit-illustrator) x1\n"
                     },
                     {
-                      "text": "QA_RESULT: {\"url\":\"https://www.underarmour.co.jp/f/dsg-1072366\",\"store\":\"under_armour\",\"productType\":\"tShirt\",\"userType\":\"NEW\",\"status\":\"passed\",\"browser\":\"firefox\",\"durationMs\":23051}\n"
+                      "text": "QA_RESULT: {\"url\":\"https://www.buyma.com/item/114946065/\",\"store\":\"buyma\",\"productType\":\"sweater\",\"userType\":\"NEW\",\"status\":\"passed\",\"browser\":\"firefox\",\"durationMs\":34011}\n"
                     }
                   ],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-02-26T16:09:54.422Z",
+                  "startTime": "2026-03-04T15:53:49.006Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -429,11 +441,11 @@
                   "workerIndex": 2,
                   "parallelIndex": 2,
                   "status": "passed",
-                  "duration": 39830,
+                  "duration": 39561,
                   "errors": [],
                   "stdout": [
                     {
-                      "text": "Testing URL: https://www.underarmour.co.jp/f/dsg-1072366\n"
+                      "text": "Testing URL: https://www.buyma.com/item/114946065/\n"
                     },
                     {
                       "text": "Captured Event: user-saw-product (source: integration) x1\n"
@@ -443,6 +455,9 @@
                     },
                     {
                       "text": "Captured Event: inpage-mounted (source: integration) x1\n"
+                    },
+                    {
+                      "text": "Captured Event: user-saw-measurements-view (source: smart-table) x1\n"
                     },
                     {
                       "text": "Captured Event: user-opened-widget (source: inpage) x1\n"
@@ -502,7 +517,7 @@
                       "text": "Checking for multiple sizes...\n"
                     },
                     {
-                      "text": "Detected size count: \u001b[33m7\u001b[39m\n"
+                      "text": "Detected size count: \u001b[33m5\u001b[39m\n"
                     },
                     {
                       "text": "Captured Event: user-selected-size (source: fit-illustrator) x1\n"
@@ -538,6 +553,9 @@
                       "text": "Captured Event: inpage-mounted (source: integration) x1\n"
                     },
                     {
+                      "text": "Captured Event: user-saw-measurements-view (source: smart-table) x1\n"
+                    },
+                    {
                       "text": "Captured Event: user-opened-widget (source: inpage) x1\n"
                     },
                     {
@@ -556,12 +574,12 @@
                       "text": "Captured Event: user-selected-size (source: inpage) x1\n"
                     },
                     {
-                      "text": "QA_RESULT: {\"url\":\"https://www.underarmour.co.jp/f/dsg-1072366\",\"store\":\"under_armour\",\"productType\":\"tShirt\",\"userType\":\"NEW\",\"status\":\"passed\",\"browser\":\"webkit\",\"durationMs\":36701}\n"
+                      "text": "QA_RESULT: {\"url\":\"https://www.buyma.com/item/114946065/\",\"store\":\"buyma\",\"productType\":\"sweater\",\"userType\":\"NEW\",\"status\":\"passed\",\"browser\":\"webkit\",\"durationMs\":38132}\n"
                     }
                   ],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-02-26T16:09:54.419Z",
+                  "startTime": "2026-03-04T15:53:49.006Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -579,8 +597,8 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2026-02-26T16:09:53.660Z",
-    "duration": 41823.420000000006,
+    "startTime": "2026-03-04T15:53:48.341Z",
+    "duration": 40955.993,
     "expected": 3,
     "skipped": 0,
     "unexpected": 0,
