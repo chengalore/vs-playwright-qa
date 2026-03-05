@@ -113,11 +113,11 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 13718,
+                  "duration": 17740,
                   "errors": [],
                   "stdout": [
                     {
-                      "text": "Testing URL: https://www.underarmour.co.jp/f/dsg-1093611\n"
+                      "text": "Testing URL: https://www.underarmour.co.jp/f/dsg-1093185\n"
                     },
                     {
                       "text": "Captured Event: user-saw-product (source: integration) x1\n"
@@ -126,76 +126,64 @@
                       "text": "Captured Event: user-saw-widget-button (source: integration) x1\n"
                     },
                     {
-                      "text": "Captured Event: user-saw-widget-kids (source: integration) x1\n"
+                      "text": "Flow: footwear\n"
                     },
                     {
-                      "text": "Flow: kids\n"
+                      "text": "Captured Event: inpage-mounted (source: integration) x1\n"
                     },
                     {
-                      "text": "Captured Event: user-opened-widget (source: kids) x1\n"
+                      "text": "Captured Event: user-opened-widget (source: inpage) x1\n"
                     },
                     {
-                      "text": "Running Kids flow\n"
+                      "text": "Captured Event: user-saw-onboarding-screen (source: fit-illustrator) x1\n"
                     },
                     {
-                      "text": "Captured Event: user-saw-onboarding-screen (source: kids) x1\n"
+                      "text": "New user → running footwear onboarding\n"
                     },
                     {
-                      "text": "Gender radio buttons detected\n"
+                      "text": "Captured Event: user-selected-narrow (source: fit-illustrator) x1\n"
                     },
                     {
-                      "text": "Captured Event: user-selected-gender (source: kids) x1\n"
+                      "text": "Captured Event: user-clicked-proceed-foot-width (source: fit-illustrator) x1\n"
                     },
                     {
-                      "text": "Clicked gender radio button\n"
+                      "text": "Captured Event: user-selected-egyptian (source: fit-illustrator) x1\n"
                     },
                     {
-                      "text": "Captured Event: user-clicked-age (source: kids) x1\n"
+                      "text": "Captured Event: user-clicked-proceed-foot-shape (source: fit-illustrator) x1\n"
                     },
                     {
-                      "text": "Opened age selector\n"
+                      "text": "Captured Event: user-clicked-proceed-shoe-style-size (source: fit-illustrator) x1\n"
                     },
                     {
-                      "text": "Captured Event: user-updated-body-measurements (source: kids) x1\n"
+                      "text": "Captured Event: user-selected-shoe-style (source: fit-illustrator) x1\n"
                     },
                     {
-                      "text": "Selected age\n"
+                      "text": "Captured Event: user-clicked-proceed-shoe-brand (source: fit-illustrator) x1\n"
                     },
                     {
-                      "text": "Waiting for height and weight inputs...\n"
-                    },
-                    {
-                      "text": "Captured Event: user-updated-body-measurements (source: kids) x2\n"
-                    },
-                    {
-                      "text": "Captured Event: user-updated-body-measurements (source: kids) x3\n"
-                    },
-                    {
-                      "text": "Filled height and weight\n"
-                    },
-                    {
-                      "text": "Checked privacy policy\n"
-                    },
-                    {
-                      "text": "Captured Event: user-completed-onboarding (source: kids) x1\n"
-                    },
-                    {
-                      "text": "Captured Event: user-created-silhouette (source: kids) x1\n"
-                    },
-                    {
-                      "text": "Clicked See Your Perfect Fit\n"
+                      "text": "Captured Event: user-created-footwear-silhouette (source: fit-illustrator) x1\n"
                     },
                     {
                       "text": "Body Measurement API Status: \u001b[33m200\u001b[39m\n"
                     },
                     {
+                      "text": "Validating recommendation result...\n"
+                    },
+                    {
                       "text": "Recommendation API Status: \u001b[33m200\u001b[39m\n"
                     },
                     {
-                      "text": "Captured Event: user-selected-size-kids-rec (source: kids) x1\n"
+                      "text": "Captured Event: user-opened-panel-rec (source: fit-illustrator) x1\n"
                     },
                     {
-                      "text": "Kids onboarding completed successfully.\n"
+                      "text": "Recommendation screen detected.\n"
+                    },
+                    {
+                      "text": "Recommendation API returned 200.\n"
+                    },
+                    {
+                      "text": "Recommendation events validated.\n"
                     },
                     {
                       "text": "Validating PDP refresh behavior\n"
@@ -207,24 +195,27 @@
                       "text": "Captured Event: user-saw-widget-button (source: integration) x1\n"
                     },
                     {
-                      "text": "Captured Event: user-saw-widget-kids (source: integration) x1\n"
-                    },
-                    {
-                      "text": "Waiting for kids recommendation after refresh\n"
+                      "text": "Captured Event: inpage-mounted (source: integration) x1\n"
                     },
                     {
                       "text": "Recommendation API Status: \u001b[33m200\u001b[39m\n"
                     },
                     {
-                      "text": "Captured Event: user-selected-size-kids-rec (source: kids) x1\n"
+                      "text": "Captured Event: user-selected-size (source: inpage) x1\n"
                     },
                     {
-                      "text": "QA_RESULT: {\"url\":\"https://www.underarmour.co.jp/f/dsg-1093611\",\"store\":\"under_armour\",\"productType\":\"tShirt\",\"userType\":\"NEW\",\"status\":\"passed\",\"browser\":\"chromium\",\"durationMs\":13490}\n"
+                      "text": "Captured Event: user-opened-widget (source: inpage) x1\n"
+                    },
+                    {
+                      "text": "Captured Event: user-opened-panel-rec (source: fit-illustrator) x1\n"
+                    },
+                    {
+                      "text": "QA_RESULT: {\"url\":\"https://www.underarmour.co.jp/f/dsg-1093185\",\"store\":\"under_armour\",\"productType\":\"shoe\",\"userType\":\"NEW\",\"status\":\"passed\",\"browser\":\"chromium\",\"durationMs\":17493}\n"
                     }
                   ],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-03-05T17:55:33.278Z",
+                  "startTime": "2026-03-05T18:14:18.054Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -242,8 +233,8 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2026-03-05T17:55:32.673Z",
-    "duration": 15353.461,
+    "startTime": "2026-03-05T18:14:17.486Z",
+    "duration": 18988.812,
     "expected": 1,
     "skipped": 0,
     "unexpected": 0,

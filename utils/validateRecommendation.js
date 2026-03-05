@@ -73,7 +73,7 @@ export async function validateRecommendation(
   while (Date.now() - eventStart < eventTimeout) {
     const events = eventWatcher.getEvents();
 
-    if (events.includes(recEvent)) {
+    if (events.some((e) => e.startsWith(recEvent))) {
       foundRecommendation = true;
       break;
     }
@@ -88,7 +88,7 @@ export async function validateRecommendation(
   if (isNewUser) {
     const events = eventWatcher.getEvents();
 
-    if (!events.includes(silhouetteEvent)) {
+    if (!events.some((e) => e.startsWith(silhouetteEvent))) {
       throw new Error(`Missing event: ${silhouetteEvent}`);
     }
   }

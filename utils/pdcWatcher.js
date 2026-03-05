@@ -20,6 +20,10 @@ export function startPDCWatcher(page) {
           json.data.noVisor ||
           json.productData?.storeProductMeta?.noVisor ||
           false;
+        pdcData.isKid =
+          json.data.isKid ||
+          json.productData?.storeProductMeta?.isKid ||
+          false;
       }
     }
   });

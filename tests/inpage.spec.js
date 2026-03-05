@@ -86,8 +86,7 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
       { timeout: 30000 },
     );
 
-    const isKidWidget = await page.$("#vs-kid");
-    const flow = isKidWidget ? "kids" : detectFlow(pdc);
+    const flow = detectFlow(pdc);
     console.log("Flow:", flow);
 
     if (flow === "kids") {
@@ -351,7 +350,9 @@ function validateStrictDuplicates(eventWatcher) {
 // --------------------------------------------------
 
 function detectFlow(pdc) {
-  if (pdc.isKid) return "kids";
+  const gender = pdc.gender?.toLowerCase();
+  const isKid = pdc.isKid || gender === "boy" || gender === "girl";
+  if (isKid) return "kids";
   if (pdc.productType?.toLowerCase() === "shoe") return "footwear";
   return "apparel";
 }
