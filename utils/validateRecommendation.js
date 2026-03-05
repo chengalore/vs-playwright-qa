@@ -2,28 +2,30 @@ export async function validateRecommendation(
   page,
   eventWatcher,
   recommendationAPI,
-  isNewUser
+  isNewUser,
+  flow = "apparel"
 ) {
   console.log("Validating recommendation result...");
 
-  await page.waitForFunction(
-    () => {
-      const host =
-        document.querySelector("#router-view-wrapper") ||
-        document.querySelector("#vs-aoyama")?.nextElementSibling;
+  await page.waitForFunction(() => {
+    const host =
+      document.querySelector("#router-view-wrapper") ||
+      document.querySelector("#vs-aoyama")?.nextElementSibling;
 
-      if (!host?.shadowRoot) return false;
+    const root = host?.shadowRoot;
+    if (!root) return false;
 
-      const root = host.shadowRoot;
+    return (
+      // Apparel recommendation
+      root.querySelector('[data-test-id="size-btn"]') ||
 
-      return (
-        root.querySelector('[data-test-id="size-btn"]') ||
-        root.querySelector('[data-test-id="no-visor-container"]') ||
-        root.querySelector('[data-test-id="body-error-screen"]')
-      );
-    },
-    { timeout: 20000 }
-  );
+      // Footwear recommendation
+      root.querySelector('[data-test-id="no-visor-recommended-size"]') ||
+
+      root.querySelector('[data-test-id="no-visor-container"]') ||
+      root.querySelector('[data-test-id="body-error-screen"]')
+    );
+  }, { timeout: 15000 });
 
   const hasErrorScreen = await page.evaluate(() => {
     const host =
@@ -59,6 +61,11 @@ export async function validateRecommendation(
 
   console.log("Recommendation API returned 200.");
 
+  const recEvent =
+    flow === "footwear" ? "user-opened-panel-rec" : "user-got-size-recommendation";
+  const silhouetteEvent =
+    flow === "footwear" ? "user-created-footwear-silhouette" : "user-created-silhouette";
+
   const eventStart = Date.now();
   const eventTimeout = 5000;
   let foundRecommendation = false;
@@ -66,7 +73,7 @@ export async function validateRecommendation(
   while (Date.now() - eventStart < eventTimeout) {
     const events = eventWatcher.getEvents();
 
-    if (events.includes("user-got-size-recommendation")) {
+    if (events.includes(recEvent)) {
       foundRecommendation = true;
       break;
     }
@@ -75,14 +82,14 @@ export async function validateRecommendation(
   }
 
   if (!foundRecommendation) {
-    throw new Error("Missing event: user-got-size-recommendation");
+    throw new Error(`Missing event: ${recEvent}`);
   }
 
   if (isNewUser) {
     const events = eventWatcher.getEvents();
 
-    if (!events.includes("user-created-silhouette")) {
-      throw new Error("Missing event: user-created-silhouette");
+    if (!events.includes(silhouetteEvent)) {
+      throw new Error(`Missing event: ${silhouetteEvent}`);
     }
   }
 

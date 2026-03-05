@@ -11,7 +11,7 @@
     "grepInvert": null,
     "maxFailures": 0,
     "metadata": {
-      "actualWorkers": 3
+      "actualWorkers": 1
     },
     "preserveOutput": "always",
     "projects": [
@@ -20,7 +20,7 @@
         "repeatEach": 1,
         "retries": 0,
         "metadata": {
-          "actualWorkers": 3
+          "actualWorkers": 1
         },
         "id": "chromium",
         "name": "chromium",
@@ -36,7 +36,7 @@
         "repeatEach": 1,
         "retries": 0,
         "metadata": {
-          "actualWorkers": 3
+          "actualWorkers": 1
         },
         "id": "firefox",
         "name": "firefox",
@@ -52,7 +52,7 @@
         "repeatEach": 1,
         "retries": 0,
         "metadata": {
-          "actualWorkers": 3
+          "actualWorkers": 1
         },
         "id": "webkit",
         "name": "webkit",
@@ -103,7 +103,7 @@
           "tags": [],
           "tests": [
             {
-              "timeout": 60000,
+              "timeout": 90000,
               "annotations": [],
               "expectedStatus": "passed",
               "projectId": "chromium",
@@ -113,11 +113,11 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 30390,
+                  "duration": 17389,
                   "errors": [],
                   "stdout": [
                     {
-                      "text": "Testing URL: https://www.buyma.com/item/114946065/\n"
+                      "text": "Testing URL: https://www.underarmour.co.jp/f/dsg-1093668\n"
                     },
                     {
                       "text": "Captured Event: user-saw-product (source: integration) x1\n"
@@ -132,10 +132,10 @@
                       "text": "Captured Event: user-opened-widget (source: inpage) x1\n"
                     },
                     {
-                      "text": "Captured Event: user-saw-measurements-view (source: smart-table) x1\n"
+                      "text": "Captured Event: user-saw-onboarding-screen (source: fit-illustrator) x1\n"
                     },
                     {
-                      "text": "Captured Event: user-saw-onboarding-screen (source: fit-illustrator) x1\n"
+                      "text": "Flow: apparel\n"
                     },
                     {
                       "text": "New user → running onboarding\n"
@@ -189,7 +189,7 @@
                       "text": "Checking for multiple sizes...\n"
                     },
                     {
-                      "text": "Detected size count: \u001b[33m5\u001b[39m\n"
+                      "text": "Detected size count: \u001b[33m7\u001b[39m\n"
                     },
                     {
                       "text": "Captured Event: user-selected-size (source: fit-illustrator) x1\n"
@@ -240,15 +240,12 @@
                       "text": "Captured Event: user-opened-panel-tryiton (source: fit-illustrator) x1\n"
                     },
                     {
-                      "text": "Captured Event: user-saw-measurements-view (source: smart-table) x1\n"
-                    },
-                    {
-                      "text": "QA_RESULT: {\"url\":\"https://www.buyma.com/item/114946065/\",\"store\":\"buyma\",\"productType\":\"sweater\",\"userType\":\"NEW\",\"status\":\"passed\",\"browser\":\"chromium\",\"durationMs\":29173}\n"
+                      "text": "QA_RESULT: {\"url\":\"https://www.underarmour.co.jp/f/dsg-1093668\",\"store\":\"under_armour\",\"productType\":\"tShirt\",\"userType\":\"NEW\",\"status\":\"passed\",\"browser\":\"chromium\",\"durationMs\":16695}\n"
                     }
                   ],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-03-04T15:53:49.006Z",
+                  "startTime": "2026-03-05T14:51:11.822Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -260,346 +257,15 @@
           "file": "inpage.spec.js",
           "line": 15,
           "column": 5
-        },
-        {
-          "title": "Inpage basic flow",
-          "ok": true,
-          "tags": [],
-          "tests": [
-            {
-              "timeout": 60000,
-              "annotations": [],
-              "expectedStatus": "passed",
-              "projectId": "firefox",
-              "projectName": "firefox",
-              "results": [
-                {
-                  "workerIndex": 1,
-                  "parallelIndex": 1,
-                  "status": "passed",
-                  "duration": 35681,
-                  "errors": [],
-                  "stdout": [
-                    {
-                      "text": "Testing URL: https://www.buyma.com/item/114946065/\n"
-                    },
-                    {
-                      "text": "Captured Event: user-saw-product (source: integration) x1\n"
-                    },
-                    {
-                      "text": "Captured Event: user-saw-widget-button (source: integration) x1\n"
-                    },
-                    {
-                      "text": "Captured Event: inpage-mounted (source: integration) x1\n"
-                    },
-                    {
-                      "text": "Captured Event: user-saw-measurements-view (source: smart-table) x1\n"
-                    },
-                    {
-                      "text": "Captured Event: user-opened-widget (source: inpage) x1\n"
-                    },
-                    {
-                      "text": "Captured Event: user-saw-onboarding-screen (source: fit-illustrator) x1\n"
-                    },
-                    {
-                      "text": "New user → running onboarding\n"
-                    },
-                    {
-                      "text": "Completing onboarding (shadow DOM)...\n"
-                    },
-                    {
-                      "text": "Captured Event: user-selected-age (source: fit-illustrator) x1\n"
-                    },
-                    {
-                      "text": "Captured Event: user-selected-height (source: fit-illustrator) x1\n"
-                    },
-                    {
-                      "text": "Captured Event: user-selected-weight (source: fit-illustrator) x1\n"
-                    },
-                    {
-                      "text": "Captured Event: user-completed-onboarding (source: fit-illustrator) x1\n"
-                    },
-                    {
-                      "text": "Captured Event: user-created-silhouette (source: fit-illustrator) x1\n"
-                    },
-                    {
-                      "text": "Onboarding finished.\n"
-                    },
-                    {
-                      "text": "Body Measurement API Status: \u001b[33m200\u001b[39m\n"
-                    },
-                    {
-                      "text": "Validating recommendation result...\n"
-                    },
-                    {
-                      "text": "Recommendation API Status: \u001b[33m200\u001b[39m\n"
-                    },
-                    {
-                      "text": "Captured Event: user-got-size-recommendation (source: integration) x1\n"
-                    },
-                    {
-                      "text": "Captured Event: user-opened-panel-tryiton (source: fit-illustrator) x1\n"
-                    },
-                    {
-                      "text": "Recommendation screen detected.\n"
-                    },
-                    {
-                      "text": "Recommendation API returned 200.\n"
-                    },
-                    {
-                      "text": "Recommendation events validated.\n"
-                    },
-                    {
-                      "text": "Checking for multiple sizes...\n"
-                    },
-                    {
-                      "text": "Detected size count: \u001b[33m5\u001b[39m\n"
-                    },
-                    {
-                      "text": "Captured Event: user-selected-size (source: fit-illustrator) x1\n"
-                    },
-                    {
-                      "text": "Size selected successfully.\n"
-                    },
-                    {
-                      "text": "Attempting to add item to wardrobe...\n"
-                    },
-                    {
-                      "text": "Captured Event: user-opened-panel-details (source: fit-illustrator) x1\n"
-                    },
-                    {
-                      "text": "Captured Event: user-opened-panel-compare (source: fit-illustrator) x1\n"
-                    },
-                    {
-                      "text": "Captured Event: user-added-product (source: fit-illustrator) x1\n"
-                    },
-                    {
-                      "text": "Item added to wardrobe successfully.\n"
-                    },
-                    {
-                      "text": "Validating PDP refresh behavior\n"
-                    },
-                    {
-                      "text": "Captured Event: user-saw-product (source: integration) x1\n"
-                    },
-                    {
-                      "text": "Captured Event: user-saw-widget-button (source: integration) x1\n"
-                    },
-                    {
-                      "text": "Captured Event: inpage-mounted (source: integration) x1\n"
-                    },
-                    {
-                      "text": "Recommendation API Status: \u001b[33m200\u001b[39m\n"
-                    },
-                    {
-                      "text": "Captured Event: user-got-size-recommendation (source: integration) x1\n"
-                    },
-                    {
-                      "text": "Captured Event: user-selected-size (source: inpage) x1\n"
-                    },
-                    {
-                      "text": "Captured Event: user-saw-measurements-view (source: smart-table) x1\n"
-                    },
-                    {
-                      "text": "Captured Event: user-opened-widget (source: inpage) x1\n"
-                    },
-                    {
-                      "text": "Captured Event: user-opened-panel-tryiton (source: fit-illustrator) x1\n"
-                    },
-                    {
-                      "text": "QA_RESULT: {\"url\":\"https://www.buyma.com/item/114946065/\",\"store\":\"buyma\",\"productType\":\"sweater\",\"userType\":\"NEW\",\"status\":\"passed\",\"browser\":\"firefox\",\"durationMs\":34011}\n"
-                    }
-                  ],
-                  "stderr": [],
-                  "retry": 0,
-                  "startTime": "2026-03-04T15:53:49.006Z",
-                  "annotations": [],
-                  "attachments": []
-                }
-              ],
-              "status": "expected"
-            }
-          ],
-          "id": "4b94f1d2e5793e5150b0-e518253adf71baf1ff19",
-          "file": "inpage.spec.js",
-          "line": 15,
-          "column": 5
-        },
-        {
-          "title": "Inpage basic flow",
-          "ok": true,
-          "tags": [],
-          "tests": [
-            {
-              "timeout": 60000,
-              "annotations": [],
-              "expectedStatus": "passed",
-              "projectId": "webkit",
-              "projectName": "webkit",
-              "results": [
-                {
-                  "workerIndex": 2,
-                  "parallelIndex": 2,
-                  "status": "passed",
-                  "duration": 39561,
-                  "errors": [],
-                  "stdout": [
-                    {
-                      "text": "Testing URL: https://www.buyma.com/item/114946065/\n"
-                    },
-                    {
-                      "text": "Captured Event: user-saw-product (source: integration) x1\n"
-                    },
-                    {
-                      "text": "Captured Event: user-saw-widget-button (source: integration) x1\n"
-                    },
-                    {
-                      "text": "Captured Event: inpage-mounted (source: integration) x1\n"
-                    },
-                    {
-                      "text": "Captured Event: user-saw-measurements-view (source: smart-table) x1\n"
-                    },
-                    {
-                      "text": "Captured Event: user-opened-widget (source: inpage) x1\n"
-                    },
-                    {
-                      "text": "Captured Event: user-saw-onboarding-screen (source: fit-illustrator) x1\n"
-                    },
-                    {
-                      "text": "New user → running onboarding\n"
-                    },
-                    {
-                      "text": "Completing onboarding (shadow DOM)...\n"
-                    },
-                    {
-                      "text": "Captured Event: user-selected-age (source: fit-illustrator) x1\n"
-                    },
-                    {
-                      "text": "Captured Event: user-selected-height (source: fit-illustrator) x1\n"
-                    },
-                    {
-                      "text": "Captured Event: user-selected-weight (source: fit-illustrator) x1\n"
-                    },
-                    {
-                      "text": "Captured Event: user-completed-onboarding (source: fit-illustrator) x1\n"
-                    },
-                    {
-                      "text": "Captured Event: user-created-silhouette (source: fit-illustrator) x1\n"
-                    },
-                    {
-                      "text": "Onboarding finished.\n"
-                    },
-                    {
-                      "text": "Body Measurement API Status: \u001b[33m200\u001b[39m\n"
-                    },
-                    {
-                      "text": "Validating recommendation result...\n"
-                    },
-                    {
-                      "text": "Recommendation API Status: \u001b[33m200\u001b[39m\n"
-                    },
-                    {
-                      "text": "Captured Event: user-got-size-recommendation (source: integration) x1\n"
-                    },
-                    {
-                      "text": "Captured Event: user-opened-panel-tryiton (source: fit-illustrator) x1\n"
-                    },
-                    {
-                      "text": "Recommendation screen detected.\n"
-                    },
-                    {
-                      "text": "Recommendation API returned 200.\n"
-                    },
-                    {
-                      "text": "Recommendation events validated.\n"
-                    },
-                    {
-                      "text": "Checking for multiple sizes...\n"
-                    },
-                    {
-                      "text": "Detected size count: \u001b[33m5\u001b[39m\n"
-                    },
-                    {
-                      "text": "Captured Event: user-selected-size (source: fit-illustrator) x1\n"
-                    },
-                    {
-                      "text": "Size selected successfully.\n"
-                    },
-                    {
-                      "text": "Attempting to add item to wardrobe...\n"
-                    },
-                    {
-                      "text": "Captured Event: user-opened-panel-details (source: fit-illustrator) x1\n"
-                    },
-                    {
-                      "text": "Captured Event: user-opened-panel-compare (source: fit-illustrator) x1\n"
-                    },
-                    {
-                      "text": "Captured Event: user-added-product (source: fit-illustrator) x1\n"
-                    },
-                    {
-                      "text": "Item added to wardrobe successfully.\n"
-                    },
-                    {
-                      "text": "Validating PDP refresh behavior\n"
-                    },
-                    {
-                      "text": "Captured Event: user-saw-product (source: integration) x1\n"
-                    },
-                    {
-                      "text": "Captured Event: user-saw-widget-button (source: integration) x1\n"
-                    },
-                    {
-                      "text": "Captured Event: inpage-mounted (source: integration) x1\n"
-                    },
-                    {
-                      "text": "Captured Event: user-saw-measurements-view (source: smart-table) x1\n"
-                    },
-                    {
-                      "text": "Captured Event: user-opened-widget (source: inpage) x1\n"
-                    },
-                    {
-                      "text": "Captured Event: user-opened-panel-tryiton (source: fit-illustrator) x1\n"
-                    },
-                    {
-                      "text": "Recommendation API Status: \u001b[33m200\u001b[39m\n"
-                    },
-                    {
-                      "text": "Captured Event: user-selected-size (source: fit-illustrator) x1\n"
-                    },
-                    {
-                      "text": "Captured Event: user-got-size-recommendation (source: integration) x1\n"
-                    },
-                    {
-                      "text": "Captured Event: user-selected-size (source: inpage) x1\n"
-                    },
-                    {
-                      "text": "QA_RESULT: {\"url\":\"https://www.buyma.com/item/114946065/\",\"store\":\"buyma\",\"productType\":\"sweater\",\"userType\":\"NEW\",\"status\":\"passed\",\"browser\":\"webkit\",\"durationMs\":38132}\n"
-                    }
-                  ],
-                  "stderr": [],
-                  "retry": 0,
-                  "startTime": "2026-03-04T15:53:49.006Z",
-                  "annotations": [],
-                  "attachments": []
-                }
-              ],
-              "status": "expected"
-            }
-          ],
-          "id": "4b94f1d2e5793e5150b0-2c8098a0e7394a03157f",
-          "file": "inpage.spec.js",
-          "line": 15,
-          "column": 5
         }
       ]
     }
   ],
   "errors": [],
   "stats": {
-    "startTime": "2026-03-04T15:53:48.341Z",
-    "duration": 40955.993,
-    "expected": 3,
+    "startTime": "2026-03-05T14:51:11.248Z",
+    "duration": 19601.673000000003,
+    "expected": 1,
     "skipped": 0,
     "unexpected": 0,
     "flaky": 0
