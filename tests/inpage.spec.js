@@ -29,6 +29,21 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
     window.getWidgetHost = () =>
       document.querySelector("#router-view-wrapper") ||
       document.querySelector("#vs-aoyama")?.nextElementSibling;
+
+    window.findInShadow = (selector) => {
+      const walk = (node) => {
+        if (!node) return null;
+        if (node.querySelector?.(selector)) return node.querySelector(selector);
+        for (const el of node.querySelectorAll?.("*") ?? []) {
+          if (el.shadowRoot) {
+            const found = walk(el.shadowRoot);
+            if (found) return found;
+          }
+        }
+        return null;
+      };
+      return walk(document);
+    };
   });
 
   try {
@@ -61,17 +76,30 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
     // Open Inpage
     // -----------------------------
 
-    await page.waitForSelector("#vs-inpage", { state: "visible", timeout: 15000 });
+    await page.waitForFunction(
+      () => {
+        return (
+          document.querySelector("#vs-inpage") ||
+          document.querySelector("#vs-kid")
+        );
+      },
+      { timeout: 30000 },
+    );
 
-    // remove overlays again (they may appear late)
-    await removeMarketingOverlays(page);
-
-    await clickInpage(page);
-
-    await waitForWidgetRender(page);
-
-    const flow = detectFlow(pdc);
+    const isKidWidget = await page.$("#vs-kid");
+    const flow = isKidWidget ? "kids" : detectFlow(pdc);
     console.log("Flow:", flow);
+
+    if (flow === "kids") {
+      await clickKidsWidget(page);
+    } else {
+      // remove overlays again (they may appear late)
+      await removeMarketingOverlays(page);
+
+      await clickWidget(page, flow);
+
+      await waitForWidgetRender(page);
+    }
 
     let isNewUser;
     if (flow === "apparel") {
@@ -80,18 +108,23 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
     if (flow === "footwear") {
       isNewUser = await runFootwearFlow(page, bodyAPI);
     }
+    if (flow === "kids") {
+      isNewUser = await runKidsFlow(page, pdc);
+    }
 
     // -----------------------------
     // Recommendation
     // -----------------------------
 
-    await validateRecommendation(
-      page,
-      eventWatcher,
-      recommendationAPI,
-      isNewUser,
-      flow,
-    );
+    if (flow !== "kids") {
+      await validateRecommendation(
+        page,
+        eventWatcher,
+        recommendationAPI,
+        isNewUser,
+        flow,
+      );
+    }
 
     // -----------------------------
     // Size + Wardrobe (apparel only)
@@ -109,7 +142,9 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
           document.querySelector("#vs-aoyama")?.nextElementSibling;
 
         const root = host?.shadowRoot;
-        return root?.querySelector('[data-test-id="no-visor-recommended-size"]');
+        return root?.querySelector(
+          '[data-test-id="no-visor-recommended-size"]',
+        );
       });
     }
 
@@ -176,22 +211,20 @@ function getSkipReason(pdc) {
 // --------------------------------------------------
 
 async function validateCoreEvents(page, eventWatcher, flow) {
-  const events = eventWatcher.getEvents();
+  const getEvents = () => eventWatcher.getEvents();
 
-  const baseline = await verifyEvents(
-    page,
-    events,
-    expectedEvents.strict.baseline,
-  );
-
-  const flowEvents = flow === "footwear"
-    ? await verifyEvents(page, events, expectedEvents.strict.footwear)
-    : [
-        ...await verifyEvents(page, events, expectedEvents.strict.recommendation),
-        ...await verifyEvents(page, events, expectedEvents.strict.panels),
-      ];
-
-  const missing = [...baseline, ...flowEvents];
+  const missing =
+    flow === "kids"
+      ? await verifyEvents(page, getEvents, expectedEvents.strict.kids)
+      : [
+          ...(await verifyEvents(page, getEvents, expectedEvents.strict.baseline)),
+          ...(flow === "footwear"
+            ? await verifyEvents(page, getEvents, expectedEvents.strict.footwear)
+            : [
+                ...(await verifyEvents(page, getEvents, expectedEvents.strict.recommendation)),
+                ...(await verifyEvents(page, getEvents, expectedEvents.strict.panels)),
+              ]),
+        ];
 
   if (missing.length > 0) {
     const error = new Error(`Missing events: ${missing.join(", ")}`);
@@ -208,38 +241,55 @@ async function validateRefresh(page, eventWatcher, recommendationAPI, flow) {
   eventWatcher.reset();
 
   await page.reload();
-  await page.waitForSelector("#vs-inpage", { state: "visible", timeout: 15000 });
-  await removeMarketingOverlays(page);
-  await clickInpage(page);
+  await waitForWidget(page, flow);
 
-  // Wait for widget to re-render so the recommendation API has time to fire
-  await waitForWidgetRender(page);
+  if (flow === "kids") {
+    await clickKidsWidget(page);
 
-  // -----------------------------------------
-  // CHECK RECOMMENDATION API REFIRE
-  // -----------------------------------------
+    console.log("Waiting for kids recommendation after refresh");
 
-  const recStatus = await waitForStatus(
-    () => recommendationAPI.getStatus(),
-    5000,
-  );
+    await page.waitForFunction(() => {
+      const wrapper = document.querySelector("#vs-kid-app")?.nextElementSibling;
+      const root = wrapper?.shadowRoot;
 
-  if (recStatus !== 200) {
-    throw new Error(
-      `Recommendation API did not refire after refresh (status: ${recStatus})`,
+      return root?.querySelector('[data-test-id="kids-recommended-size"]');
+    }, { timeout: 10000 });
+
+  } else {
+    await removeMarketingOverlays(page);
+    await clickWidget(page, flow);
+
+    // Wait for widget to re-render so the recommendation API has time to fire
+    await waitForWidgetRender(page);
+
+    // -----------------------------------------
+    // CHECK RECOMMENDATION API REFIRE
+    // -----------------------------------------
+
+    const recStatus = await waitForStatus(
+      () => recommendationAPI.getStatus(),
+      5000,
     );
+
+    if (recStatus !== 200) {
+      throw new Error(
+        `Recommendation API did not refire after refresh (status: ${recStatus})`,
+      );
+    }
   }
 
   // -----------------------------------------
   // CHECK EVENTS
   // -----------------------------------------
 
-  const refreshed = eventWatcher.getEvents();
-  const schema = flow === "footwear"
-    ? expectedEvents.refresh.footwear
-    : expectedEvents.refresh.apparel;
+  const schema =
+    flow === "footwear"
+      ? expectedEvents.refresh.footwear
+      : flow === "kids"
+      ? expectedEvents.refresh.kids
+      : expectedEvents.refresh.apparel;
 
-  const failures = await verifyEvents(page, refreshed, schema);
+  const failures = await verifyEvents(page, () => eventWatcher.getEvents(), schema);
 
   if (failures.length > 0) {
     const error = new Error(`Refresh missing events: ${failures.join(", ")}`);
@@ -301,6 +351,7 @@ function validateStrictDuplicates(eventWatcher) {
 // --------------------------------------------------
 
 function detectFlow(pdc) {
+  if (pdc.isKid) return "kids";
   if (pdc.productType?.toLowerCase() === "shoe") return "footwear";
   return "apparel";
 }
@@ -378,21 +429,32 @@ async function runFootwearFlow(page, bodyAPI) {
 
   // Step 2: Toe shape – click middle option
   await page.waitForFunction(
-    () => (getWidgetHost()?.shadowRoot?.querySelectorAll('[data-test-id="toeShape-select-item-btn"]')?.length ?? 0) > 0,
+    () =>
+      (getWidgetHost()?.shadowRoot?.querySelectorAll(
+        '[data-test-id="toeShape-select-item-btn"]',
+      )?.length ?? 0) > 0,
     { timeout: 15000 },
   );
   await page.evaluate(() => {
-    const btns = getWidgetHost()?.shadowRoot?.querySelectorAll('[data-test-id="toeShape-select-item-btn"]');
+    const btns = getWidgetHost()?.shadowRoot?.querySelectorAll(
+      '[data-test-id="toeShape-select-item-btn"]',
+    );
     if (btns?.length) btns[Math.floor(btns.length / 2)].click();
   });
   await clickNext();
 
   // Step 3: Gender – select female
   await page.evaluate(() => {
-    const modal = getWidgetHost()?.shadowRoot?.querySelector("#vs-aoyama-main-modal");
-    const radios = modal?.querySelectorAll('[data-test-id="gender-radio-buttons"] input[type="radio"]');
+    const modal = getWidgetHost()?.shadowRoot?.querySelector(
+      "#vs-aoyama-main-modal",
+    );
+    const radios = modal?.querySelectorAll(
+      '[data-test-id="gender-radio-buttons"] input[type="radio"]',
+    );
     if (!radios?.length) return;
-    const female = [...radios].find((el) => el.value.toLowerCase() === "female");
+    const female = [...radios].find(
+      (el) => el.value.toLowerCase() === "female",
+    );
     if (female) {
       female.click();
       female.dispatchEvent(new Event("change", { bubbles: true }));
@@ -403,8 +465,12 @@ async function runFootwearFlow(page, bodyAPI) {
 
   // Step 4: Footwear size – open picker, select first radio
   await page.evaluate(() => {
-    const modal = getWidgetHost()?.shadowRoot?.querySelector("#vs-aoyama-main-modal");
-    modal?.querySelector('[data-test-id="open-sizes-footwear-picker"]')?.click();
+    const modal = getWidgetHost()?.shadowRoot?.querySelector(
+      "#vs-aoyama-main-modal",
+    );
+    modal
+      ?.querySelector('[data-test-id="open-sizes-footwear-picker"]')
+      ?.click();
     const radio = modal?.querySelector("#footwear-picker input#radioButton-1");
     if (radio) {
       radio.click();
@@ -416,8 +482,12 @@ async function runFootwearFlow(page, bodyAPI) {
 
   // Step 5: Privacy policy
   await page.evaluate(() => {
-    const modal = getWidgetHost()?.shadowRoot?.querySelector("#vs-aoyama-main-modal");
-    const checkbox = modal?.querySelector('[data-test-id="footwear-privacy-policy"]');
+    const modal = getWidgetHost()?.shadowRoot?.querySelector(
+      "#vs-aoyama-main-modal",
+    );
+    const checkbox = modal?.querySelector(
+      '[data-test-id="footwear-privacy-policy"]',
+    );
     if (checkbox && !checkbox.checked) {
       checkbox.click();
       checkbox.dispatchEvent(new Event("change", { bubbles: true }));
@@ -428,23 +498,40 @@ async function runFootwearFlow(page, bodyAPI) {
 
   // Step 6: Brand – open picker, select first option, wait for picker to close
   await page.evaluate(() => {
-    const modal = getWidgetHost()?.shadowRoot?.querySelector("#vs-aoyama-main-modal");
-    modal?.querySelector('[data-test-id="open-brands-footwear-picker"]')?.click();
+    const modal = getWidgetHost()?.shadowRoot?.querySelector(
+      "#vs-aoyama-main-modal",
+    );
+    modal
+      ?.querySelector('[data-test-id="open-brands-footwear-picker"]')
+      ?.click();
   });
   await page.waitForFunction(
-    () => !!getWidgetHost()?.shadowRoot?.querySelector('[data-test-id="footwear-picker"]'),
+    () =>
+      !!getWidgetHost()?.shadowRoot?.querySelector(
+        '[data-test-id="footwear-picker"]',
+      ),
     { timeout: 5000 },
   );
   await page.evaluate(() => {
     const root = getWidgetHost()?.shadowRoot;
-    root?.querySelector('[data-test-id="footwear-picker"] label[for="radioButton-0"]')?.click();
+    root
+      ?.querySelector(
+        '[data-test-id="footwear-picker"] label[for="radioButton-0"]',
+      )
+      ?.click();
   });
   await page.waitForFunction(
     () => {
-      const picker = getWidgetHost()?.shadowRoot?.querySelector('[data-test-id="footwear-picker"]');
+      const picker = getWidgetHost()?.shadowRoot?.querySelector(
+        '[data-test-id="footwear-picker"]',
+      );
       if (!picker) return true;
       const style = window.getComputedStyle(picker);
-      return style.display === "none" || style.visibility === "hidden" || style.opacity === "0";
+      return (
+        style.display === "none" ||
+        style.visibility === "hidden" ||
+        style.opacity === "0"
+      );
     },
     { timeout: 5000 },
   );
@@ -455,6 +542,168 @@ async function runFootwearFlow(page, bodyAPI) {
   expect(bodyStatus).toBe(200);
 
   return isNewUser;
+}
+
+// --------------------------------------------------
+// Kids Flow
+// --------------------------------------------------
+
+async function runKidsFlow(page, _pdc) {
+  console.log("Running Kids flow");
+
+  // Wait for gender radio buttons to appear
+  await page.waitForFunction(() =>
+    findInShadow('input[name="selectKidGender"]')
+  );
+
+  console.log("Gender radio buttons detected");
+
+  // Click girl
+  await page.evaluate(() => {
+    const girlRadio = findInShadow(
+      'input[name="selectKidGender"][value="girl"]'
+    );
+
+    if (!girlRadio) {
+      throw new Error("Girl radio button not found");
+    }
+
+    girlRadio.click();
+  });
+
+  console.log("Clicked gender radio button");
+
+  // Open age selector
+  await page.evaluate(() => {
+    const wrapper = document.querySelector("#vs-kid-app")?.nextElementSibling;
+    const root = wrapper?.shadowRoot;
+    if (!root) throw new Error("Kids widget shadow root not found");
+
+    const ageSpan = root.querySelector("span.age-input-value");
+    if (!ageSpan) throw new Error("Age span not found");
+
+    ageSpan.click();
+  });
+
+  console.log("Opened age selector");
+
+  // Wait for age sheet to appear
+  await page.waitForFunction(() => {
+    const wrapper = document.querySelector("#vs-kid-app")?.nextElementSibling;
+    const root = wrapper?.shadowRoot;
+    const sheet = root?.querySelector("#sheet");
+    return sheet && sheet.querySelector("input[type='radio']");
+  });
+
+  // Select age option
+  await page.evaluate(() => {
+    const wrapper = document.querySelector("#vs-kid-app")?.nextElementSibling;
+    const root = wrapper?.shadowRoot;
+    const sheet = root?.querySelector("#sheet");
+    if (!sheet) throw new Error("Kids age sheet not found");
+
+    const radios = sheet.querySelectorAll(
+      "gridcontainer > div.vs-radio-buttons > label > input[type='radio']"
+    );
+    if (!radios.length) throw new Error("No Kids age radio buttons found");
+
+    const target = radios[5] || radios[0];
+    target.click();
+    target.dispatchEvent(new Event("change", { bubbles: true }));
+  });
+
+  console.log("Selected age");
+
+  /* -------------------- HEIGHT & WEIGHT -------------------- */
+
+  console.log("Waiting for height and weight inputs...");
+
+  await page.waitForFunction(() => {
+    const wrapper = document.querySelector("#vs-kid-app")?.nextElementSibling;
+    const root = wrapper?.shadowRoot;
+
+    return (
+      root &&
+      root.querySelector('[data-test-id="kids-height-input-desktop"] input') &&
+      root.querySelector('[data-test-id="kids-weight-input-desktop"] input')
+    );
+  });
+
+  for (const [testId, value] of [
+    ["kids-height-input-desktop", "120"],
+    ["kids-weight-input-desktop", "25"],
+  ]) {
+    await page.evaluate(
+      ({ testId, value }) => {
+        const wrapper =
+          document.querySelector("#vs-kid-app")?.nextElementSibling;
+        const root = wrapper?.shadowRoot;
+
+        const input = root?.querySelector(`[data-test-id="${testId}"] input`);
+
+        if (!input) throw new Error(`Input not found: ${testId}`);
+
+        input.focus();
+        input.value = value;
+
+        input.dispatchEvent(new Event("input", { bubbles: true }));
+        input.dispatchEvent(new Event("change", { bubbles: true }));
+
+        input.blur();
+      },
+      { testId, value }
+    );
+  }
+
+  console.log("Filled height and weight");
+
+  /* -------------------- PRIVACY POLICY -------------------- */
+
+  await page.evaluate(() => {
+    const wrapper = document.querySelector("#vs-kid-app")?.nextElementSibling;
+    const root = wrapper?.shadowRoot;
+
+    if (!root) return;
+
+    const checkbox = root.querySelector('[data-test-id="privacy-policy-checkbox"]');
+
+    if (checkbox && !checkbox.checked) {
+      checkbox.click();
+      checkbox.dispatchEvent(new Event("change", { bubbles: true }));
+    }
+  });
+
+  console.log("Checked privacy policy");
+
+  /* -------------------- CTA BUTTON -------------------- */
+
+  await page.evaluate(() => {
+    const wrapper = document.querySelector("#vs-kid-app")?.nextElementSibling;
+    const root = wrapper?.shadowRoot;
+
+    if (!root) return;
+
+    const nextButton = root.querySelector('[data-test-id="see-ideal-fit-btn"]');
+
+    if (!nextButton) throw new Error("CTA button not found");
+
+    nextButton.click();
+  });
+
+  console.log("Clicked See Your Perfect Fit");
+
+  /* -------------------- WAIT FOR RESULT -------------------- */
+
+  await page.waitForFunction(() => {
+    const wrapper = document.querySelector("#vs-kid-app")?.nextElementSibling;
+    const root = wrapper?.shadowRoot;
+
+    return root?.querySelector('[data-test-id="kids-recommended-size"]');
+  });
+
+  console.log("Kids onboarding completed successfully.");
+
+  return true;
 }
 
 // --------------------------------------------------
@@ -472,30 +721,38 @@ async function waitForPDC(pdc) {
 
 async function waitForWidgetRender(page) {
   // Wait for widget shadow root
-  await page.waitForFunction(() => {
-    return !!getWidgetHost()?.shadowRoot;
-  }, { timeout: 15000 });
+  await page.waitForFunction(
+    () => {
+      return !!getWidgetHost()?.shadowRoot;
+    },
+    { timeout: 15000 },
+  );
 
   // Wait for ANY known screen
-  await page.waitForFunction(() => {
-    const root = getWidgetHost()?.shadowRoot;
-    if (!root) return false;
+  await page.waitForFunction(
+    () => {
+      const root = getWidgetHost()?.shadowRoot;
+      if (!root) return false;
 
-    return (
-      root.querySelector('[data-test-id="input-age"]') ||                    // apparel onboarding
-      root.querySelector('[data-test-id="size-btn"]') ||                     // apparel recommendation
-      root.querySelector('[data-test-id="no-visor-recommended-size"]') ||   // footwear recommendation
-      root.querySelector('[data-test-id="footWidth-select-item-btn"]') ||    // shoe step 1
-      root.querySelector('[data-test-id="toeShape-select-item-btn"]') ||     // shoe step 2
-      root.querySelector('[data-test-id="open-sizes-footwear-picker"]') ||   // shoe step 4
-      root.querySelector('[data-test-id="open-brands-footwear-picker"]')     // shoe step 6
-    );
-  }, { timeout: 20000 });
+      return (
+        root.querySelector('[data-test-id="input-age"]') || // apparel onboarding
+        root.querySelector('[data-test-id="size-btn"]') || // apparel recommendation
+        root.querySelector('[data-test-id="no-visor-recommended-size"]') || // footwear recommendation
+        root.querySelector('[data-test-id="footWidth-select-item-btn"]') || // shoe step 1
+        root.querySelector('[data-test-id="toeShape-select-item-btn"]') || // shoe step 2
+        root.querySelector('[data-test-id="open-sizes-footwear-picker"]') || // shoe step 4
+        root.querySelector('[data-test-id="open-brands-footwear-picker"]') // shoe step 6
+      );
+    },
+    { timeout: 20000 },
+  );
 }
 
 async function isOnboardingVisible(page) {
   return await page.evaluate(() => {
-    return !!getWidgetHost()?.shadowRoot?.querySelector('[data-test-id="input-age"]');
+    return !!getWidgetHost()?.shadowRoot?.querySelector(
+      '[data-test-id="input-age"]',
+    );
   });
 }
 
@@ -510,18 +767,62 @@ async function waitForStatus(getter, timeout = 5000) {
 }
 
 // --------------------------------------------------
-// Inpage Click
+// Widget Wait
 // --------------------------------------------------
 
-async function clickInpage(page) {
-  await page.evaluate(() =>
-    document.querySelector("#vs-inpage")?.scrollIntoView({ block: "center" }),
+async function waitForWidget(page, flow) {
+  const selector = flow === "kids" ? "#vs-kid" : "#vs-inpage";
+
+  await page.waitForFunction(
+    (sel) => {
+      const el = document.querySelector(sel);
+      if (!el) return false;
+
+      const style = window.getComputedStyle(el);
+      return style.display !== "none" && style.visibility !== "hidden";
+    },
+    selector,
+    { timeout: 20000 },
   );
+}
+
+// --------------------------------------------------
+// Widget Click
+// --------------------------------------------------
+
+async function shadowExists(page, host, selector) {
+  return page.evaluate(
+    ({ host, selector }) => {
+      return !!document
+        .querySelector(host)
+        ?.shadowRoot?.querySelector(selector);
+    },
+    { host, selector },
+  );
+}
+
+async function clickKidsWidget(page) {
+  await page.waitForFunction(() =>
+    findInShadow('[data-test-id="kids-inpage-button"]'),
+  );
+  await page.evaluate(() =>
+    findInShadow('[data-test-id="kids-inpage-button"]')?.click(),
+  );
+}
+
+async function clickWidget(page, flow) {
+  const selector = flow === "kids" ? "#vs-kid" : "#vs-inpage";
+
+  await page.evaluate((sel) => {
+    document.querySelector(sel)?.scrollIntoView({ block: "center" });
+  }, selector);
+
   try {
-    await page.click("#vs-inpage", { timeout: 5000 });
+    await page.click(selector, { timeout: 5000 });
   } catch {
-    // Element may still be partially obscured — force-click as fallback
-    await page.evaluate(() => document.querySelector("#vs-inpage")?.click());
+    await page.evaluate((sel) => {
+      document.querySelector(sel)?.click();
+    }, selector);
   }
 }
 

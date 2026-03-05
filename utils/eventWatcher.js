@@ -30,7 +30,7 @@ export function startVirtusizeEventWatcher(page) {
   });
 
   return {
-    getEvents: () => events.map((e) => e.name),
+    getEvents: () => events.map((e) => `${e.name}::${e.source}`),
     getCounts: () => counts,
     reset: () => {
       events = [];

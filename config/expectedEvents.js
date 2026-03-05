@@ -13,6 +13,16 @@ export const expectedEvents = {
       "user-created-footwear-silhouette",
       "user-opened-panel-rec",
     ],
+    kids: [
+      "user-opened-widget::kids",
+      "user-saw-onboarding-screen::kids",
+      "user-selected-gender::kids",
+      "user-clicked-age::kids",
+      "user-updated-body-measurements::kids",
+      "user-completed-onboarding::kids",
+      "user-created-silhouette::kids",
+      "user-selected-size-kids-rec::kids",
+    ],
   },
   refresh: {
     apparel: [
@@ -29,6 +39,12 @@ export const expectedEvents = {
       "user-selected-size",
       "user-opened-widget",
       "user-opened-panel-rec",
+    ],
+    kids: [
+      "user-saw-product",
+      "user-saw-widget-button",
+      "user-saw-widget-kids",
+      "user-selected-size-kids-rec::kids",
     ],
   },
 };
