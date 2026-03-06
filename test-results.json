@@ -113,20 +113,20 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 17740,
+                  "duration": 31949,
                   "errors": [],
                   "stdout": [
                     {
-                      "text": "Testing URL: https://www.underarmour.co.jp/f/dsg-1093185\n"
+                      "text": "Testing URL: https://www.allsaints.co.kr/goods/goods_view.php?goodsNo=1000012551\n"
+                    },
+                    {
+                      "text": "Flow: apparel\n"
                     },
                     {
                       "text": "Captured Event: user-saw-product (source: integration) x1\n"
                     },
                     {
                       "text": "Captured Event: user-saw-widget-button (source: integration) x1\n"
-                    },
-                    {
-                      "text": "Flow: footwear\n"
                     },
                     {
                       "text": "Captured Event: inpage-mounted (source: integration) x1\n"
@@ -138,55 +138,79 @@
                       "text": "Captured Event: user-saw-onboarding-screen (source: fit-illustrator) x1\n"
                     },
                     {
-                      "text": "New user → running footwear onboarding\n"
+                      "text": "New user → running onboarding\n"
                     },
                     {
-                      "text": "Captured Event: user-selected-narrow (source: fit-illustrator) x1\n"
+                      "text": "Completing onboarding (shadow DOM)...\n"
                     },
                     {
-                      "text": "Captured Event: user-clicked-proceed-foot-width (source: fit-illustrator) x1\n"
+                      "text": "Captured Event: user-selected-age (source: fit-illustrator) x1\n"
                     },
                     {
-                      "text": "Captured Event: user-selected-egyptian (source: fit-illustrator) x1\n"
+                      "text": "Captured Event: user-selected-height (source: fit-illustrator) x1\n"
                     },
                     {
-                      "text": "Captured Event: user-clicked-proceed-foot-shape (source: fit-illustrator) x1\n"
+                      "text": "Captured Event: user-selected-weight (source: fit-illustrator) x1\n"
                     },
                     {
-                      "text": "Captured Event: user-clicked-proceed-shoe-style-size (source: fit-illustrator) x1\n"
+                      "text": "Captured Event: user-completed-onboarding (source: fit-illustrator) x1\n"
                     },
                     {
-                      "text": "Captured Event: user-selected-shoe-style (source: fit-illustrator) x1\n"
+                      "text": "Captured Event: user-created-silhouette (source: fit-illustrator) x1\n"
                     },
                     {
-                      "text": "Captured Event: user-clicked-proceed-shoe-brand (source: fit-illustrator) x1\n"
+                      "text": "Onboarding finished.\n"
                     },
                     {
-                      "text": "Captured Event: user-created-footwear-silhouette (source: fit-illustrator) x1\n"
+                      "text": "Waiting for recommendation panel...\n"
                     },
                     {
                       "text": "Body Measurement API Status: \u001b[33m200\u001b[39m\n"
                     },
                     {
-                      "text": "Validating recommendation result...\n"
-                    },
-                    {
                       "text": "Recommendation API Status: \u001b[33m200\u001b[39m\n"
                     },
                     {
-                      "text": "Captured Event: user-opened-panel-rec (source: fit-illustrator) x1\n"
+                      "text": "Captured Event: user-got-size-recommendation (source: integration) x1\n"
+                    },
+                    {
+                      "text": "Captured Event: user-opened-panel-tryiton (source: fit-illustrator) x1\n"
                     },
                     {
                       "text": "Recommendation screen detected.\n"
                     },
                     {
-                      "text": "Recommendation API returned 200.\n"
+                      "text": "Validating recommendation result...\n"
                     },
                     {
-                      "text": "Recommendation events validated.\n"
+                      "text": "Checking for multiple sizes...\n"
+                    },
+                    {
+                      "text": "Detected size count: \u001b[33m4\u001b[39m\n"
+                    },
+                    {
+                      "text": "Captured Event: user-selected-size (source: fit-illustrator) x1\n"
+                    },
+                    {
+                      "text": "Size selected successfully.\n"
+                    },
+                    {
+                      "text": "Attempting to add item to wardrobe...\n"
+                    },
+                    {
+                      "text": "Captured Event: user-opened-panel-details (source: fit-illustrator) x1\n"
+                    },
+                    {
+                      "text": "Item added to wardrobe successfully.\n"
                     },
                     {
                       "text": "Validating PDP refresh behavior\n"
+                    },
+                    {
+                      "text": "Captured Event: user-opened-panel-compare (source: fit-illustrator) x1\n"
+                    },
+                    {
+                      "text": "Captured Event: user-added-product (source: fit-illustrator) x1\n"
                     },
                     {
                       "text": "Captured Event: user-saw-product (source: integration) x1\n"
@@ -201,21 +225,18 @@
                       "text": "Recommendation API Status: \u001b[33m200\u001b[39m\n"
                     },
                     {
+                      "text": "Captured Event: user-got-size-recommendation (source: integration) x1\n"
+                    },
+                    {
                       "text": "Captured Event: user-selected-size (source: inpage) x1\n"
                     },
                     {
-                      "text": "Captured Event: user-opened-widget (source: inpage) x1\n"
-                    },
-                    {
-                      "text": "Captured Event: user-opened-panel-rec (source: fit-illustrator) x1\n"
-                    },
-                    {
-                      "text": "QA_RESULT: {\"url\":\"https://www.underarmour.co.jp/f/dsg-1093185\",\"store\":\"under_armour\",\"productType\":\"shoe\",\"userType\":\"NEW\",\"status\":\"passed\",\"browser\":\"chromium\",\"durationMs\":17493}\n"
+                      "text": "QA_RESULT: {\"url\":\"https://www.allsaints.co.kr/goods/goods_view.php?goodsNo=1000012551\",\"store\":\"allsaints_korea\",\"productType\":\"dress\",\"userType\":\"NEW\",\"status\":\"passed\",\"browser\":\"chromium\",\"durationMs\":31093}\n"
                     }
                   ],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-03-05T18:14:18.054Z",
+                  "startTime": "2026-03-06T09:15:13.530Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -225,7 +246,7 @@
           ],
           "id": "4b94f1d2e5793e5150b0-f2c92c2862e29089a395",
           "file": "inpage.spec.js",
-          "line": 15,
+          "line": 16,
           "column": 5
         }
       ]
@@ -233,8 +254,8 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2026-03-05T18:14:17.486Z",
-    "duration": 18988.812,
+    "startTime": "2026-03-06T09:15:12.967Z",
+    "duration": 34086.609000000004,
     "expected": 1,
     "skipped": 0,
     "unexpected": 0,

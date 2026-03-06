@@ -7,10 +7,10 @@ export async function addItemToWardrobe(page, firedEvents) {
       () => {
         const host = document.querySelector("#router-view-wrapper");
         return host?.shadowRoot?.querySelector(
-          '[data-test-id="open-product-details-sheet-btn"]'
+          '[data-test-id="open-product-details-sheet-btn"]',
         );
       },
-      { timeout: 10000 }
+      { timeout: 10000 },
     );
 
     // Open product details
@@ -27,10 +27,10 @@ export async function addItemToWardrobe(page, firedEvents) {
       () => {
         const host = document.querySelector("#router-view-wrapper");
         return host?.shadowRoot?.querySelector(
-          '[data-test-id="toggle-item-to-wardrobe-btn"]'
+          '[data-test-id="toggle-item-to-wardrobe-btn"]',
         );
       },
-      { timeout: 5000 }
+      { timeout: 5000 },
     );
 
     // Click toggle
