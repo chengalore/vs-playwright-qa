@@ -113,11 +113,14 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 31949,
+                  "duration": 34117,
                   "errors": [],
                   "stdout": [
                     {
-                      "text": "Testing URL: https://www.allsaints.co.kr/goods/goods_view.php?goodsNo=1000012551\n"
+                      "text": "Testing URL: https://onlinestore.barneys.co.jp/items/2257767\n"
+                    },
+                    {
+                      "text": "Blocked marketing script: https://checkout-api.worldshopping.jp/v1/script?token=onlinestore_barneys_co_jp\n"
                     },
                     {
                       "text": "Flow: apparel\n"
@@ -186,7 +189,7 @@
                       "text": "Checking for multiple sizes...\n"
                     },
                     {
-                      "text": "Detected size count: \u001b[33m4\u001b[39m\n"
+                      "text": "Detected size count: \u001b[33m2\u001b[39m\n"
                     },
                     {
                       "text": "Captured Event: user-selected-size (source: fit-illustrator) x1\n"
@@ -201,16 +204,19 @@
                       "text": "Captured Event: user-opened-panel-details (source: fit-illustrator) x1\n"
                     },
                     {
+                      "text": "Captured Event: user-opened-panel-compare (source: fit-illustrator) x1\n"
+                    },
+                    {
+                      "text": "Captured Event: user-added-product (source: fit-illustrator) x1\n"
+                    },
+                    {
                       "text": "Item added to wardrobe successfully.\n"
                     },
                     {
                       "text": "Validating PDP refresh behavior\n"
                     },
                     {
-                      "text": "Captured Event: user-opened-panel-compare (source: fit-illustrator) x1\n"
-                    },
-                    {
-                      "text": "Captured Event: user-added-product (source: fit-illustrator) x1\n"
+                      "text": "Blocked marketing script: https://checkout-api.worldshopping.jp/v1/script?token=onlinestore_barneys_co_jp\n"
                     },
                     {
                       "text": "Captured Event: user-saw-product (source: integration) x1\n"
@@ -231,12 +237,18 @@
                       "text": "Captured Event: user-selected-size (source: inpage) x1\n"
                     },
                     {
-                      "text": "QA_RESULT: {\"url\":\"https://www.allsaints.co.kr/goods/goods_view.php?goodsNo=1000012551\",\"store\":\"allsaints_korea\",\"productType\":\"dress\",\"userType\":\"NEW\",\"status\":\"passed\",\"browser\":\"chromium\",\"durationMs\":31093}\n"
+                      "text": "Captured Event: user-opened-widget (source: inpage) x1\n"
+                    },
+                    {
+                      "text": "Captured Event: user-opened-panel-tryiton (source: fit-illustrator) x1\n"
+                    },
+                    {
+                      "text": "QA_RESULT: {\"url\":\"https://onlinestore.barneys.co.jp/items/2257767\",\"store\":\"barneys_japan\",\"productType\":\"coat\",\"userType\":\"NEW\",\"status\":\"passed\",\"browser\":\"chromium\",\"durationMs\":33565}\n"
                     }
                   ],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-03-06T09:15:13.530Z",
+                  "startTime": "2026-03-07T16:02:51.445Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -254,8 +266,8 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2026-03-06T09:15:12.967Z",
-    "duration": 34086.609000000004,
+    "startTime": "2026-03-07T16:02:50.583Z",
+    "duration": 36490.975,
     "expected": 1,
     "skipped": 0,
     "unexpected": 0,

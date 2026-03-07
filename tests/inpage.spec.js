@@ -181,7 +181,11 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
 
     if (flow === "apparel") {
       await selectSizeIfMultiple(page, eventWatcher);
-      await addItemToWardrobe(page, eventWatcher.getEvents());
+      await page.waitForTimeout(3000);
+      await Promise.race([
+        addItemToWardrobe(page, eventWatcher.getEvents()),
+        page.waitForTimeout(8000),
+      ]);
     }
 
     if (flow === "footwear") {
