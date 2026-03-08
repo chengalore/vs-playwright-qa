@@ -98,6 +98,13 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
   try {
     await page.goto(url);
 
+    // Trigger lazy-loaded widgets that rely on IntersectionObserver —
+    // without a scroll the widget container may never mount.
+    await page.evaluate(() => {
+      window.scrollTo({ top: 1000, behavior: "instant" });
+    });
+    await page.waitForTimeout(1000);
+
     // Dismiss cookie consent banners that appear shortly after load
     await page.waitForTimeout(2000);
     await page.evaluate(() => {
@@ -376,8 +383,10 @@ async function validateRefresh(page, eventWatcher, recommendationAPI, flow) {
   } else {
     await clickWidget(page, flow);
 
-    // Wait for widget to re-render so the recommendation API has time to fire
-    await waitForWidgetRender(page);
+    // Allow widget UI to stabilize after refresh without blocking on a specific
+    // screen selector — stores like CELFORD may render the gift CTA instead of
+    // a standard recommendation panel, which would cause waitForWidgetRender to hang.
+    await page.waitForTimeout(1500);
 
     // -----------------------------------------
     // CHECK RECOMMENDATION API REFIRE
@@ -896,6 +905,13 @@ async function runGiftFlow(page, eventWatcher) {
 
   // ── 1. Open gift CTA ──────────────────────────────────────────────────────
 
+  // Wait for gift-cta to be present in the shadow DOM — the section may appear
+  // before the button is rendered (e.g. lazy shadow init on CELFORD).
+  await page.waitForFunction(
+    () => !!findInShadow('[data-test-id="gift-cta"]'),
+    { timeout: 15000 }
+  );
+
   await page.evaluate(() =>
     findInShadow('[data-test-id="gift-cta"]')?.click()
   );
@@ -1049,6 +1065,13 @@ async function runGiftFlow(page, eventWatcher) {
   await clickWidget(page, "apparel");
   await waitForWidgetRender(page);
 
+  // Wait for the gift CTA to actually appear in the shadow DOM — the widget
+  // may report as rendered but still be settling its recommendation panel.
+  await page.waitForFunction(
+    () => !!findInShadow('[data-test-id="gift-cta"]'),
+    { timeout: 15000 }
+  );
+
   await page.evaluate(() => findInShadow('[data-test-id="gift-cta"]')?.click());
 
   // Returning user — recommendation appears without onboarding
@@ -1108,7 +1131,8 @@ async function waitForWidgetRender(page) {
         root.querySelector('[data-test-id="footWidth-select-item-btn"]') || // shoe step 1
         root.querySelector('[data-test-id="toeShape-select-item-btn"]') || // shoe step 2
         root.querySelector('[data-test-id="open-sizes-footwear-picker"]') || // shoe step 4
-        root.querySelector('[data-test-id="open-brands-footwear-picker"]') // shoe step 6
+        root.querySelector('[data-test-id="open-brands-footwear-picker"]') || // shoe step 6
+        root.querySelector('[data-test-id="gift-cta"]') // gift entry screen (e.g. CELFORD)
       );
     },
     { timeout: 20000 },
@@ -1215,6 +1239,35 @@ async function clickWidget(page, flow) {
   }, selector);
 
   await page.waitForSelector(selector, { state: "visible", timeout: 5000 });
+
+  // For #vs-inpage: wait for the shadow button and click it.
+  // Legacy inpage (#vs-legacy-inpage) has no shadow root — click the host directly.
+  if (flow !== "kids") {
+    if (await page.evaluate(() => !!document.querySelector("#vs-inpage"))) {
+      // Wait for the shadow root to render its entry point — either the standard
+      // open button or the gift CTA (e.g. CELFORD renders gift-cta directly).
+      await page.waitForFunction(() => {
+        const root = document.querySelector("#vs-inpage")?.shadowRoot;
+        return (
+          !!root?.querySelector('[data-test-id="inpage-open-aoyama-btn"]') ||
+          !!root?.querySelector('[data-test-id="gift-cta"]')
+        );
+      }, { timeout: 15000 });
+
+      await page.evaluate(() => {
+        const root = document.querySelector("#vs-inpage")?.shadowRoot;
+        const btn =
+          root?.querySelector('[data-test-id="inpage-open-aoyama-btn"]') ||
+          root?.querySelector('[data-test-id="gift-cta"]');
+        btn?.click();
+      });
+    } else {
+      // Legacy inpage — no shadow root, click host directly.
+      await page.locator("#vs-legacy-inpage").click({ force: true });
+    }
+
+    return;
+  }
 
   // force: true bypasses any overlay that sneaks in at click time
   await page.locator(selector).click({ force: true });
