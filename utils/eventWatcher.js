@@ -34,9 +34,8 @@ export function startVirtusizeEventWatcher(page) {
         phases[currentPhase].counts[key] =
           (phases[currentPhase].counts[key] || 0) + 1;
 
-        console.log(
-          `[PHASE ${currentPhase}] ${name} (source: ${source}) x${phases[currentPhase].counts[key]}`
-        );
+        const count = phases[currentPhase].counts[key];
+        console.log(`[${source}] ${name}${count > 1 ? ` x${count}` : ""}`);
       } catch {}
     }
   });
@@ -58,15 +57,8 @@ export function startVirtusizeEventWatcher(page) {
       (phases[phase]?.events ?? []).map((e) => `${e.name}::${e.source}`),
     getPhaseCounts: (phase) => phases[phase]?.counts ?? {},
 
-    // Log a summary of all phases (useful at end of test)
-    logPhaseSummary() {
-      for (const [phase, data] of Object.entries(phases)) {
-        const lines = Object.entries(data.counts)
-          .map(([key, n]) => `  ${key} x${n}`)
-          .join("\n");
-        console.log(`[PHASE ${phase}]\n${lines || "  (no events)"}`);
-      }
-    },
+    // no-op — summary removed
+    logPhaseSummary() {},
 
     // reset() clears global state but preserves phase history
     reset() {

@@ -103,7 +103,7 @@
           "tags": [],
           "tests": [
             {
-              "timeout": 90000,
+              "timeout": 180000,
               "annotations": [],
               "expectedStatus": "passed",
               "projectId": "chromium",
@@ -113,59 +113,47 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 58199,
+                  "duration": 78599,
                   "errors": [],
                   "stdout": [
                     {
-                      "text": "Testing URL: https://www.underarmour.co.jp/f/dsg-1093961\n"
+                      "text": "Testing URL: https://brooksbrothers.co.kr/product/detail.html?product_no=5372&cate_no=537&display_group=1\n"
                     },
                     {
                       "text": "[EVENT WATCHER] Phase → onboarding\n"
                     },
                     {
-                      "text": "[PHASE onboarding] user-saw-product (source: integration) x1\n"
-                    },
-                    {
-                      "text": "[PHASE onboarding] user-saw-widget-button (source: integration) x1\n"
-                    },
-                    {
-                      "text": "[PHASE onboarding] inpage-mounted (source: integration) x1\n"
-                    },
-                    {
                       "text": "Flow: apparel\n"
                     },
                     {
-                      "text": "[PHASE onboarding] user-opened-widget (source: inpage) x1\n"
+                      "text": "[integration] user-saw-product\n"
                     },
                     {
-                      "text": "[PHASE onboarding] user-saw-onboarding-screen (source: fit-illustrator) x1\n"
+                      "text": "[integration] user-saw-widget-button\n"
                     },
                     {
-                      "text": "New user → running onboarding\n"
+                      "text": "[integration] inpage-mounted\n"
                     },
                     {
-                      "text": "Completing onboarding (shadow DOM)...\n"
+                      "text": "[inpage] user-opened-widget\n"
                     },
                     {
-                      "text": "[PHASE onboarding] user-selected-age (source: fit-illustrator) x1\n"
+                      "text": "[fit-illustrator] user-saw-onboarding-screen\n"
                     },
                     {
-                      "text": "[PHASE onboarding] user-selected-height (source: fit-illustrator) x1\n"
+                      "text": "[fit-illustrator] user-selected-age\n"
                     },
                     {
-                      "text": "[PHASE onboarding] user-selected-weight (source: fit-illustrator) x1\n"
+                      "text": "[fit-illustrator] user-selected-height\n"
                     },
                     {
-                      "text": "[PHASE onboarding] user-completed-onboarding (source: fit-illustrator) x1\n"
+                      "text": "[fit-illustrator] user-selected-weight\n"
                     },
                     {
-                      "text": "[PHASE onboarding] user-created-silhouette (source: fit-illustrator) x1\n"
+                      "text": "[fit-illustrator] user-completed-onboarding\n"
                     },
                     {
-                      "text": "Onboarding finished.\n"
-                    },
-                    {
-                      "text": "Waiting for recommendation panel...\n"
+                      "text": "[fit-illustrator] user-created-silhouette\n"
                     },
                     {
                       "text": "Body Measurement API Status: \u001b[33m200\u001b[39m\n"
@@ -174,73 +162,52 @@
                       "text": "Recommendation API Status: \u001b[33m200\u001b[39m\n"
                     },
                     {
-                      "text": "[PHASE onboarding] user-got-size-recommendation (source: integration) x1\n"
+                      "text": "[integration] user-got-size-recommendation\n"
                     },
                     {
-                      "text": "[PHASE onboarding] user-opened-panel-tryiton (source: fit-illustrator) x1\n"
+                      "text": "[fit-illustrator] user-opened-panel-tryiton\n"
                     },
                     {
-                      "text": "Recommendation screen detected.\n"
+                      "text": "[fit-illustrator] user-selected-size\n"
                     },
                     {
-                      "text": "Validating recommendation result...\n"
+                      "text": "[fit-illustrator] user-opened-panel-details\n"
                     },
                     {
-                      "text": "Checking for multiple sizes...\n"
+                      "text": "[fit-illustrator] user-opened-panel-compare\n"
                     },
                     {
-                      "text": "Detected size count: \u001b[33m4\u001b[39m\n"
-                    },
-                    {
-                      "text": "[PHASE onboarding] user-selected-size (source: fit-illustrator) x1\n"
-                    },
-                    {
-                      "text": "Size selected successfully.\n"
-                    },
-                    {
-                      "text": "Attempting to add item to wardrobe...\n"
-                    },
-                    {
-                      "text": "[PHASE onboarding] user-opened-panel-details (source: fit-illustrator) x1\n"
-                    },
-                    {
-                      "text": "[PHASE onboarding] user-opened-panel-compare (source: fit-illustrator) x1\n"
-                    },
-                    {
-                      "text": "[PHASE onboarding] user-added-product (source: fit-illustrator) x1\n"
-                    },
-                    {
-                      "text": "Item added to wardrobe successfully.\n"
+                      "text": "[fit-illustrator] user-added-product\n"
                     },
                     {
                       "text": "[EVENT WATCHER] Phase → refresh\n"
                     },
                     {
-                      "text": "Validating PDP refresh behavior\n"
+                      "text": "[integration] user-saw-product\n"
                     },
                     {
-                      "text": "[PHASE refresh] user-saw-product (source: integration) x1\n"
+                      "text": "[integration] user-saw-widget-button\n"
                     },
                     {
-                      "text": "[PHASE refresh] user-saw-widget-button (source: integration) x1\n"
+                      "text": "[integration] inpage-mounted\n"
                     },
                     {
-                      "text": "[PHASE refresh] inpage-mounted (source: integration) x1\n"
+                      "text": "[inpage] user-opened-widget\n"
+                    },
+                    {
+                      "text": "[fit-illustrator] user-opened-panel-tryiton\n"
                     },
                     {
                       "text": "Recommendation API Status: \u001b[33m200\u001b[39m\n"
                     },
                     {
-                      "text": "[PHASE refresh] user-got-size-recommendation (source: integration) x1\n"
+                      "text": "[fit-illustrator] user-selected-size\n"
                     },
                     {
-                      "text": "[PHASE refresh] user-selected-size (source: inpage) x1\n"
+                      "text": "[integration] user-got-size-recommendation\n"
                     },
                     {
-                      "text": "[PHASE refresh] user-opened-widget (source: inpage) x1\n"
-                    },
-                    {
-                      "text": "[PHASE refresh] user-opened-panel-tryiton (source: fit-illustrator) x1\n"
+                      "text": "[inpage] user-selected-size\n"
                     },
                     {
                       "text": "[EVENT WATCHER] Phase → gift\n"
@@ -249,49 +216,49 @@
                       "text": "Running VS Gift flow\n"
                     },
                     {
-                      "text": "[PHASE gift] user-opened-widget (source: gift) x1\n"
+                      "text": "[gift] user-opened-widget\n"
                     },
                     {
-                      "text": "[PHASE gift] user-saw-onboarding-screen (source: gift) x1\n"
+                      "text": "[gift] user-saw-onboarding-screen\n"
                     },
                     {
                       "text": "Gift onboarding detected\n"
                     },
                     {
+                      "text": "[gift] user-selected-gender\n"
+                    },
+                    {
                       "text": "Selected gender: female\n"
                     },
                     {
-                      "text": "[PHASE gift] user-selected-gender (source: gift) x1\n"
+                      "text": "[gift] user-clicked-age\n"
                     },
                     {
-                      "text": "[PHASE gift] user-clicked-age (source: gift) x1\n"
-                    },
-                    {
-                      "text": "[PHASE gift] user-selected-age-16_19 (source: gift) x1\n"
+                      "text": "[gift] user-selected-age-16_19\n"
                     },
                     {
                       "text": "Selected age\n"
                     },
                     {
-                      "text": "[PHASE gift] user-clicked-height (source: gift) x1\n"
+                      "text": "[gift] user-clicked-height\n"
                     },
                     {
-                      "text": "[PHASE gift] user-selected-height-145_149 (source: gift) x1\n"
+                      "text": "[gift] user-selected-height-145_149\n"
                     },
                     {
                       "text": "Selected height\n"
                     },
                     {
-                      "text": "[PHASE gift] user-clicked-bodyType (source: gift) x1\n"
+                      "text": "[gift] user-clicked-bodyType\n"
                     },
                     {
-                      "text": "[PHASE gift] user-selected-bodyType-1 (source: gift) x1\n"
+                      "text": "[gift] user-selected-bodyType-1\n"
                     },
                     {
                       "text": "Selected body type\n"
                     },
                     {
-                      "text": "[PHASE gift] user-completed-onboarding (source: gift) x1\n"
+                      "text": "[gift] user-completed-onboarding\n"
                     },
                     {
                       "text": "Clicked see ideal fit button\n"
@@ -303,7 +270,7 @@
                       "text": "Recommendation API Status: \u001b[33m200\u001b[39m\n"
                     },
                     {
-                      "text": "[PHASE gift] user-opened-panel-rec (source: gift) x1\n"
+                      "text": "[gift] user-opened-panel-rec\n"
                     },
                     {
                       "text": "Gift recommendation result detected\n"
@@ -315,34 +282,37 @@
                       "text": "[EVENT WATCHER] Phase → gift-refresh\n"
                     },
                     {
-                      "text": "[PHASE gift-refresh] user-saw-product (source: integration) x1\n"
+                      "text": "[integration] user-saw-product\n"
                     },
                     {
-                      "text": "[PHASE gift-refresh] user-saw-widget-button (source: integration) x1\n"
+                      "text": "[integration] user-saw-widget-button\n"
                     },
                     {
-                      "text": "[PHASE gift-refresh] inpage-mounted (source: integration) x1\n"
-                    },
-                    {
-                      "text": "Recommendation API Status: \u001b[33m200\u001b[39m\n"
+                      "text": "[integration] inpage-mounted\n"
                     },
                     {
                       "text": "Recommendation API Status: \u001b[33m200\u001b[39m\n"
                     },
                     {
-                      "text": "[PHASE gift-refresh] user-got-size-recommendation (source: integration) x1\n"
+                      "text": "[inpage] user-opened-widget\n"
                     },
                     {
-                      "text": "[PHASE gift-refresh] user-selected-size (source: inpage) x1\n"
+                      "text": "[fit-illustrator] user-opened-panel-tryiton\n"
                     },
                     {
-                      "text": "[PHASE gift-refresh] user-opened-widget (source: inpage) x1\n"
+                      "text": "[gift] user-opened-widget\n"
                     },
                     {
-                      "text": "[PHASE gift-refresh] user-opened-panel-tryiton (source: fit-illustrator) x1\n"
+                      "text": "Recommendation API Status: \u001b[33m200\u001b[39m\n"
                     },
                     {
-                      "text": "[PHASE gift-refresh] user-opened-widget (source: gift) x1\n"
+                      "text": "[fit-illustrator] user-selected-size\n"
+                    },
+                    {
+                      "text": "[integration] user-got-size-recommendation\n"
+                    },
+                    {
+                      "text": "[inpage] user-selected-size\n"
                     },
                     {
                       "text": "Body Measurement API Status: \u001b[33m200\u001b[39m\n"
@@ -351,30 +321,18 @@
                       "text": "Recommendation API Status: \u001b[33m200\u001b[39m\n"
                     },
                     {
-                      "text": "[PHASE gift-refresh] user-opened-panel-rec (source: gift) x1\n"
+                      "text": "[gift] user-opened-panel-rec\n"
                     },
                     {
                       "text": "Gift refresh: recommendation visible\n"
                     },
                     {
-                      "text": "[PHASE onboarding]\n  user-saw-product::integration x1\n  user-saw-widget-button::integration x1\n  inpage-mounted::integration x1\n  user-opened-widget::inpage x1\n  user-saw-onboarding-screen::fit-illustrator x1\n  user-selected-age::fit-illustrator x1\n  user-selected-height::fit-illustrator x1\n  user-selected-weight::fit-illustrator x1\n  user-completed-onboarding::fit-illustrator x1\n  user-created-silhouette::fit-illustrator x1\n  user-got-size-recommendation::integration x1\n  user-opened-panel-tryiton::fit-illustrator x1\n  user-selected-size::fit-illustrator x1\n  user-opened-panel-details::fit-illustrator x1\n  user-opened-panel-compare::fit-illustrator x1\n  user-added-product::fit-illustrator x1\n"
-                    },
-                    {
-                      "text": "[PHASE refresh]\n  user-saw-product::integration x1\n  user-saw-widget-button::integration x1\n  inpage-mounted::integration x1\n  user-got-size-recommendation::integration x1\n  user-selected-size::inpage x1\n  user-opened-widget::inpage x1\n  user-opened-panel-tryiton::fit-illustrator x1\n"
-                    },
-                    {
-                      "text": "[PHASE gift]\n  user-opened-widget::gift x1\n  user-saw-onboarding-screen::gift x1\n  user-selected-gender::gift x1\n  user-clicked-age::gift x1\n  user-selected-age-16_19::gift x1\n  user-clicked-height::gift x1\n  user-selected-height-145_149::gift x1\n  user-clicked-bodyType::gift x1\n  user-selected-bodyType-1::gift x1\n  user-completed-onboarding::gift x1\n  user-opened-panel-rec::gift x1\n"
-                    },
-                    {
-                      "text": "[PHASE gift-refresh]\n  user-saw-product::integration x1\n  user-saw-widget-button::integration x1\n  inpage-mounted::integration x1\n  user-got-size-recommendation::integration x1\n  user-selected-size::inpage x1\n  user-opened-widget::inpage x1\n  user-opened-panel-tryiton::fit-illustrator x1\n  user-opened-widget::gift x1\n  user-opened-panel-rec::gift x1\n"
-                    },
-                    {
-                      "text": "QA_RESULT: {\"url\":\"https://www.underarmour.co.jp/f/dsg-1093961\",\"store\":\"under_armour\",\"productType\":\"tShirt\",\"userType\":\"NEW\",\"status\":\"passed\",\"browser\":\"chromium\",\"durationMs\":57380}\n"
+                      "text": "QA_RESULT: {\"url\":\"https://brooksbrothers.co.kr/product/detail.html?product_no=5372&cate_no=537&display_group=1\",\"store\":\"brooks_brothers_korea\",\"productType\":\"sweater\",\"userType\":\"NEW\",\"status\":\"passed\",\"browser\":\"chromium\",\"durationMs\":77769}\n"
                     }
                   ],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-03-08T09:22:28.096Z",
+                  "startTime": "2026-03-08T14:05:09.703Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -392,8 +350,8 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2026-03-08T09:22:27.504Z",
-    "duration": 60478.616,
+    "startTime": "2026-03-08T14:05:09.065Z",
+    "duration": 81439.684,
     "expected": 1,
     "skipped": 0,
     "unexpected": 0,

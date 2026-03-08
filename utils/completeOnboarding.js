@@ -1,5 +1,4 @@
 export async function completeOnboarding(page) {
-  console.log("Completing onboarding (shadow DOM)...");
 
   // Wait until the shadow root is available
   await page.waitForFunction(
@@ -71,5 +70,4 @@ export async function completeOnboarding(page) {
   await submitButton.click();
   await buttonHandle.dispose();
 
-  console.log("Onboarding finished.");
 }

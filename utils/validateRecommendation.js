@@ -15,6 +15,5 @@ async function waitForRecommendation(eventWatcher, timeout = 10000) {
 }
 
 export async function validateRecommendation(eventWatcher) {
-  console.log("Validating recommendation result...");
-  await waitForRecommendation(eventWatcher);
+await waitForRecommendation(eventWatcher);
 }

@@ -16,7 +16,6 @@ export async function blockMarketingScripts(page) {
     ];
 
     if (blocked.some((k) => url.includes(k))) {
-      console.log("Blocked marketing script:", url);
       return route.abort();
     }
 

@@ -1,6 +1,4 @@
 export async function addItemToWardrobe(page, firedEvents) {
-  console.log("Attempting to add item to wardrobe...");
-
   try {
     // Wait for product details button
     await page.waitForFunction(
@@ -44,7 +42,6 @@ export async function addItemToWardrobe(page, firedEvents) {
 
     await page.waitForTimeout(1500);
 
-    console.log("Item added to wardrobe successfully.");
   } catch (err) {
     console.log("Wardrobe action skipped or failed:", err.message);
   }

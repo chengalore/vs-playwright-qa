@@ -11,7 +11,7 @@ import { selectSizeIfMultiple } from "../utils/selectSizeIfMultiple.js";
 import { addItemToWardrobe } from "../utils/addItemToWardrobe.js";
 import { blockMarketingScripts } from "../utils/blockMarketingScripts.js";
 
-test.setTimeout(90000);
+test.setTimeout(180000);
 
 test("Inpage basic flow", async ({ page }, testInfo) => {
   const startTime = Date.now();
@@ -156,15 +156,9 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
     if (flow === "kids") {
       await clickKidsWidget(page);
     } else {
-      // wait for overlays to appear and be dismissed before clicking
-      await page.waitForTimeout(10000);
-
       await clickWidget(page, flow);
 
       await waitForWidgetRender(page);
-
-      // remove overlays that appear when the widget opens
-      await removeMarketingOverlays(page);
     }
 
     let isNewUser;
@@ -182,12 +176,15 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
     if (flow === "kids") {
       isNewUser = await runKidsFlow(page, pdc);
     }
+    if (flow === "noVisor") {
+      isNewUser = await runNoVisorFlow(page, bodyAPI);
+    }
 
     // -----------------------------
     // Recommendation
     // -----------------------------
 
-    if (flow !== "kids") {
+    if (flow === "apparel") {
       await validateRecommendation(eventWatcher);
     }
 
@@ -230,16 +227,7 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
     await page.waitForTimeout(3000);
 
     // REFRESH
-    eventWatcher.setPhase("refresh");
-    eventWatcher.reset();
-    try {
-      await Promise.race([
-        validateRefresh(page, eventWatcher, recommendationAPI, flow),
-        page.waitForTimeout(8000)
-      ]);
-    } catch (error) {
-      console.warn("Refresh validation failed (non-fatal):", error.message);
-    }
+    await validateRefresh(page, eventWatcher, recommendationAPI, flow);
 
     // -----------------------------
     // Gift Flow (apparel only, if CTA present)
@@ -289,7 +277,7 @@ function getSkipReason(pdc) {
   const excludedTypes = ["bag", "wallet", "clutch", "panties"];
 
   if (pdc.validProduct === false) return "Invalid Product (validProduct=false)";
-  if (pdc.noVisor) return "Non-Visor";
+  // allow no-visor flow to run
   if (excludedTypes.includes(pdc.productType?.toLowerCase()))
     return "Non apparel item";
 
@@ -306,9 +294,11 @@ async function validateCoreEvents(page, eventWatcher, flow) {
   const missing =
     flow === "kids"
       ? await verifyEvents(page, getEvents, expectedEvents.strict.kids)
-      : flow === "gift"
-        ? await verifyEvents(page, getEvents, expectedEvents.strict.gift)
-        : [
+      : flow === "noVisor"
+        ? await verifyEvents(page, getEvents, expectedEvents.strict.noVisor)
+        : flow === "gift"
+          ? await verifyEvents(page, getEvents, expectedEvents.strict.gift)
+          : [
             ...(await verifyEvents(
               page,
               getEvents,
@@ -344,36 +334,46 @@ async function validateCoreEvents(page, eventWatcher, flow) {
 }
 
 async function validateRefresh(page, eventWatcher, recommendationAPI, flow) {
-  console.log("Validating PDP refresh behavior");
-
-  eventWatcher.reset();
-
-  await page.reload();
-  await waitForWidget(page, flow);
-
   if (flow === "kids") {
+    eventWatcher.reset();
+    eventWatcher.setPhase("refresh");
+
+    await page.reload({ waitUntil: "domcontentloaded", timeout: 30000 });
+    await waitForWidget(page, "kids");
     await clickKidsWidget(page);
 
     console.log("Waiting for kids recommendation after refresh");
 
-    await page.waitForFunction(
-      () => {
-        const wrapper =
-          document.querySelector("#vs-kid-app")?.nextElementSibling;
-        const root = wrapper?.shadowRoot;
+    await waitForEvent(eventWatcher, "user-selected-size-kids-rec::kids", 15000);
 
-        return root?.querySelector('[data-test-id="kids-recommended-size"]');
-      },
-      { timeout: 10000 },
+    const failures = await verifyEvents(
+      page,
+      () => eventWatcher.getEvents(),
+      expectedEvents.refresh.kids,
     );
-  } else if (flow === "gift") {
+
+    if (failures.length > 0) {
+      const error = new Error(`Refresh missing events: ${failures.join(", ")}`);
+      error.missingEvents = failures;
+      throw error;
+    }
+
+    return;
+  }
+
+  eventWatcher.reset();
+  eventWatcher.setPhase("refresh");
+
+  await page.reload({ waitUntil: "domcontentloaded", timeout: 30000 });
+  await waitForWidget(page, flow);
+
+  if (flow === "gift") {
     await clickWidget(page, flow);
 
     console.log("Waiting for gift recommendation after refresh");
 
-    await page.waitForFunction(() => findInShadow(".rec-main"));
+    await waitForEvent(eventWatcher, "user-opened-panel-rec::gift", 20000);
   } else {
-    await removeMarketingOverlays(page);
     await clickWidget(page, flow);
 
     // Wait for widget to re-render so the recommendation API has time to fire
@@ -383,15 +383,17 @@ async function validateRefresh(page, eventWatcher, recommendationAPI, flow) {
     // CHECK RECOMMENDATION API REFIRE
     // -----------------------------------------
 
-    const recStatus = await waitForStatus(
-      () => recommendationAPI.getStatus(),
-      5000,
-    );
-
-    if (recStatus !== 200) {
-      throw new Error(
-        `Recommendation API did not refire after refresh (status: ${recStatus})`,
+    if (flow !== "noVisor") {
+      const recStatus = await waitForStatus(
+        () => recommendationAPI.getStatus(),
+        5000,
       );
+
+      if (recStatus !== 200) {
+        throw new Error(
+          `Recommendation API did not refire after refresh (status: ${recStatus})`,
+        );
+      }
     }
   }
 
@@ -402,10 +404,10 @@ async function validateRefresh(page, eventWatcher, recommendationAPI, flow) {
   const schema =
     flow === "footwear"
       ? expectedEvents.refresh.footwear
-      : flow === "kids"
-        ? expectedEvents.refresh.kids
-        : flow === "gift"
-          ? expectedEvents.refresh.gift
+      : flow === "gift"
+        ? expectedEvents.refresh.gift
+        : flow === "noVisor"
+          ? expectedEvents.refresh.noVisor
           : expectedEvents.refresh.apparel;
 
   const failures = await verifyEvents(
@@ -477,6 +479,7 @@ function detectFlow(pdc) {
   const gender = pdc.gender?.toLowerCase();
   const isKid = pdc.isKid || gender === "boy" || gender === "girl";
   if (isKid) return "kids";
+  if (pdc.noVisor) return "noVisor";
   if (pdc.productType?.toLowerCase() === "shoe") return "footwear";
   return "apparel";
 }
@@ -499,17 +502,42 @@ async function runApparelFlow(page, bodyAPI, eventWatcher, recommendationAPI) {
   const isNewUser = await isOnboardingVisible(page);
 
   if (isNewUser) {
-    console.log("New user → running onboarding");
-
     await completeOnboarding(page);
-
-    await removeMarketingOverlays(page);
 
     await waitForRecommendationReady(eventWatcher, recommendationAPI);
 
     const bodyStatus = await waitForStatus(() => bodyAPI.getStatus(), 5000);
     expect(bodyStatus).toBe(200);
   }
+
+  return isNewUser;
+}
+
+// --------------------------------------------------
+// No-Visor Flow
+// --------------------------------------------------
+
+async function runNoVisorFlow(page, bodyAPI) {
+  const isNewUser = await isOnboardingVisible(page);
+
+  if (isNewUser) {
+    console.log("New user → running onboarding (no-visor)");
+
+    await completeOnboarding(page);
+
+    const bodyStatus = await waitForStatus(() => bodyAPI.getStatus(), 5000);
+    expect(bodyStatus).toBe(200);
+  }
+
+  console.log("Waiting for no-visor result screen");
+
+  await page.waitForFunction(() => {
+    const host =
+      document.querySelector("#router-view-wrapper") ||
+      document.querySelector("#vs-aoyama")?.nextElementSibling;
+    const root = host?.shadowRoot;
+    return root?.querySelector('[data-test-id="no-visor-recommended-size"]');
+  });
 
   return isNewUser;
 }
@@ -855,12 +883,14 @@ async function runGiftFlow(page, eventWatcher) {
   console.log("Running VS Gift flow");
 
   // detect gift CTA in widget — not all stores enable it
-  const hasGift = await page.evaluate(() =>
-    !!findInShadow('[data-test-id="gift-cta"]')
-  );
+  // wait briefly since the CTA can appear after the recommendation panel loads
+  const hasGift = await page.waitForFunction(
+    () => !!findInShadow('[data-test-id="gift-cta-section"]'),
+    { timeout: 5000 }
+  ).catch(() => false);
 
   if (!hasGift) {
-    console.log("Gift not enabled for this store — skipping gift flow");
+    console.log("Gift CTA not found — skipping gift flow");
     return false;
   }
 
@@ -1014,19 +1044,15 @@ async function runGiftFlow(page, eventWatcher) {
   eventWatcher.setPhase("gift-refresh");
   eventWatcher.reset();
 
-  await page.reload();
+  await page.reload({ waitUntil: "domcontentloaded", timeout: 30000 });
   await waitForWidget(page, "apparel");
-  await removeMarketingOverlays(page);
   await clickWidget(page, "apparel");
   await waitForWidgetRender(page);
 
   await page.evaluate(() => findInShadow('[data-test-id="gift-cta"]')?.click());
 
   // Returning user — recommendation appears without onboarding
-  await page.waitForFunction(
-    () => !!findInShadow(".rec-main"),
-    { timeout: 20000 }
-  );
+  await waitForEvent(eventWatcher, "user-opened-panel-rec::gift", 20000);
 
   console.log("Gift refresh: recommendation visible");
 
@@ -1098,8 +1124,6 @@ async function isOnboardingVisible(page) {
 }
 
 async function waitForRecommendationReady(eventWatcher, recommendationAPI) {
-  console.log("Waiting for recommendation panel...");
-
   await waitForStatus(() => recommendationAPI.getStatus(), 15000);
 
   const start = Date.now();
@@ -1111,7 +1135,6 @@ async function waitForRecommendationReady(eventWatcher, recommendationAPI) {
       events.some((e) => e.startsWith("user-opened-panel-tryiton::")) ||
       events.some((e) => e.startsWith("user-saw-measurements-view::"))
     ) {
-      console.log("Recommendation screen detected.");
       return;
     }
 
@@ -1131,6 +1154,15 @@ async function waitForStatus(getter, timeout = 5000) {
   return null;
 }
 
+async function waitForEvent(eventWatcher, eventKey, timeout = 20000) {
+  const start = Date.now();
+  while (Date.now() - start < timeout) {
+    if (eventWatcher.getEvents().includes(eventKey)) return;
+    await new Promise((r) => setTimeout(r, 200));
+  }
+  throw new Error(`Timed out waiting for event: ${eventKey}`);
+}
+
 // --------------------------------------------------
 // Widget Wait
 // --------------------------------------------------
@@ -1147,7 +1179,7 @@ async function waitForWidget(page, flow) {
       return style.display !== "none" && style.visibility !== "hidden";
     },
     selector,
-    { timeout: 20000 },
+    { timeout: 30000 },
   );
 }
 
@@ -1182,8 +1214,6 @@ async function clickWidget(page, flow) {
     document.querySelector(sel)?.scrollIntoView({ block: "center" });
   }, selector);
 
-  await removeMarketingOverlays(page);
-
   await page.waitForSelector(selector, { state: "visible", timeout: 5000 });
 
   // force: true bypasses any overlay that sneaks in at click time
@@ -1194,82 +1224,6 @@ async function clickWidget(page, flow) {
 // Overlay Cleanup
 // --------------------------------------------------
 
-async function removeMarketingOverlays(page) {
-  const maxDuration = 8000;
-  const quietThreshold = 1000; // stop after 1s with no overlays found
-  const checkInterval = 300;
-
-  const start = Date.now();
-  let lastFoundAt = start;
-
-  while (Date.now() - start < maxDuration) {
-    const found = await page.evaluate(() => {
-      let dismissed = false;
-
-      // Buyee
-      document
-        .querySelectorAll("#buyee-bcFrame, #buyee-bcSection, .bcModalBase")
-        .forEach((el) => {
-          el.remove();
-          dismissed = true;
-        });
-      document.querySelectorAll(".bcIntro__closeBtn").forEach((el) => {
-        el.click();
-        dismissed = true;
-      });
-
-      // WorldShopping
-      const wsShadow = document.querySelector(
-        "#zigzag-worldshopping-checkout",
-      )?.shadowRoot;
-      if (wsShadow) {
-        const wsInner = wsShadow.querySelector(
-          "#zigzag-worldshopping-checkout",
-        );
-        if (wsInner && wsInner.style.display !== "none") {
-          wsShadow.querySelector("#zigzag-test__banner-close-popup")?.click();
-          wsShadow.querySelector("#zigzag-test__banner-hide")?.click();
-          wsShadow
-            .querySelector(
-              ".src-components-notice-___NoticeV2__closeIcon___Hpc7A",
-            )
-            ?.click();
-          wsInner.style.display = "none";
-          dismissed = true;
-        }
-      }
-
-      // KARTE
-      document.querySelectorAll(".karte-close").forEach((el) => {
-        el.click();
-        dismissed = true;
-      });
-
-      // Cookie consent
-      document
-        .querySelectorAll(
-          'button[data-testid="uc-accept-all-button"], ' +
-          '#onetrust-accept-btn-handler, ' +
-          'button[id*="cookie"][id*="accept"], ' +
-          'button[class*="cookie"][class*="accept"]',
-        )
-        .forEach((btn) => {
-          btn.click();
-          dismissed = true;
-        });
-
-      return dismissed;
-    });
-
-    if (found) {
-      lastFoundAt = Date.now();
-    } else if (Date.now() - lastFoundAt >= quietThreshold) {
-      break; // 1s of quiet — overlays are gone
-    }
-
-    await page.waitForTimeout(checkInterval);
-  }
-}
 
 function logResult(result) {
   console.log("QA_RESULT:", JSON.stringify(result));

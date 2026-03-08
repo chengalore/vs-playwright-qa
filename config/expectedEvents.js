@@ -13,6 +13,12 @@ export const expectedEvents = {
       "user-created-footwear-silhouette",
       "user-opened-panel-rec",
     ],
+    noVisor: [
+      "user-saw-product",
+      "user-saw-widget-button",
+      "user-opened-widget",
+      "user-created-silhouette",
+    ],
     kids: [
       "user-opened-widget::kids",
       "user-saw-onboarding-screen::kids",
@@ -32,12 +38,16 @@ export const expectedEvents = {
     ],
   },
   refresh: {
-    apparel: [
+    noVisor: [
       "user-saw-product",
       "user-saw-widget-button",
       "inpage-mounted",
-      "user-got-size-recommendation",
-      "user-opened-panel-tryiton",
+    ],
+    apparel: [
+      "user-saw-product::integration",
+      "user-saw-widget-button::integration",
+      "user-selected-size::inpage",
+      "user-got-size-recommendation::integration",
     ],
     footwear: [
       "user-saw-product",
@@ -48,15 +58,16 @@ export const expectedEvents = {
       "user-opened-panel-rec",
     ],
     kids: [
-      "user-saw-product",
-      "user-saw-widget-button",
-      "user-saw-widget-kids",
+      "user-saw-product::integration",
+      "user-saw-widget-button::integration",
+      "user-saw-widget-kids::integration",
       "user-selected-size-kids-rec::kids",
     ],
     gift: [
-      "user-saw-product",
-      "user-saw-widget-button",
-      "user-opened-panel-rec",
+      "user-saw-product::integration",
+      "user-saw-widget-button::integration",
+      "user-selected-size::inpage",
+      "user-got-size-recommendation::integration",
     ],
   },
 };
