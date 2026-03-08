@@ -113,14 +113,11 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 34117,
+                  "duration": 41162,
                   "errors": [],
                   "stdout": [
                     {
-                      "text": "Testing URL: https://onlinestore.barneys.co.jp/items/2257767\n"
-                    },
-                    {
-                      "text": "Blocked marketing script: https://checkout-api.worldshopping.jp/v1/script?token=onlinestore_barneys_co_jp\n"
+                      "text": "Testing URL: https://www.gap.co.jp/gap/relaxed-gap-logo-quarter-zip-sweatshirt/645759006.html\n"
                     },
                     {
                       "text": "Flow: apparel\n"
@@ -189,7 +186,7 @@
                       "text": "Checking for multiple sizes...\n"
                     },
                     {
-                      "text": "Detected size count: \u001b[33m2\u001b[39m\n"
+                      "text": "Detected size count: \u001b[33m5\u001b[39m\n"
                     },
                     {
                       "text": "Captured Event: user-selected-size (source: fit-illustrator) x1\n"
@@ -216,9 +213,6 @@
                       "text": "Validating PDP refresh behavior\n"
                     },
                     {
-                      "text": "Blocked marketing script: https://checkout-api.worldshopping.jp/v1/script?token=onlinestore_barneys_co_jp\n"
-                    },
-                    {
                       "text": "Captured Event: user-saw-product (source: integration) x1\n"
                     },
                     {
@@ -243,12 +237,12 @@
                       "text": "Captured Event: user-opened-panel-tryiton (source: fit-illustrator) x1\n"
                     },
                     {
-                      "text": "QA_RESULT: {\"url\":\"https://onlinestore.barneys.co.jp/items/2257767\",\"store\":\"barneys_japan\",\"productType\":\"coat\",\"userType\":\"NEW\",\"status\":\"passed\",\"browser\":\"chromium\",\"durationMs\":33565}\n"
+                      "text": "QA_RESULT: {\"url\":\"https://www.gap.co.jp/gap/relaxed-gap-logo-quarter-zip-sweatshirt/645759006.html\",\"store\":\"gap_japan\",\"productType\":\"sweater\",\"userType\":\"NEW\",\"status\":\"passed\",\"browser\":\"chromium\",\"durationMs\":40297}\n"
                     }
                   ],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-03-07T16:02:51.445Z",
+                  "startTime": "2026-03-08T04:15:44.087Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -266,8 +260,8 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2026-03-07T16:02:50.583Z",
-    "duration": 36490.975,
+    "startTime": "2026-03-08T04:15:43.445Z",
+    "duration": 43468.422,
     "expected": 1,
     "skipped": 0,
     "unexpected": 0,

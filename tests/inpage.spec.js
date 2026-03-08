@@ -96,6 +96,20 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
 
   try {
     await page.goto(url);
+
+    // Dismiss cookie consent banners that appear shortly after load
+    await page.waitForTimeout(2000);
+    await page.evaluate(() => {
+      document
+        .querySelectorAll(
+          'button[data-testid="uc-accept-all-button"], ' +
+          '#onetrust-accept-btn-handler, ' +
+          'button[id*="cookie"][id*="accept"], ' +
+          'button[class*="cookie"][class*="accept"]',
+        )
+        .forEach((btn) => btn.click());
+    });
+
     await waitForPDC(pdc);
 
     // -----------------------------
@@ -128,6 +142,7 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
       () => {
         return (
           document.querySelector("#vs-inpage") ||
+          document.querySelector("#vs-legacy-inpage") ||
           document.querySelector("#vs-kid")
         );
       },
@@ -181,7 +196,7 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
 
     if (flow === "apparel") {
       await selectSizeIfMultiple(page, eventWatcher);
-      await page.waitForTimeout(3000);
+      await page.waitForTimeout(4000);
       await Promise.race([
         addItemToWardrobe(page, eventWatcher.getEvents()),
         page.waitForTimeout(8000),
@@ -210,6 +225,8 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
     // -----------------------------
     // Refresh Validation
     // -----------------------------
+
+    await page.waitForTimeout(3000);
 
     try {
       await Promise.race([
@@ -885,7 +902,7 @@ async function waitForStatus(getter, timeout = 5000) {
 // --------------------------------------------------
 
 async function waitForWidget(page, flow) {
-  const selector = flow === "kids" ? "#vs-kid" : "#vs-inpage";
+  const selector = flow === "kids" ? "#vs-kid" : ":is(#vs-inpage, #vs-legacy-inpage)";
 
   await page.waitForFunction(
     (sel) => {
@@ -925,7 +942,7 @@ async function clickKidsWidget(page) {
 }
 
 async function clickWidget(page, flow) {
-  const selector = flow === "kids" ? "#vs-kid" : "#vs-inpage";
+  const selector = flow === "kids" ? "#vs-kid" : ":is(#vs-inpage, #vs-legacy-inpage)";
 
   await page.evaluate((sel) => {
     document.querySelector(sel)?.scrollIntoView({ block: "center" });
@@ -993,6 +1010,19 @@ async function removeMarketingOverlays(page) {
         el.click();
         dismissed = true;
       });
+
+      // Cookie consent
+      document
+        .querySelectorAll(
+          'button[data-testid="uc-accept-all-button"], ' +
+          '#onetrust-accept-btn-handler, ' +
+          'button[id*="cookie"][id*="accept"], ' +
+          'button[class*="cookie"][class*="accept"]',
+        )
+        .forEach((btn) => {
+          btn.click();
+          dismissed = true;
+        });
 
       return dismissed;
     });
