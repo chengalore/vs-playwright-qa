@@ -22,6 +22,7 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
   console.log("Testing URL:", url);
 
   const eventWatcher = startVirtusizeEventWatcher(page);
+  eventWatcher.setPhase("onboarding");
   const pdc = startPDCWatcher(page);
   const recommendationAPI = startRecommendationWatcher(page);
   const bodyAPI = startBodyMeasurementWatcher(page);
@@ -228,6 +229,9 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
 
     await page.waitForTimeout(3000);
 
+    // REFRESH
+    eventWatcher.setPhase("refresh");
+    eventWatcher.reset();
     try {
       await Promise.race([
         validateRefresh(page, eventWatcher, recommendationAPI, flow),
@@ -236,6 +240,19 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
     } catch (error) {
       console.warn("Refresh validation failed (non-fatal):", error.message);
     }
+
+    // -----------------------------
+    // Gift Flow (apparel only, if CTA present)
+    // -----------------------------
+
+    if (flow === "apparel") {
+      // GIFT
+      eventWatcher.setPhase("gift");
+      eventWatcher.reset();
+      await runGiftFlow(page, eventWatcher);
+    }
+
+    eventWatcher.logPhaseSummary();
 
     // -----------------------------
     // PASS
@@ -289,31 +306,33 @@ async function validateCoreEvents(page, eventWatcher, flow) {
   const missing =
     flow === "kids"
       ? await verifyEvents(page, getEvents, expectedEvents.strict.kids)
-      : [
-          ...(await verifyEvents(
-            page,
-            getEvents,
-            expectedEvents.strict.baseline,
-          )),
-          ...(flow === "footwear"
-            ? await verifyEvents(
-                page,
-                getEvents,
-                expectedEvents.strict.footwear,
-              )
-            : [
-                ...(await verifyEvents(
+      : flow === "gift"
+        ? await verifyEvents(page, getEvents, expectedEvents.strict.gift)
+        : [
+            ...(await verifyEvents(
+              page,
+              getEvents,
+              expectedEvents.strict.baseline,
+            )),
+            ...(flow === "footwear"
+              ? await verifyEvents(
                   page,
                   getEvents,
-                  expectedEvents.strict.recommendation,
-                )),
-                ...(await verifyEvents(
-                  page,
-                  getEvents,
-                  expectedEvents.strict.panels,
-                )),
-              ]),
-        ];
+                  expectedEvents.strict.footwear,
+                )
+              : [
+                  ...(await verifyEvents(
+                    page,
+                    getEvents,
+                    expectedEvents.strict.recommendation,
+                  )),
+                  ...(await verifyEvents(
+                    page,
+                    getEvents,
+                    expectedEvents.strict.panels,
+                  )),
+                ]),
+          ];
 
   if (missing.length > 0) {
     const error = new Error(`Missing events: ${missing.join(", ")}`);
@@ -347,6 +366,12 @@ async function validateRefresh(page, eventWatcher, recommendationAPI, flow) {
       },
       { timeout: 10000 },
     );
+  } else if (flow === "gift") {
+    await clickWidget(page, flow);
+
+    console.log("Waiting for gift recommendation after refresh");
+
+    await page.waitForFunction(() => findInShadow(".rec-main"));
   } else {
     await removeMarketingOverlays(page);
     await clickWidget(page, flow);
@@ -379,7 +404,9 @@ async function validateRefresh(page, eventWatcher, recommendationAPI, flow) {
       ? expectedEvents.refresh.footwear
       : flow === "kids"
         ? expectedEvents.refresh.kids
-        : expectedEvents.refresh.apparel;
+        : flow === "gift"
+          ? expectedEvents.refresh.gift
+          : expectedEvents.refresh.apparel;
 
   const failures = await verifyEvents(
     page,
@@ -453,6 +480,16 @@ function detectFlow(pdc) {
   if (pdc.productType?.toLowerCase() === "shoe") return "footwear";
   return "apparel";
 }
+
+async function detectGiftEntry(page) {
+  return await page.evaluate(() => {
+    return !!findInShadow('[data-test-id="gift-cta"]');
+  });
+}
+
+// --------------------------------------------------
+// Body Type Selection
+// --------------------------------------------------
 
 // --------------------------------------------------
 // Apparel Flow
@@ -806,6 +843,203 @@ async function runKidsFlow(page, _pdc) {
   });
 
   console.log("Kids onboarding completed successfully.");
+
+  return true;
+}
+
+// --------------------------------------------------
+// Gift Flow
+// --------------------------------------------------
+
+async function runGiftFlow(page, eventWatcher) {
+  console.log("Running VS Gift flow");
+
+  // detect gift CTA in widget — not all stores enable it
+  const hasGift = await page.evaluate(() =>
+    !!findInShadow('[data-test-id="gift-cta"]')
+  );
+
+  if (!hasGift) {
+    console.log("Gift not enabled for this store — skipping gift flow");
+    return false;
+  }
+
+  // ── 1. Open gift CTA ──────────────────────────────────────────────────────
+
+  await page.evaluate(() =>
+    findInShadow('[data-test-id="gift-cta"]')?.click()
+  );
+
+  // Wait for onboarding to mount
+  await page.waitForFunction(
+    () => !!findInShadow('[data-test-id="input-age-desktop"]'),
+    { timeout: 15000 }
+  );
+
+  console.log("Gift onboarding detected");
+
+  // ── 2. Gender ─────────────────────────────────────────────────────────────
+
+  await page.evaluate(() => {
+    const radio = findInShadow('input[name="selectGender"][value="female"]');
+    if (!radio) throw new Error("Female gender radio not found");
+    radio.click();
+    radio.dispatchEvent(new Event("change", { bubbles: true }));
+  });
+
+  console.log("Selected gender: female");
+
+  // ── 3. Age ────────────────────────────────────────────────────────────────
+
+  await page.evaluate(() =>
+    findInShadow('[data-test-id="input-age-desktop"]')?.click()
+  );
+
+  // Wait for the age sheet modal to appear with at least one label option
+  // Scoped to #sheet to avoid matching gender radios elsewhere in the widget
+  await page.waitForFunction(
+    () => !!findInShadow('#sheet label.radio-button-label'),
+    { timeout: 10000 }
+  );
+
+  // Click the first label — safest way to trigger the underlying input[name="selectMetric"]
+  await page.evaluate(() => {
+    const label = findInShadow('#sheet label.radio-button-label');
+    if (!label) throw new Error("Age label option not found in #sheet");
+    label.click();
+  });
+
+  // Wait for the age field to turn from gray (rgb(183, 185, 185)) to black (rgb(25, 25, 25))
+  await page.waitForFunction(() => {
+    const el = findInShadow('[data-test-id="input-age-desktop"]');
+    if (!el) return false;
+    return window.getComputedStyle(el).color !== "rgb(183, 185, 185)";
+  }, { timeout: 8000 });
+
+  // Wait for age sheet to fully close before opening height
+  await page.waitForFunction(() => {
+    const sheet = findInShadow('#sheet');
+    if (!sheet) return true;
+    const s = window.getComputedStyle(sheet);
+    return s.display === 'none' || s.visibility === 'hidden' || parseFloat(s.opacity) === 0;
+  }, { timeout: 8000 });
+
+  console.log("Selected age");
+
+  // ── 4. Height ─────────────────────────────────────────────────────────────
+
+  await page.waitForTimeout(600);
+
+  await page.evaluate(() => findInShadow('[data-test-id="input-height-desktop"]')?.click());
+
+  // wait for height sheet to open, then select first option
+  await page.waitForFunction(
+    () => !!findInShadow('#sheet label.radio-button-label'),
+    { timeout: 10000 }
+  );
+  await page.evaluate(() => findInShadow('#sheet label.radio-button-label')?.click());
+
+  // wait for height sheet to fully close
+  await page.waitForFunction(() => {
+    const sheet = findInShadow('#sheet');
+    if (!sheet) return true;
+    const s = window.getComputedStyle(sheet);
+    return s.display === 'none' || s.visibility === 'hidden' || parseFloat(s.opacity) === 0;
+  }, { timeout: 8000 });
+
+  // verify value updated away from placeholder
+  await page.waitForFunction(() => {
+    const el = findInShadow('[data-test-id="input-height-desktop"]');
+    return el && !/^\s*-\s*$/.test(el.textContent ?? '');
+  }, { timeout: 8000 });
+
+  console.log("Selected height");
+
+  // ── 5. Body type ──────────────────────────────────────────────────────────
+
+  await page.waitForTimeout(600);
+
+  await page.locator('[data-test-id="input-body-type"]').click();
+
+  const bodySheet = page.locator('[data-test-id="sheetTestId"]');
+  await expect(bodySheet).toBeVisible({ timeout: 10000 });
+
+  await bodySheet.locator('[data-test-id="gridItemTestId"]').nth(1).click();
+
+  await expect(bodySheet).toBeHidden({ timeout: 8000 });
+
+  console.log("Selected body type");
+
+  // ── 6. Privacy policy (new users only) ───────────────────────────────────
+
+  const privacyCheckbox = page.locator('[data-test-id="privacy-policy-checkbox"]');
+  if (await privacyCheckbox.isVisible()) {
+    await privacyCheckbox.click();
+    console.log("Accepted privacy policy");
+  }
+
+  // ── 7. See ideal fit button ───────────────────────────────────────────────
+
+  const seeIdealFitBtn = page.locator('[data-test-id="see-ideal-fit-btn"]');
+  await expect(seeIdealFitBtn).toBeEnabled({ timeout: 8000 });
+  await seeIdealFitBtn.click();
+
+  console.log("Clicked see ideal fit button");
+
+  // ── 8. Wait for result ────────────────────────────────────────────────────
+
+  await expect(
+    page.locator('[data-test-id="adjustYourSilhouette.header"], .rec-main').first()
+  ).toBeVisible({ timeout: 20_000 });
+
+  console.log("Gift recommendation result detected");
+
+  // ── 9. Validate gift events ───────────────────────────────────────────────
+
+  const giftMissing = await verifyEvents(
+    page,
+    () => eventWatcher.getEvents(),
+    expectedEvents.strict.gift
+  );
+  if (giftMissing.length > 0) {
+    const error = new Error(`Gift missing events: ${giftMissing.join(", ")}`);
+    error.missingEvents = giftMissing;
+    throw error;
+  }
+
+  // ── 10. Refresh validation ────────────────────────────────────────────────
+
+  console.log("Validating gift refresh behavior");
+
+  eventWatcher.setPhase("gift-refresh");
+  eventWatcher.reset();
+
+  await page.reload();
+  await waitForWidget(page, "apparel");
+  await removeMarketingOverlays(page);
+  await clickWidget(page, "apparel");
+  await waitForWidgetRender(page);
+
+  await page.evaluate(() => findInShadow('[data-test-id="gift-cta"]')?.click());
+
+  // Returning user — recommendation appears without onboarding
+  await page.waitForFunction(
+    () => !!findInShadow(".rec-main"),
+    { timeout: 20000 }
+  );
+
+  console.log("Gift refresh: recommendation visible");
+
+  const refreshMissing = await verifyEvents(
+    page,
+    () => eventWatcher.getEvents(),
+    expectedEvents.refresh.gift
+  );
+  if (refreshMissing.length > 0) {
+    const error = new Error(`Gift refresh missing events: ${refreshMissing.join(", ")}`);
+    error.missingEvents = refreshMissing;
+    throw error;
+  }
 
   return true;
 }

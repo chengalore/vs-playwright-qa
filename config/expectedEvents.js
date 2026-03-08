@@ -23,6 +23,13 @@ export const expectedEvents = {
       "user-created-silhouette::kids",
       "user-selected-size-kids-rec::kids",
     ],
+    gift: [
+      "user-selected-gender*",
+      "user-selected-age*",
+      "user-selected-height*",
+      "user-selected-bodyType*",
+      "user-opened-panel-rec*",
+    ],
   },
   refresh: {
     apparel: [
@@ -45,6 +52,11 @@ export const expectedEvents = {
       "user-saw-widget-button",
       "user-saw-widget-kids",
       "user-selected-size-kids-rec::kids",
+    ],
+    gift: [
+      "user-saw-product",
+      "user-saw-widget-button",
+      "user-opened-panel-rec",
     ],
   },
 };
