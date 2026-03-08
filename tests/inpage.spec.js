@@ -181,12 +181,15 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
     if (flow === "kids") {
       isNewUser = await runKidsFlow(page, pdc);
     }
+    if (flow === "noVisor") {
+      isNewUser = await runNoVisorFlow(page, bodyAPI);
+    }
 
     // -----------------------------
     // Recommendation
     // -----------------------------
 
-    if (flow !== "kids") {
+    if (flow === "apparel") {
       await validateRecommendation(eventWatcher);
     }
 
@@ -272,7 +275,7 @@ function getSkipReason(pdc) {
   const excludedTypes = ["bag", "wallet", "clutch", "panties"];
 
   if (pdc.validProduct === false) return "Invalid Product (validProduct=false)";
-  if (pdc.noVisor) return "Non-Visor";
+  // allow no-visor flow to run
   if (excludedTypes.includes(pdc.productType?.toLowerCase()))
     return "Non apparel item";
 
@@ -289,7 +292,9 @@ async function validateCoreEvents(page, eventWatcher, flow) {
   const missing =
     flow === "kids"
       ? await verifyEvents(page, getEvents, expectedEvents.strict.kids)
-      : [
+      : flow === "noVisor"
+        ? await verifyEvents(page, getEvents, expectedEvents.strict.noVisor)
+        : [
           ...(await verifyEvents(
             page,
             getEvents,
@@ -358,15 +363,17 @@ async function validateRefresh(page, eventWatcher, recommendationAPI, flow) {
     // CHECK RECOMMENDATION API REFIRE
     // -----------------------------------------
 
-    const recStatus = await waitForStatus(
-      () => recommendationAPI.getStatus(),
-      5000,
-    );
-
-    if (recStatus !== 200) {
-      throw new Error(
-        `Recommendation API did not refire after refresh (status: ${recStatus})`,
+    if (flow !== "noVisor") {
+      const recStatus = await waitForStatus(
+        () => recommendationAPI.getStatus(),
+        5000,
       );
+
+      if (recStatus !== 200) {
+        throw new Error(
+          `Recommendation API did not refire after refresh (status: ${recStatus})`,
+        );
+      }
     }
   }
 
@@ -379,7 +386,9 @@ async function validateRefresh(page, eventWatcher, recommendationAPI, flow) {
       ? expectedEvents.refresh.footwear
       : flow === "kids"
         ? expectedEvents.refresh.kids
-        : expectedEvents.refresh.apparel;
+        : flow === "noVisor"
+          ? expectedEvents.refresh.noVisor
+          : expectedEvents.refresh.apparel;
 
   const failures = await verifyEvents(
     page,
@@ -450,6 +459,7 @@ function detectFlow(pdc) {
   const gender = pdc.gender?.toLowerCase();
   const isKid = pdc.isKid || gender === "boy" || gender === "girl";
   if (isKid) return "kids";
+  if (pdc.noVisor) return "noVisor";
   if (pdc.productType?.toLowerCase() === "shoe") return "footwear";
   return "apparel";
 }
@@ -473,6 +483,37 @@ async function runApparelFlow(page, bodyAPI, eventWatcher, recommendationAPI) {
     const bodyStatus = await waitForStatus(() => bodyAPI.getStatus(), 5000);
     expect(bodyStatus).toBe(200);
   }
+
+  return isNewUser;
+}
+
+// --------------------------------------------------
+// No-Visor Flow
+// --------------------------------------------------
+
+async function runNoVisorFlow(page, bodyAPI) {
+  const isNewUser = await isOnboardingVisible(page);
+
+  if (isNewUser) {
+    console.log("New user → running onboarding (no-visor)");
+
+    await completeOnboarding(page);
+
+    const bodyStatus = await waitForStatus(() => bodyAPI.getStatus(), 5000);
+    expect(bodyStatus).toBe(200);
+  }
+
+  console.log("Waiting for no-visor result screen");
+
+  await page.waitForFunction(() => {
+    const host =
+      document.querySelector("#router-view-wrapper") ||
+      document.querySelector("#vs-aoyama")?.nextElementSibling;
+
+    const root = host?.shadowRoot;
+
+    return root?.querySelector('[data-test-id="no-visor-recommended-size"]');
+  });
 
   return isNewUser;
 }

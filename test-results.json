@@ -113,14 +113,20 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 41162,
+                  "duration": 37537,
                   "errors": [],
                   "stdout": [
                     {
-                      "text": "Testing URL: https://www.gap.co.jp/gap/relaxed-gap-logo-quarter-zip-sweatshirt/645759006.html\n"
+                      "text": "Testing URL: https://reedit.jp/products/134594\n"
                     },
                     {
-                      "text": "Flow: apparel\n"
+                      "text": "Blocked marketing script: https://connect.buyee.jp/60d2aa1c89543abaa071e5b4060e4f138e6b1f1be826d71231e9eb70f5fffd9e/widget/?scraper_key=reedit_jp&service_type=2940&bc_user_id=&parent_url=https%253a%252f%252freedit.jp%252fproducts%252f134594&parent_origin=https%253a%252f%252freedit.jp\n"
+                    },
+                    {
+                      "text": "Blocked marketing script: https://connect.buyee.jp/60d2aa1c89543abaa071e5b4060e4f138e6b1f1be826d71231e9eb70f5fffd9e/cookie_widget/?scraper_key=reedit_jp&service_type=2940&bc_user_id=&parent_url=https%253a%252f%252freedit.jp%252fproducts%252f134594&parent_origin=https%253a%252f%252freedit.jp\n"
+                    },
+                    {
+                      "text": "Flow: noVisor\n"
                     },
                     {
                       "text": "Captured Event: user-saw-product (source: integration) x1\n"
@@ -138,7 +144,7 @@
                       "text": "Captured Event: user-saw-onboarding-screen (source: fit-illustrator) x1\n"
                     },
                     {
-                      "text": "New user → running onboarding\n"
+                      "text": "New user → running onboarding (no-visor)\n"
                     },
                     {
                       "text": "Completing onboarding (shadow DOM)...\n"
@@ -162,10 +168,10 @@
                       "text": "Onboarding finished.\n"
                     },
                     {
-                      "text": "Waiting for recommendation panel...\n"
+                      "text": "Body Measurement API Status: \u001b[33m200\u001b[39m\n"
                     },
                     {
-                      "text": "Body Measurement API Status: \u001b[33m200\u001b[39m\n"
+                      "text": "Waiting for no-visor result screen\n"
                     },
                     {
                       "text": "Recommendation API Status: \u001b[33m200\u001b[39m\n"
@@ -174,43 +180,16 @@
                       "text": "Captured Event: user-got-size-recommendation (source: integration) x1\n"
                     },
                     {
-                      "text": "Captured Event: user-opened-panel-tryiton (source: fit-illustrator) x1\n"
-                    },
-                    {
-                      "text": "Recommendation screen detected.\n"
-                    },
-                    {
-                      "text": "Validating recommendation result...\n"
-                    },
-                    {
-                      "text": "Checking for multiple sizes...\n"
-                    },
-                    {
-                      "text": "Detected size count: \u001b[33m5\u001b[39m\n"
-                    },
-                    {
-                      "text": "Captured Event: user-selected-size (source: fit-illustrator) x1\n"
-                    },
-                    {
-                      "text": "Size selected successfully.\n"
-                    },
-                    {
-                      "text": "Attempting to add item to wardrobe...\n"
-                    },
-                    {
-                      "text": "Captured Event: user-opened-panel-details (source: fit-illustrator) x1\n"
-                    },
-                    {
-                      "text": "Captured Event: user-opened-panel-compare (source: fit-illustrator) x1\n"
-                    },
-                    {
-                      "text": "Captured Event: user-added-product (source: fit-illustrator) x1\n"
-                    },
-                    {
-                      "text": "Item added to wardrobe successfully.\n"
+                      "text": "Captured Event: user-opened-panel-rec (source: fit-illustrator) x1\n"
                     },
                     {
                       "text": "Validating PDP refresh behavior\n"
+                    },
+                    {
+                      "text": "Blocked marketing script: https://connect.buyee.jp/60d2aa1c89543abaa071e5b4060e4f138e6b1f1be826d71231e9eb70f5fffd9e/widget/?scraper_key=reedit_jp&service_type=2940&bc_user_id=bc_user_id%3a2273798700&parent_url=https%253a%252f%252freedit.jp%252fproducts%252f134594&parent_origin=https%253a%252f%252freedit.jp\n"
+                    },
+                    {
+                      "text": "Blocked marketing script: https://connect.buyee.jp/60d2aa1c89543abaa071e5b4060e4f138e6b1f1be826d71231e9eb70f5fffd9e/cookie_widget/?scraper_key=reedit_jp&service_type=2940&bc_user_id=bc_user_id%3a2273798700&parent_url=https%253a%252f%252freedit.jp%252fproducts%252f134594&parent_origin=https%253a%252f%252freedit.jp\n"
                     },
                     {
                       "text": "Captured Event: user-saw-product (source: integration) x1\n"
@@ -231,18 +210,12 @@
                       "text": "Captured Event: user-selected-size (source: inpage) x1\n"
                     },
                     {
-                      "text": "Captured Event: user-opened-widget (source: inpage) x1\n"
-                    },
-                    {
-                      "text": "Captured Event: user-opened-panel-tryiton (source: fit-illustrator) x1\n"
-                    },
-                    {
-                      "text": "QA_RESULT: {\"url\":\"https://www.gap.co.jp/gap/relaxed-gap-logo-quarter-zip-sweatshirt/645759006.html\",\"store\":\"gap_japan\",\"productType\":\"sweater\",\"userType\":\"NEW\",\"status\":\"passed\",\"browser\":\"chromium\",\"durationMs\":40297}\n"
+                      "text": "QA_RESULT: {\"url\":\"https://reedit.jp/products/134594\",\"store\":\"re_edit\",\"productType\":\"pants\",\"userType\":\"NEW\",\"status\":\"passed\",\"browser\":\"chromium\",\"durationMs\":36762}\n"
                     }
                   ],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-03-08T04:15:44.087Z",
+                  "startTime": "2026-03-08T06:00:09.870Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -260,8 +233,8 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2026-03-08T04:15:43.445Z",
-    "duration": 43468.422,
+    "startTime": "2026-03-08T06:00:09.311Z",
+    "duration": 39504.985,
     "expected": 1,
     "skipped": 0,
     "unexpected": 0,

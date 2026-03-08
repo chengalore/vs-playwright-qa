@@ -13,6 +13,12 @@ export const expectedEvents = {
       "user-created-footwear-silhouette",
       "user-opened-panel-rec",
     ],
+    noVisor: [
+      "user-saw-product",
+      "user-saw-widget-button",
+      "user-opened-widget",
+      "user-created-silhouette",
+    ],
     kids: [
       "user-opened-widget::kids",
       "user-saw-onboarding-screen::kids",
@@ -25,6 +31,11 @@ export const expectedEvents = {
     ],
   },
   refresh: {
+    noVisor: [
+      "user-saw-product",
+      "user-saw-widget-button",
+      "inpage-mounted",
+    ],
     apparel: [
       "user-saw-product",
       "user-saw-widget-button",
