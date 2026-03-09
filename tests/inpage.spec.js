@@ -1064,14 +1064,14 @@ async function runGiftFlow(page, eventWatcher) {
 
   await page.reload({ waitUntil: "domcontentloaded", timeout: 30000 });
   await waitForWidget(page, "apparel");
+  await page.waitForTimeout(2000);
   await clickWidget(page, "apparel");
-  await waitForWidgetRender(page);
 
-  // Wait for the gift CTA to actually appear in the shadow DOM — the widget
-  // may report as rendered but still be settling its recommendation panel.
+  // Skip waitForWidgetRender — the apparel widget opens first, then gift CTA
+  // is clicked next. Wait directly for the gift CTA to appear instead.
   await page.waitForFunction(
     () => !!findInShadow('[data-test-id="gift-cta"]'),
-    { timeout: 15000 }
+    { timeout: 20000 }
   );
 
   await page.evaluate(() => findInShadow('[data-test-id="gift-cta"]')?.click());

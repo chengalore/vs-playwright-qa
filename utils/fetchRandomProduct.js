@@ -7,7 +7,6 @@
  *   product_type_id – numeric product type (see VS product type API)
  *   gender          – "male" | "female" | "kids" | "unisex"
  *   category        – product category string
- *   is_novisor      – boolean, filter for no-visor products
  *   exclude_kids    – boolean, exclude kids products
  *   check_pdp       – boolean, validates the PDP is reachable (default: true)
  *   valid           – boolean, filter by product validity (default: true)
@@ -44,7 +43,6 @@ export async function fetchRandomProduct(params = {}) {
     product_type_id,
     gender,
     category,
-    is_novisor,
     exclude_kids,
     check_pdp,
     valid,
@@ -57,7 +55,6 @@ export async function fetchRandomProduct(params = {}) {
     query.set("product_type_id", String(product_type_id));
   if (gender !== undefined) query.set("gender", gender);
   if (category !== undefined) query.set("category", category);
-  if (is_novisor !== undefined) query.set("is_novisor", String(is_novisor));
   if (exclude_kids !== undefined)
     query.set("exclude_kids", String(exclude_kids));
   if (check_pdp !== undefined) query.set("check_pdp", String(check_pdp));
@@ -115,7 +112,6 @@ export async function resolveTestUrl(fallbackUrl) {
     : undefined;
   const gender = process.env.GENDER || undefined;
   const category = process.env.CATEGORY || undefined;
-  const is_novisor = parseBool(process.env.IS_NOVISOR);
   const exclude_kids = parseBool(process.env.EXCLUDE_KIDS);
   const valid = parseBool(process.env.VALID);
 
@@ -128,7 +124,6 @@ export async function resolveTestUrl(fallbackUrl) {
     product_type_id,
     gender,
     category,
-    is_novisor,
     exclude_kids,
     valid,
   });
