@@ -10,14 +10,16 @@ import { validateRecommendation } from "../utils/validateRecommendation.js";
 import { selectSizeIfMultiple } from "../utils/selectSizeIfMultiple.js";
 import { addItemToWardrobe } from "../utils/addItemToWardrobe.js";
 import { blockMarketingScripts } from "../utils/blockMarketingScripts.js";
+import { resolveTestUrl } from "../utils/fetchRandomProduct.js";
 
 test.setTimeout(180000);
 
 test("Inpage basic flow", async ({ page }, testInfo) => {
   const startTime = Date.now();
 
-  const url =
-    process.env.TEST_URL || "https://www.underarmour.co.jp/f/dsg-1072366";
+  const url = await resolveTestUrl(
+    "https://www.underarmour.co.jp/f/dsg-1072366",
+  );
 
   console.log("Testing URL:", url);
 

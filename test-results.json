@@ -113,11 +113,17 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 21798,
+                  "duration": 27659,
                   "errors": [],
                   "stdout": [
                     {
-                      "text": "Testing URL: https://www.underarmour.co.jp/f/dsg-1093373\n"
+                      "text": "Fetching random product: https://dcai264p3l.execute-api.ap-northeast-1.amazonaws.com/prod/random_product?store_id=805&product_type_id=17\n"
+                    },
+                    {
+                      "text": "Random product URL: https://www.underarmour.co.jp/f/dsg-1063307\n"
+                    },
+                    {
+                      "text": "Testing URL: https://www.underarmour.co.jp/f/dsg-1063307\n"
                     },
                     {
                       "text": "[EVENT WATCHER] Phase → onboarding\n"
@@ -171,6 +177,9 @@
                       "text": "Body Measurement API Status: \u001b[33m200\u001b[39m\n"
                     },
                     {
+                      "text": "Body Measurement API Status: \u001b[33m200\u001b[39m\n"
+                    },
+                    {
                       "text": "Recommendation API Status: \u001b[33m200\u001b[39m\n"
                     },
                     {
@@ -201,12 +210,12 @@
                       "text": "[fit-illustrator] user-opened-panel-rec\n"
                     },
                     {
-                      "text": "QA_RESULT: {\"url\":\"https://www.underarmour.co.jp/f/dsg-1093373\",\"store\":\"under_armour\",\"productType\":\"shoe\",\"userType\":\"NEW\",\"status\":\"passed\",\"browser\":\"chromium\",\"durationMs\":21548}\n"
+                      "text": "QA_RESULT: {\"url\":\"https://www.underarmour.co.jp/f/dsg-1063307\",\"store\":\"under_armour\",\"productType\":\"shoe\",\"userType\":\"NEW\",\"status\":\"passed\",\"browser\":\"chromium\",\"durationMs\":27387}\n"
                     }
                   ],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-03-08T17:09:37.263Z",
+                  "startTime": "2026-03-09T12:12:00.346Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -216,7 +225,7 @@
           ],
           "id": "4b94f1d2e5793e5150b0-f2c92c2862e29089a395",
           "file": "inpage.spec.js",
-          "line": 16,
+          "line": 17,
           "column": 5
         }
       ]
@@ -224,8 +233,8 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2026-03-08T17:09:36.662Z",
-    "duration": 23046.166,
+    "startTime": "2026-03-09T12:11:59.763Z",
+    "duration": 28986.456,
     "expected": 1,
     "skipped": 0,
     "unexpected": 0,
