@@ -1,20 +1,37 @@
 /**
- * Fetches a random valid product URL from the Virtusize Random Product API.
+ * Fetches a random product URL from the Virtusize Random Product API.
  *
- * Required (one of):
- *   store_id  – numeric store ID
- *   api_key   – store API key
- *
- * Optional filters:
+ * Supported params:
+ *   store_id        – numeric store ID
+ *   api_key         – store API key
  *   product_type_id – numeric product type (see VS product type API)
  *   gender          – "male" | "female" | "kids" | "unisex"
  *   category        – product category string
  *   is_novisor      – boolean, filter for no-visor products
  *   exclude_kids    – boolean, exclude kids products
- *   check_pdp       – boolean (default true), validates the PDP is reachable
- *   valid           – boolean, filter by product validity
+ *   check_pdp       – boolean, validates the PDP is reachable (default: true)
+ *   valid           – boolean, filter by product validity (default: true)
  *
  * Returns the product PDP URL string, or throws if none found.
+ *
+ * Environment variables:
+ *   TEST_URL        – skip the API and use this URL directly
+ *   STORE_ID        – numeric store ID
+ *   API_KEY         – store API key
+ *   PRODUCT_TYPE_ID – numeric product type ID
+ *   GENDER          – "male" | "female" | "kids" | "unisex"
+ *   CATEGORY        – product category string
+ *   IS_NOVISOR      – "true" | "false"
+ *   EXCLUDE_KIDS    – "true" | "false"
+ *   VALID           – "true" | "false" (default: true)
+ *
+ * Example QA commands:
+ *   shoes          → PRODUCT_TYPE_ID=17
+ *   kids           → GENDER=kids
+ *   novisor        → IS_NOVISOR=true
+ *   tshirt novisor → PRODUCT_TYPE_ID=2 IS_NOVISOR=true
+ *   ua shoes       → STORE_ID=805 PRODUCT_TYPE_ID=17
+ *   ua kids        → STORE_ID=805 GENDER=kids
  */
 
 const RANDOM_PRODUCT_API =
@@ -32,12 +49,6 @@ export async function fetchRandomProduct(params = {}) {
     check_pdp,
     valid,
   } = params;
-
-  if (!store_id && !api_key) {
-    throw new Error(
-      "fetchRandomProduct: either store_id or api_key is required",
-    );
-  }
 
   const query = new URLSearchParams();
   if (store_id !== undefined) query.set("store_id", String(store_id));
@@ -82,41 +93,43 @@ export async function fetchRandomProduct(params = {}) {
 }
 
 /**
- * Resolves the test URL from env vars.
+ * Resolves the test URL from environment variables.
  *
  * Priority:
- *   1. TEST_URL        — use as-is (existing behaviour)
- *   2. STORE_ID / API_KEY — call the random product API
- *   3. fallback        — use the provided default URL
+ *   1. TEST_URL — use as-is, skips the Random Product API
+ *   2. Any filter env vars — call the API with those filters
+ *   3. No filters — call the API with defaults (valid=true, check_pdp=true)
  */
 export async function resolveTestUrl(fallbackUrl) {
   if (process.env.TEST_URL) return process.env.TEST_URL;
+
+  const parseBool = (val) =>
+    val === undefined ? undefined : val === "true";
 
   const store_id = process.env.STORE_ID
     ? Number(process.env.STORE_ID)
     : undefined;
   const api_key = process.env.API_KEY || undefined;
+  const product_type_id = process.env.PRODUCT_TYPE_ID
+    ? Number(process.env.PRODUCT_TYPE_ID)
+    : undefined;
+  const gender = process.env.GENDER || undefined;
+  const category = process.env.CATEGORY || undefined;
+  const is_novisor = parseBool(process.env.IS_NOVISOR);
+  const exclude_kids = parseBool(process.env.EXCLUDE_KIDS);
+  const valid = parseBool(process.env.VALID);
 
-  if (store_id || api_key) {
-    return fetchRandomProduct({
-      store_id,
-      api_key,
-      gender: process.env.GENDER || undefined,
-      product_type_id: process.env.PRODUCT_TYPE_ID
-        ? Number(process.env.PRODUCT_TYPE_ID)
-        : undefined,
-      category: process.env.CATEGORY || undefined,
-      is_novisor: process.env.IS_NOVISOR !== undefined
-        ? process.env.IS_NOVISOR === "true"
-        : undefined,
-      exclude_kids: process.env.EXCLUDE_KIDS !== undefined
-        ? process.env.EXCLUDE_KIDS === "true"
-        : undefined,
-      valid: process.env.VALID !== undefined
-        ? process.env.VALID === "true"
-        : undefined,
-    });
-  }
+  // store_id or api_key is required by the API
+  if (!store_id && !api_key) return fallbackUrl;
 
-  return fallbackUrl;
+  return fetchRandomProduct({
+    store_id,
+    api_key,
+    product_type_id,
+    gender,
+    category,
+    is_novisor,
+    exclude_kids,
+    valid,
+  });
 }

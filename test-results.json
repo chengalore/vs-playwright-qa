@@ -113,17 +113,17 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 21987,
+                  "duration": 23543,
                   "errors": [],
                   "stdout": [
                     {
                       "text": "Fetching random product: https://dcai264p3l.execute-api.ap-northeast-1.amazonaws.com/prod/random_product?store_id=805&product_type_id=17\n"
                     },
                     {
-                      "text": "Random product URL: https://www.underarmour.co.jp/f/dsg-1089602\n"
+                      "text": "Random product URL: https://www.underarmour.co.jp/f/dsg-1084199\n"
                     },
                     {
-                      "text": "Testing URL: https://www.underarmour.co.jp/f/dsg-1089602\n"
+                      "text": "Testing URL: https://www.underarmour.co.jp/f/dsg-1084199\n"
                     },
                     {
                       "text": "[EVENT WATCHER] Phase → onboarding\n"
@@ -213,12 +213,12 @@
                       "text": "[fit-illustrator] user-opened-panel-rec\n"
                     },
                     {
-                      "text": "QA_RESULT: {\"url\":\"https://www.underarmour.co.jp/f/dsg-1089602\",\"store\":\"under_armour\",\"productType\":\"shoe\",\"userType\":\"NEW\",\"status\":\"passed\",\"browser\":\"chromium\",\"durationMs\":21731}\n"
+                      "text": "QA_RESULT: {\"url\":\"https://www.underarmour.co.jp/f/dsg-1084199\",\"store\":\"under_armour\",\"productType\":\"shoe\",\"userType\":\"NEW\",\"status\":\"passed\",\"browser\":\"chromium\",\"durationMs\":23282}\n"
                     }
                   ],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-03-09T12:28:35.116Z",
+                  "startTime": "2026-03-09T12:48:49.443Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -236,8 +236,8 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2026-03-09T12:28:34.457Z",
-    "duration": 23715.685,
+    "startTime": "2026-03-09T12:48:48.832Z",
+    "duration": 24868.231,
     "expected": 1,
     "skipped": 0,
     "unexpected": 0,
