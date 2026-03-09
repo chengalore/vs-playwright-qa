@@ -10,19 +10,13 @@ import { validateRecommendation } from "../utils/validateRecommendation.js";
 import { selectSizeIfMultiple } from "../utils/selectSizeIfMultiple.js";
 import { addItemToWardrobe } from "../utils/addItemToWardrobe.js";
 import { blockMarketingScripts } from "../utils/blockMarketingScripts.js";
-import { resolveTestUrl, fetchRandomProduct, buildParamsFromEnv } from "../utils/fetchRandomProduct.js";
 
 test.setTimeout(180000);
 
 test("Inpage basic flow", async ({ page }, testInfo) => {
   const startTime = Date.now();
 
-  const apiParams = buildParamsFromEnv();
-  const canRetry = !!(apiParams.store_id || apiParams.api_key) && !process.env.TEST_URL;
-
-  let url = await resolveTestUrl(
-    "https://www.underarmour.co.jp/f/dsg-1072366",
-  );
+  const url = process.env.TEST_URL || "https://www.underarmour.co.jp/f/dsg-1072366";
 
   console.log("Testing URL:", url);
 
@@ -124,11 +118,6 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
     });
 
     await waitForPDC(pdc);
-
-    // Retry up to 3 times if the API returned an invalid product
-    if (pdc.validProduct === false && canRetry) {
-      url = await retryOnInvalidProduct(page, pdc, apiParams, url, 3);
-    }
 
     // -----------------------------
     // Gatekeeping
@@ -1117,62 +1106,6 @@ async function kidsRetry(page, fn, label, maxAttempts = 3, delayMs = 500) {
       await page.waitForTimeout(delayMs);
     }
   }
-}
-
-/**
- * Resets a pdc watcher object to its initial state so it can be repopulated
- * after navigating to a new URL.
- */
-function resetPdc(pdc) {
-  pdc.store = "unknown";
-  pdc.productType = "unknown";
-  pdc.gender = "unknown";
-  pdc.noVisor = false;
-  pdc.validProduct = undefined;
-  pdc.isKid = false;
-}
-
-/**
- * If the current page returned validProduct=false, fetches a new random product
- * URL using the same API params and retries navigation up to maxRetries times.
- * Returns the URL of the first valid product found, or the last URL tried.
- */
-async function retryOnInvalidProduct(page, pdc, apiParams, currentUrl, maxRetries = 3) {
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    console.log(`[retry] validProduct=false — fetching new product (attempt ${attempt}/${maxRetries})`);
-
-    let newUrl;
-    try {
-      newUrl = await fetchRandomProduct(apiParams);
-    } catch (e) {
-      console.warn(`[retry] fetchRandomProduct error: ${e.message}`);
-      break;
-    }
-
-    resetPdc(pdc);
-    await page.goto(newUrl);
-    await page.evaluate(() => window.scrollTo({ top: 1000, behavior: "instant" }));
-    await page.waitForTimeout(1500);
-    await page.evaluate(() => {
-      document
-        .querySelectorAll(
-          'button[data-testid="uc-accept-all-button"], ' +
-          '#onetrust-accept-btn-handler, ' +
-          'button[id*="cookie"][id*="accept"], ' +
-          'button[class*="cookie"][class*="accept"]',
-        )
-        .forEach((btn) => btn.click());
-    });
-    await waitForPDC(pdc);
-
-    if (pdc.validProduct !== false) {
-      console.log(`[retry] Valid product found on attempt ${attempt}: ${newUrl}`);
-      return newUrl;
-    }
-  }
-
-  console.log(`[retry] All ${maxRetries} retries exhausted with validProduct=false`);
-  return currentUrl;
 }
 
 // --------------------------------------------------
