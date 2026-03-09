@@ -1,6 +1,4 @@
 export async function selectSizeIfMultiple(page, eventWatcher) {
-  console.log("Checking for multiple sizes...");
-
   const sizeCount = await page.evaluate(() => {
     const host = document.querySelector("#router-view-wrapper");
     const root = host?.shadowRoot;
@@ -9,12 +7,7 @@ export async function selectSizeIfMultiple(page, eventWatcher) {
     return root.querySelectorAll('[data-test-id="size-btn"]').length;
   });
 
-  console.log("Detected size count:", sizeCount);
-
-  if (sizeCount <= 1) {
-    console.log("Single size — no selection needed.");
-    return;
-  }
+  if (sizeCount <= 1) return;
 
   // Click second size to ensure change
   await page.evaluate(() => {
@@ -50,5 +43,4 @@ export async function selectSizeIfMultiple(page, eventWatcher) {
     );
   }
 
-  console.log("Size selected successfully.");
 }

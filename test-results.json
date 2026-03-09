@@ -103,7 +103,7 @@
           "tags": [],
           "tests": [
             {
-              "timeout": 90000,
+              "timeout": 180000,
               "annotations": [],
               "expectedStatus": "passed",
               "projectId": "chromium",
@@ -113,109 +113,244 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 37537,
+                  "duration": 73326,
                   "errors": [],
                   "stdout": [
                     {
-                      "text": "Testing URL: https://reedit.jp/products/134594\n"
+                      "text": "Fetching random product: https://dcai264p3l.execute-api.ap-northeast-1.amazonaws.com/prod/random_product?store_id=535&product_type_id=4\n"
                     },
                     {
-                      "text": "Blocked marketing script: https://connect.buyee.jp/60d2aa1c89543abaa071e5b4060e4f138e6b1f1be826d71231e9eb70f5fffd9e/widget/?scraper_key=reedit_jp&service_type=2940&bc_user_id=&parent_url=https%253a%252f%252freedit.jp%252fproducts%252f134594&parent_origin=https%253a%252f%252freedit.jp\n"
+                      "text": "Random product URL: https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails.do?wrt=5&mcd=CG023&cpg=855&pno=29&ino=01\n"
                     },
                     {
-                      "text": "Blocked marketing script: https://connect.buyee.jp/60d2aa1c89543abaa071e5b4060e4f138e6b1f1be826d71231e9eb70f5fffd9e/cookie_widget/?scraper_key=reedit_jp&service_type=2940&bc_user_id=&parent_url=https%253a%252f%252freedit.jp%252fproducts%252f134594&parent_origin=https%253a%252f%252freedit.jp\n"
+                      "text": "Testing URL: https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails.do?wrt=5&mcd=CG023&cpg=855&pno=29&ino=01\n"
                     },
                     {
-                      "text": "Flow: noVisor\n"
+                      "text": "[EVENT WATCHER] Phase → onboarding\n"
                     },
                     {
-                      "text": "Captured Event: user-saw-product (source: integration) x1\n"
+                      "text": "PDC UPDATE: \u001b[33mtrue\u001b[39m tShirt\n"
                     },
                     {
-                      "text": "Captured Event: user-saw-widget-button (source: integration) x1\n"
+                      "text": "PDC UPDATE: \u001b[33mtrue\u001b[39m tShirt\n"
                     },
                     {
-                      "text": "Captured Event: inpage-mounted (source: integration) x1\n"
+                      "text": "[integration] user-saw-product\n"
                     },
                     {
-                      "text": "Captured Event: user-opened-widget (source: inpage) x1\n"
+                      "text": "[integration] user-saw-widget-button\n"
                     },
                     {
-                      "text": "Captured Event: user-saw-onboarding-screen (source: fit-illustrator) x1\n"
+                      "text": "Flow: apparel\n"
                     },
                     {
-                      "text": "New user → running onboarding (no-visor)\n"
+                      "text": "[integration] inpage-mounted\n"
                     },
                     {
-                      "text": "Completing onboarding (shadow DOM)...\n"
+                      "text": "[inpage] user-opened-widget\n"
                     },
                     {
-                      "text": "Captured Event: user-selected-age (source: fit-illustrator) x1\n"
+                      "text": "[fit-illustrator] user-saw-onboarding-screen\n"
                     },
                     {
-                      "text": "Captured Event: user-selected-height (source: fit-illustrator) x1\n"
+                      "text": "[fit-illustrator] user-selected-age\n"
                     },
                     {
-                      "text": "Captured Event: user-selected-weight (source: fit-illustrator) x1\n"
+                      "text": "[fit-illustrator] user-selected-height\n"
                     },
                     {
-                      "text": "Captured Event: user-completed-onboarding (source: fit-illustrator) x1\n"
+                      "text": "[fit-illustrator] user-selected-weight\n"
                     },
                     {
-                      "text": "Captured Event: user-created-silhouette (source: fit-illustrator) x1\n"
+                      "text": "[fit-illustrator] user-completed-onboarding\n"
                     },
                     {
-                      "text": "Onboarding finished.\n"
+                      "text": "[fit-illustrator] user-created-silhouette\n"
                     },
                     {
                       "text": "Body Measurement API Status: \u001b[33m200\u001b[39m\n"
                     },
                     {
-                      "text": "Waiting for no-visor result screen\n"
+                      "text": "Recommendation API Status: \u001b[33m200\u001b[39m\n"
+                    },
+                    {
+                      "text": "[integration] user-got-size-recommendation\n"
+                    },
+                    {
+                      "text": "[fit-illustrator] user-opened-panel-tryiton\n"
+                    },
+                    {
+                      "text": "[fit-illustrator] user-opened-panel-details\n"
+                    },
+                    {
+                      "text": "[fit-illustrator] user-opened-panel-compare\n"
+                    },
+                    {
+                      "text": "[fit-illustrator] user-added-product\n"
+                    },
+                    {
+                      "text": "[EVENT WATCHER] Phase → refresh\n"
+                    },
+                    {
+                      "text": "PDC UPDATE: \u001b[33mtrue\u001b[39m tShirt\n"
+                    },
+                    {
+                      "text": "PDC UPDATE: \u001b[33mtrue\u001b[39m tShirt\n"
+                    },
+                    {
+                      "text": "[integration] user-saw-product\n"
+                    },
+                    {
+                      "text": "[integration] user-saw-widget-button\n"
+                    },
+                    {
+                      "text": "[integration] inpage-mounted\n"
+                    },
+                    {
+                      "text": "[inpage] user-opened-widget\n"
+                    },
+                    {
+                      "text": "[fit-illustrator] user-opened-panel-tryiton\n"
                     },
                     {
                       "text": "Recommendation API Status: \u001b[33m200\u001b[39m\n"
                     },
                     {
-                      "text": "Captured Event: user-got-size-recommendation (source: integration) x1\n"
+                      "text": "[integration] user-got-size-recommendation\n"
                     },
                     {
-                      "text": "Captured Event: user-opened-panel-rec (source: fit-illustrator) x1\n"
+                      "text": "[inpage] user-selected-size\n"
                     },
                     {
-                      "text": "Validating PDP refresh behavior\n"
+                      "text": "[EVENT WATCHER] Phase → gift\n"
                     },
                     {
-                      "text": "Blocked marketing script: https://connect.buyee.jp/60d2aa1c89543abaa071e5b4060e4f138e6b1f1be826d71231e9eb70f5fffd9e/widget/?scraper_key=reedit_jp&service_type=2940&bc_user_id=bc_user_id%3a2273798700&parent_url=https%253a%252f%252freedit.jp%252fproducts%252f134594&parent_origin=https%253a%252f%252freedit.jp\n"
+                      "text": "Running VS Gift flow\n"
                     },
                     {
-                      "text": "Blocked marketing script: https://connect.buyee.jp/60d2aa1c89543abaa071e5b4060e4f138e6b1f1be826d71231e9eb70f5fffd9e/cookie_widget/?scraper_key=reedit_jp&service_type=2940&bc_user_id=bc_user_id%3a2273798700&parent_url=https%253a%252f%252freedit.jp%252fproducts%252f134594&parent_origin=https%253a%252f%252freedit.jp\n"
+                      "text": "[gift] user-opened-widget\n"
                     },
                     {
-                      "text": "Captured Event: user-saw-product (source: integration) x1\n"
+                      "text": "[gift] user-saw-onboarding-screen\n"
                     },
                     {
-                      "text": "Captured Event: user-saw-widget-button (source: integration) x1\n"
+                      "text": "Gift onboarding detected\n"
                     },
                     {
-                      "text": "Captured Event: inpage-mounted (source: integration) x1\n"
+                      "text": "Selected gender: female\n"
+                    },
+                    {
+                      "text": "[gift] user-selected-gender\n"
+                    },
+                    {
+                      "text": "[gift] user-clicked-age\n"
+                    },
+                    {
+                      "text": "[gift] user-selected-age-16_19\n"
+                    },
+                    {
+                      "text": "Selected age\n"
+                    },
+                    {
+                      "text": "[gift] user-clicked-height\n"
+                    },
+                    {
+                      "text": "[gift] user-selected-height-145_149\n"
+                    },
+                    {
+                      "text": "Selected height\n"
+                    },
+                    {
+                      "text": "[gift] user-clicked-bodyType\n"
+                    },
+                    {
+                      "text": "[gift] user-selected-bodyType-1\n"
+                    },
+                    {
+                      "text": "Selected body type\n"
+                    },
+                    {
+                      "text": "[gift] user-completed-onboarding\n"
+                    },
+                    {
+                      "text": "Clicked see ideal fit button\n"
+                    },
+                    {
+                      "text": "Body Measurement API Status: \u001b[33m200\u001b[39m\n"
                     },
                     {
                       "text": "Recommendation API Status: \u001b[33m200\u001b[39m\n"
                     },
                     {
-                      "text": "Captured Event: user-got-size-recommendation (source: integration) x1\n"
+                      "text": "[gift] user-opened-panel-rec\n"
                     },
                     {
-                      "text": "Captured Event: user-selected-size (source: inpage) x1\n"
+                      "text": "Gift recommendation result detected\n"
                     },
                     {
-                      "text": "QA_RESULT: {\"url\":\"https://reedit.jp/products/134594\",\"store\":\"re_edit\",\"productType\":\"pants\",\"userType\":\"NEW\",\"status\":\"passed\",\"browser\":\"chromium\",\"durationMs\":36762}\n"
+                      "text": "Validating gift refresh behavior\n"
+                    },
+                    {
+                      "text": "[EVENT WATCHER] Phase → gift-refresh\n"
+                    },
+                    {
+                      "text": "PDC UPDATE: \u001b[33mtrue\u001b[39m tShirt\n"
+                    },
+                    {
+                      "text": "PDC UPDATE: \u001b[33mtrue\u001b[39m tShirt\n"
+                    },
+                    {
+                      "text": "[integration] user-saw-product\n"
+                    },
+                    {
+                      "text": "[integration] user-saw-widget-button\n"
+                    },
+                    {
+                      "text": "[integration] inpage-mounted\n"
+                    },
+                    {
+                      "text": "Recommendation API Status: \u001b[33m200\u001b[39m\n"
+                    },
+                    {
+                      "text": "[integration] user-got-size-recommendation\n"
+                    },
+                    {
+                      "text": "[inpage] user-selected-size\n"
+                    },
+                    {
+                      "text": "Recommendation API Status: \u001b[33m200\u001b[39m\n"
+                    },
+                    {
+                      "text": "[smart-table] user-saw-measurements-view\n"
+                    },
+                    {
+                      "text": "[inpage] user-opened-widget\n"
+                    },
+                    {
+                      "text": "[fit-illustrator] user-opened-panel-tryiton\n"
+                    },
+                    {
+                      "text": "[gift] user-opened-widget\n"
+                    },
+                    {
+                      "text": "Body Measurement API Status: \u001b[33m200\u001b[39m\n"
+                    },
+                    {
+                      "text": "Recommendation API Status: \u001b[33m200\u001b[39m\n"
+                    },
+                    {
+                      "text": "[gift] user-opened-panel-rec\n"
+                    },
+                    {
+                      "text": "Gift refresh: recommendation visible\n"
+                    },
+                    {
+                      "text": "QA_RESULT: {\"url\":\"https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails.do?wrt=5&mcd=CG023&cpg=855&pno=29&ino=01\",\"store\":\"marui\",\"productType\":\"tShirt\",\"userType\":\"NEW\",\"status\":\"passed\",\"browser\":\"chromium\",\"durationMs\":73059}\n"
                     }
                   ],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-03-08T06:00:09.870Z",
+                  "startTime": "2026-03-09T13:14:55.443Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -225,7 +360,7 @@
           ],
           "id": "4b94f1d2e5793e5150b0-f2c92c2862e29089a395",
           "file": "inpage.spec.js",
-          "line": 16,
+          "line": 17,
           "column": 5
         }
       ]
@@ -233,8 +368,8 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2026-03-08T06:00:09.311Z",
-    "duration": 39504.985,
+    "startTime": "2026-03-09T13:14:54.897Z",
+    "duration": 74637.115,
     "expected": 1,
     "skipped": 0,
     "unexpected": 0,

@@ -10,18 +10,21 @@ import { validateRecommendation } from "../utils/validateRecommendation.js";
 import { selectSizeIfMultiple } from "../utils/selectSizeIfMultiple.js";
 import { addItemToWardrobe } from "../utils/addItemToWardrobe.js";
 import { blockMarketingScripts } from "../utils/blockMarketingScripts.js";
+import { resolveTestUrl } from "../utils/fetchRandomProduct.js";
 
-test.setTimeout(90000);
+test.setTimeout(180000);
 
 test("Inpage basic flow", async ({ page }, testInfo) => {
   const startTime = Date.now();
 
-  const url =
-    process.env.TEST_URL || "https://www.underarmour.co.jp/f/dsg-1072366";
+  const url = await resolveTestUrl(
+    "https://www.underarmour.co.jp/f/dsg-1072366",
+  );
 
   console.log("Testing URL:", url);
 
   const eventWatcher = startVirtusizeEventWatcher(page);
+  eventWatcher.setPhase("onboarding");
   const pdc = startPDCWatcher(page);
   const recommendationAPI = startRecommendationWatcher(page);
   const bodyAPI = startBodyMeasurementWatcher(page);
@@ -97,6 +100,13 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
   try {
     await page.goto(url);
 
+    // Trigger lazy-loaded widgets that rely on IntersectionObserver —
+    // without a scroll the widget container may never mount.
+    await page.evaluate(() => {
+      window.scrollTo({ top: 1000, behavior: "instant" });
+    });
+    await page.waitForTimeout(1000);
+
     // Dismiss cookie consent banners that appear shortly after load
     await page.waitForTimeout(2000);
     await page.evaluate(() => {
@@ -155,15 +165,9 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
     if (flow === "kids") {
       await clickKidsWidget(page);
     } else {
-      // wait for overlays to appear and be dismissed before clicking
-      await page.waitForTimeout(10000);
-
       await clickWidget(page, flow);
 
       await waitForWidgetRender(page);
-
-      // remove overlays that appear when the widget opens
-      await removeMarketingOverlays(page);
     }
 
     let isNewUser;
@@ -231,14 +235,21 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
 
     await page.waitForTimeout(3000);
 
-    try {
-      await Promise.race([
-        validateRefresh(page, eventWatcher, recommendationAPI, flow),
-        page.waitForTimeout(8000)
-      ]);
-    } catch (error) {
-      console.warn("Refresh validation failed (non-fatal):", error.message);
+    // REFRESH
+    await validateRefresh(page, eventWatcher, recommendationAPI, flow);
+
+    // -----------------------------
+    // Gift Flow (apparel only, if CTA present)
+    // -----------------------------
+
+    if (flow === "apparel") {
+      // GIFT
+      eventWatcher.setPhase("gift");
+      eventWatcher.reset();
+      await runGiftFlow(page, eventWatcher);
     }
+
+    eventWatcher.logPhaseSummary();
 
     // -----------------------------
     // PASS
@@ -294,31 +305,33 @@ async function validateCoreEvents(page, eventWatcher, flow) {
       ? await verifyEvents(page, getEvents, expectedEvents.strict.kids)
       : flow === "noVisor"
         ? await verifyEvents(page, getEvents, expectedEvents.strict.noVisor)
-        : [
-          ...(await verifyEvents(
-            page,
-            getEvents,
-            expectedEvents.strict.baseline,
-          )),
-          ...(flow === "footwear"
-            ? await verifyEvents(
-                page,
-                getEvents,
-                expectedEvents.strict.footwear,
-              )
-            : [
-                ...(await verifyEvents(
+        : flow === "gift"
+          ? await verifyEvents(page, getEvents, expectedEvents.strict.gift)
+          : [
+            ...(await verifyEvents(
+              page,
+              getEvents,
+              expectedEvents.strict.baseline,
+            )),
+            ...(flow === "footwear"
+              ? await verifyEvents(
                   page,
                   getEvents,
-                  expectedEvents.strict.recommendation,
-                )),
-                ...(await verifyEvents(
-                  page,
-                  getEvents,
-                  expectedEvents.strict.panels,
-                )),
-              ]),
-        ];
+                  expectedEvents.strict.footwear,
+                )
+              : [
+                  ...(await verifyEvents(
+                    page,
+                    getEvents,
+                    expectedEvents.strict.recommendation,
+                  )),
+                  ...(await verifyEvents(
+                    page,
+                    getEvents,
+                    expectedEvents.strict.panels,
+                  )),
+                ]),
+          ];
 
   if (missing.length > 0) {
     const error = new Error(`Missing events: ${missing.join(", ")}`);
@@ -330,34 +343,52 @@ async function validateCoreEvents(page, eventWatcher, flow) {
 }
 
 async function validateRefresh(page, eventWatcher, recommendationAPI, flow) {
-  console.log("Validating PDP refresh behavior");
-
-  eventWatcher.reset();
-
-  await page.reload();
-  await waitForWidget(page, flow);
-
   if (flow === "kids") {
+    eventWatcher.reset();
+    eventWatcher.setPhase("refresh");
+
+    await page.reload({ waitUntil: "domcontentloaded", timeout: 30000 });
+    await waitForWidget(page, "kids");
     await clickKidsWidget(page);
 
     console.log("Waiting for kids recommendation after refresh");
 
-    await page.waitForFunction(
-      () => {
-        const wrapper =
-          document.querySelector("#vs-kid-app")?.nextElementSibling;
-        const root = wrapper?.shadowRoot;
+    await waitForEvent(eventWatcher, "user-selected-size-kids-rec::kids", 15000);
 
-        return root?.querySelector('[data-test-id="kids-recommended-size"]');
-      },
-      { timeout: 10000 },
+    const failures = await verifyEvents(
+      page,
+      () => eventWatcher.getEvents(),
+      expectedEvents.refresh.kids,
     );
-  } else {
-    await removeMarketingOverlays(page);
+
+    if (failures.length > 0) {
+      const error = new Error(`Refresh missing events: ${failures.join(", ")}`);
+      error.missingEvents = failures;
+      throw error;
+    }
+
+    return;
+  }
+
+  eventWatcher.reset();
+  eventWatcher.setPhase("refresh");
+
+  await page.reload({ waitUntil: "domcontentloaded", timeout: 30000 });
+  await waitForWidget(page, flow);
+
+  if (flow === "gift") {
     await clickWidget(page, flow);
 
-    // Wait for widget to re-render so the recommendation API has time to fire
-    await waitForWidgetRender(page);
+    console.log("Waiting for gift recommendation after refresh");
+
+    await waitForEvent(eventWatcher, "user-opened-panel-rec::gift", 20000);
+  } else {
+    await clickWidget(page, flow);
+
+    // Allow widget UI to stabilize after refresh without blocking on a specific
+    // screen selector — stores like CELFORD may render the gift CTA instead of
+    // a standard recommendation panel, which would cause waitForWidgetRender to hang.
+    await page.waitForTimeout(1500);
 
     // -----------------------------------------
     // CHECK RECOMMENDATION API REFIRE
@@ -384,8 +415,8 @@ async function validateRefresh(page, eventWatcher, recommendationAPI, flow) {
   const schema =
     flow === "footwear"
       ? expectedEvents.refresh.footwear
-      : flow === "kids"
-        ? expectedEvents.refresh.kids
+      : flow === "gift"
+        ? expectedEvents.refresh.gift
         : flow === "noVisor"
           ? expectedEvents.refresh.noVisor
           : expectedEvents.refresh.apparel;
@@ -464,6 +495,16 @@ function detectFlow(pdc) {
   return "apparel";
 }
 
+async function detectGiftEntry(page) {
+  return await page.evaluate(() => {
+    return !!findInShadow('[data-test-id="gift-cta"]');
+  });
+}
+
+// --------------------------------------------------
+// Body Type Selection
+// --------------------------------------------------
+
 // --------------------------------------------------
 // Apparel Flow
 // --------------------------------------------------
@@ -472,11 +513,7 @@ async function runApparelFlow(page, bodyAPI, eventWatcher, recommendationAPI) {
   const isNewUser = await isOnboardingVisible(page);
 
   if (isNewUser) {
-    console.log("New user → running onboarding");
-
     await completeOnboarding(page);
-
-    await removeMarketingOverlays(page);
 
     await waitForRecommendationReady(eventWatcher, recommendationAPI);
 
@@ -509,9 +546,7 @@ async function runNoVisorFlow(page, bodyAPI) {
     const host =
       document.querySelector("#router-view-wrapper") ||
       document.querySelector("#vs-aoyama")?.nextElementSibling;
-
     const root = host?.shadowRoot;
-
     return root?.querySelector('[data-test-id="no-visor-recommended-size"]');
   });
 
@@ -852,6 +887,215 @@ async function runKidsFlow(page, _pdc) {
 }
 
 // --------------------------------------------------
+// Gift Flow
+// --------------------------------------------------
+
+async function runGiftFlow(page, eventWatcher) {
+  console.log("Running VS Gift flow");
+
+  // detect gift CTA in widget — not all stores enable it
+  // wait briefly since the CTA can appear after the recommendation panel loads
+  const hasGift = await page.waitForFunction(
+    () => !!findInShadow('[data-test-id="gift-cta-section"]'),
+    { timeout: 5000 }
+  ).catch(() => false);
+
+  if (!hasGift) {
+    console.log("Gift CTA not found — skipping gift flow");
+    return false;
+  }
+
+  // ── 1. Open gift CTA ──────────────────────────────────────────────────────
+
+  // Wait for gift-cta to be present in the shadow DOM — the section may appear
+  // before the button is rendered (e.g. lazy shadow init on CELFORD).
+  await page.waitForFunction(
+    () => !!findInShadow('[data-test-id="gift-cta"]'),
+    { timeout: 15000 }
+  );
+
+  await page.evaluate(() =>
+    findInShadow('[data-test-id="gift-cta"]')?.click()
+  );
+
+  // Wait for onboarding to mount
+  await page.waitForFunction(
+    () => !!findInShadow('[data-test-id="input-age-desktop"]'),
+    { timeout: 15000 }
+  );
+
+  console.log("Gift onboarding detected");
+
+  // ── 2. Gender ─────────────────────────────────────────────────────────────
+
+  await page.evaluate(() => {
+    const radio = findInShadow('input[name="selectGender"][value="female"]');
+    if (!radio) throw new Error("Female gender radio not found");
+    radio.click();
+    radio.dispatchEvent(new Event("change", { bubbles: true }));
+  });
+
+  console.log("Selected gender: female");
+
+  // ── 3. Age ────────────────────────────────────────────────────────────────
+
+  await page.evaluate(() =>
+    findInShadow('[data-test-id="input-age-desktop"]')?.click()
+  );
+
+  // Wait for the age sheet modal to appear with at least one label option
+  // Scoped to #sheet to avoid matching gender radios elsewhere in the widget
+  await page.waitForFunction(
+    () => !!findInShadow('#sheet label.radio-button-label'),
+    { timeout: 10000 }
+  );
+
+  // Click the first label — safest way to trigger the underlying input[name="selectMetric"]
+  await page.evaluate(() => {
+    const label = findInShadow('#sheet label.radio-button-label');
+    if (!label) throw new Error("Age label option not found in #sheet");
+    label.click();
+  });
+
+  // Wait for the age field to turn from gray (rgb(183, 185, 185)) to black (rgb(25, 25, 25))
+  await page.waitForFunction(() => {
+    const el = findInShadow('[data-test-id="input-age-desktop"]');
+    if (!el) return false;
+    return window.getComputedStyle(el).color !== "rgb(183, 185, 185)";
+  }, { timeout: 8000 });
+
+  // Wait for age sheet to fully close before opening height
+  await page.waitForFunction(() => {
+    const sheet = findInShadow('#sheet');
+    if (!sheet) return true;
+    const s = window.getComputedStyle(sheet);
+    return s.display === 'none' || s.visibility === 'hidden' || parseFloat(s.opacity) === 0;
+  }, { timeout: 8000 });
+
+  console.log("Selected age");
+
+  // ── 4. Height ─────────────────────────────────────────────────────────────
+
+  await page.waitForTimeout(600);
+
+  await page.evaluate(() => findInShadow('[data-test-id="input-height-desktop"]')?.click());
+
+  // wait for height sheet to open, then select first option
+  await page.waitForFunction(
+    () => !!findInShadow('#sheet label.radio-button-label'),
+    { timeout: 10000 }
+  );
+  await page.evaluate(() => findInShadow('#sheet label.radio-button-label')?.click());
+
+  // wait for height sheet to fully close
+  await page.waitForFunction(() => {
+    const sheet = findInShadow('#sheet');
+    if (!sheet) return true;
+    const s = window.getComputedStyle(sheet);
+    return s.display === 'none' || s.visibility === 'hidden' || parseFloat(s.opacity) === 0;
+  }, { timeout: 8000 });
+
+  // verify value updated away from placeholder
+  await page.waitForFunction(() => {
+    const el = findInShadow('[data-test-id="input-height-desktop"]');
+    return el && !/^\s*-\s*$/.test(el.textContent ?? '');
+  }, { timeout: 8000 });
+
+  console.log("Selected height");
+
+  // ── 5. Body type ──────────────────────────────────────────────────────────
+
+  await page.waitForTimeout(600);
+
+  await page.locator('[data-test-id="input-body-type"]').click();
+
+  const bodySheet = page.locator('[data-test-id="sheetTestId"]');
+  await expect(bodySheet).toBeVisible({ timeout: 10000 });
+
+  await bodySheet.locator('[data-test-id="gridItemTestId"]').nth(1).click();
+
+  await expect(bodySheet).toBeHidden({ timeout: 8000 });
+
+  console.log("Selected body type");
+
+  // ── 6. Privacy policy (new users only) ───────────────────────────────────
+
+  const privacyCheckbox = page.locator('[data-test-id="privacy-policy-checkbox"]');
+  if (await privacyCheckbox.isVisible()) {
+    await privacyCheckbox.click();
+    console.log("Accepted privacy policy");
+  }
+
+  // ── 7. See ideal fit button ───────────────────────────────────────────────
+
+  const seeIdealFitBtn = page.locator('[data-test-id="see-ideal-fit-btn"]');
+  await expect(seeIdealFitBtn).toBeEnabled({ timeout: 8000 });
+  await seeIdealFitBtn.click();
+
+  console.log("Clicked see ideal fit button");
+
+  // ── 8. Wait for result ────────────────────────────────────────────────────
+
+  await expect(
+    page.locator('[data-test-id="adjustYourSilhouette.header"], .rec-main').first()
+  ).toBeVisible({ timeout: 20_000 });
+
+  console.log("Gift recommendation result detected");
+
+  // ── 9. Validate gift events ───────────────────────────────────────────────
+
+  const giftMissing = await verifyEvents(
+    page,
+    () => eventWatcher.getEvents(),
+    expectedEvents.strict.gift
+  );
+  if (giftMissing.length > 0) {
+    const error = new Error(`Gift missing events: ${giftMissing.join(", ")}`);
+    error.missingEvents = giftMissing;
+    throw error;
+  }
+
+  // ── 10. Refresh validation ────────────────────────────────────────────────
+
+  console.log("Validating gift refresh behavior");
+
+  eventWatcher.setPhase("gift-refresh");
+  eventWatcher.reset();
+
+  await page.reload({ waitUntil: "domcontentloaded", timeout: 30000 });
+  await waitForWidget(page, "apparel");
+  await page.waitForTimeout(2000);
+  await clickWidget(page, "apparel");
+
+  // Skip waitForWidgetRender — the apparel widget opens first, then gift CTA
+  // is clicked next. Wait directly for the gift CTA to appear instead.
+  await page.waitForFunction(
+    () => !!findInShadow('[data-test-id="gift-cta"]'),
+    { timeout: 20000 }
+  );
+
+  await page.evaluate(() => findInShadow('[data-test-id="gift-cta"]')?.click());
+
+  // Returning user — recommendation appears without onboarding
+  await waitForEvent(eventWatcher, "user-opened-panel-rec::gift", 20000);
+
+  console.log("Gift refresh: recommendation visible");
+
+  const refreshMissing = await verifyEvents(
+    page,
+    () => eventWatcher.getEvents(),
+    expectedEvents.refresh.gift
+  );
+  if (refreshMissing.length > 0) {
+    const error = new Error(`Gift refresh missing events: ${refreshMissing.join(", ")}`);
+    error.missingEvents = refreshMissing;
+    throw error;
+  }
+
+  return true;
+}
+
+// --------------------------------------------------
 // Helpers
 // --------------------------------------------------
 
@@ -859,7 +1103,13 @@ async function waitForPDC(pdc) {
   const start = Date.now();
 
   while (Date.now() - start < 10000) {
-    if (pdc.store !== "unknown") return;
+    if (
+      pdc.store !== "unknown" &&
+      pdc.validProduct !== undefined &&
+      pdc.productType !== "unknown"
+    ) {
+      return;
+    }
     await new Promise((r) => setTimeout(r, 200));
   }
 }
@@ -889,7 +1139,8 @@ async function waitForWidgetRender(page) {
         root.querySelector('[data-test-id="footWidth-select-item-btn"]') || // shoe step 1
         root.querySelector('[data-test-id="toeShape-select-item-btn"]') || // shoe step 2
         root.querySelector('[data-test-id="open-sizes-footwear-picker"]') || // shoe step 4
-        root.querySelector('[data-test-id="open-brands-footwear-picker"]') // shoe step 6
+        root.querySelector('[data-test-id="open-brands-footwear-picker"]') || // shoe step 6
+        root.querySelector('[data-test-id="gift-cta"]') // gift entry screen (e.g. CELFORD)
       );
     },
     { timeout: 20000 },
@@ -905,8 +1156,6 @@ async function isOnboardingVisible(page) {
 }
 
 async function waitForRecommendationReady(eventWatcher, recommendationAPI) {
-  console.log("Waiting for recommendation panel...");
-
   await waitForStatus(() => recommendationAPI.getStatus(), 15000);
 
   const start = Date.now();
@@ -918,7 +1167,6 @@ async function waitForRecommendationReady(eventWatcher, recommendationAPI) {
       events.some((e) => e.startsWith("user-opened-panel-tryiton::")) ||
       events.some((e) => e.startsWith("user-saw-measurements-view::"))
     ) {
-      console.log("Recommendation screen detected.");
       return;
     }
 
@@ -938,6 +1186,15 @@ async function waitForStatus(getter, timeout = 5000) {
   return null;
 }
 
+async function waitForEvent(eventWatcher, eventKey, timeout = 20000) {
+  const start = Date.now();
+  while (Date.now() - start < timeout) {
+    if (eventWatcher.getEvents().includes(eventKey)) return;
+    await new Promise((r) => setTimeout(r, 200));
+  }
+  throw new Error(`Timed out waiting for event: ${eventKey}`);
+}
+
 // --------------------------------------------------
 // Widget Wait
 // --------------------------------------------------
@@ -954,7 +1211,7 @@ async function waitForWidget(page, flow) {
       return style.display !== "none" && style.visibility !== "hidden";
     },
     selector,
-    { timeout: 20000 },
+    { timeout: 30000 },
   );
 }
 
@@ -989,9 +1246,36 @@ async function clickWidget(page, flow) {
     document.querySelector(sel)?.scrollIntoView({ block: "center" });
   }, selector);
 
-  await removeMarketingOverlays(page);
-
   await page.waitForSelector(selector, { state: "visible", timeout: 5000 });
+
+  // For #vs-inpage: wait for the shadow button and click it.
+  // Legacy inpage (#vs-legacy-inpage) has no shadow root — click the host directly.
+  if (flow !== "kids") {
+    if (await page.evaluate(() => !!document.querySelector("#vs-inpage"))) {
+      // Wait for the shadow root to render its entry point — either the standard
+      // open button or the gift CTA (e.g. CELFORD renders gift-cta directly).
+      await page.waitForFunction(() => {
+        const root = document.querySelector("#vs-inpage")?.shadowRoot;
+        return (
+          !!root?.querySelector('[data-test-id="inpage-open-aoyama-btn"]') ||
+          !!root?.querySelector('[data-test-id="gift-cta"]')
+        );
+      }, { timeout: 15000 });
+
+      await page.evaluate(() => {
+        const root = document.querySelector("#vs-inpage")?.shadowRoot;
+        const btn =
+          root?.querySelector('[data-test-id="inpage-open-aoyama-btn"]') ||
+          root?.querySelector('[data-test-id="gift-cta"]');
+        btn?.click();
+      });
+    } else {
+      // Legacy inpage — no shadow root, click host directly.
+      await page.locator("#vs-legacy-inpage").click({ force: true });
+    }
+
+    return;
+  }
 
   // force: true bypasses any overlay that sneaks in at click time
   await page.locator(selector).click({ force: true });
@@ -1001,82 +1285,6 @@ async function clickWidget(page, flow) {
 // Overlay Cleanup
 // --------------------------------------------------
 
-async function removeMarketingOverlays(page) {
-  const maxDuration = 8000;
-  const quietThreshold = 1000; // stop after 1s with no overlays found
-  const checkInterval = 300;
-
-  const start = Date.now();
-  let lastFoundAt = start;
-
-  while (Date.now() - start < maxDuration) {
-    const found = await page.evaluate(() => {
-      let dismissed = false;
-
-      // Buyee
-      document
-        .querySelectorAll("#buyee-bcFrame, #buyee-bcSection, .bcModalBase")
-        .forEach((el) => {
-          el.remove();
-          dismissed = true;
-        });
-      document.querySelectorAll(".bcIntro__closeBtn").forEach((el) => {
-        el.click();
-        dismissed = true;
-      });
-
-      // WorldShopping
-      const wsShadow = document.querySelector(
-        "#zigzag-worldshopping-checkout",
-      )?.shadowRoot;
-      if (wsShadow) {
-        const wsInner = wsShadow.querySelector(
-          "#zigzag-worldshopping-checkout",
-        );
-        if (wsInner && wsInner.style.display !== "none") {
-          wsShadow.querySelector("#zigzag-test__banner-close-popup")?.click();
-          wsShadow.querySelector("#zigzag-test__banner-hide")?.click();
-          wsShadow
-            .querySelector(
-              ".src-components-notice-___NoticeV2__closeIcon___Hpc7A",
-            )
-            ?.click();
-          wsInner.style.display = "none";
-          dismissed = true;
-        }
-      }
-
-      // KARTE
-      document.querySelectorAll(".karte-close").forEach((el) => {
-        el.click();
-        dismissed = true;
-      });
-
-      // Cookie consent
-      document
-        .querySelectorAll(
-          'button[data-testid="uc-accept-all-button"], ' +
-          '#onetrust-accept-btn-handler, ' +
-          'button[id*="cookie"][id*="accept"], ' +
-          'button[class*="cookie"][class*="accept"]',
-        )
-        .forEach((btn) => {
-          btn.click();
-          dismissed = true;
-        });
-
-      return dismissed;
-    });
-
-    if (found) {
-      lastFoundAt = Date.now();
-    } else if (Date.now() - lastFoundAt >= quietThreshold) {
-      break; // 1s of quiet — overlays are gone
-    }
-
-    await page.waitForTimeout(checkInterval);
-  }
-}
 
 function logResult(result) {
   console.log("QA_RESULT:", JSON.stringify(result));
