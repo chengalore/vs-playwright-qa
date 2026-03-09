@@ -10,14 +10,17 @@ import { validateRecommendation } from "../utils/validateRecommendation.js";
 import { selectSizeIfMultiple } from "../utils/selectSizeIfMultiple.js";
 import { addItemToWardrobe } from "../utils/addItemToWardrobe.js";
 import { blockMarketingScripts } from "../utils/blockMarketingScripts.js";
-import { resolveTestUrl } from "../utils/fetchRandomProduct.js";
+import { resolveTestUrl, fetchRandomProduct, buildParamsFromEnv } from "../utils/fetchRandomProduct.js";
 
 test.setTimeout(180000);
 
 test("Inpage basic flow", async ({ page }, testInfo) => {
   const startTime = Date.now();
 
-  const url = await resolveTestUrl(
+  const apiParams = buildParamsFromEnv();
+  const canRetry = !!(apiParams.store_id || apiParams.api_key) && !process.env.TEST_URL;
+
+  let url = await resolveTestUrl(
     "https://www.underarmour.co.jp/f/dsg-1072366",
   );
 
@@ -122,6 +125,11 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
 
     await waitForPDC(pdc);
 
+    // Retry up to 3 times if the API returned an invalid product
+    if (pdc.validProduct === false && canRetry) {
+      url = await retryOnInvalidProduct(page, pdc, apiParams, url, 3);
+    }
+
     // -----------------------------
     // Gatekeeping
     // -----------------------------
@@ -164,6 +172,7 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
 
     if (flow === "kids") {
       await clickKidsWidget(page);
+      await waitForKidsWidgetReady(page);
     } else {
       await clickWidget(page, flow);
 
@@ -727,85 +736,81 @@ async function runFootwearFlow(page, bodyAPI) {
 // --------------------------------------------------
 
 async function runKidsFlow(page, _pdc) {
-  console.log("Running Kids flow");
+  console.log("[kids] Starting Kids flow");
 
   // Wait for gender radio buttons to appear
-  await page.waitForFunction(() =>
-    findInShadow('input[name="selectKidGender"]'),
+  await page.waitForFunction(
+    () => !!findInShadow('input[name="selectKidGender"]'),
+    { timeout: 15000 },
+  );
+  console.log("[kids] Gender radio buttons detected");
+
+  // Click girl radio
+  await kidsRetry(page, async () => {
+    await page.evaluate(() => {
+      const radio = findInShadow('input[name="selectKidGender"][value="girl"]');
+      if (!radio) throw new Error("Girl gender radio not found");
+      radio.click();
+      radio.dispatchEvent(new Event("change", { bubbles: true }));
+    });
+  }, "click girl gender radio");
+  console.log("[kids] Gender selected: girl");
+
+  // Open age selector — try both known selector patterns
+  await kidsRetry(page, async () => {
+    await page.evaluate(() => {
+      const root = document.querySelector("#vs-kid-app")?.nextElementSibling?.shadowRoot;
+      if (!root) throw new Error("Kids shadow root not found");
+      const ageSpan =
+        root.querySelector("span.age-input-value") ??
+        root.querySelector('[data-test-id="age-input-value"]');
+      if (!ageSpan) throw new Error("Age input span not found");
+      ageSpan.click();
+    });
+  }, "open age selector");
+  console.log("[kids] Age selector opened");
+
+  // Wait for age picker radios — any radio that is NOT the gender radio
+  await page.waitForFunction(
+    () => {
+      const root = document.querySelector("#vs-kid-app")?.nextElementSibling?.shadowRoot;
+      if (!root) return false;
+      return [...root.querySelectorAll('input[type="radio"]')]
+        .some((r) => r.name !== "selectKidGender");
+    },
+    { timeout: 10000 },
   );
 
-  console.log("Gender radio buttons detected");
-
-  // Click girl
+  // Select age radio — 6th option (index 5) or first if fewer exist
   await page.evaluate(() => {
-    const girlRadio = findInShadow(
-      'input[name="selectKidGender"][value="girl"]',
-    );
+    const root = document.querySelector("#vs-kid-app")?.nextElementSibling?.shadowRoot;
+    if (!root) throw new Error("[kids] Shadow root not found for age selection");
 
-    if (!girlRadio) {
-      throw new Error("Girl radio button not found");
-    }
+    const ageRadios = [...root.querySelectorAll('input[type="radio"]')]
+      .filter((r) => r.name !== "selectKidGender");
 
-    girlRadio.click();
-  });
+    if (!ageRadios.length) throw new Error("[kids] No age radio buttons found");
 
-  console.log("Clicked gender radio button");
-
-  // Open age selector
-  await page.evaluate(() => {
-    const wrapper = document.querySelector("#vs-kid-app")?.nextElementSibling;
-    const root = wrapper?.shadowRoot;
-    if (!root) throw new Error("Kids widget shadow root not found");
-
-    const ageSpan = root.querySelector("span.age-input-value");
-    if (!ageSpan) throw new Error("Age span not found");
-
-    ageSpan.click();
-  });
-
-  console.log("Opened age selector");
-
-  // Wait for age sheet to appear
-  await page.waitForFunction(() => {
-    const wrapper = document.querySelector("#vs-kid-app")?.nextElementSibling;
-    const root = wrapper?.shadowRoot;
-    const sheet = root?.querySelector("#sheet");
-    return sheet && sheet.querySelector("input[type='radio']");
-  });
-
-  // Select age option
-  await page.evaluate(() => {
-    const wrapper = document.querySelector("#vs-kid-app")?.nextElementSibling;
-    const root = wrapper?.shadowRoot;
-    const sheet = root?.querySelector("#sheet");
-    if (!sheet) throw new Error("Kids age sheet not found");
-
-    const radios = sheet.querySelectorAll(
-      "gridcontainer > div.vs-radio-buttons > label > input[type='radio']",
-    );
-    if (!radios.length) throw new Error("No Kids age radio buttons found");
-
-    const target = radios[5] || radios[0];
+    const target = ageRadios[5] ?? ageRadios[0];
     target.click();
     target.dispatchEvent(new Event("change", { bubbles: true }));
   });
-
-  console.log("Selected age");
+  console.log("[kids] Age selected");
 
   /* -------------------- HEIGHT & WEIGHT -------------------- */
 
-  console.log("Waiting for height and weight inputs...");
+  console.log("[kids] Waiting for height and weight inputs...");
 
-  await page.waitForFunction(() => {
-    const wrapper = document.querySelector("#vs-kid-app")?.nextElementSibling;
-    const root = wrapper?.shadowRoot;
-
-    return (
-      root &&
-      root.querySelector('[data-test-id="kids-height-input-desktop"] input') &&
-      root.querySelector('[data-test-id="kids-weight-input-desktop"] input')
-    );
-  });
+  await page.waitForFunction(
+    () => {
+      const root = document.querySelector("#vs-kid-app")?.nextElementSibling?.shadowRoot;
+      return !!(
+        root?.querySelector('[data-test-id="kids-height-input-desktop"] input') &&
+        root?.querySelector('[data-test-id="kids-weight-input-desktop"] input')
+      );
+    },
+    { timeout: 15000 },
+  );
 
   for (const [testId, value] of [
     ["kids-height-input-desktop", "120"],
@@ -813,75 +818,55 @@ async function runKidsFlow(page, _pdc) {
   ]) {
     await page.evaluate(
       ({ testId, value }) => {
-        const wrapper =
-          document.querySelector("#vs-kid-app")?.nextElementSibling;
-        const root = wrapper?.shadowRoot;
-
+        const root = document.querySelector("#vs-kid-app")?.nextElementSibling?.shadowRoot;
         const input = root?.querySelector(`[data-test-id="${testId}"] input`);
-
-        if (!input) throw new Error(`Input not found: ${testId}`);
-
+        if (!input) throw new Error(`[kids] Input not found: ${testId}`);
         input.focus();
         input.value = value;
-
         input.dispatchEvent(new Event("input", { bubbles: true }));
         input.dispatchEvent(new Event("change", { bubbles: true }));
-
         input.blur();
       },
       { testId, value },
     );
   }
-
-  console.log("Filled height and weight");
+  console.log("[kids] Height and weight filled");
 
   /* -------------------- PRIVACY POLICY -------------------- */
 
   await page.evaluate(() => {
-    const wrapper = document.querySelector("#vs-kid-app")?.nextElementSibling;
-    const root = wrapper?.shadowRoot;
-
+    const root = document.querySelector("#vs-kid-app")?.nextElementSibling?.shadowRoot;
     if (!root) return;
-
-    const checkbox = root.querySelector(
-      '[data-test-id="privacy-policy-checkbox"]',
-    );
-
+    const checkbox = root.querySelector('[data-test-id="privacy-policy-checkbox"]');
     if (checkbox && !checkbox.checked) {
       checkbox.click();
       checkbox.dispatchEvent(new Event("change", { bubbles: true }));
     }
   });
-
-  console.log("Checked privacy policy");
+  console.log("[kids] Privacy policy accepted");
 
   /* -------------------- CTA BUTTON -------------------- */
 
-  await page.evaluate(() => {
-    const wrapper = document.querySelector("#vs-kid-app")?.nextElementSibling;
-    const root = wrapper?.shadowRoot;
-
-    if (!root) return;
-
-    const nextButton = root.querySelector('[data-test-id="see-ideal-fit-btn"]');
-
-    if (!nextButton) throw new Error("CTA button not found");
-
-    nextButton.click();
-  });
-
-  console.log("Clicked See Your Perfect Fit");
+  await kidsRetry(page, async () => {
+    await page.evaluate(() => {
+      const root = document.querySelector("#vs-kid-app")?.nextElementSibling?.shadowRoot;
+      const btn = root?.querySelector('[data-test-id="see-ideal-fit-btn"]');
+      if (!btn) throw new Error("[kids] CTA button not found");
+      btn.click();
+    });
+  }, "click see-ideal-fit-btn");
+  console.log("[kids] Clicked See Your Perfect Fit");
 
   /* -------------------- WAIT FOR RESULT -------------------- */
 
-  await page.waitForFunction(() => {
-    const wrapper = document.querySelector("#vs-kid-app")?.nextElementSibling;
-    const root = wrapper?.shadowRoot;
-
-    return root?.querySelector('[data-test-id="kids-recommended-size"]');
-  });
-
-  console.log("Kids onboarding completed successfully.");
+  await page.waitForFunction(
+    () => {
+      const root = document.querySelector("#vs-kid-app")?.nextElementSibling?.shadowRoot;
+      return !!root?.querySelector('[data-test-id="kids-recommended-size"]');
+    },
+    { timeout: 30000 },
+  );
+  console.log("[kids] Kids flow completed successfully");
 
   return true;
 }
@@ -1093,6 +1078,101 @@ async function runGiftFlow(page, eventWatcher) {
   }
 
   return true;
+}
+
+// --------------------------------------------------
+// Kids Helpers
+// --------------------------------------------------
+
+/**
+ * Ensures the kids widget shadow root is available before starting the flow.
+ * Handles both the direct shadowRoot-on-#vs-kid pattern and the
+ * #vs-kid-app → nextElementSibling.shadowRoot pattern.
+ */
+async function waitForKidsWidgetReady(page) {
+  await page.waitForFunction(
+    () => {
+      if (document.querySelector("#vs-kid-app")?.nextElementSibling?.shadowRoot) return true;
+      return !!document.querySelector("#vs-kid")?.shadowRoot;
+    },
+    { timeout: 20000 },
+  );
+  console.log("[kids] Widget shadow root ready");
+}
+
+/**
+ * Retries an async action up to maxAttempts times with a delay between each.
+ * Throws a descriptive error if all attempts fail.
+ */
+async function kidsRetry(page, fn, label, maxAttempts = 3, delayMs = 500) {
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      await fn();
+      return;
+    } catch (e) {
+      if (attempt === maxAttempts) {
+        throw new Error(`[kids] "${label}" failed after ${maxAttempts} attempts: ${e.message}`);
+      }
+      console.warn(`[kids] "${label}" attempt ${attempt} failed: ${e.message} — retrying...`);
+      await page.waitForTimeout(delayMs);
+    }
+  }
+}
+
+/**
+ * Resets a pdc watcher object to its initial state so it can be repopulated
+ * after navigating to a new URL.
+ */
+function resetPdc(pdc) {
+  pdc.store = "unknown";
+  pdc.productType = "unknown";
+  pdc.gender = "unknown";
+  pdc.noVisor = false;
+  pdc.validProduct = undefined;
+  pdc.isKid = false;
+}
+
+/**
+ * If the current page returned validProduct=false, fetches a new random product
+ * URL using the same API params and retries navigation up to maxRetries times.
+ * Returns the URL of the first valid product found, or the last URL tried.
+ */
+async function retryOnInvalidProduct(page, pdc, apiParams, currentUrl, maxRetries = 3) {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    console.log(`[retry] validProduct=false — fetching new product (attempt ${attempt}/${maxRetries})`);
+
+    let newUrl;
+    try {
+      newUrl = await fetchRandomProduct(apiParams);
+    } catch (e) {
+      console.warn(`[retry] fetchRandomProduct error: ${e.message}`);
+      break;
+    }
+
+    resetPdc(pdc);
+    await page.goto(newUrl);
+    await page.evaluate(() => window.scrollTo({ top: 1000, behavior: "instant" }));
+    await page.waitForTimeout(1500);
+    await page.evaluate(() => {
+      document
+        .querySelectorAll(
+          'button[data-testid="uc-accept-all-button"], ' +
+          '#onetrust-accept-btn-handler, ' +
+          'button[id*="cookie"][id*="accept"], ' +
+          'button[class*="cookie"][class*="accept"]',
+        )
+        .forEach((btn) => btn.click());
+    });
+    await waitForPDC(pdc);
+
+    if (pdc.validProduct !== false) {
+      console.log(`[retry] Valid product found on attempt ${attempt}: ${newUrl}`);
+      return newUrl;
+    }
+  }
+
+  console.log(`[retry] All ${maxRetries} retries exhausted with validProduct=false`);
+  return currentUrl;
 }
 
 // --------------------------------------------------

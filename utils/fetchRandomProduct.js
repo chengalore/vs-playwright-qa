@@ -36,6 +36,25 @@
 const RANDOM_PRODUCT_API =
   "https://dcai264p3l.execute-api.ap-northeast-1.amazonaws.com/prod/random_product";
 
+/**
+ * Builds API params from environment variables.
+ * Useful for retrying fetchRandomProduct with the same filters.
+ */
+export function buildParamsFromEnv() {
+  const parseBool = (val) => (!val ? undefined : val === "true");
+  return {
+    store_id: process.env.STORE_ID ? Number(process.env.STORE_ID) : undefined,
+    api_key: process.env.API_KEY || undefined,
+    product_type_id: process.env.PRODUCT_TYPE_ID
+      ? Number(process.env.PRODUCT_TYPE_ID)
+      : undefined,
+    gender: process.env.GENDER || undefined,
+    category: process.env.CATEGORY || undefined,
+    exclude_kids: parseBool(process.env.EXCLUDE_KIDS),
+    valid: parseBool(process.env.VALID),
+  };
+}
+
 export async function fetchRandomProduct(params = {}) {
   const {
     store_id,
@@ -100,31 +119,10 @@ export async function fetchRandomProduct(params = {}) {
 export async function resolveTestUrl(fallbackUrl) {
   if (process.env.TEST_URL) return process.env.TEST_URL;
 
-  const parseBool = (val) =>
-    !val ? undefined : val === "true";
-
-  const store_id = process.env.STORE_ID
-    ? Number(process.env.STORE_ID)
-    : undefined;
-  const api_key = process.env.API_KEY || undefined;
-  const product_type_id = process.env.PRODUCT_TYPE_ID
-    ? Number(process.env.PRODUCT_TYPE_ID)
-    : undefined;
-  const gender = process.env.GENDER || undefined;
-  const category = process.env.CATEGORY || undefined;
-  const exclude_kids = parseBool(process.env.EXCLUDE_KIDS);
-  const valid = parseBool(process.env.VALID);
+  const params = buildParamsFromEnv();
 
   // store_id or api_key is required by the API
-  if (!store_id && !api_key) return fallbackUrl;
+  if (!params.store_id && !params.api_key) return fallbackUrl;
 
-  return fetchRandomProduct({
-    store_id,
-    api_key,
-    product_type_id,
-    gender,
-    category,
-    exclude_kids,
-    valid,
-  });
+  return fetchRandomProduct(params);
 }
