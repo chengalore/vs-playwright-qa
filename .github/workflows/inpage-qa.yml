@@ -23,11 +23,50 @@ jobs:
 
       - run: npx playwright install --with-deps
 
+      - name: Parse slash command input
+        run: |
+          node --input-type=module <<'EOF'
+          import { parseSlashCommand } from './utils/parseSlashCommand.js';
+          import { appendFileSync } from 'fs';
+
+          const input = process.env.QA_INPUT ?? '';
+          const params = parseSlashCommand(input);
+          const env = process.env.GITHUB_ENV;
+
+          const write = (key, value) => {
+            appendFileSync(env, `${key}=${value}\n`);
+            console.log(`  ${key}=${value}`);
+          };
+
+          console.log(`Parsed "${input}" →`, params);
+
+          if (params.testUrl) {
+            write('TEST_URL', params.testUrl);
+          } else {
+            if (params.store_id !== undefined)       write('STORE_ID', params.store_id);
+            if (params.api_key !== undefined)        write('API_KEY', params.api_key);
+            if (params.product_type_id !== undefined) write('PRODUCT_TYPE_ID', params.product_type_id);
+            if (params.gender !== undefined)         write('GENDER', params.gender);
+            if (params.category !== undefined)       write('CATEGORY', params.category);
+            if (params.exclude_kids !== undefined)   write('EXCLUDE_KIDS', params.exclude_kids);
+            if (params.valid !== undefined)          write('VALID', params.valid);
+          }
+          EOF
+        env:
+          QA_INPUT: ${{ github.event.inputs.url }}
+
       - name: Run Playwright test
         run: |
           npx playwright test tests/inpage.spec.js | tee test-output.log
         env:
-          TEST_URL: ${{ github.event.inputs.url }}
+          TEST_URL: ${{ env.TEST_URL }}
+          STORE_ID: ${{ env.STORE_ID }}
+          API_KEY: ${{ env.API_KEY }}
+          PRODUCT_TYPE_ID: ${{ env.PRODUCT_TYPE_ID }}
+          GENDER: ${{ env.GENDER }}
+          CATEGORY: ${{ env.CATEGORY }}
+          EXCLUDE_KIDS: ${{ env.EXCLUDE_KIDS }}
+          VALID: ${{ env.VALID }}
 
       - name: Send result to Slack
         if: always()
