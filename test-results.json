@@ -113,20 +113,23 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 27659,
+                  "duration": 21987,
                   "errors": [],
                   "stdout": [
                     {
                       "text": "Fetching random product: https://dcai264p3l.execute-api.ap-northeast-1.amazonaws.com/prod/random_product?store_id=805&product_type_id=17\n"
                     },
                     {
-                      "text": "Random product URL: https://www.underarmour.co.jp/f/dsg-1063307\n"
+                      "text": "Random product URL: https://www.underarmour.co.jp/f/dsg-1089602\n"
                     },
                     {
-                      "text": "Testing URL: https://www.underarmour.co.jp/f/dsg-1063307\n"
+                      "text": "Testing URL: https://www.underarmour.co.jp/f/dsg-1089602\n"
                     },
                     {
                       "text": "[EVENT WATCHER] Phase → onboarding\n"
+                    },
+                    {
+                      "text": "PDC UPDATE: \u001b[33mtrue\u001b[39m shoe\n"
                     },
                     {
                       "text": "[integration] user-saw-product\n"
@@ -177,9 +180,6 @@
                       "text": "Body Measurement API Status: \u001b[33m200\u001b[39m\n"
                     },
                     {
-                      "text": "Body Measurement API Status: \u001b[33m200\u001b[39m\n"
-                    },
-                    {
                       "text": "Recommendation API Status: \u001b[33m200\u001b[39m\n"
                     },
                     {
@@ -187,6 +187,9 @@
                     },
                     {
                       "text": "[EVENT WATCHER] Phase → refresh\n"
+                    },
+                    {
+                      "text": "PDC UPDATE: \u001b[33mtrue\u001b[39m shoe\n"
                     },
                     {
                       "text": "[integration] user-saw-product\n"
@@ -210,12 +213,12 @@
                       "text": "[fit-illustrator] user-opened-panel-rec\n"
                     },
                     {
-                      "text": "QA_RESULT: {\"url\":\"https://www.underarmour.co.jp/f/dsg-1063307\",\"store\":\"under_armour\",\"productType\":\"shoe\",\"userType\":\"NEW\",\"status\":\"passed\",\"browser\":\"chromium\",\"durationMs\":27387}\n"
+                      "text": "QA_RESULT: {\"url\":\"https://www.underarmour.co.jp/f/dsg-1089602\",\"store\":\"under_armour\",\"productType\":\"shoe\",\"userType\":\"NEW\",\"status\":\"passed\",\"browser\":\"chromium\",\"durationMs\":21731}\n"
                     }
                   ],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-03-09T12:12:00.346Z",
+                  "startTime": "2026-03-09T12:28:35.116Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -233,8 +236,8 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2026-03-09T12:11:59.763Z",
-    "duration": 28986.456,
+    "startTime": "2026-03-09T12:28:34.457Z",
+    "duration": 23715.685,
     "expected": 1,
     "skipped": 0,
     "unexpected": 0,

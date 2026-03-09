@@ -1103,7 +1103,13 @@ async function waitForPDC(pdc) {
   const start = Date.now();
 
   while (Date.now() - start < 10000) {
-    if (pdc.store !== "unknown") return;
+    if (
+      pdc.store !== "unknown" &&
+      pdc.validProduct !== undefined &&
+      pdc.productType !== "unknown"
+    ) {
+      return;
+    }
     await new Promise((r) => setTimeout(r, 200));
   }
 }
