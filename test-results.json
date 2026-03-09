@@ -113,23 +113,26 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 73326,
+                  "duration": 116505,
                   "errors": [],
                   "stdout": [
                     {
-                      "text": "Fetching random product: https://dcai264p3l.execute-api.ap-northeast-1.amazonaws.com/prod/random_product?store_id=535&product_type_id=4\n"
+                      "text": "Fetching random product: https://dcai264p3l.execute-api.ap-northeast-1.amazonaws.com/prod/random_product?store_id=805&product_type_id=4\n"
                     },
                     {
-                      "text": "Random product URL: https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails.do?wrt=5&mcd=CG023&cpg=855&pno=29&ino=01\n"
+                      "text": "Random product URL: https://www.underarmour.co.jp/f/dsg-1055400\n"
                     },
                     {
-                      "text": "Testing URL: https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails.do?wrt=5&mcd=CG023&cpg=855&pno=29&ino=01\n"
+                      "text": "Testing URL: https://www.underarmour.co.jp/f/dsg-1055400\n"
                     },
                     {
                       "text": "[EVENT WATCHER] Phase → onboarding\n"
                     },
                     {
-                      "text": "PDC UPDATE: \u001b[33mtrue\u001b[39m tShirt\n"
+                      "text": "Navigating to: https://www.underarmour.co.jp/f/dsg-1055400\n"
+                    },
+                    {
+                      "text": "Page loaded\n"
                     },
                     {
                       "text": "PDC UPDATE: \u001b[33mtrue\u001b[39m tShirt\n"
@@ -141,10 +144,13 @@
                       "text": "[integration] user-saw-widget-button\n"
                     },
                     {
-                      "text": "Flow: apparel\n"
+                      "text": "[integration] inpage-mounted\n"
                     },
                     {
-                      "text": "[integration] inpage-mounted\n"
+                      "text": "PDC resolved: under_armour tShirt valid: \u001b[33mtrue\u001b[39m\n"
+                    },
+                    {
+                      "text": "Flow: apparel\n"
                     },
                     {
                       "text": "[inpage] user-opened-widget\n"
@@ -180,6 +186,9 @@
                       "text": "[fit-illustrator] user-opened-panel-tryiton\n"
                     },
                     {
+                      "text": "[fit-illustrator] user-selected-size\n"
+                    },
+                    {
                       "text": "[fit-illustrator] user-opened-panel-details\n"
                     },
                     {
@@ -190,9 +199,6 @@
                     },
                     {
                       "text": "[EVENT WATCHER] Phase → refresh\n"
-                    },
-                    {
-                      "text": "PDC UPDATE: \u001b[33mtrue\u001b[39m tShirt\n"
                     },
                     {
                       "text": "PDC UPDATE: \u001b[33mtrue\u001b[39m tShirt\n"
@@ -214,6 +220,9 @@
                     },
                     {
                       "text": "Recommendation API Status: \u001b[33m200\u001b[39m\n"
+                    },
+                    {
+                      "text": "[fit-illustrator] user-selected-size\n"
                     },
                     {
                       "text": "[integration] user-got-size-recommendation\n"
@@ -297,9 +306,6 @@
                       "text": "PDC UPDATE: \u001b[33mtrue\u001b[39m tShirt\n"
                     },
                     {
-                      "text": "PDC UPDATE: \u001b[33mtrue\u001b[39m tShirt\n"
-                    },
-                    {
                       "text": "[integration] user-saw-product\n"
                     },
                     {
@@ -312,16 +318,13 @@
                       "text": "Recommendation API Status: \u001b[33m200\u001b[39m\n"
                     },
                     {
+                      "text": "Recommendation API Status: \u001b[33m200\u001b[39m\n"
+                    },
+                    {
                       "text": "[integration] user-got-size-recommendation\n"
                     },
                     {
                       "text": "[inpage] user-selected-size\n"
-                    },
-                    {
-                      "text": "Recommendation API Status: \u001b[33m200\u001b[39m\n"
-                    },
-                    {
-                      "text": "[smart-table] user-saw-measurements-view\n"
                     },
                     {
                       "text": "[inpage] user-opened-widget\n"
@@ -345,12 +348,12 @@
                       "text": "Gift refresh: recommendation visible\n"
                     },
                     {
-                      "text": "QA_RESULT: {\"url\":\"https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails.do?wrt=5&mcd=CG023&cpg=855&pno=29&ino=01\",\"store\":\"marui\",\"productType\":\"tShirt\",\"userType\":\"NEW\",\"status\":\"passed\",\"browser\":\"chromium\",\"durationMs\":73059}\n"
+                      "text": "QA_RESULT: {\"url\":\"https://www.underarmour.co.jp/f/dsg-1055400\",\"store\":\"under_armour\",\"productType\":\"tShirt\",\"userType\":\"NEW\",\"status\":\"passed\",\"browser\":\"chromium\",\"durationMs\":116257}\n"
                     }
                   ],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-03-09T13:14:55.443Z",
+                  "startTime": "2026-03-09T17:33:57.964Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -368,8 +371,8 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2026-03-09T13:14:54.897Z",
-    "duration": 74637.115,
+    "startTime": "2026-03-09T17:33:57.329Z",
+    "duration": 117992.089,
     "expected": 1,
     "skipped": 0,
     "unexpected": 0,

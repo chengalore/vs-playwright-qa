@@ -98,7 +98,9 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
   await blockMarketingScripts(page);
 
   try {
+    console.log("Navigating to:", url);
     await page.goto(url);
+    console.log("Page loaded");
 
     // Trigger lazy-loaded widgets that rely on IntersectionObserver —
     // without a scroll the widget container may never mount.
@@ -121,12 +123,15 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
     });
 
     await waitForPDC(pdc);
+    console.log("PDC resolved:", pdc.store, pdc.productType, "valid:", pdc.validProduct);
 
     // -----------------------------
     // Gatekeeping
     // -----------------------------
 
-    const skipReason = getSkipReason(pdc);
+    const skipReason =
+      getSkipReason(pdc) ??
+      (pdc.validProduct !== true ? "No valid Virtusize product detected on this PDP" : null);
 
     if (skipReason) {
       console.log("SKIPPED:", skipReason);
@@ -1102,16 +1107,16 @@ async function runGiftFlow(page, eventWatcher) {
 async function waitForPDC(pdc) {
   const start = Date.now();
 
-  while (Date.now() - start < 10000) {
-    if (
-      pdc.store !== "unknown" &&
-      pdc.validProduct !== undefined &&
-      pdc.productType !== "unknown"
-    ) {
-      return;
-    }
+  // Wait up to 15s for a valid product response.
+  // On React SPAs, the first product/check may fire before the product external ID
+  // is resolved (validProduct: false). The second call — after React hydration —
+  // returns the real result. We must wait for validProduct === true, not just any response.
+  while (Date.now() - start < 15000) {
+    if (pdc.validProduct === true) return;
     await new Promise((r) => setTimeout(r, 200));
   }
+
+  // Timed out — leave pdc as-is; getSkipReason will handle validProduct: false/undefined
 }
 
 async function waitForWidgetRender(page) {

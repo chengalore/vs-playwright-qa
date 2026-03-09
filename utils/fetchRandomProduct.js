@@ -22,7 +22,7 @@
  *   CATEGORY        – product category string
  *   IS_NOVISOR      – "true" | "false"
  *   EXCLUDE_KIDS    – "true" | "false"
- *   VALID           – "true" | "false" (default: true)
+ *   VALID           – "true" | "false" (API defaults to true; set to "false" to override)
  *
  * Example QA commands:
  *   shoes          → PRODUCT_TYPE_ID=17
@@ -68,7 +68,7 @@ export async function fetchRandomProduct(params = {}) {
   if (!res.ok) {
     const body = await res.text().catch(() => "");
     throw new Error(
-      `fetchRandomProduct: API returned ${res.status} ${res.statusText}${body ? ` — ${body}` : ""}`,
+      `fetchRandomProduct: API returned ${res.status} ${res.statusText} for ${url}${body ? ` — ${body}` : ""}`,
     );
   }
 
@@ -113,7 +113,8 @@ export async function resolveTestUrl(fallbackUrl) {
   const gender = process.env.GENDER || undefined;
   const category = process.env.CATEGORY || undefined;
   const exclude_kids = parseBool(process.env.EXCLUDE_KIDS);
-  const valid = parseBool(process.env.VALID);
+  // API defaults to valid=true server-side; only send when explicitly overriding to false
+  const valid = process.env.VALID !== undefined ? parseBool(process.env.VALID) : undefined;
 
   // store_id or api_key is required by the API
   if (!store_id && !api_key) return fallbackUrl;
