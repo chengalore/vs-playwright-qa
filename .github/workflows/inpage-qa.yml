@@ -88,6 +88,11 @@ jobs:
                 echo "GENDER=unisex" >> $GITHUB_ENV
                 echo "→ GENDER=unisex ($TOKEN)" ;;
 
+              # ── Raw numeric store ID ───────────────────────────
+              [0-9]*)
+                echo "STORE_ID=$TOKEN" >> $GITHUB_ENV
+                echo "→ STORE_ID=$TOKEN (numeric)" ;;
+
               *)
                 echo "⚠️ Unrecognised token: $TOKEN" ;;
             esac
