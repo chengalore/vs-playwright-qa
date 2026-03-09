@@ -38,9 +38,6 @@ jobs:
           # Normalise: lowercase, collapse whitespace
           TOKENS=$(echo "$INPUT" | tr '[:upper:]' '[:lower:]' | tr '_-' '  ' | tr -s ' ')
 
-          # Always default valid=true
-          echo "VALID=true" >> $GITHUB_ENV
-
           for TOKEN in $TOKENS; do
             case "$TOKEN" in
               # ── Store aliases ──────────────────────────────────

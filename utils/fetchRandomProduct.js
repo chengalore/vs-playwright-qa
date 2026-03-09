@@ -101,7 +101,7 @@ export async function resolveTestUrl(fallbackUrl) {
   if (process.env.TEST_URL) return process.env.TEST_URL;
 
   const parseBool = (val) =>
-    val === undefined ? undefined : val === "true";
+    !val ? undefined : val === "true";
 
   const store_id = process.env.STORE_ID
     ? Number(process.env.STORE_ID)
