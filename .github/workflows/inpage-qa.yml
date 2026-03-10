@@ -154,7 +154,9 @@ jobs:
           const failed = results.filter(r => r.status === "failed");
           const skipped = results.filter(r => r.status === "skipped");
 
+          const testedUrl = results[0]?.url || "";
           let message = "🧪 VS Inpage QA — Result\n\n";
+          if (testedUrl) message += `🌐 ${testedUrl}\n\n`;
 
           // Clean pass
           if (failed.length === 0 && skipped.length === 0 && flakyCount === 0) {
