@@ -939,23 +939,19 @@ async function runGiftFlow(page, eventWatcher) {
 
   // ── 3. Age ────────────────────────────────────────────────────────────────
 
-  await page.evaluate(() =>
-    findInShadow('[data-test-id="input-age-desktop"]')?.click()
-  );
+  // Playwright locators auto-pierce shadow DOM and retry until actionable,
+  // eliminating the TOCTOU race between waitForFunction and page.evaluate.
+  await page.locator('[data-test-id="input-age-desktop"]').click();
 
-  // Wait for the age sheet modal to appear with at least one label option
-  // Scoped to #sheet to avoid matching gender radios elsewhere in the widget
-  await page.waitForFunction(
-    () => !!findInShadow('#sheet label.radio-button-label'),
-    { timeout: 10000 }
-  );
+  // Two-step wait: sheet container visible first, then options rendered inside it.
+  // WebKit can render the #sheet frame before populating its children — waiting
+  // on the sheet alone is not enough.
+  const ageSheet = page.locator('#sheet');
+  await expect(ageSheet).toBeVisible({ timeout: 10000 });
 
-  // Click the first label — safest way to trigger the underlying input[name="selectMetric"]
-  await page.evaluate(() => {
-    const label = findInShadow('#sheet label.radio-button-label');
-    if (!label) throw new Error("Age label option not found in #sheet");
-    label.click();
-  });
+  const ageLabel = ageSheet.locator('label.radio-button-label').first();
+  await expect(ageLabel).toBeVisible({ timeout: 5000 });
+  await ageLabel.click();
 
   // Wait for the age field to turn from gray (rgb(183, 185, 185)) to black (rgb(25, 25, 25))
   await page.waitForFunction(() => {
@@ -965,12 +961,7 @@ async function runGiftFlow(page, eventWatcher) {
   }, { timeout: 8000 });
 
   // Wait for age sheet to fully close before opening height
-  await page.waitForFunction(() => {
-    const sheet = findInShadow('#sheet');
-    if (!sheet) return true;
-    const s = window.getComputedStyle(sheet);
-    return s.display === 'none' || s.visibility === 'hidden' || parseFloat(s.opacity) === 0;
-  }, { timeout: 8000 });
+  await expect(ageSheet).toBeHidden({ timeout: 8000 });
 
   console.log("Selected age");
 
@@ -978,22 +969,18 @@ async function runGiftFlow(page, eventWatcher) {
 
   await page.waitForTimeout(600);
 
-  await page.evaluate(() => findInShadow('[data-test-id="input-height-desktop"]')?.click());
+  await page.locator('[data-test-id="input-height-desktop"]').click();
 
-  // wait for height sheet to open, then select first option
-  await page.waitForFunction(
-    () => !!findInShadow('#sheet label.radio-button-label'),
-    { timeout: 10000 }
-  );
-  await page.evaluate(() => findInShadow('#sheet label.radio-button-label')?.click());
+  // Same two-step pattern as age: sheet visible first, then options inside it
+  const heightSheet = page.locator('#sheet');
+  await expect(heightSheet).toBeVisible({ timeout: 10000 });
 
-  // wait for height sheet to fully close
-  await page.waitForFunction(() => {
-    const sheet = findInShadow('#sheet');
-    if (!sheet) return true;
-    const s = window.getComputedStyle(sheet);
-    return s.display === 'none' || s.visibility === 'hidden' || parseFloat(s.opacity) === 0;
-  }, { timeout: 8000 });
+  const heightLabel = heightSheet.locator('label.radio-button-label').first();
+  await expect(heightLabel).toBeVisible({ timeout: 5000 });
+  await heightLabel.click();
+
+  // Wait for height sheet to fully close
+  await expect(heightSheet).toBeHidden({ timeout: 8000 });
 
   // verify value updated away from placeholder
   await page.waitForFunction(() => {
