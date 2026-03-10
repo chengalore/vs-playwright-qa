@@ -58,11 +58,15 @@ jobs:
           const productTypeId = process.env.PRODUCT_TYPE_ID ? Number(process.env.PRODUCT_TYPE_ID) : undefined;
           const gender = process.env.GENDER || undefined;
 
-          // Deduplicate: multiple aliases can point to the same store_id
+          // Deduplicate: multiple aliases can point to the same store_id.
+          // Prefer aliases that already have a fallback URL so the API is skipped.
           const uniqueStores = new Map();
           for (const [alias, storeId] of Object.entries(STORE_ALIASES)) {
             if (storeIdFilter && storeId !== storeIdFilter) continue;
             if (!uniqueStores.has(storeId)) {
+              uniqueStores.set(storeId, alias);
+            } else if (!loadFallback(uniqueStores.get(storeId)) && loadFallback(alias)) {
+              // Upgrade to an alias that has a fallback URL
               uniqueStores.set(storeId, alias);
             }
           }
@@ -71,13 +75,15 @@ jobs:
 
           const results = await Promise.all(
             [...uniqueStores.entries()].map(async ([storeId, alias]) => {
-              // Prefer stable fallback URL; only call Random Product API if none exists
+              // Priority: 1. fallbackProducts.json  2. loadFallback (same file, includes runtime saves)
+              //           3. Random Product API (last resort — only if no fallback exists)
               const fallback = loadFallback(alias);
-              if (fallback && !productTypeId && !gender) {
+              if (fallback) {
                 console.log(`[${alias}] Using fallback URL`);
                 return { storeAlias: alias, storeId, url: fallback, fromFallback: true };
               }
               try {
+                console.log(`[${alias}] No fallback — calling Random Product API`);
                 const url = await fetchRandomProduct({
                   store_id: storeId,
                   product_type_id: productTypeId,
@@ -85,10 +91,6 @@ jobs:
                 });
                 return { storeAlias: alias, storeId, url };
               } catch (err) {
-                if (fallback) {
-                  console.log(`[${alias}] API failed, using fallback: ${fallback}`);
-                  return { storeAlias: alias, storeId, url: fallback, fromFallback: true };
-                }
                 console.log(`[${alias}] No URL: ${err.message}`);
                 return { storeAlias: alias, storeId, url: null };
               }
