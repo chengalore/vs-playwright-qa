@@ -96,8 +96,14 @@ jobs:
           const resolved = results.filter(r => r.url).length;
           console.log(`Resolved ${resolved}/${results.length} store URLs`);
 
+          if (resolved === 0) {
+            console.error('ERROR: No store URLs resolved — aborting');
+            process.exit(1);
+          }
+
           mkdirSync('data', { recursive: true });
           writeFileSync('data/monitor-urls.json', JSON.stringify(results, null, 2));
+          console.log(`Wrote ${results.length} entries to data/monitor-urls.json`);
           SCRIPT
         env:
           STORE_ID: ${{ github.event.inputs.store_id }}

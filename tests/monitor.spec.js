@@ -28,6 +28,10 @@ const stores = existsSync(URLS_FILE)
   ? JSON.parse(readFileSync(URLS_FILE, "utf8"))
   : [];
 
+if (stores.length === 0) {
+  throw new Error("monitor-urls.json is empty — URL resolver step failed");
+}
+
 const CDN_ERROR_PATTERNS = [
   "ERR_HTTP2_PROTOCOL_ERROR",
   "ERR_CONNECTION_REFUSED",
