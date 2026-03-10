@@ -58,8 +58,8 @@ jobs:
         uses: actions/cache@v4
         with:
           path: data/fallbackProducts.json
-          key: fallback-products-v1
-          restore-keys: fallback-products-v1
+          key: fallback-products-v2
+          restore-keys: fallback-products-v2
 
       - name: Set TEST_URL from direct input
         if: ${{ github.event.inputs.url != '' }}
@@ -123,7 +123,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: data/fallbackProducts.json
-          key: fallback-products-v1
+          key: fallback-products-v2
 
       - name: Send result to Slack
         if: success() || failure()

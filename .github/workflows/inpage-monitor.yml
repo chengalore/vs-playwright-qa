@@ -43,8 +43,8 @@ jobs:
         uses: actions/cache@v4
         with:
           path: data/fallbackProducts.json
-          key: fallback-products-v1
-          restore-keys: fallback-products-v1
+          key: fallback-products-v2
+          restore-keys: fallback-products-v2
 
       - name: Resolve store URLs
         run: |
@@ -131,7 +131,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: data/fallbackProducts.json
-          key: fallback-products-v1
+          key: fallback-products-v2
 
       - name: Send Slack summary
         if: success() || failure()
