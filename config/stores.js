@@ -97,7 +97,7 @@ export const STORES = {
 
   // ── J ────────────────────────────────────────────────────────────────
   jamie_kay: { id: 897, monitor: true },
-  johnbull: { id: 714, monitor: true },
+  johnbull: { id: 714 }, // geo-restricted (CloudFront blocks non-JP)
 
   // ── L ────────────────────────────────────────────────────────────────
   levi: { id: 771 }, // shorthand
