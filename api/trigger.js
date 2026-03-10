@@ -1,23 +1,42 @@
+import { resolveSlashCommandUrl } from "./parseSlashCommand.js";
+
 export default async function handler(req, res) {
   try {
-    let url;
+    let text;
 
     if (req.method === "POST") {
       const contentType = req.headers["content-type"] || "";
 
       if (contentType.includes("application/json")) {
-        url = req.body?.url;
+        text = req.body?.url ?? req.body?.text;
       } else if (contentType.includes("application/x-www-form-urlencoded")) {
-        url = req.body?.text;
+        text = req.body?.text;
       }
     } else {
-      url = req.query?.url;
+      text = req.query?.url ?? req.query?.text;
+    }
+
+    if (!text) {
+      return res.status(200).json({
+        response_type: "ephemeral",
+        text: "Usage: /qa <url> OR /qa [store] [product_type] [gender]\nExamples: /qa ua shoes  |  /qa kids  |  /qa ralph_lauren coat",
+      });
+    }
+
+    let url;
+    try {
+      url = await resolveSlashCommandUrl(text);
+    } catch (err) {
+      return res.status(200).json({
+        response_type: "ephemeral",
+        text: `Could not resolve URL: ${err.message}`,
+      });
     }
 
     if (!url) {
       return res.status(200).json({
         response_type: "ephemeral",
-        text: "No URL provided.",
+        text: "Could not resolve a URL. Please provide a store name or direct URL.\nExample: /qa ua shoes",
       });
     }
 
@@ -37,10 +56,10 @@ export default async function handler(req, res) {
       }
     );
 
-    const text = await gh.text();
+    const ghBody = await gh.text();
 
     if (!gh.ok) {
-      console.error("GitHub dispatch failed:", gh.status, text);
+      console.error("GitHub dispatch failed:", gh.status, ghBody);
 
       return res.status(200).json({
         response_type: "ephemeral",

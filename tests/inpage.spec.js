@@ -3,6 +3,7 @@ import { startVirtusizeEventWatcher } from "../utils/eventWatcher.js";
 import { startPDCWatcher } from "../utils/pdcWatcher.js";
 import { startRecommendationWatcher } from "../utils/recommendationWatcher.js";
 import { startBodyMeasurementWatcher } from "../utils/bodyMeasurementWatcher.js";
+import { startShoeRecommendationWatcher } from "../utils/shoeRecommendationWatcher.js";
 import { verifyEvents } from "../utils/verifyEvents.js";
 import { expectedEvents } from "../config/expectedEvents.js";
 import { completeOnboarding } from "../utils/completeOnboarding.js";
@@ -10,13 +11,16 @@ import { validateRecommendation } from "../utils/validateRecommendation.js";
 import { selectSizeIfMultiple } from "../utils/selectSizeIfMultiple.js";
 import { addItemToWardrobe } from "../utils/addItemToWardrobe.js";
 import { blockMarketingScripts } from "../utils/blockMarketingScripts.js";
+import { resolveTestUrl } from "../utils/fetchRandomProduct.js";
 
 test.setTimeout(180000);
 
 test("Inpage basic flow", async ({ page }, testInfo) => {
   const startTime = Date.now();
 
-  const url = process.env.TEST_URL || "https://www.underarmour.co.jp/f/dsg-1072366";
+  const url = await resolveTestUrl(
+    "https://www.underarmour.co.jp/f/dsg-1072366",
+  );
 
   console.log("Testing URL:", url);
 
@@ -25,6 +29,7 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
   const pdc = startPDCWatcher(page);
   const recommendationAPI = startRecommendationWatcher(page);
   const bodyAPI = startBodyMeasurementWatcher(page);
+  const shoeAPI = startShoeRecommendationWatcher(page);
 
   await page.addInitScript(() => {
     window.getWidgetHost = () =>
@@ -95,7 +100,16 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
   await blockMarketingScripts(page);
 
   try {
+    console.log("Navigating to:", url);
     await page.goto(url);
+    console.log("Page loaded");
+
+    // Trigger lazy-loaded widgets that rely on IntersectionObserver —
+    // without a scroll the widget container may never mount.
+    await page.evaluate(() => {
+      window.scrollTo({ top: 1000, behavior: "instant" });
+    });
+    await page.waitForTimeout(1000);
 
     // Trigger lazy-loaded widgets that rely on IntersectionObserver —
     // without a scroll the widget container may never mount.
@@ -118,12 +132,15 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
     });
 
     await waitForPDC(pdc);
+    console.log("PDC resolved:", pdc.store, pdc.productType, "valid:", pdc.validProduct);
 
     // -----------------------------
     // Gatekeeping
     // -----------------------------
 
-    const skipReason = getSkipReason(pdc);
+    const skipReason =
+      getSkipReason(pdc) ??
+      (pdc.validProduct !== true ? "No valid Virtusize product detected on this PDP" : null);
 
     if (skipReason) {
       console.log("SKIPPED:", skipReason);
@@ -178,7 +195,7 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
       );
     }
     if (flow === "footwear") {
-      isNewUser = await runFootwearFlow(page, bodyAPI);
+      isNewUser = await runFootwearFlow(page, shoeAPI);
     }
     if (flow === "kids") {
       isNewUser = await runKidsFlow(page, pdc);
@@ -555,7 +572,7 @@ async function runNoVisorFlow(page, bodyAPI) {
 // Footwear Flow
 // --------------------------------------------------
 
-async function runFootwearFlow(page, bodyAPI) {
+async function runFootwearFlow(page, shoeAPI) {
   // Wait for modal to appear inside shadow root
   await page.waitForFunction(
     () => !!getWidgetHost()?.shadowRoot?.querySelector("#vs-aoyama-main-modal"),
@@ -714,8 +731,8 @@ async function runFootwearFlow(page, bodyAPI) {
   await page.waitForTimeout(500);
   await clickNext();
 
-  const bodyStatus = await waitForStatus(() => bodyAPI.getStatus(), 8000);
-  expect(bodyStatus).toBe(200);
+  const shoeStatus = await waitForStatus(() => shoeAPI.getStatus(), 8000);
+  expect(shoeStatus).toBe(200);
 
   return isNewUser;
 }
@@ -1115,16 +1132,16 @@ async function kidsRetry(page, fn, label, maxAttempts = 3, delayMs = 500) {
 async function waitForPDC(pdc) {
   const start = Date.now();
 
-  while (Date.now() - start < 10000) {
-    if (
-      pdc.store !== "unknown" &&
-      pdc.validProduct !== undefined &&
-      pdc.productType !== "unknown"
-    ) {
-      return;
-    }
+  // Wait up to 15s for a valid product response.
+  // On React SPAs, the first product/check may fire before the product external ID
+  // is resolved (validProduct: false). The second call — after React hydration —
+  // returns the real result. We must wait for validProduct === true, not just any response.
+  while (Date.now() - start < 15000) {
+    if (pdc.validProduct === true) return;
     await new Promise((r) => setTimeout(r, 200));
   }
+
+  // Timed out — leave pdc as-is; getSkipReason will handle validProduct: false/undefined
 }
 
 async function waitForWidgetRender(page) {
