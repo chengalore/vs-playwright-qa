@@ -138,10 +138,16 @@ async function isValidVirtusizeProduct(storeId, externalProductId) {
       external_product_id: externalProductId,
     });
     const res = await fetch(`${PRODUCT_CHECK_API}?${query.toString()}`);
-    if (!res.ok) return false;
+    if (!res.ok) {
+      console.log(`[check] API ${res.status} for ${externalProductId}`);
+      return false;
+    }
     const json = await res.json();
-    return json?.validProduct === true;
-  } catch {
+    const isValid = json?.data?.validProduct === true;
+    console.log(`[check] ${externalProductId} → validProduct: ${json?.data?.validProduct}`);
+    return isValid;
+  } catch (err) {
+    console.log(`[check] Error for ${externalProductId}: ${err.message}`);
     return false;
   }
 }
