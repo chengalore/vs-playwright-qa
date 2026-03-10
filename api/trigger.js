@@ -1,16 +1,28 @@
 import { resolveSlashCommandUrl } from "./parseSlashCommand.js";
 
+async function replyToSlack(responseUrl, text) {
+  if (!responseUrl) return;
+  await fetch(responseUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ response_type: "ephemeral", text }),
+  }).catch((err) => console.error("Failed to reply to Slack:", err));
+}
+
 export default async function handler(req, res) {
   try {
     let text;
+    let responseUrl;
 
     if (req.method === "POST") {
       const contentType = req.headers["content-type"] || "";
 
       if (contentType.includes("application/json")) {
         text = req.body?.url ?? req.body?.text;
+        responseUrl = req.body?.response_url;
       } else if (contentType.includes("application/x-www-form-urlencoded")) {
         text = req.body?.text;
+        responseUrl = req.body?.response_url;
       }
     } else {
       text = req.query?.url ?? req.query?.text;
@@ -25,6 +37,9 @@ export default async function handler(req, res) {
 
     // Cancel any in-progress runs
     if (text.trim().toLowerCase() === "stop" || text.trim().toLowerCase() === "cancel") {
+      // Respond immediately, then cancel async
+      res.status(200).json({ response_type: "ephemeral", text: "⏳ Cancelling..." });
+
       const runsRes = await fetch(
         `https://api.github.com/repos/${process.env.GITHUB_REPO}/actions/workflows/inpage-qa.yml/runs?status=in_progress`,
         {
@@ -38,10 +53,7 @@ export default async function handler(req, res) {
       const runs = runsData.workflow_runs || [];
 
       if (runs.length === 0) {
-        return res.status(200).json({
-          response_type: "ephemeral",
-          text: "No QA tests are currently running.",
-        });
+        return replyToSlack(responseUrl, "No QA tests are currently running.");
       }
 
       await Promise.all(
@@ -59,60 +71,47 @@ export default async function handler(req, res) {
         )
       );
 
-      return res.status(200).json({
-        response_type: "ephemeral",
-        text: `Cancelled ${runs.length} running test${runs.length > 1 ? "s" : ""}.`,
-      });
+      return replyToSlack(responseUrl, `Cancelled ${runs.length} running test${runs.length > 1 ? "s" : ""}.`);
     }
 
-    let url;
-    try {
-      url = await resolveSlashCommandUrl(text);
-    } catch (err) {
-      return res.status(200).json({
-        response_type: "ephemeral",
-        text: `Could not resolve URL: ${err.message}`,
-      });
-    }
+    // Respond to Slack immediately to avoid 3s timeout
+    res.status(200).json({ response_type: "ephemeral", text: "⏳ Finding a valid product..." });
 
-    if (!url) {
-      return res.status(200).json({
-        response_type: "ephemeral",
-        text: "Could not resolve a URL. Please provide a store name or direct URL.\nExample: /qa ua shoes",
-      });
-    }
+    // Do the rest async
+    (async () => {
+      try {
+        const url = await resolveSlashCommandUrl(text);
 
-    const gh = await fetch(
-      `https://api.github.com/repos/${process.env.GITHUB_REPO}/actions/workflows/inpage-qa.yml/dispatches`,
-      {
-        method: "POST",
-        headers: {
-          Accept: "application/vnd.github+json",
-          Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ref: "main",
-          inputs: { url },
-        }),
+        if (!url) {
+          return replyToSlack(responseUrl, "Could not resolve a URL. Please provide a store name or direct URL.\nExample: /qa ua shoes");
+        }
+
+        const gh = await fetch(
+          `https://api.github.com/repos/${process.env.GITHUB_REPO}/actions/workflows/inpage-qa.yml/dispatches`,
+          {
+            method: "POST",
+            headers: {
+              Accept: "application/vnd.github+json",
+              Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ ref: "main", inputs: { url } }),
+          }
+        );
+
+        if (!gh.ok) {
+          const ghBody = await gh.text().catch(() => "");
+          console.error("GitHub dispatch failed:", gh.status, ghBody);
+          return replyToSlack(responseUrl, `GitHub dispatch failed (${gh.status})`);
+        }
+
+        return replyToSlack(responseUrl, `✅ QA started for:\n${url}`);
+      } catch (err) {
+        console.error("Async error:", err);
+        return replyToSlack(responseUrl, `Error: ${err.message}`);
       }
-    );
+    })();
 
-    const ghBody = await gh.text();
-
-    if (!gh.ok) {
-      console.error("GitHub dispatch failed:", gh.status, ghBody);
-
-      return res.status(200).json({
-        response_type: "ephemeral",
-        text: `GitHub dispatch failed (${gh.status})`,
-      });
-    }
-
-    return res.status(200).json({
-      response_type: "ephemeral",
-      text: `QA started for:\n${url}`,
-    });
   } catch (err) {
     console.error("Server error:", err);
 
