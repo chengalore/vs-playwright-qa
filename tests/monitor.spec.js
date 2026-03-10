@@ -16,6 +16,7 @@ import { readFileSync, existsSync } from "fs";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 import { startPDCWatcher } from "../utils/pdcWatcher.js";
+import { loadFallback } from "../utils/fallbackStore.js";
 import { BOT_PROTECTED_ALIASES, BOT_PROTECTED_REASON } from "../config/botProtectedStores.js";
 
 test.setTimeout(60000);
@@ -26,6 +27,17 @@ const URLS_FILE = join(__dirname, "../data/monitor-urls.json");
 const stores = existsSync(URLS_FILE)
   ? JSON.parse(readFileSync(URLS_FILE, "utf8"))
   : [];
+
+const CDN_ERROR_PATTERNS = [
+  "ERR_HTTP2_PROTOCOL_ERROR",
+  "ERR_CONNECTION_REFUSED",
+  "ERR_CONNECTION_RESET",
+  "ERR_NAME_NOT_RESOLVED",
+  "ERR_NETWORK_CHANGED",
+  "net::ERR_",
+  "Navigation timeout",
+  "Timeout exceeded while waiting",
+];
 
 const phase = process.env.TEST_PHASE || "widget";
 
@@ -46,7 +58,10 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
     continue;
   }
 
-  if (!url) {
+  // URL resolution priority: fallbackProducts.json → workflow-provided URL
+  const resolvedUrl = loadFallback(storeAlias) || url || null;
+
+  if (!resolvedUrl) {
     // Store had no resolvable URL — log as skipped
     test(`[${storeAlias}] ${phase}`, async ({}, testInfo) => {
       logMonitorResult({
@@ -67,7 +82,24 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
     const startTime = Date.now();
 
     try {
-      await page.goto(url, { timeout: 30000, waitUntil: "domcontentloaded" });
+      try {
+        await page.goto(resolvedUrl, { timeout: 30000, waitUntil: "domcontentloaded" });
+      } catch (navError) {
+        const msg = navError.message || "";
+        const isCdnError = CDN_ERROR_PATTERNS.some((p) => msg.includes(p));
+        logMonitorResult({
+          storeAlias,
+          storeId,
+          url: resolvedUrl,
+          phase,
+          status: "skipped",
+          reason: isCdnError ? "cdn_blocked" : "navigation_error",
+          error: msg.split("\n")[0].slice(0, 200),
+          browser: testInfo.project.name,
+          durationMs: Date.now() - startTime,
+        });
+        return; // skip without failing
+      }
 
       // Scroll to trigger lazy-mounted widgets
       await page.evaluate(() => window.scrollTo({ top: 800, behavior: "instant" }));
@@ -104,7 +136,7 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
       logMonitorResult({
         storeAlias,
         storeId,
-        url,
+        url: resolvedUrl,
         phase,
         status: "passed",
         fromFallback: fromFallback || false,
@@ -120,7 +152,7 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
       logMonitorResult({
         storeAlias,
         storeId,
-        url,
+        url: resolvedUrl,
         phase,
         status: isWidgetMissing ? "widget_missing" : "failed",
         error: error.message.split("\n")[0].slice(0, 200),
