@@ -51,12 +51,18 @@ jobs:
           node --input-type=module <<'SCRIPT'
           import { STORE_ALIASES } from './api/parseSlashCommand.js';
           import { fetchRandomProduct } from './utils/fetchRandomProduct.js';
-          import { loadFallback } from './utils/fallbackStore.js';
-          import { writeFileSync, mkdirSync } from 'fs';
+          import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 
           const storeIdFilter = process.env.STORE_ID ? Number(process.env.STORE_ID) : null;
           const productTypeId = process.env.PRODUCT_TYPE_ID ? Number(process.env.PRODUCT_TYPE_ID) : undefined;
           const gender = process.env.GENDER || undefined;
+
+          // Read fallbackProducts.json directly (avoids import.meta.url path issues in stdin scripts)
+          const FALLBACK_FILE = 'data/fallbackProducts.json';
+          const fallbacks = existsSync(FALLBACK_FILE)
+            ? JSON.parse(readFileSync(FALLBACK_FILE, 'utf8'))
+            : {};
+          const getFallback = (alias) => fallbacks[alias] ?? null;
 
           // Deduplicate: multiple aliases can point to the same store_id.
           // Prefer aliases that already have a fallback URL so the API is skipped.
@@ -65,7 +71,7 @@ jobs:
             if (storeIdFilter && storeId !== storeIdFilter) continue;
             if (!uniqueStores.has(storeId)) {
               uniqueStores.set(storeId, alias);
-            } else if (!loadFallback(uniqueStores.get(storeId)) && loadFallback(alias)) {
+            } else if (!getFallback(uniqueStores.get(storeId)) && getFallback(alias)) {
               // Upgrade to an alias that has a fallback URL
               uniqueStores.set(storeId, alias);
             }
@@ -75,9 +81,8 @@ jobs:
 
           const results = await Promise.all(
             [...uniqueStores.entries()].map(async ([storeId, alias]) => {
-              // Priority: 1. fallbackProducts.json  2. loadFallback (same file, includes runtime saves)
-              //           3. Random Product API (last resort — only if no fallback exists)
-              const fallback = loadFallback(alias);
+              // Priority: 1. fallbackProducts.json  2. Random Product API (last resort)
+              const fallback = getFallback(alias);
               if (fallback) {
                 console.log(`[${alias}] Using fallback URL`);
                 return { storeAlias: alias, storeId, url: fallback, fromFallback: true };
