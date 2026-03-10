@@ -31,12 +31,26 @@ export default async function handler(req, res) {
 
     // ── Stop / Cancel ────────────────────────────────────────────────
     if (text.trim().toLowerCase() === "stop" || text.trim().toLowerCase() === "cancel") {
-      const runsRes = await fetch(
-        `https://api.github.com/repos/${process.env.GITHUB_REPO}/actions/workflows/inpage-qa.yml/runs?status=in_progress`,
-        { headers: ghHeaders }
-      );
-      const runsData = await runsRes.json();
-      const runs = runsData.workflow_runs || [];
+      // A workflow run moves through: queued → in_progress → completed.
+      // Must check both statuses or the run is missed while it waits for a runner.
+      const [inProgressRes, queuedRes] = await Promise.all([
+        fetch(
+          `https://api.github.com/repos/${process.env.GITHUB_REPO}/actions/workflows/inpage-qa.yml/runs?status=in_progress`,
+          { headers: ghHeaders }
+        ),
+        fetch(
+          `https://api.github.com/repos/${process.env.GITHUB_REPO}/actions/workflows/inpage-qa.yml/runs?status=queued`,
+          { headers: ghHeaders }
+        ),
+      ]);
+      const [inProgressData, queuedData] = await Promise.all([
+        inProgressRes.json(),
+        queuedRes.json(),
+      ]);
+      const runs = [
+        ...(inProgressData.workflow_runs || []),
+        ...(queuedData.workflow_runs || []),
+      ];
 
       if (runs.length === 0) {
         return res.status(200).json({
@@ -56,7 +70,7 @@ export default async function handler(req, res) {
 
       return res.status(200).json({
         response_type: "ephemeral",
-        text: `Cancelled ${runs.length} running test${runs.length > 1 ? "s" : ""}.`,
+        text: `✅ Cancelled ${runs.length} running test${runs.length > 1 ? "s" : ""}.`,
       });
     }
 
