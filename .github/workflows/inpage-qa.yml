@@ -87,9 +87,9 @@ jobs:
       - name: Send result to Slack
         if: always()
         run: |
-          node <<'EOF'
-          const fs = require('fs');
-          const { execSync } = require('child_process');
+          node --input-type=module <<'EOF'
+          import fs from 'fs';
+          import { execSync } from 'child_process';
 
           const webhook = process.env.SLACK_WEBHOOK_URL;
           const runUrl = process.env.GITHUB_RUN_URL;
