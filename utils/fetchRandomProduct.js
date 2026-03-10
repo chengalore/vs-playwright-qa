@@ -36,6 +36,11 @@
 const RANDOM_PRODUCT_API =
   "https://dcai264p3l.execute-api.ap-northeast-1.amazonaws.com/prod/random_product";
 
+const PRODUCT_CHECK_API =
+  "https://api.virtusize.jp/a/api/v3/product/check-by-external-id";
+
+const MAX_RETRIES = 10;
+
 export async function fetchRandomProduct(params = {}) {
   const {
     store_id,
@@ -90,12 +95,68 @@ export async function fetchRandomProduct(params = {}) {
 }
 
 /**
+ * Extracts the external product ID from a PDP URL.
+ *
+ * Strategy:
+ *   1. Check common query param names (pid, id, productId, etc.)
+ *   2. Fall back to the last non-empty path segment
+ *
+ * Examples:
+ *   https://snidel.com/Form/Product/ProductDetail.aspx?shop=0&pid=SHCT212057 → SHCT212057
+ *   https://www.underarmour.co.jp/f/dsg-1041508                              → dsg-1041508
+ */
+export function extractExternalProductId(pdpUrl) {
+  try {
+    const url = new URL(pdpUrl);
+
+    const commonParams = [
+      "pid", "id", "productId", "product_id",
+      "itemId", "item_id", "sku", "code", "item",
+    ];
+    for (const param of commonParams) {
+      const val = url.searchParams.get(param);
+      if (val) return val;
+    }
+
+    const segments = url.pathname.split("/").filter(Boolean);
+    if (segments.length > 0) return segments[segments.length - 1];
+
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Calls the Virtusize product check API to verify a product is valid.
+ * Returns true only if the API responds with validProduct: true.
+ */
+async function isValidVirtusizeProduct(storeId, externalProductId) {
+  try {
+    const query = new URLSearchParams({
+      store_id: String(storeId),
+      external_product_id: externalProductId,
+    });
+    const res = await fetch(`${PRODUCT_CHECK_API}?${query.toString()}`);
+    if (!res.ok) return false;
+    const json = await res.json();
+    return json?.validProduct === true;
+  } catch {
+    return false;
+  }
+}
+
+/**
  * Resolves the test URL from environment variables.
  *
  * Priority:
  *   1. TEST_URL — use as-is, skips the Random Product API
- *   2. Any filter env vars — call the API with those filters
- *   3. No filters — call the API with defaults (valid=true, check_pdp=true)
+ *   2. Any filter env vars — call the API with those filters, pre-validating
+ *      each candidate via the Virtusize product check API (requires STORE_ID)
+ *   3. No store_id/api_key — return fallbackUrl
+ *
+ * When STORE_ID is set, retries up to MAX_RETRIES times until a valid
+ * Virtusize product is found, avoiding wasted browser runs on invalid pages.
  */
 export async function resolveTestUrl(fallbackUrl) {
   if (process.env.TEST_URL) return process.env.TEST_URL;
@@ -116,16 +177,35 @@ export async function resolveTestUrl(fallbackUrl) {
   // API defaults to valid=true server-side; only send when explicitly overriding to false
   const valid = process.env.VALID !== undefined ? parseBool(process.env.VALID) : undefined;
 
-  // store_id or api_key is required by the API
+  // store_id or api_key is required by the random product API
   if (!store_id && !api_key) return fallbackUrl;
 
-  return fetchRandomProduct({
-    store_id,
-    api_key,
-    product_type_id,
-    gender,
-    category,
-    exclude_kids,
-    valid,
-  });
+  const apiParams = { store_id, api_key, product_type_id, gender, category, exclude_kids, valid };
+
+  // Without store_id we can't call the check API — skip pre-validation
+  if (!store_id) return fetchRandomProduct(apiParams);
+
+  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+    const pdpUrl = await fetchRandomProduct(apiParams);
+
+    const externalProductId = extractExternalProductId(pdpUrl);
+    if (!externalProductId) {
+      console.log(`[attempt ${attempt}/${MAX_RETRIES}] Could not extract product ID from ${pdpUrl}, retrying...`);
+      continue;
+    }
+
+    console.log(`[attempt ${attempt}/${MAX_RETRIES}] Checking: ${externalProductId}`);
+    const isValid = await isValidVirtusizeProduct(store_id, externalProductId);
+
+    if (isValid) {
+      console.log(`[attempt ${attempt}/${MAX_RETRIES}] Valid product found — ${pdpUrl}`);
+      return pdpUrl;
+    }
+
+    console.log(`[attempt ${attempt}/${MAX_RETRIES}] Not valid, retrying...`);
+  }
+
+  throw new Error(
+    `resolveTestUrl: no valid Virtusize product found after ${MAX_RETRIES} attempts`,
+  );
 }
