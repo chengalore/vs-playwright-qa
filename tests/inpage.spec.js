@@ -421,6 +421,10 @@ async function validateRefresh(page, eventWatcher, recommendationAPI, flow) {
         );
       }
     }
+
+    if (flow === "footwear") {
+      await waitForEvent(eventWatcher, "user-selected-size", 10000);
+    }
   }
 
   // -----------------------------------------
@@ -656,14 +660,19 @@ async function runFootwearFlow(page, shoeAPI) {
   await page.waitForTimeout(800);
   await clickNext();
 
-  // Step 4: Footwear size – open picker, select first radio
+  // Step 4: Footwear size – open picker, wait for it, then select first radio
+  await shadowClick('[data-test-id="open-sizes-footwear-picker"]');
+  await page.waitForFunction(
+    () =>
+      !!getWidgetHost()?.shadowRoot?.querySelector(
+        "#footwear-picker input#radioButton-1",
+      ),
+    { timeout: 5000 },
+  );
   await page.evaluate(() => {
     const modal = getWidgetHost()?.shadowRoot?.querySelector(
       "#vs-aoyama-main-modal",
     );
-    modal
-      ?.querySelector('[data-test-id="open-sizes-footwear-picker"]')
-      ?.click();
     const radio = modal?.querySelector("#footwear-picker input#radioButton-1");
     if (radio) {
       radio.click();
