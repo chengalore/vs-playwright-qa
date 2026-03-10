@@ -181,6 +181,7 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
       () => {
         return (
           document.querySelector("#vs-inpage") ||
+          document.querySelector("#vs-inpage-luxury") ||
           document.querySelector("#vs-legacy-inpage") ||
           document.querySelector("#vs-kid")
         );
@@ -1294,7 +1295,7 @@ async function waitForEvent(eventWatcher, eventKey, timeout = 20000) {
 // --------------------------------------------------
 
 async function waitForWidget(page, flow) {
-  const selector = flow === "kids" ? "#vs-kid" : ":is(#vs-inpage, #vs-legacy-inpage)";
+  const selector = flow === "kids" ? "#vs-kid" : ":is(#vs-inpage, #vs-inpage-luxury, #vs-legacy-inpage)";
 
   await page.waitForFunction(
     (sel) => {
@@ -1334,7 +1335,7 @@ async function clickKidsWidget(page) {
 }
 
 async function clickWidget(page, flow) {
-  const selector = flow === "kids" ? "#vs-kid" : ":is(#vs-inpage, #vs-legacy-inpage)";
+  const selector = flow === "kids" ? "#vs-kid" : ":is(#vs-inpage, #vs-inpage-luxury, #vs-legacy-inpage)";
 
   await page.evaluate((sel) => {
     document.querySelector(sel)?.scrollIntoView({ block: "center" });
@@ -1342,14 +1343,14 @@ async function clickWidget(page, flow) {
 
   await page.waitForSelector(selector, { state: "visible", timeout: 5000 });
 
-  // For #vs-inpage: wait for the shadow button and click it.
+  // For #vs-inpage / #vs-inpage-luxury: wait for the shadow button and click it.
   // Legacy inpage (#vs-legacy-inpage) has no shadow root — click the host directly.
   if (flow !== "kids") {
-    if (await page.evaluate(() => !!document.querySelector("#vs-inpage"))) {
+    if (await page.evaluate(() => !!document.querySelector("#vs-inpage") || !!document.querySelector("#vs-inpage-luxury"))) {
       // Wait for the shadow root to render its entry point — either the standard
       // open button or the gift CTA (e.g. CELFORD renders gift-cta directly).
       await page.waitForFunction(() => {
-        const root = document.querySelector("#vs-inpage")?.shadowRoot;
+        const root = (document.querySelector("#vs-inpage") || document.querySelector("#vs-inpage-luxury"))?.shadowRoot;
         return (
           !!root?.querySelector('[data-test-id="inpage-open-aoyama-btn"]') ||
           !!root?.querySelector('[data-test-id="gift-cta"]')
@@ -1357,7 +1358,7 @@ async function clickWidget(page, flow) {
       }, { timeout: 15000 });
 
       await page.evaluate(() => {
-        const root = document.querySelector("#vs-inpage")?.shadowRoot;
+        const root = (document.querySelector("#vs-inpage") || document.querySelector("#vs-inpage-luxury"))?.shadowRoot;
         const btn =
           root?.querySelector('[data-test-id="inpage-open-aoyama-btn"]') ||
           root?.querySelector('[data-test-id="gift-cta"]');

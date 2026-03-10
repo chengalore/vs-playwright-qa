@@ -114,6 +114,7 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
         await page.waitForFunction(
           () =>
             document.querySelector("#vs-inpage") ||
+            document.querySelector("#vs-inpage-luxury") ||
             document.querySelector("#vs-legacy-inpage") ||
             document.querySelector("#vs-kid"),
           { timeout: 20000 },
