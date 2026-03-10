@@ -180,6 +180,7 @@ jobs:
               message += `${icon} ${r.storeAlias}`;
               if (r.error) message += ` — ${r.error.slice(0, 100)}`;
               message += '\n';
+              if (r.url) message += `   🔗 ${r.url}\n`;
             }
           }
 
