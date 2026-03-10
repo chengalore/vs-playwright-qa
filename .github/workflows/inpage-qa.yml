@@ -4,8 +4,29 @@ on:
   workflow_dispatch:
     inputs:
       url:
-        description: "PDP URL to test"
-        required: true
+        description: "Direct PDP URL (optional)"
+        required: false
+        default: ""
+        type: string
+      store_id:
+        description: "Store ID"
+        required: false
+        default: ""
+        type: string
+      product_type_id:
+        description: "Product type ID"
+        required: false
+        default: ""
+        type: string
+      gender:
+        description: "Gender filter"
+        required: false
+        default: ""
+        type: string
+      exclude_kids:
+        description: "Exclude kids products"
+        required: false
+        default: ""
         type: string
 
 jobs:
@@ -23,90 +44,45 @@ jobs:
 
       - run: npx playwright install --with-deps
 
-      - name: Parse slash command input
+      - name: Set TEST_URL from direct input
+        if: ${{ github.event.inputs.url != '' }}
+        run: echo "TEST_URL=${{ github.event.inputs.url }}" >> $GITHUB_ENV
+
+      - name: Resolve URL from store filters
+        if: ${{ github.event.inputs.url == '' }}
         run: |
-          INPUT="${{ github.event.inputs.url }}"
-          echo "Input: $INPUT"
+          node --input-type=module <<'SCRIPT'
+          import { resolveTestUrl } from './utils/fetchRandomProduct.js';
+          import { appendFileSync } from 'fs';
 
-          # If it looks like a URL, pass through directly
-          if [[ "$INPUT" == http* ]]; then
-            echo "TEST_URL=$INPUT" >> $GITHUB_ENV
-            echo "→ TEST_URL=$INPUT"
-            exit 0
-          fi
+          const url = await resolveTestUrl(null);
+          if (!url) {
+            console.error('Could not find a valid product URL');
+            process.exit(1);
+          }
+          appendFileSync(process.env.GITHUB_ENV, `TEST_URL=${url}\n`);
+          console.log(`Resolved TEST_URL: ${url}`);
+          SCRIPT
+        env:
+          STORE_ID: ${{ github.event.inputs.store_id }}
+          PRODUCT_TYPE_ID: ${{ github.event.inputs.product_type_id }}
+          GENDER: ${{ github.event.inputs.gender }}
+          EXCLUDE_KIDS: ${{ github.event.inputs.exclude_kids }}
 
-          # Normalise: lowercase, collapse whitespace
-          TOKENS=$(echo "$INPUT" | tr '[:upper:]' '[:lower:]' | tr '_-' '  ' | tr -s ' ')
-
-          for TOKEN in $TOKENS; do
-            case "$TOKEN" in
-              # ── Store aliases ──────────────────────────────────
-              ua|underarmour|underarmourjapan)
-                echo "STORE_ID=805" >> $GITHUB_ENV
-                echo "→ STORE_ID=805 ($TOKEN)" ;;
-
-              # ── Product type aliases ───────────────────────────
-              shoe|shoes|footwear)
-                echo "PRODUCT_TYPE_ID=17" >> $GITHUB_ENV
-                echo "→ PRODUCT_TYPE_ID=17 ($TOKEN)" ;;
-              tshirt|tshirts|top|tops)
-                echo "PRODUCT_TYPE_ID=2" >> $GITHUB_ENV
-                echo "→ PRODUCT_TYPE_ID=2 ($TOKEN)" ;;
-              pant|pants|bottoms)
-                echo "PRODUCT_TYPE_ID=4" >> $GITHUB_ENV
-                echo "→ PRODUCT_TYPE_ID=4 ($TOKEN)" ;;
-              dress|dresses)
-                echo "PRODUCT_TYPE_ID=6" >> $GITHUB_ENV
-                echo "→ PRODUCT_TYPE_ID=6 ($TOKEN)" ;;
-              jacket|jackets|coat|coats)
-                echo "PRODUCT_TYPE_ID=7" >> $GITHUB_ENV
-                echo "→ PRODUCT_TYPE_ID=7 ($TOKEN)" ;;
-              skirt|skirts)
-                echo "PRODUCT_TYPE_ID=8" >> $GITHUB_ENV
-                echo "→ PRODUCT_TYPE_ID=8 ($TOKEN)" ;;
-              short|shorts)
-                echo "PRODUCT_TYPE_ID=10" >> $GITHUB_ENV
-                echo "→ PRODUCT_TYPE_ID=10 ($TOKEN)" ;;
-              sweater|sweaters|hoodie|hoodies)
-                echo "PRODUCT_TYPE_ID=13" >> $GITHUB_ENV
-                echo "→ PRODUCT_TYPE_ID=13 ($TOKEN)" ;;
-
-              # ── Gender aliases ─────────────────────────────────
-              kid|kids|children|child|boys|girls)
-                echo "GENDER=kids" >> $GITHUB_ENV
-                echo "→ GENDER=kids ($TOKEN)" ;;
-              male|men|man)
-                echo "GENDER=male" >> $GITHUB_ENV
-                echo "→ GENDER=male ($TOKEN)" ;;
-              female|women|woman)
-                echo "GENDER=female" >> $GITHUB_ENV
-                echo "→ GENDER=female ($TOKEN)" ;;
-              unisex)
-                echo "GENDER=unisex" >> $GITHUB_ENV
-                echo "→ GENDER=unisex ($TOKEN)" ;;
-
-              # ── Raw numeric store ID ───────────────────────────
-              [0-9]*)
-                echo "STORE_ID=$TOKEN" >> $GITHUB_ENV
-                echo "→ STORE_ID=$TOKEN (numeric)" ;;
-
-              *)
-                echo "⚠️ Unrecognised token: $TOKEN" ;;
-            esac
-          done
+      - name: Notify Slack - test starting
+        run: |
+          curl -s -X POST \
+            -H "Content-type: application/json" \
+            --data "{\"text\":\"🔍 Testing: ${TEST_URL}\"}" \
+            "$SLACK_WEBHOOK_URL"
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
       - name: Run Playwright test
         run: |
           npx playwright test tests/inpage.spec.js | tee test-output.log
         env:
           TEST_URL: ${{ env.TEST_URL }}
-          STORE_ID: ${{ env.STORE_ID }}
-          API_KEY: ${{ env.API_KEY }}
-          PRODUCT_TYPE_ID: ${{ env.PRODUCT_TYPE_ID }}
-          GENDER: ${{ env.GENDER }}
-          CATEGORY: ${{ env.CATEGORY }}
-          EXCLUDE_KIDS: ${{ env.EXCLUDE_KIDS }}
-          VALID: ${{ env.VALID }}
 
       - name: Send result to Slack
         if: always()
