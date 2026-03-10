@@ -85,7 +85,7 @@ jobs:
           TEST_URL: ${{ env.TEST_URL }}
 
       - name: Send result to Slack
-        if: always()
+        if: success() || failure()
         run: |
           node --input-type=module <<'EOF'
           import fs from 'fs';
