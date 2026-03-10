@@ -16,6 +16,7 @@ import { readFileSync, existsSync } from "fs";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 import { startPDCWatcher } from "../utils/pdcWatcher.js";
+import { BOT_PROTECTED_ALIASES, BOT_PROTECTED_REASON } from "../config/botProtectedStores.js";
 
 test.setTimeout(60000);
 
@@ -29,6 +30,22 @@ const stores = existsSync(URLS_FILE)
 const phase = process.env.TEST_PHASE || "widget";
 
 for (const { storeAlias, storeId, url, fromFallback } of stores) {
+  if (BOT_PROTECTED_ALIASES.has(storeAlias)) {
+    test(`[${storeAlias}] ${phase}`, async ({}, testInfo) => {
+      logMonitorResult({
+        storeAlias,
+        storeId,
+        url: url || null,
+        phase,
+        status: "bot_protected",
+        reason: BOT_PROTECTED_REASON,
+        browser: testInfo.project.name,
+        durationMs: 0,
+      });
+    });
+    continue;
+  }
+
   if (!url) {
     // Store had no resolvable URL — log as skipped
     test(`[${storeAlias}] ${phase}`, async ({}, testInfo) => {

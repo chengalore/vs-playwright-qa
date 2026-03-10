@@ -160,10 +160,12 @@ jobs:
           const widgetMissing = results.filter(r => r.status === 'widget_missing');
           const failed = results.filter(r => r.status === 'failed');
           const skipped = results.filter(r => r.status === 'skipped');
+          const botProtected = results.filter(r => r.status === 'bot_protected');
           const fromFallback = results.filter(r => r.fromFallback);
 
+          const tested = results.length - botProtected.length;
           let message = `🏬 VS Inpage Monitor — ${phase}\n\n`;
-          message += `Stores checked: ${results.length}\n`;
+          message += `Stores checked: ${tested} (${botProtected.length} skipped — bot protection)\n`;
           message += `✅ ${passed.length} passed\n`;
           if (widgetMissing.length > 0) message += `⚠️ ${widgetMissing.length} widget missing\n`;
           if (failed.length > 0) message += `❌ ${failed.length} failed\n`;

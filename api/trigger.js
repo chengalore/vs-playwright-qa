@@ -1,4 +1,5 @@
 import { parseSlashCommand } from "./parseSlashCommand.js";
+import { BOT_PROTECTED_ALIASES, BOT_PROTECTED_REASON } from "../config/botProtectedStores.js";
 
 export default async function handler(req, res) {
   try {
@@ -107,6 +108,14 @@ export default async function handler(req, res) {
       return res.status(200).json({
         response_type: "ephemeral",
         text: `⏳ Monitoring all stores (phase: ${monitorInputs.phase})...`,
+      });
+    }
+
+    // ── Bot-protected stores ──────────────────────────────────────────
+    if (parsed.store_alias && BOT_PROTECTED_ALIASES.has(parsed.store_alias)) {
+      return res.status(200).json({
+        response_type: "ephemeral",
+        text: `⛔ *${parsed.store_alias}* cannot be automated — ${BOT_PROTECTED_REASON}`,
       });
     }
 
