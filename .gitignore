@@ -6,3 +6,7 @@ node_modules/
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
+
+# Runtime data (generated during CI, not committed)
+data/monitor-urls.json
+monitor-output.log
