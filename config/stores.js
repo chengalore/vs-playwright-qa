@@ -145,7 +145,7 @@ export const STORES = {
   rl: { id: 785, botProtected: true }, // shorthand
 
   // ── S ────────────────────────────────────────────────────────────────
-  safari_lounge: { id: 690, monitor: true },
+  safari_lounge: { id: 690 }, // geo-restricted (CloudFront blocks non-JP)
   sanyo: { id: 861 }, // shorthand
   sanyo_online_store: { id: 861, monitor: true },
   seilin: { id: 762 }, // shorthand
