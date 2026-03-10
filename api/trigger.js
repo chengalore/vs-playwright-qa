@@ -19,7 +19,49 @@ export default async function handler(req, res) {
     if (!text) {
       return res.status(200).json({
         response_type: "ephemeral",
-        text: "Usage: /qa <url> OR /qa [store] [product_type] [gender]\nExamples: /qa ua shoes  |  /qa kids  |  /qa ralph_lauren coat",
+        text: "Usage: /qa <url> OR /qa [store] [product_type] [gender]\nExamples: /qa ua shoes  |  /qa kids  |  /qa ralph_lauren coat\nTo cancel: /qa stop",
+      });
+    }
+
+    // Cancel any in-progress runs
+    if (text.trim().toLowerCase() === "stop" || text.trim().toLowerCase() === "cancel") {
+      const runsRes = await fetch(
+        `https://api.github.com/repos/${process.env.GITHUB_REPO}/actions/workflows/inpage-qa.yml/runs?status=in_progress`,
+        {
+          headers: {
+            Accept: "application/vnd.github+json",
+            Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
+          },
+        }
+      );
+      const runsData = await runsRes.json();
+      const runs = runsData.workflow_runs || [];
+
+      if (runs.length === 0) {
+        return res.status(200).json({
+          response_type: "ephemeral",
+          text: "No QA tests are currently running.",
+        });
+      }
+
+      await Promise.all(
+        runs.map((run) =>
+          fetch(
+            `https://api.github.com/repos/${process.env.GITHUB_REPO}/actions/runs/${run.id}/cancel`,
+            {
+              method: "POST",
+              headers: {
+                Accept: "application/vnd.github+json",
+                Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
+              },
+            }
+          )
+        )
+      );
+
+      return res.status(200).json({
+        response_type: "ephemeral",
+        text: `Cancelled ${runs.length} running test${runs.length > 1 ? "s" : ""}.`,
       });
     }
 
