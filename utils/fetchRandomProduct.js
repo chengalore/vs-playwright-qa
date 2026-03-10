@@ -168,7 +168,7 @@ export async function resolveTestUrl(fallbackUrl) {
   if (process.env.TEST_URL) return process.env.TEST_URL;
 
   const parseBool = (val) =>
-    val === undefined ? undefined : val === "true";
+    val === undefined || val === "" ? undefined : val === "true";
 
   const store_id = process.env.STORE_ID
     ? Number(process.env.STORE_ID)
@@ -192,7 +192,13 @@ export async function resolveTestUrl(fallbackUrl) {
   if (!store_id) return fetchRandomProduct(apiParams);
 
   for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
-    const pdpUrl = await fetchRandomProduct(apiParams);
+    let pdpUrl;
+    try {
+      pdpUrl = await fetchRandomProduct(apiParams);
+    } catch (err) {
+      console.log(`[attempt ${attempt}/${MAX_RETRIES}] API error: ${err.message}, retrying...`);
+      continue;
+    }
 
     const externalProductId = extractExternalProductId(pdpUrl);
     if (!externalProductId) {
