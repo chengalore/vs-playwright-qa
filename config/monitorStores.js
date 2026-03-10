@@ -6,8 +6,6 @@
  * fallback URL to be found without hitting the Random Product API.
  */
 export const MONITOR_STORES = {
-  adidas_japan: 821,
-  adidas_korea: 910,
   agnes_b: 800,
   allsaints_korea: 850,
   ameri_vintage: 885,
@@ -21,8 +19,6 @@ export const MONITOR_STORES = {
   barbour: 882,
   barneys_japan: 731,
   beams: 792,
-  bottega_veneta_japan: 914,
-  bottega_veneta_korea: 915,
   brooks_brothers: 730,
   brooks_brothers_korea: 905,
   bshop: 768,
@@ -70,13 +66,6 @@ export const MONITOR_STORES = {
   poppy: 901,
   punyus: 121,
   ragtag: 135,
-  ralph_lauren: 785,
-  ralph_lauren_australia: 804,
-  ralph_lauren_china: 830,
-  ralph_lauren_korea: 829,
-  ralph_lauren_singapore: 849,
-  ralph_lauren_taiwan: 896,
-  ralph_lauren_uk: 903,
   reebok_korea: 892,
   re_edit: 810,
   retouch: 911,
