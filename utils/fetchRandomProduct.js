@@ -143,8 +143,8 @@ async function isValidVirtusizeProduct(storeId, externalProductId) {
       return false;
     }
     const json = await res.json();
-    const isValid = json?.data?.validProduct === true;
-    console.log(`[check] ${externalProductId} → validProduct: ${json?.data?.validProduct}`);
+    const isValid = json?.validProduct === true && json?.productType !== null;
+    console.log(`[check] ${externalProductId} → validProduct: ${json?.validProduct}, productType: ${json?.productType}`);
     return isValid;
   } catch (err) {
     console.log(`[check] Error for ${externalProductId}: ${err.message}`);
