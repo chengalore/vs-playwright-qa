@@ -17,6 +17,7 @@ test.setTimeout(180000);
 
 test("Inpage basic flow", async ({ page }, testInfo) => {
   const startTime = Date.now();
+  const phase = process.env.TEST_PHASE || "full";
 
   const url = await resolveTestUrl(
     "https://www.underarmour.co.jp/f/dsg-1072366",
@@ -158,6 +159,20 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
       return;
     }
 
+    // api phase: PDC confirmed valid — integration check complete
+    if (phase === "api") {
+      logResult({
+        url,
+        store: pdc.store,
+        productType: pdc.productType,
+        status: "passed",
+        browser: testInfo.project.name,
+        phase,
+        durationMs: Date.now() - startTime,
+      });
+      return;
+    }
+
     // -----------------------------
     // Open Inpage
     // -----------------------------
@@ -185,6 +200,44 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
       await waitForWidgetRender(page);
     }
 
+    // widget phase: widget element found and opened — check complete
+    if (phase === "widget") {
+      logResult({
+        url,
+        store: pdc.store,
+        productType: pdc.productType,
+        status: "passed",
+        browser: testInfo.project.name,
+        phase,
+        durationMs: Date.now() - startTime,
+      });
+      return;
+    }
+
+    // events phase: verify baseline integration events fired after widget open
+    if (phase === "events") {
+      const missing = await verifyEvents(
+        page,
+        () => eventWatcher.getEvents(),
+        expectedEvents.strict.baseline,
+      );
+      if (missing.length > 0) {
+        const err = new Error(`Missing events: ${missing.join(", ")}`);
+        err.missingEvents = missing;
+        throw err;
+      }
+      logResult({
+        url,
+        store: pdc.store,
+        productType: pdc.productType,
+        status: "passed",
+        browser: testInfo.project.name,
+        phase,
+        durationMs: Date.now() - startTime,
+      });
+      return;
+    }
+
     let isNewUser;
     if (flow === "apparel") {
       isNewUser = await runApparelFlow(
@@ -202,6 +255,21 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
     }
     if (flow === "noVisor") {
       isNewUser = await runNoVisorFlow(page, bodyAPI);
+    }
+
+    // onboarding phase: onboarding complete — skip full validation
+    if (phase === "onboarding") {
+      logResult({
+        url,
+        store: pdc.store,
+        productType: pdc.productType,
+        userType: isNewUser ? "NEW" : "RETURNING",
+        status: "passed",
+        browser: testInfo.project.name,
+        phase,
+        durationMs: Date.now() - startTime,
+      });
+      return;
     }
 
     // -----------------------------

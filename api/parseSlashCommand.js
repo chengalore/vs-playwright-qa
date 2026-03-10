@@ -19,7 +19,7 @@ const RANDOM_PRODUCT_API =
   "https://dcai264p3l.execute-api.ap-northeast-1.amazonaws.com/prod/random_product";
 
 // Store name → store_id
-const STORE_ALIASES = {
+export const STORE_ALIASES = {
   acne: 54,
   adidas: 821,
   adidas_japan: 821,
@@ -200,10 +200,16 @@ const GENDER_ALIASES = {
   unisex: "unisex",
 };
 
+// Phase keywords for TEST_PHASE
+const PHASES = new Set(['widget', 'events', 'api', 'onboarding', 'full']);
+
 /**
  * Parse slash command text into API params.
  * Returns { url } if text is a direct URL.
- * Returns { store_id?, product_type_id?, gender?, exclude_kids? } otherwise.
+ * Returns { scope?, store_id?, store_alias?, product_type_id?, gender?, exclude_kids?, phase } otherwise.
+ *
+ * scope='all'  → monitor all stores (dispatch inpage-monitor.yml)
+ * phase        → one of widget | events | api | onboarding | full (default: full)
  */
 export function parseSlashCommand(text) {
   const trimmed = (text || "").trim();
@@ -218,9 +224,18 @@ export function parseSlashCommand(text) {
   const tokens = trimmed.toLowerCase().split(/\s+/);
   const params = {};
 
+  // "all" scope: monitor every store
+  if (tokens[0] === "all") {
+    params.scope = "all";
+    tokens.shift();
+  }
+
   for (const token of tokens) {
-    if (STORE_ALIASES[token] !== undefined) {
+    if (PHASES.has(token)) {
+      params.phase = token;
+    } else if (STORE_ALIASES[token] !== undefined) {
       params.store_id = STORE_ALIASES[token];
+      params.store_alias = token;
     } else if (PRODUCT_TYPE_ALIASES[token] !== undefined) {
       params.product_type_id = PRODUCT_TYPE_ALIASES[token];
     } else if (GENDER_ALIASES[token] !== undefined) {
@@ -230,6 +245,8 @@ export function parseSlashCommand(text) {
     }
     // unknown tokens are ignored
   }
+
+  if (!params.phase) params.phase = "full";
 
   return params;
 }

@@ -1,0 +1,194 @@
+name: Inpage Monitor
+
+on:
+  workflow_dispatch:
+    inputs:
+      phase:
+        description: "Test phase (widget/api)"
+        required: false
+        default: "widget"
+        type: string
+      store_id:
+        description: "Optional: single store ID to filter"
+        required: false
+        default: ""
+        type: string
+      product_type_id:
+        description: "Optional: product type ID filter"
+        required: false
+        default: ""
+        type: string
+      gender:
+        description: "Optional: gender filter"
+        required: false
+        default: ""
+        type: string
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - run: npm ci
+
+      - run: npx playwright install --with-deps chromium
+
+      - name: Restore fallback products cache
+        uses: actions/cache@v4
+        with:
+          path: data/fallbackProducts.json
+          key: fallback-products-v1
+          restore-keys: fallback-products-v1
+
+      - name: Resolve store URLs
+        run: |
+          node --input-type=module <<'SCRIPT'
+          import { STORE_ALIASES } from './api/parseSlashCommand.js';
+          import { fetchRandomProduct } from './utils/fetchRandomProduct.js';
+          import { loadFallback } from './utils/fallbackStore.js';
+          import { writeFileSync, mkdirSync } from 'fs';
+
+          const storeIdFilter = process.env.STORE_ID ? Number(process.env.STORE_ID) : null;
+          const productTypeId = process.env.PRODUCT_TYPE_ID ? Number(process.env.PRODUCT_TYPE_ID) : undefined;
+          const gender = process.env.GENDER || undefined;
+
+          // Deduplicate: multiple aliases can point to the same store_id
+          const uniqueStores = new Map();
+          for (const [alias, storeId] of Object.entries(STORE_ALIASES)) {
+            if (storeIdFilter && storeId !== storeIdFilter) continue;
+            if (!uniqueStores.has(storeId)) {
+              uniqueStores.set(storeId, alias);
+            }
+          }
+
+          console.log(`Resolving URLs for ${uniqueStores.size} stores...`);
+
+          const results = await Promise.all(
+            [...uniqueStores.entries()].map(async ([storeId, alias]) => {
+              try {
+                const url = await fetchRandomProduct({
+                  store_id: storeId,
+                  product_type_id: productTypeId,
+                  gender,
+                });
+                return { storeAlias: alias, storeId, url };
+              } catch (err) {
+                const fallback = loadFallback(alias);
+                if (fallback) {
+                  console.log(`[${alias}] API failed, using fallback: ${fallback}`);
+                  return { storeAlias: alias, storeId, url: fallback, fromFallback: true };
+                }
+                console.log(`[${alias}] No URL: ${err.message}`);
+                return { storeAlias: alias, storeId, url: null };
+              }
+            })
+          );
+
+          const resolved = results.filter(r => r.url).length;
+          console.log(`Resolved ${resolved}/${results.length} store URLs`);
+
+          mkdirSync('data', { recursive: true });
+          writeFileSync('data/monitor-urls.json', JSON.stringify(results, null, 2));
+          SCRIPT
+        env:
+          STORE_ID: ${{ github.event.inputs.store_id }}
+          PRODUCT_TYPE_ID: ${{ github.event.inputs.product_type_id }}
+          GENDER: ${{ github.event.inputs.gender }}
+
+      - name: Notify Slack - monitor starting
+        run: |
+          curl -s -X POST \
+            -H "Content-type: application/json" \
+            --data "{\"text\":\"🏬 VS Monitor starting (phase: ${{ github.event.inputs.phase }})...\"}" \
+            "$SLACK_WEBHOOK_URL"
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: Run monitor tests
+        run: |
+          npx playwright test tests/monitor.spec.js --project=chromium --workers=10 | tee monitor-output.log
+        env:
+          TEST_PHASE: ${{ github.event.inputs.phase }}
+          WORKERS: "10"
+
+      - name: Save fallback products cache
+        if: always()
+        uses: actions/cache@v4
+        with:
+          path: data/fallbackProducts.json
+          key: fallback-products-v1
+
+      - name: Send Slack summary
+        if: success() || failure()
+        run: |
+          node --input-type=module <<'EOF'
+          import fs from 'fs';
+          import { execSync } from 'child_process';
+
+          const webhook = process.env.SLACK_WEBHOOK_URL;
+          const runUrl = process.env.GITHUB_RUN_URL;
+          const phase = process.env.PHASE;
+
+          if (!fs.existsSync('monitor-output.log')) {
+            execSync(`curl -s -X POST -H "Content-type: application/json" --data '{"text":"❌ Monitor output not found"}' ${webhook}`);
+            process.exit(0);
+          }
+
+          const fullLog = fs.readFileSync('monitor-output.log', 'utf8');
+          const lines = fullLog.split('\n').filter(l => l.includes('MONITOR_RESULT:'));
+
+          if (lines.length === 0) {
+            execSync(`curl -s -X POST -H "Content-type: application/json" --data '{"text":"❌ No MONITOR_RESULT lines found"}' ${webhook}`);
+            process.exit(0);
+          }
+
+          // Last result per store alias wins
+          const byStore = {};
+          for (const line of lines) {
+            const json = JSON.parse(line.replace(/^.*MONITOR_RESULT:\s*/, ''));
+            byStore[json.storeAlias] = json;
+          }
+
+          const results = Object.values(byStore);
+          const passed = results.filter(r => r.status === 'passed');
+          const widgetMissing = results.filter(r => r.status === 'widget_missing');
+          const failed = results.filter(r => r.status === 'failed');
+          const skipped = results.filter(r => r.status === 'skipped');
+          const fromFallback = results.filter(r => r.fromFallback);
+
+          let message = `🏬 VS Inpage Monitor — ${phase}\n\n`;
+          message += `Stores checked: ${results.length}\n`;
+          message += `✅ ${passed.length} passed\n`;
+          if (widgetMissing.length > 0) message += `⚠️ ${widgetMissing.length} widget missing\n`;
+          if (failed.length > 0) message += `❌ ${failed.length} failed\n`;
+          if (skipped.length > 0) message += `⏭ ${skipped.length} skipped\n`;
+          if (fromFallback.length > 0) message += `\n📦 ${fromFallback.length} used fallback URL\n`;
+
+          const issues = [...widgetMissing, ...failed];
+          if (issues.length > 0) {
+            message += '\nIssues:\n';
+            for (const r of issues) {
+              const icon = r.status === 'widget_missing' ? '⚠️' : '❌';
+              message += `${icon} ${r.storeAlias}`;
+              if (r.error) message += ` — ${r.error.slice(0, 100)}`;
+              message += '\n';
+            }
+          }
+
+          message += `\n🔗 ${runUrl}`;
+
+          execSync(`curl -s -X POST \
+            -H "Content-type: application/json" \
+            --data '${JSON.stringify({ text: message })}' \
+            ${webhook}`);
+          EOF
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          GITHUB_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          PHASE: ${{ github.event.inputs.phase }}

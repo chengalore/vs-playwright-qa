@@ -77,15 +77,50 @@ export default async function handler(req, res) {
     // ── Parse command ────────────────────────────────────────────────
     const parsed = parseSlashCommand(text);
 
+    // ── All-store monitor ─────────────────────────────────────────────
+    if (parsed.scope === "all") {
+      const monitorInputs = {
+        phase: parsed.phase || "widget",
+        store_id: parsed.store_id ? String(parsed.store_id) : "",
+        product_type_id: parsed.product_type_id ? String(parsed.product_type_id) : "",
+        gender: parsed.gender || "",
+      };
+
+      const gh = await fetch(
+        `https://api.github.com/repos/${process.env.GITHUB_REPO}/actions/workflows/inpage-monitor.yml/dispatches`,
+        {
+          method: "POST",
+          headers: ghHeaders,
+          body: JSON.stringify({ ref: "main", inputs: monitorInputs }),
+        }
+      );
+
+      if (!gh.ok) {
+        const ghBody = await gh.text().catch(() => "");
+        console.error("GitHub dispatch failed:", gh.status, ghBody);
+        return res.status(200).json({
+          response_type: "ephemeral",
+          text: `GitHub dispatch failed (${gh.status})`,
+        });
+      }
+
+      return res.status(200).json({
+        response_type: "ephemeral",
+        text: `⏳ Monitoring all stores (phase: ${monitorInputs.phase})...`,
+      });
+    }
+
     let inputs;
     if (parsed.url) {
       // Direct URL — pass straight through
       inputs = {
         url: parsed.url,
         store_id: "",
+        store_alias: "",
         product_type_id: "",
         gender: "",
         exclude_kids: "",
+        phase: parsed.phase || "full",
       };
     } else {
       if (!parsed.store_id) {
@@ -97,9 +132,11 @@ export default async function handler(req, res) {
       inputs = {
         url: "",
         store_id: String(parsed.store_id),
+        store_alias: parsed.store_alias || "",
         product_type_id: parsed.product_type_id ? String(parsed.product_type_id) : "",
         gender: parsed.gender || "",
         exclude_kids: parsed.exclude_kids ? "true" : "",
+        phase: parsed.phase || "full",
       };
     }
 
