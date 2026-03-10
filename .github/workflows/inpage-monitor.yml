@@ -71,6 +71,12 @@ jobs:
 
           const results = await Promise.all(
             [...uniqueStores.entries()].map(async ([storeId, alias]) => {
+              // Prefer stable fallback URL; only call Random Product API if none exists
+              const fallback = loadFallback(alias);
+              if (fallback && !productTypeId && !gender) {
+                console.log(`[${alias}] Using fallback URL`);
+                return { storeAlias: alias, storeId, url: fallback, fromFallback: true };
+              }
               try {
                 const url = await fetchRandomProduct({
                   store_id: storeId,
@@ -79,7 +85,6 @@ jobs:
                 });
                 return { storeAlias: alias, storeId, url };
               } catch (err) {
-                const fallback = loadFallback(alias);
                 if (fallback) {
                   console.log(`[${alias}] API failed, using fallback: ${fallback}`);
                   return { storeAlias: alias, storeId, url: fallback, fromFallback: true };
