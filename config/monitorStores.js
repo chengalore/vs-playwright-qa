@@ -6,7 +6,6 @@
  * fallback URL to be found without hitting the Random Product API.
  */
 export const MONITOR_STORES = {
-  acne: 54,
   adidas_japan: 821,
   adidas_korea: 910,
   agnes_b: 800,
@@ -14,8 +13,6 @@ export const MONITOR_STORES = {
   ameri_vintage: 885,
   and_mall: 644,
   andar_japan: 878,
-  andar_korea: 902,
-  andar_singapore: 916,
   another_address: 811,
   aoure: 813,
   asics_japan: 845,
@@ -68,8 +65,6 @@ export const MONITOR_STORES = {
   milaowen: 694,
   natulan: 889,
   nagaileben: 781,
-  no_man_walks_alone: 539,
-  nudie_jeans: 133,
   onward: 761,
   paul_smith: 802,
   poppy: 901,
@@ -91,7 +86,6 @@ export const MONITOR_STORES = {
   seilin_online_shop: 762,
   shel_tter: 697,
   sixpad: 886,
-  snkrdunk: 915,
   snidel: 695,
   standard_california: 713,
   strasburgo: 452,
