@@ -46,6 +46,13 @@ jobs:
           key: fallback-products-v2
           restore-keys: fallback-products-v2
 
+      - name: Restore store health cache
+        uses: actions/cache@v4
+        with:
+          path: data/storeHealth.json
+          key: store-health-v1
+          restore-keys: store-health-v1
+
       - name: Resolve store URLs
         run: |
           node --input-type=module <<'SCRIPT'
@@ -64,9 +71,22 @@ jobs:
             : {};
           const getFallback = (alias) => fallbacks[alias] ?? null;
 
-          // Use canonical store list — no deduplication needed
+          // Read store health to skip auto-blacklisted stores
+          const HEALTH_FILE = 'data/storeHealth.json';
+          const health = existsSync(HEALTH_FILE)
+            ? JSON.parse(readFileSync(HEALTH_FILE, 'utf8'))
+            : {};
+
+          // Use canonical store list — skip auto-blacklisted stores
           const storeEntries = Object.entries(MONITOR_STORES)
-            .filter(([, storeId]) => !storeIdFilter || storeId === storeIdFilter);
+            .filter(([alias, storeId]) => {
+              if (storeIdFilter && storeId !== storeIdFilter) return false;
+              if (health[alias]?.autoBlacklisted) {
+                console.log(`[${alias}] Auto-blacklisted (${health[alias].consecutiveFailures} consecutive failures) — skipping`);
+                return false;
+              }
+              return true;
+            });
 
           console.log(`Resolving URLs for ${storeEntries.length} stores...`);
 
@@ -126,12 +146,73 @@ jobs:
           TEST_PHASE: ${{ github.event.inputs.phase }}
           WORKERS: "10"
 
+      - name: Update store health
+        if: always()
+        run: |
+          node --input-type=module <<'SCRIPT'
+          import { readFileSync, writeFileSync, existsSync } from 'fs';
+
+          const HEALTH_FILE = 'data/storeHealth.json';
+          const health = existsSync(HEALTH_FILE)
+            ? JSON.parse(readFileSync(HEALTH_FILE, 'utf8'))
+            : {};
+
+          if (!existsSync('monitor-output.log')) process.exit(0);
+
+          const log = readFileSync('monitor-output.log', 'utf8');
+          const lines = log.split('\n').filter(l => l.includes('MONITOR_RESULT:'));
+
+          // Last result per store
+          const byStore = {};
+          for (const line of lines) {
+            try {
+              const json = JSON.parse(line.replace(/^.*MONITOR_RESULT:\s*/, ''));
+              byStore[json.storeAlias] = json;
+            } catch {}
+          }
+
+          const BLACKLIST_THRESHOLD = 3;
+          const BOT_STATUSES = new Set(['cdn_blocked', 'navigation_error']);
+
+          for (const [alias, result] of Object.entries(byStore)) {
+            if (!health[alias]) health[alias] = { consecutiveFailures: 0 };
+
+            if (BOT_STATUSES.has(result.status)) {
+              health[alias].consecutiveFailures = (health[alias].consecutiveFailures || 0) + 1;
+              health[alias].lastFailureReason = result.status;
+              if (health[alias].consecutiveFailures >= BLACKLIST_THRESHOLD && !health[alias].autoBlacklisted) {
+                health[alias].autoBlacklisted = true;
+                console.log(`🚫 [${alias}] Auto-blacklisted after ${health[alias].consecutiveFailures} consecutive ${result.status} failures`);
+              }
+            } else if (result.status === 'passed') {
+              if (health[alias].autoBlacklisted) {
+                console.log(`✅ [${alias}] Recovered — removing from auto-blacklist`);
+              }
+              health[alias].consecutiveFailures = 0;
+              health[alias].autoBlacklisted = false;
+              delete health[alias].lastFailureReason;
+            }
+            // widget_missing / failed / skipped → leave counter unchanged
+          }
+
+          writeFileSync(HEALTH_FILE, JSON.stringify(health, null, 2));
+          const blacklisted = Object.values(health).filter(h => h.autoBlacklisted).length;
+          console.log(`Store health saved. Auto-blacklisted: ${blacklisted}`);
+          SCRIPT
+
       - name: Save fallback products cache
         if: always()
         uses: actions/cache@v4
         with:
           path: data/fallbackProducts.json
           key: fallback-products-v2
+
+      - name: Save store health cache
+        if: always()
+        uses: actions/cache@v4
+        with:
+          path: data/storeHealth.json
+          key: store-health-v1
 
       - name: Send Slack summary
         if: success() || failure()
@@ -172,13 +253,23 @@ jobs:
           const botProtected = results.filter(r => r.status === 'bot_protected');
           const fromFallback = results.filter(r => r.fromFallback);
 
+          // Read auto-blacklisted count from storeHealth.json
+          const HEALTH_FILE = 'data/storeHealth.json';
+          const health = fs.existsSync(HEALTH_FILE) ? JSON.parse(fs.readFileSync(HEALTH_FILE, 'utf8')) : {};
+          const autoBlacklisted = Object.entries(health).filter(([, h]) => h.autoBlacklisted);
+          const newlyBlacklisted = skipped.filter(r =>
+            (r.reason === 'cdn_blocked' || r.reason === 'navigation_error') &&
+            health[r.storeAlias]?.autoBlacklisted
+          );
+
           const tested = results.length - botProtected.length;
           let message = `🏬 VS Inpage Monitor — ${phase}\n\n`;
           message += `Stores checked: ${tested} (${botProtected.length} skipped — bot protection)\n`;
           message += `✅ ${passed.length} passed\n`;
           if (widgetMissing.length > 0) message += `⚠️ ${widgetMissing.length} widget missing\n`;
           if (failed.length > 0) message += `❌ ${failed.length} failed\n`;
-          if (skipped.length > 0) message += `⏭ ${skipped.length} skipped\n`;
+          if (skipped.length > 0) message += `⏭ ${skipped.length} skipped (cdn/nav error)\n`;
+          if (autoBlacklisted.length > 0) message += `🚫 ${autoBlacklisted.length} auto-blacklisted\n`;
           if (fromFallback.length > 0) message += `\n📦 ${fromFallback.length} used fallback URL\n`;
 
           const issues = [...widgetMissing, ...failed];
@@ -191,6 +282,19 @@ jobs:
               message += '\n';
               if (r.url) message += `   🔗 ${r.url}\n`;
             }
+          }
+
+          if (newlyBlacklisted.length > 0) {
+            message += '\nNewly auto-blacklisted (will be skipped next run):\n';
+            for (const r of newlyBlacklisted) {
+              const failures = health[r.storeAlias]?.consecutiveFailures ?? 0;
+              message += `🚫 ${r.storeAlias} (${failures} consecutive ${r.reason} failures)\n`;
+            }
+          }
+
+          if (autoBlacklisted.length > 0) {
+            const names = autoBlacklisted.map(([alias]) => alias).join(', ');
+            message += `\nAuto-blacklisted stores (skipped this run): ${names}\n`;
           }
 
           message += `\n🔗 ${runUrl}`;
