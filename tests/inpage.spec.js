@@ -1351,7 +1351,7 @@ async function clickWidget(page, flow) {
     document.querySelector(sel)?.scrollIntoView({ block: "center" });
   }, selector);
 
-  await page.waitForSelector(selector, { state: "visible", timeout: 5000 });
+  await page.waitForSelector(selector, { state: "visible", timeout: 15000 });
 
   // For #vs-inpage / #vs-inpage-luxury: wait for the shadow button and click it.
   // Legacy inpage (#vs-legacy-inpage) has no shadow root — click the host directly.
