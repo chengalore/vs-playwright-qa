@@ -113,23 +113,23 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 75567,
+                  "duration": 62376,
                   "errors": [],
                   "stdout": [
                     {
-                      "text": "Testing URL: https://store.sanyo-shokai.co.jp/products/w1m01704?vs-branch=fit-vis-bag-item-view\n"
+                      "text": "Testing URL: https://www.brooksbrothers.co.jp/items/detail?pid=100218927\n"
                     },
                     {
                       "text": "[EVENT WATCHER] Phase → onboarding\n"
                     },
                     {
-                      "text": "Navigating to: https://store.sanyo-shokai.co.jp/products/w1m01704?vs-branch=fit-vis-bag-item-view\n"
+                      "text": "Navigating to: https://www.brooksbrothers.co.jp/items/detail?pid=100218927\n"
                     },
                     {
                       "text": "Page loaded\n"
                     },
                     {
-                      "text": "PDC UPDATE: \u001b[33mtrue\u001b[39m shirt\n"
+                      "text": "PDC UPDATE: \u001b[33mtrue\u001b[39m tShirt\n"
                     },
                     {
                       "text": "[integration] user-saw-product\n"
@@ -141,7 +141,7 @@
                       "text": "[integration] inpage-mounted\n"
                     },
                     {
-                      "text": "PDC resolved: sanyo_online_store shirt valid: \u001b[33mtrue\u001b[39m\n"
+                      "text": "PDC resolved: brooks_brothers tShirt valid: \u001b[33mtrue\u001b[39m\n"
                     },
                     {
                       "text": "Flow: apparel\n"
@@ -195,7 +195,7 @@
                       "text": "[EVENT WATCHER] Phase → refresh\n"
                     },
                     {
-                      "text": "PDC UPDATE: \u001b[33mtrue\u001b[39m shirt\n"
+                      "text": "PDC UPDATE: \u001b[33mtrue\u001b[39m tShirt\n"
                     },
                     {
                       "text": "[integration] user-saw-product\n"
@@ -207,19 +207,22 @@
                       "text": "[integration] inpage-mounted\n"
                     },
                     {
+                      "text": "[inpage] user-opened-widget\n"
+                    },
+                    {
+                      "text": "[fit-illustrator] user-opened-panel-tryiton\n"
+                    },
+                    {
                       "text": "Recommendation API Status: \u001b[33m200\u001b[39m\n"
+                    },
+                    {
+                      "text": "[fit-illustrator] user-selected-size\n"
                     },
                     {
                       "text": "[integration] user-got-size-recommendation\n"
                     },
                     {
                       "text": "[inpage] user-selected-size\n"
-                    },
-                    {
-                      "text": "[inpage] user-opened-widget\n"
-                    },
-                    {
-                      "text": "[fit-illustrator] user-opened-panel-tryiton\n"
                     },
                     {
                       "text": "[EVENT WATCHER] Phase → gift\n"
@@ -294,7 +297,7 @@
                       "text": "[EVENT WATCHER] Phase → gift-refresh\n"
                     },
                     {
-                      "text": "PDC UPDATE: \u001b[33mtrue\u001b[39m shirt\n"
+                      "text": "PDC UPDATE: \u001b[33mtrue\u001b[39m tShirt\n"
                     },
                     {
                       "text": "[integration] user-saw-product\n"
@@ -339,12 +342,12 @@
                       "text": "Gift refresh: recommendation visible\n"
                     },
                     {
-                      "text": "QA_RESULT: {\"url\":\"https://store.sanyo-shokai.co.jp/products/w1m01704?vs-branch=fit-vis-bag-item-view\",\"store\":\"sanyo_online_store\",\"productType\":\"shirt\",\"userType\":\"NEW\",\"status\":\"passed\",\"browser\":\"chromium\",\"durationMs\":74457}\n"
+                      "text": "QA_RESULT: {\"url\":\"https://www.brooksbrothers.co.jp/items/detail?pid=100218927\",\"store\":\"brooks_brothers\",\"productType\":\"tShirt\",\"userType\":\"NEW\",\"status\":\"passed\",\"browser\":\"chromium\",\"durationMs\":61687}\n"
                     }
                   ],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-03-11T04:39:03.029Z",
+                  "startTime": "2026-03-11T07:41:15.669Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -362,8 +365,8 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2026-03-11T04:39:02.207Z",
-    "duration": 78858.305,
+    "startTime": "2026-03-11T07:41:15.011Z",
+    "duration": 64821.698000000004,
     "expected": 1,
     "skipped": 0,
     "unexpected": 0,
