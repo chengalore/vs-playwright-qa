@@ -1207,11 +1207,12 @@ async function kidsRetry(page, fn, label, maxAttempts = 3, delayMs = 500) {
 async function waitForPDC(pdc) {
   const start = Date.now();
 
-  // Wait up to 15s for a valid product response.
+  // Wait up to 25s for a valid product response.
   // On React SPAs, the first product/check may fire before the product external ID
   // is resolved (validProduct: false). The second call — after React hydration —
   // returns the real result. We must wait for validProduct === true, not just any response.
-  while (Date.now() - start < 15000) {
+  // Some sites (e.g. brooksbrothers on Chromium) initialize Virtusize slowly.
+  while (Date.now() - start < 25000) {
     if (pdc.validProduct === true) return;
     await new Promise((r) => setTimeout(r, 200));
   }
