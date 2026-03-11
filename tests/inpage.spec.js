@@ -12,6 +12,7 @@ import { selectSizeIfMultiple } from "../utils/selectSizeIfMultiple.js";
 import { addItemToWardrobe } from "../utils/addItemToWardrobe.js";
 import { blockMarketingScripts } from "../utils/blockMarketingScripts.js";
 import { resolveTestUrl } from "../utils/fetchRandomProduct.js";
+import { BOT_PROTECTED_DOMAINS } from "../config/stores.js";
 
 test.setTimeout(180000);
 
@@ -139,8 +140,16 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
     // Gatekeeping
     // -----------------------------
 
+    const isBotProtectedUrl = (() => {
+      try {
+        const hostname = new URL(url).hostname.replace(/^www\./, "");
+        return BOT_PROTECTED_DOMAINS.some((d) => hostname === d || hostname.endsWith(`.${d}`));
+      } catch { return false; }
+    })();
+
     const skipReason =
       getSkipReason(pdc) ??
+      (isBotProtectedUrl ? "Bot-protected store — cannot be automated (bot detection)" : null) ??
       (pdc.validProduct !== true ? "No valid Virtusize product detected on this PDP" : null);
 
     if (skipReason) {
