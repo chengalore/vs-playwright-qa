@@ -1205,29 +1205,26 @@ async function kidsRetry(page, fn, label, maxAttempts = 3, delayMs = 500) {
 // --------------------------------------------------
 
 async function waitForPDC(pdc) {
-  const start = Date.now();
-
-  // Phase 1: wait up to 15s for any product/check response.
-  // If nothing arrives, this is likely not a Virtusize page — exit early rather
-  // than burning the full 40s budget.
-  while (Date.now() - start < 15000) {
-    if (pdc.validProduct !== undefined) break;
-    await new Promise((r) => setTimeout(r, 200));
-  }
-
   if (pdc.validProduct === true) return;
 
-  // Phase 2: we know Virtusize is active (validProduct is false or we're still
-  // waiting due to slow init). Some sites fire two product/check calls — first
-  // returns false (pre-hydration), second returns true (post-hydration). Chromium
-  // can receive the second response much later than Firefox/WebKit. Wait up to
-  // 40s total from the start.
-  while (Date.now() - start < 40000) {
-    if (pdc.validProduct === true) return;
-    await new Promise((r) => setTimeout(r, 200));
-  }
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-  // Timed out — leave pdc as-is; downstream skip logic handles false/undefined
+  // Phase 1 (0–15s): wait for the first product/check response (any validProduct value).
+  // Using Promise.race on _whenValid resolves instantly if/when validProduct becomes true,
+  // with no polling delay. If nothing arrives in 15s, it's likely not a Virtusize page.
+  await Promise.race([pdc._whenValid, sleep(15000)]);
+
+  if (pdc.validProduct === true) return;
+  if (pdc.validProduct === undefined) return; // no response at all — exit for skip logic
+
+  // Phase 2 (15–40s): got validProduct: false, meaning Virtusize is active on this page.
+  // Some sites fire two product/check calls — pre-hydration returns false, post-hydration
+  // returns true. Chromium receives the second response later than Firefox/WebKit due to
+  // navigator.webdriver detection delaying script init. Wait up to 25s more for the
+  // second (valid) response — _whenValid resolves the instant it arrives.
+  await Promise.race([pdc._whenValid, sleep(25000)]);
+
+  // pdc.validProduct is now true, false, or undefined — downstream skip logic decides
 }
 
 async function waitForWidgetRender(page) {

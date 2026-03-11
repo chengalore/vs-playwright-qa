@@ -8,6 +8,10 @@ export function startPDCWatcher(page) {
     isKid: false,
   };
 
+  // Resolves the instant validProduct becomes true — eliminates polling in waitForPDC.
+  let resolveValid;
+  pdcData._whenValid = new Promise((resolve) => { resolveValid = resolve; });
+
   page.on("response", async (response) => {
     if (!response.url().includes("product/check")) return;
 
@@ -34,11 +38,9 @@ export function startPDCWatcher(page) {
       json.productData?.storeProductMeta?.isKid ||
       pdcData.isKid;
 
-    console.log(
-      "PDC UPDATE:",
-      pdcData.validProduct,
-      pdcData.productType
-    );
+    console.log("PDC UPDATE:", pdcData.validProduct, pdcData.productType);
+
+    if (pdcData.validProduct === true) resolveValid();
   });
 
   return pdcData;
