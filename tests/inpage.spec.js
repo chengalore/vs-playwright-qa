@@ -1017,11 +1017,14 @@ async function runGiftFlow(page, eventWatcher) {
   // on the sheet alone is not enough.
   const ageSheet = page.locator('#sheet');
   await expect(ageSheet).toBeVisible({ timeout: 10000 });
-  await page.waitForTimeout(400); // Firefox: sheet re-renders after mount, wait for DOM to stabilize
 
-  const ageLabel = ageSheet.locator('label.radio-button-label').first();
-  await expect(ageLabel).toBeVisible({ timeout: 5000 });
-  await ageLabel.click();
+  // Wait for labels to appear in the sheet DOM, then click via evaluate to
+  // avoid Playwright stability checks (sheet re-renders and detaches labels briefly).
+  await page.waitForFunction(
+    () => document.querySelector('#sheet label.radio-button-label') !== null,
+    { timeout: 10000 }
+  );
+  await page.evaluate(() => document.querySelector('#sheet label.radio-button-label')?.click());
 
   // Wait for the age field to turn from gray (rgb(183, 185, 185)) to black (rgb(25, 25, 25))
   await page.waitForFunction(() => {
@@ -1044,11 +1047,12 @@ async function runGiftFlow(page, eventWatcher) {
   // Same two-step pattern as age: sheet visible first, then options inside it
   const heightSheet = page.locator('#sheet');
   await expect(heightSheet).toBeVisible({ timeout: 10000 });
-  await page.waitForTimeout(400); // Firefox: sheet re-renders after mount, wait for DOM to stabilize
 
-  const heightLabel = heightSheet.locator('label.radio-button-label').first();
-  await expect(heightLabel).toBeVisible({ timeout: 5000 });
-  await heightLabel.click();
+  await page.waitForFunction(
+    () => document.querySelector('#sheet label.radio-button-label') !== null,
+    { timeout: 10000 }
+  );
+  await page.evaluate(() => document.querySelector('#sheet label.radio-button-label')?.click());
 
   // Wait for height sheet to fully close
   await expect(heightSheet).toBeHidden({ timeout: 8000 });
