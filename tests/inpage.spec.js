@@ -1207,17 +1207,27 @@ async function kidsRetry(page, fn, label, maxAttempts = 3, delayMs = 500) {
 async function waitForPDC(pdc) {
   const start = Date.now();
 
-  // Wait up to 40s for a valid product response.
-  // On React SPAs, the first product/check may fire before the product external ID
-  // is resolved (validProduct: false). The second call — after React hydration —
-  // returns the real result. We must wait for validProduct === true, not just any response.
-  // Some sites (e.g. brooksbrothers on Chromium) initialize Virtusize slowly — 25s wasn't enough.
+  // Phase 1: wait up to 15s for any product/check response.
+  // If nothing arrives, this is likely not a Virtusize page — exit early rather
+  // than burning the full 40s budget.
+  while (Date.now() - start < 15000) {
+    if (pdc.validProduct !== undefined) break;
+    await new Promise((r) => setTimeout(r, 200));
+  }
+
+  if (pdc.validProduct === true) return;
+
+  // Phase 2: we know Virtusize is active (validProduct is false or we're still
+  // waiting due to slow init). Some sites fire two product/check calls — first
+  // returns false (pre-hydration), second returns true (post-hydration). Chromium
+  // can receive the second response much later than Firefox/WebKit. Wait up to
+  // 40s total from the start.
   while (Date.now() - start < 40000) {
     if (pdc.validProduct === true) return;
     await new Promise((r) => setTimeout(r, 200));
   }
 
-  // Timed out — leave pdc as-is; getSkipReason will handle validProduct: false/undefined
+  // Timed out — leave pdc as-is; downstream skip logic handles false/undefined
 }
 
 async function waitForWidgetRender(page) {
