@@ -1017,6 +1017,7 @@ async function runGiftFlow(page, eventWatcher) {
   // on the sheet alone is not enough.
   const ageSheet = page.locator('#sheet');
   await expect(ageSheet).toBeVisible({ timeout: 10000 });
+  await page.waitForTimeout(400); // Firefox: sheet re-renders after mount, wait for DOM to stabilize
 
   const ageLabel = ageSheet.locator('label.radio-button-label').first();
   await expect(ageLabel).toBeVisible({ timeout: 5000 });
@@ -1043,6 +1044,7 @@ async function runGiftFlow(page, eventWatcher) {
   // Same two-step pattern as age: sheet visible first, then options inside it
   const heightSheet = page.locator('#sheet');
   await expect(heightSheet).toBeVisible({ timeout: 10000 });
+  await page.waitForTimeout(400); // Firefox: sheet re-renders after mount, wait for DOM to stabilize
 
   const heightLabel = heightSheet.locator('label.radio-button-label').first();
   await expect(heightLabel).toBeVisible({ timeout: 5000 });
