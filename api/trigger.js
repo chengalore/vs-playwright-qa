@@ -1,5 +1,5 @@
 import { parseSlashCommand } from "./parseSlashCommand.js";
-import { BOT_PROTECTED_ALIASES, BOT_PROTECTED_REASON } from "../config/botProtectedStores.js";
+import { BOT_PROTECTED_ALIASES, BOT_PROTECTED_REASON, BOT_PROTECTED_DOMAINS } from "../config/botProtectedStores.js";
 
 export default async function handler(req, res) {
   try {
@@ -117,6 +117,16 @@ export default async function handler(req, res) {
         response_type: "ephemeral",
         text: `⛔ *${parsed.store_alias}* cannot be automated — ${BOT_PROTECTED_REASON}`,
       });
+    }
+
+    if (parsed.url) {
+      const hostname = new URL(parsed.url).hostname.replace(/^www\./, "");
+      if (BOT_PROTECTED_DOMAINS.some((d) => hostname === d || hostname.endsWith(`.${d}`))) {
+        return res.status(200).json({
+          response_type: "ephemeral",
+          text: `⛔ This URL is from a bot-protected store — ${BOT_PROTECTED_REASON}`,
+        });
+      }
     }
 
     let inputs;

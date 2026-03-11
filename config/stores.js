@@ -211,3 +211,17 @@ export const BOT_PROTECTED_ALIASES = new Set(
 
 export const BOT_PROTECTED_REASON =
   "Bot detection or unsupported website structure — please test manually.";
+
+/**
+ * Domains belonging to bot-protected stores.
+ * Used to block direct URL submissions that bypass the alias check.
+ */
+export const BOT_PROTECTED_DOMAINS = [
+  "adidas.jp", "adidas.com", "adidas.co.kr",
+  "asics.com",
+  "bottegaveneta.com",
+  "by-malene-birger.com",
+  "ralphlauren.com", "ralphlauren.co.jp", "ralphlauren.co.kr",
+  "ralphlauren.com.au", "ralphlauren.cn", "ralphlauren.com.sg",
+  "ralphlauren.co.uk",
+];
