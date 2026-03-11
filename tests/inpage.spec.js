@@ -106,17 +106,18 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
     await page.goto(url);
     console.log("Page loaded");
 
-    // Trigger lazy-loaded widgets that rely on IntersectionObserver —
-    // without a scroll the widget container may never mount.
+    // Trigger lazy-loaded widgets that rely on IntersectionObserver.
+    // Scroll to the widget element if present, otherwise fall back to a fixed
+    // offset — without a scroll the widget container may never mount.
     await page.evaluate(() => {
-      window.scrollTo({ top: 1000, behavior: "instant" });
-    });
-    await page.waitForTimeout(1000);
-
-    // Trigger lazy-loaded widgets that rely on IntersectionObserver —
-    // without a scroll the widget container may never mount.
-    await page.evaluate(() => {
-      window.scrollTo({ top: 1000, behavior: "instant" });
+      const widget = document.querySelector(
+        "#vs-placeholder-cart, #vs-inpage, #vs-inpage-luxury, #vs-legacy-inpage, #vs-kid"
+      );
+      if (widget) {
+        widget.scrollIntoView({ block: "center", behavior: "instant" });
+      } else {
+        window.scrollTo({ top: 1000, behavior: "instant" });
+      }
     });
     await page.waitForTimeout(1000);
 
