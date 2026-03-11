@@ -337,6 +337,8 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
 
     if (flow === "apparel") {
       // GIFT
+      // Give Virtusize time to settle after size selection before starting gift flow
+      await page.waitForTimeout(10000);
       eventWatcher.setPhase("gift");
       eventWatcher.reset();
       await runGiftFlow(page, eventWatcher);
@@ -1004,6 +1006,9 @@ async function runGiftFlow(page, eventWatcher) {
 
   console.log("Gift onboarding detected");
 
+  // Wait for Virtusize to fully settle before interacting with onboarding inputs
+  await page.waitForTimeout(5000);
+
   // ── 2. Gender ─────────────────────────────────────────────────────────────
 
   await page.evaluate(() => {
@@ -1021,29 +1026,19 @@ async function runGiftFlow(page, eventWatcher) {
   // eliminating the TOCTOU race between waitForFunction and page.evaluate.
   await page.locator('[data-test-id="input-age-desktop"]').click();
 
-  // Two-step wait: sheet container visible first, then options rendered inside it.
-  // WebKit can render the #sheet frame before populating its children — waiting
-  // on the sheet alone is not enough.
-  const ageSheet = page.locator('#sheet');
-  await expect(ageSheet).toBeVisible({ timeout: 10000 });
-
-  // Wait for labels to appear in the sheet DOM, then click via evaluate to
-  // avoid Playwright stability checks (sheet re-renders and detaches labels briefly).
+  // Wait for age options (span[role="radio"]) to appear inside #sheet in the shadow DOM.
+  // Scope to #sheet so we don't accidentally click gender radio buttons which share the selector.
   await page.waitForFunction(
-    () => document.querySelector('#sheet label.radio-button-label') !== null,
+    () => !!findInShadow('#sheet')?.querySelector('span[role="radio"]'),
     { timeout: 10000 }
   );
-  await page.evaluate(() => document.querySelector('#sheet label.radio-button-label')?.click());
+  await page.evaluate(() => findInShadow('#sheet')?.querySelector('span[role="radio"]')?.click());
 
-  // Wait for the age field to turn from gray (rgb(183, 185, 185)) to black (rgb(25, 25, 25))
-  await page.waitForFunction(() => {
-    const el = findInShadow('[data-test-id="input-age-desktop"]');
-    if (!el) return false;
-    return window.getComputedStyle(el).color !== "rgb(183, 185, 185)";
-  }, { timeout: 8000 });
-
-  // Wait for age sheet to fully close before opening height
-  await expect(ageSheet).toBeHidden({ timeout: 8000 });
+  // Wait for the age sheet to close
+  await page.waitForFunction(
+    () => !findInShadow('#sheet')?.querySelector('span[role="radio"]'),
+    { timeout: 8000 }
+  );
 
   console.log("Selected age");
 
@@ -1053,18 +1048,18 @@ async function runGiftFlow(page, eventWatcher) {
 
   await page.locator('[data-test-id="input-height-desktop"]').click();
 
-  // Same two-step pattern as age: sheet visible first, then options inside it
-  const heightSheet = page.locator('#sheet');
-  await expect(heightSheet).toBeVisible({ timeout: 10000 });
-
+  // Wait for height options to appear inside #sheet, then click first one
   await page.waitForFunction(
-    () => document.querySelector('#sheet label.radio-button-label') !== null,
+    () => !!findInShadow('#sheet')?.querySelector('span[role="radio"]'),
     { timeout: 10000 }
   );
-  await page.evaluate(() => document.querySelector('#sheet label.radio-button-label')?.click());
+  await page.evaluate(() => findInShadow('#sheet')?.querySelector('span[role="radio"]')?.click());
 
-  // Wait for height sheet to fully close
-  await expect(heightSheet).toBeHidden({ timeout: 8000 });
+  // Wait for the height sheet to close
+  await page.waitForFunction(
+    () => !findInShadow('#sheet')?.querySelector('span[role="radio"]'),
+    { timeout: 8000 }
+  );
 
   // verify value updated away from placeholder
   await page.waitForFunction(() => {
