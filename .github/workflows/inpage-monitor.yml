@@ -39,13 +39,6 @@ jobs:
 
       - run: npx playwright install --with-deps chromium
 
-      - name: Restore fallback products cache
-        uses: actions/cache@v4
-        with:
-          path: data/fallbackProducts.json
-          key: fallback-products-v2
-          restore-keys: fallback-products-v2
-
       - name: Restore store health cache
         uses: actions/cache@v4
         with:
@@ -199,13 +192,6 @@ jobs:
           const blacklisted = Object.values(health).filter(h => h.autoBlacklisted).length;
           console.log(`Store health saved. Auto-blacklisted: ${blacklisted}`);
           SCRIPT
-
-      - name: Save fallback products cache
-        if: always()
-        uses: actions/cache@v4
-        with:
-          path: data/fallbackProducts.json
-          key: fallback-products-v2
 
       - name: Save store health cache
         if: always()
