@@ -1364,10 +1364,10 @@ async function clickWidget(page, flow) {
   await page.waitForSelector(selector, { state: "visible", timeout: 15000 });
 
   // For shadow-root variants: wait for the entry point button and click it.
-  // Legacy inpage (#vs-legacy-inpage) has no shadow root — click the host directly.
+  // #vs-placeholder-cart is a mounting point only — #vs-inpage is injected inside it
+  // and is the actual shadow host. Legacy inpage (#vs-legacy-inpage) has no shadow root.
   if (flow !== "kids") {
     if (await page.evaluate(() =>
-      !!document.querySelector("#vs-placeholder-cart") ||
       !!document.querySelector("#vs-inpage") ||
       !!document.querySelector("#vs-inpage-luxury")
     )) {
@@ -1375,7 +1375,6 @@ async function clickWidget(page, flow) {
       // open button or the gift CTA (e.g. CELFORD renders gift-cta directly).
       await page.waitForFunction(() => {
         const root = (
-          document.querySelector("#vs-placeholder-cart") ||
           document.querySelector("#vs-inpage") ||
           document.querySelector("#vs-inpage-luxury")
         )?.shadowRoot;
@@ -1387,7 +1386,6 @@ async function clickWidget(page, flow) {
 
       await page.evaluate(() => {
         const root = (
-          document.querySelector("#vs-placeholder-cart") ||
           document.querySelector("#vs-inpage") ||
           document.querySelector("#vs-inpage-luxury")
         )?.shadowRoot;
