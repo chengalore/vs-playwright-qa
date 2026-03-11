@@ -87,7 +87,7 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
 
     try {
       try {
-        await page.goto(resolvedUrl, { timeout: 30000, waitUntil: "domcontentloaded" });
+        await page.goto(resolvedUrl, { timeout: 60000, waitUntil: "domcontentloaded" });
       } catch (navError) {
         const msg = navError.message || "";
         const isCdnError = CDN_ERROR_PATTERNS.some((p) => msg.includes(p));
