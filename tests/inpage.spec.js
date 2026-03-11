@@ -110,8 +110,9 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
     // Scroll to the widget element if present, otherwise fall back to a fixed
     // offset — without a scroll the widget container may never mount.
     await page.evaluate(() => {
+      // #vs-placeholder-cart is a mounting point only — scroll to the actual widget element.
       const widget = document.querySelector(
-        "#vs-placeholder-cart, #vs-inpage, #vs-inpage-luxury, #vs-legacy-inpage, #vs-kid"
+        "#vs-inpage, #vs-inpage-luxury, #vs-legacy-inpage, #vs-kid, #vs-placeholder-cart"
       );
       if (widget) {
         widget.scrollIntoView({ block: "center", behavior: "instant" });
@@ -1315,7 +1316,9 @@ async function waitForEvent(eventWatcher, eventKey, timeout = 20000) {
 // --------------------------------------------------
 
 async function waitForWidget(page, flow) {
-  const selector = flow === "kids" ? "#vs-kid" : ":is(#vs-placeholder-cart, #vs-inpage, #vs-inpage-luxury, #vs-legacy-inpage)";
+  // #vs-placeholder-cart is always a mounting point only (never the widget itself),
+  // so exclude it here — wait for the actual widget element to become visible.
+  const selector = flow === "kids" ? "#vs-kid" : ":is(#vs-inpage, #vs-inpage-luxury, #vs-legacy-inpage)";
 
   await page.waitForFunction(
     (sel) => {
@@ -1355,7 +1358,8 @@ async function clickKidsWidget(page) {
 }
 
 async function clickWidget(page, flow) {
-  const selector = flow === "kids" ? "#vs-kid" : ":is(#vs-placeholder-cart, #vs-inpage, #vs-inpage-luxury, #vs-legacy-inpage)";
+  // #vs-placeholder-cart excluded — it's a mounting point, never the actual widget.
+  const selector = flow === "kids" ? "#vs-kid" : ":is(#vs-inpage, #vs-inpage-luxury, #vs-legacy-inpage)";
 
   await page.evaluate((sel) => {
     document.querySelector(sel)?.scrollIntoView({ block: "center" });
