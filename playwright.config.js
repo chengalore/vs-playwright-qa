@@ -37,7 +37,14 @@ export default defineConfig({
   projects: [
     {
       name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
+      use: {
+        ...devices["Desktop Chrome"],
+        launchOptions: {
+          // Prevents sites from detecting headless Chromium via navigator.webdriver,
+          // which can delay or block third-party scripts like Virtusize on CI.
+          args: ["--disable-blink-features=AutomationControlled"],
+        },
+      },
     },
 
     {
