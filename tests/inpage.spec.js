@@ -3,7 +3,6 @@ import { startVirtusizeEventWatcher } from "../utils/eventWatcher.js";
 import { startPDCWatcher } from "../utils/pdcWatcher.js";
 import { startRecommendationWatcher } from "../utils/recommendationWatcher.js";
 import { startBodyMeasurementWatcher } from "../utils/bodyMeasurementWatcher.js";
-import { startShoeRecommendationWatcher } from "../utils/shoeRecommendationWatcher.js";
 import { verifyEvents } from "../utils/verifyEvents.js";
 import { expectedEvents } from "../config/expectedEvents.js";
 import { completeOnboarding } from "../utils/completeOnboarding.js";
@@ -31,7 +30,7 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
   const pdc = startPDCWatcher(page);
   const recommendationAPI = startRecommendationWatcher(page);
   const bodyAPI = startBodyMeasurementWatcher(page);
-  const shoeAPI = startShoeRecommendationWatcher(page);
+
 
   await page.addInitScript(() => {
     window.getWidgetHost = () =>
@@ -261,7 +260,7 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
       );
     }
     if (flow === "footwear") {
-      isNewUser = await runFootwearFlow(page, shoeAPI);
+      isNewUser = await runFootwearFlow(page);
     }
     if (flow === "kids") {
       isNewUser = await runKidsFlow(page, pdc);
@@ -659,7 +658,7 @@ async function runNoVisorFlow(page, bodyAPI) {
 // Footwear Flow
 // --------------------------------------------------
 
-async function runFootwearFlow(page, shoeAPI) {
+async function runFootwearFlow(page) {
   // Wait for modal to appear inside shadow root
   await page.waitForFunction(
     () => !!getWidgetHost()?.shadowRoot?.querySelector("#vs-aoyama-main-modal"),
@@ -839,8 +838,14 @@ async function runFootwearFlow(page, shoeAPI) {
   }));
   await clickNext();
 
-  const shoeStatus = await waitForStatus(() => shoeAPI.getStatus(), 8000);
-  expect(shoeStatus).toBe(200);
+  const response = await page.waitForResponse(
+    r =>
+      r.url().includes("/shoe") &&
+      r.request().method() === "POST",
+    { timeout: 10000 }
+  );
+
+  expect(response.status()).toBe(200);
 
   return isNewUser;
 }
