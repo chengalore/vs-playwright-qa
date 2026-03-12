@@ -85,7 +85,6 @@ export const STORES = {
   gap_japan: { id: 890, monitor: true },
   gelato: { id: 760 }, // shorthand
   gelato_pique: { id: 760, monitor: true },
-  grace_continental: { id: 745, monitor: true },
 
   // ── H ────────────────────────────────────────────────────────────────
   hankyu: { id: 502 }, // shorthand
