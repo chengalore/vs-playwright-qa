@@ -790,25 +790,38 @@ async function runFootwearFlow(page, shoeAPI) {
   );
   await clickNext();
 
-  // Step 5: Footwear size – open picker, wait for it, then select first radio
+  // Step 5: Footwear size – open picker, wait for it, select radio, wait for close
   await interact(() => shadowClick('[data-test-id="open-sizes-footwear-picker"]'));
   await page.waitForFunction(
     () =>
       !!getWidgetHost()?.shadowRoot?.querySelector(
-        "#footwear-picker input#radioButton-1",
+        '[data-test-id="footwear-picker"]',
       ),
     { timeout: 5000 },
   );
   await interact(() => page.evaluate(() => {
-    const modal = getWidgetHost()?.shadowRoot?.querySelector(
-      "#vs-aoyama-main-modal",
-    );
-    const radio = modal?.querySelector("#footwear-picker input#radioButton-1");
-    if (radio) {
-      radio.click();
-      radio.dispatchEvent(new Event("change", { bubbles: true }));
-    }
+    const root = getWidgetHost()?.shadowRoot;
+    root
+      ?.querySelector(
+        '[data-test-id="footwear-picker"] label[for="radioButton-0"]',
+      )
+      ?.click();
   }));
+  await page.waitForFunction(
+    () => {
+      const picker = getWidgetHost()?.shadowRoot?.querySelector(
+        '[data-test-id="footwear-picker"]',
+      );
+      if (!picker) return true;
+      const style = window.getComputedStyle(picker);
+      return (
+        style.display === "none" ||
+        style.visibility === "hidden" ||
+        style.opacity === "0"
+      );
+    },
+    { timeout: 5000 },
+  );
   await clickNext();
 
   // Step 6: Privacy policy
