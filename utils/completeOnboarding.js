@@ -35,8 +35,11 @@ export async function completeOnboarding(page) {
 
   // Basic body data
   await fillInput("input-age", "35");
+  await page.waitForTimeout(2000);
   await fillInput("input-height", "161");
+  await page.waitForTimeout(2000);
   await fillInput("input-weight", "54");
+  await page.waitForTimeout(2000);
 
   // Accept privacy policy if required
   const privacyHandle = await shadowRoot.evaluateHandle((root) =>
@@ -51,6 +54,7 @@ export async function completeOnboarding(page) {
         el.checked = true;
         el.dispatchEvent(new Event("change", { bubbles: true }));
       });
+      await page.waitForTimeout(2000);
     }
   }
 

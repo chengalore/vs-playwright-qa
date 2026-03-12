@@ -701,11 +701,11 @@ async function runFootwearFlow(page, shoeAPI) {
     throw new Error(`shadowClick: "${selector}" not clickable`);
   };
 
-  // Wraps any interaction with a 3s settle delay — the footwear UI updates
+  // Wraps any interaction with a 2s settle delay — the footwear UI updates
   // asynchronously and becomes flaky if the next action fires too quickly.
   const interact = async (action) => {
     await action();
-    await page.waitForTimeout(3000);
+    await page.waitForTimeout(2000);
   };
 
   const clickNext = () => interact(() => shadowClick('[data-test-id="footwear-next-btn"]'));
@@ -868,6 +868,7 @@ async function runKidsFlow(page, _pdc) {
       radio.dispatchEvent(new Event("change", { bubbles: true }));
     });
   }, "click girl gender radio");
+  await page.waitForTimeout(2000);
   console.log("[kids] Gender selected: girl");
 
   // Open age selector — try both known selector patterns
@@ -882,6 +883,7 @@ async function runKidsFlow(page, _pdc) {
       ageSpan.click();
     });
   }, "open age selector");
+  await page.waitForTimeout(2000);
   console.log("[kids] Age selector opened");
 
   // Wait for age picker radios — any radio that is NOT the gender radio
@@ -909,6 +911,7 @@ async function runKidsFlow(page, _pdc) {
     target.click();
     target.dispatchEvent(new Event("change", { bubbles: true }));
   });
+  await page.waitForTimeout(2000);
   console.log("[kids] Age selected");
 
   /* -------------------- HEIGHT & WEIGHT -------------------- */
@@ -944,6 +947,7 @@ async function runKidsFlow(page, _pdc) {
       { testId, value },
     );
   }
+  await page.waitForTimeout(2000);
   console.log("[kids] Height and weight filled");
 
   /* -------------------- PRIVACY POLICY -------------------- */
@@ -957,6 +961,7 @@ async function runKidsFlow(page, _pdc) {
       checkbox.dispatchEvent(new Event("change", { bubbles: true }));
     }
   });
+  await page.waitForTimeout(2000);
   console.log("[kids] Privacy policy accepted");
 
   /* -------------------- CTA BUTTON -------------------- */
@@ -1036,6 +1041,7 @@ async function runGiftFlow(page, eventWatcher) {
     radio.click();
     radio.dispatchEvent(new Event("change", { bubbles: true }));
   });
+  await page.waitForTimeout(2000);
 
   console.log("Selected gender: female");
 
@@ -1059,11 +1065,12 @@ async function runGiftFlow(page, eventWatcher) {
     { timeout: 8000 }
   );
 
+  await page.waitForTimeout(2000);
   console.log("Selected age");
 
   // ── 4. Height ─────────────────────────────────────────────────────────────
 
-  await page.waitForTimeout(600);
+  await page.waitForTimeout(2000);
 
   await page.locator('[data-test-id="input-height-desktop"]').click();
 
@@ -1086,11 +1093,12 @@ async function runGiftFlow(page, eventWatcher) {
     return el && !/^\s*-\s*$/.test(el.textContent ?? '');
   }, { timeout: 8000 });
 
+  await page.waitForTimeout(2000);
   console.log("Selected height");
 
   // ── 5. Body type ──────────────────────────────────────────────────────────
 
-  await page.waitForTimeout(600);
+  await page.waitForTimeout(2000);
 
   await page.locator('[data-test-id="input-body-type"]').click();
 
@@ -1100,6 +1108,7 @@ async function runGiftFlow(page, eventWatcher) {
   await bodySheet.locator('[data-test-id="gridItemTestId"]').nth(1).click();
 
   await expect(bodySheet).toBeHidden({ timeout: 8000 });
+  await page.waitForTimeout(2000);
 
   console.log("Selected body type");
 
@@ -1108,6 +1117,7 @@ async function runGiftFlow(page, eventWatcher) {
   const privacyCheckbox = page.locator('[data-test-id="privacy-policy-checkbox"]');
   if (await privacyCheckbox.isVisible()) {
     await privacyCheckbox.click();
+    await page.waitForTimeout(2000);
     console.log("Accepted privacy policy");
   }
 
