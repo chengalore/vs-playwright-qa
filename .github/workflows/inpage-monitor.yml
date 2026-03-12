@@ -25,7 +25,8 @@ on:
         type: string
 
 jobs:
-  monitor:
+  # ── Job 1: Resolve URLs + split into chunks ───────────────────────────────
+  prepare:
     runs-on: ubuntu-latest
 
     steps:
@@ -36,8 +37,6 @@ jobs:
           node-version: 18
 
       - run: npm ci
-
-      - run: npx playwright install --with-deps chromium
 
       - name: Restore store health cache
         uses: actions/cache@v4
@@ -57,20 +56,17 @@ jobs:
           const productTypeId = process.env.PRODUCT_TYPE_ID ? Number(process.env.PRODUCT_TYPE_ID) : undefined;
           const gender = process.env.GENDER || undefined;
 
-          // Read fallbackProducts.json directly (avoids import.meta.url path issues in stdin scripts)
           const FALLBACK_FILE = 'data/fallbackProducts.json';
           const fallbacks = existsSync(FALLBACK_FILE)
             ? JSON.parse(readFileSync(FALLBACK_FILE, 'utf8'))
             : {};
           const getFallback = (alias) => fallbacks[alias] ?? null;
 
-          // Read store health to skip auto-blacklisted stores
           const HEALTH_FILE = 'data/storeHealth.json';
           const health = existsSync(HEALTH_FILE)
             ? JSON.parse(readFileSync(HEALTH_FILE, 'utf8'))
             : {};
 
-          // Use canonical store list — skip auto-blacklisted stores
           const storeEntries = Object.entries(MONITOR_STORES)
             .filter(([alias, storeId]) => {
               if (storeIdFilter && storeId !== storeIdFilter) return false;
@@ -85,7 +81,6 @@ jobs:
 
           const results = await Promise.all(
             storeEntries.map(async ([alias, storeId]) => {
-              // Priority: 1. fallbackProducts.json  2. Random Product API (last resort)
               const fallback = getFallback(alias);
               if (fallback) {
                 console.log(`[${alias}] Using fallback URL`);
@@ -123,6 +118,16 @@ jobs:
           PRODUCT_TYPE_ID: ${{ github.event.inputs.product_type_id }}
           GENDER: ${{ github.event.inputs.gender }}
 
+      - name: Split stores into chunks
+        run: node scripts/split-monitor-chunks.js
+
+      - name: Upload monitor chunks
+        uses: actions/upload-artifact@v4
+        with:
+          name: monitor-chunks
+          path: data/monitor-chunks.json
+          retention-days: 1
+
       - name: Notify Slack - monitor starting
         run: |
           curl -s -X POST \
@@ -132,15 +137,80 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
-      - name: Run monitor tests
+  # ── Job 2: Matrix monitor — 5 parallel runners ───────────────────────────
+  monitor:
+    needs: prepare
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        chunk: [0, 1, 2, 3, 4]
+      fail-fast: false
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - run: npm ci
+
+      - run: npx playwright install --with-deps chromium
+
+      - name: Download monitor chunks
+        uses: actions/download-artifact@v4
+        with:
+          name: monitor-chunks
+          path: data/
+
+      - name: Run monitor tests (chunk ${{ matrix.chunk }})
         run: |
-          npx playwright test tests/monitor.spec.js --project=chromium --workers=10 --retries=0 | tee monitor-output.log
+          npx playwright test tests/monitor.spec.js --project=chromium --workers=10 --retries=0 | tee monitor-output-${{ matrix.chunk }}.log
         env:
           TEST_PHASE: ${{ github.event.inputs.phase }}
-          WORKERS: "10"
+          CHUNK_INDEX: ${{ matrix.chunk }}
+
+      - name: Upload monitor output
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: monitor-output-${{ matrix.chunk }}
+          path: monitor-output-${{ matrix.chunk }}.log
+          retention-days: 1
+
+  # ── Job 3: Summarize — update health + send Slack ─────────────────────────
+  summarize:
+    needs: monitor
+    if: always()
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - run: npm ci
+
+      - name: Restore store health cache
+        uses: actions/cache@v4
+        with:
+          path: data/storeHealth.json
+          key: store-health-v1
+          restore-keys: store-health-v1
+
+      - name: Download all monitor outputs
+        uses: actions/download-artifact@v4
+        with:
+          pattern: monitor-output-*
+          merge-multiple: true
+          path: logs/
+
+      - name: Combine logs
+        run: cat logs/monitor-output-*.log > monitor-output.log 2>/dev/null || echo "No logs found" > monitor-output.log
 
       - name: Update store health
-        if: always()
         run: |
           node --input-type=module <<'SCRIPT'
           import { readFileSync, writeFileSync, existsSync } from 'fs';
@@ -155,7 +225,6 @@ jobs:
           const log = readFileSync('monitor-output.log', 'utf8');
           const lines = log.split('\n').filter(l => l.includes('MONITOR_RESULT:'));
 
-          // Last result per store
           const byStore = {};
           for (const line of lines) {
             try {
@@ -185,7 +254,6 @@ jobs:
               health[alias].autoBlacklisted = false;
               delete health[alias].lastFailureReason;
             }
-            // widget_missing / failed / skipped → leave counter unchanged
           }
 
           writeFileSync(HEALTH_FILE, JSON.stringify(health, null, 2));
@@ -201,7 +269,7 @@ jobs:
           key: store-health-v1
 
       - name: Send Slack summary
-        if: success() || failure()
+        if: always()
         run: |
           node --input-type=module <<'EOF'
           import fs from 'fs';
@@ -224,7 +292,6 @@ jobs:
             process.exit(0);
           }
 
-          // Last result per store alias wins
           const byStore = {};
           for (const line of lines) {
             const json = JSON.parse(line.replace(/^.*MONITOR_RESULT:\s*/, ''));
@@ -239,7 +306,6 @@ jobs:
           const botProtected = results.filter(r => r.status === 'bot_protected');
           const fromFallback = results.filter(r => r.fromFallback);
 
-          // Read auto-blacklisted count from storeHealth.json
           const HEALTH_FILE = 'data/storeHealth.json';
           const health = fs.existsSync(HEALTH_FILE) ? JSON.parse(fs.readFileSync(HEALTH_FILE, 'utf8')) : {};
           const autoBlacklisted = Object.entries(health).filter(([, h]) => h.autoBlacklisted);

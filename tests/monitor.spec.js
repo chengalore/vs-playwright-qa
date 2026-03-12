@@ -23,13 +23,30 @@ test.setTimeout(60000);
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const URLS_FILE = join(__dirname, "../data/monitor-urls.json");
+const CHUNKS_FILE = join(__dirname, "../data/monitor-chunks.json");
 
-const stores = existsSync(URLS_FILE)
-  ? JSON.parse(readFileSync(URLS_FILE, "utf8"))
-  : [];
+const chunkIndex =
+  process.env.CHUNK_INDEX !== undefined && process.env.CHUNK_INDEX !== ""
+    ? Number(process.env.CHUNK_INDEX)
+    : null;
+
+let stores;
+if (chunkIndex !== null && existsSync(CHUNKS_FILE)) {
+  const chunks = JSON.parse(readFileSync(CHUNKS_FILE, "utf8"));
+  stores = chunks[chunkIndex] ?? [];
+  console.log(`Running chunk ${chunkIndex}: ${stores.length} stores`);
+} else if (existsSync(URLS_FILE)) {
+  stores = JSON.parse(readFileSync(URLS_FILE, "utf8"));
+} else {
+  stores = [];
+}
 
 if (stores.length === 0) {
-  throw new Error("monitor-urls.json is empty — URL resolver step failed");
+  throw new Error(
+    chunkIndex !== null
+      ? `Chunk ${chunkIndex} is empty — check monitor-chunks.json`
+      : "monitor-urls.json is empty — URL resolver step failed"
+  );
 }
 
 const CDN_ERROR_PATTERNS = [
