@@ -743,45 +743,7 @@ async function runFootwearFlow(page, shoeAPI) {
   await page.waitForTimeout(800);
   await clickNext();
 
-  // Step 4: Footwear size – open picker, wait for it, then select first radio
-  await shadowClick('[data-test-id="open-sizes-footwear-picker"]');
-  await page.waitForFunction(
-    () =>
-      !!getWidgetHost()?.shadowRoot?.querySelector(
-        "#footwear-picker input#radioButton-1",
-      ),
-    { timeout: 5000 },
-  );
-  await page.evaluate(() => {
-    const modal = getWidgetHost()?.shadowRoot?.querySelector(
-      "#vs-aoyama-main-modal",
-    );
-    const radio = modal?.querySelector("#footwear-picker input#radioButton-1");
-    if (radio) {
-      radio.click();
-      radio.dispatchEvent(new Event("change", { bubbles: true }));
-    }
-  });
-  await page.waitForTimeout(800);
-  await clickNext();
-
-  // Step 5: Privacy policy
-  await page.evaluate(() => {
-    const modal = getWidgetHost()?.shadowRoot?.querySelector(
-      "#vs-aoyama-main-modal",
-    );
-    const checkbox = modal?.querySelector(
-      '[data-test-id="footwear-privacy-policy"]',
-    );
-    if (checkbox && !checkbox.checked) {
-      checkbox.click();
-      checkbox.dispatchEvent(new Event("change", { bubbles: true }));
-    }
-  });
-  await page.waitForTimeout(800);
-  await clickNext();
-
-  // Step 6: Brand – open picker, select first option, wait for picker to close
+  // Step 4: Brand – open picker, select first option, wait for picker to close
   await page.evaluate(() => {
     const modal = getWidgetHost()?.shadowRoot?.querySelector(
       "#vs-aoyama-main-modal",
@@ -821,6 +783,44 @@ async function runFootwearFlow(page, shoeAPI) {
     { timeout: 5000 },
   );
   await page.waitForTimeout(500);
+  await clickNext();
+
+  // Step 5: Footwear size – open picker, wait for it, then select first radio
+  await shadowClick('[data-test-id="open-sizes-footwear-picker"]');
+  await page.waitForFunction(
+    () =>
+      !!getWidgetHost()?.shadowRoot?.querySelector(
+        "#footwear-picker input#radioButton-1",
+      ),
+    { timeout: 5000 },
+  );
+  await page.evaluate(() => {
+    const modal = getWidgetHost()?.shadowRoot?.querySelector(
+      "#vs-aoyama-main-modal",
+    );
+    const radio = modal?.querySelector("#footwear-picker input#radioButton-1");
+    if (radio) {
+      radio.click();
+      radio.dispatchEvent(new Event("change", { bubbles: true }));
+    }
+  });
+  await page.waitForTimeout(800);
+  await clickNext();
+
+  // Step 6: Privacy policy
+  await page.evaluate(() => {
+    const modal = getWidgetHost()?.shadowRoot?.querySelector(
+      "#vs-aoyama-main-modal",
+    );
+    const checkbox = modal?.querySelector(
+      '[data-test-id="footwear-privacy-policy"]',
+    );
+    if (checkbox && !checkbox.checked) {
+      checkbox.click();
+      checkbox.dispatchEvent(new Event("change", { bubbles: true }));
+    }
+  });
+  await page.waitForTimeout(800);
   await clickNext();
 
   const shoeStatus = await waitForStatus(() => shoeAPI.getStatus(), 8000);
