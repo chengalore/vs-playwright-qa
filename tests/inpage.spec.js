@@ -506,7 +506,7 @@ async function validateRefresh(page, eventWatcher, recommendationAPI, flow) {
     }
 
     if (flow === "footwear") {
-      await waitForEvent(eventWatcher, "user-selected-size", 10000);
+      await waitForEvent(eventWatcher, "user-selected-size::inpage", 10000);
     }
   }
 
@@ -803,7 +803,7 @@ async function runFootwearFlow(page, shoeAPI) {
     const root = getWidgetHost()?.shadowRoot;
     root
       ?.querySelector(
-        '[data-test-id="footwear-picker"] label[for="radioButton-0"]',
+        '[data-test-id="footwear-picker"] label[for="radioButton-17"]',
       )
       ?.click();
   }));
