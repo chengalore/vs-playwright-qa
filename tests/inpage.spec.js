@@ -701,10 +701,17 @@ async function runFootwearFlow(page, shoeAPI) {
     throw new Error(`shadowClick: "${selector}" not clickable`);
   };
 
-  const clickNext = () => shadowClick('[data-test-id="footwear-next-btn"]');
+  // Wraps any interaction with a 3s settle delay — the footwear UI updates
+  // asynchronously and becomes flaky if the next action fires too quickly.
+  const interact = async (action) => {
+    await action();
+    await page.waitForTimeout(3000);
+  };
+
+  const clickNext = () => interact(() => shadowClick('[data-test-id="footwear-next-btn"]'));
 
   // Step 1: Foot width – click first option
-  await shadowClick('[data-test-id="footWidth-select-item-btn"]');
+  await interact(() => shadowClick('[data-test-id="footWidth-select-item-btn"]'));
   await clickNext();
 
   // Step 2: Toe shape – click middle option
@@ -715,16 +722,16 @@ async function runFootwearFlow(page, shoeAPI) {
       )?.length ?? 0) > 0,
     { timeout: 15000 },
   );
-  await page.evaluate(() => {
+  await interact(() => page.evaluate(() => {
     const btns = getWidgetHost()?.shadowRoot?.querySelectorAll(
       '[data-test-id="toeShape-select-item-btn"]',
     );
     if (btns?.length) btns[Math.floor(btns.length / 2)].click();
-  });
+  }));
   await clickNext();
 
   // Step 3: Gender – select female
-  await page.evaluate(() => {
+  await interact(() => page.evaluate(() => {
     const modal = getWidgetHost()?.shadowRoot?.querySelector(
       "#vs-aoyama-main-modal",
     );
@@ -739,19 +746,18 @@ async function runFootwearFlow(page, shoeAPI) {
       female.click();
       female.dispatchEvent(new Event("change", { bubbles: true }));
     }
-  });
-  await page.waitForTimeout(800);
+  }));
   await clickNext();
 
   // Step 4: Brand – open picker, select first option, wait for picker to close
-  await page.evaluate(() => {
+  await interact(() => page.evaluate(() => {
     const modal = getWidgetHost()?.shadowRoot?.querySelector(
       "#vs-aoyama-main-modal",
     );
     modal
       ?.querySelector('[data-test-id="open-brands-footwear-picker"]')
       ?.click();
-  });
+  }));
   await page.waitForFunction(
     () =>
       !!getWidgetHost()?.shadowRoot?.querySelector(
@@ -759,14 +765,14 @@ async function runFootwearFlow(page, shoeAPI) {
       ),
     { timeout: 5000 },
   );
-  await page.evaluate(() => {
+  await interact(() => page.evaluate(() => {
     const root = getWidgetHost()?.shadowRoot;
     root
       ?.querySelector(
         '[data-test-id="footwear-picker"] label[for="radioButton-0"]',
       )
       ?.click();
-  });
+  }));
   await page.waitForFunction(
     () => {
       const picker = getWidgetHost()?.shadowRoot?.querySelector(
@@ -782,11 +788,10 @@ async function runFootwearFlow(page, shoeAPI) {
     },
     { timeout: 5000 },
   );
-  await page.waitForTimeout(500);
   await clickNext();
 
   // Step 5: Footwear size – open picker, wait for it, then select first radio
-  await shadowClick('[data-test-id="open-sizes-footwear-picker"]');
+  await interact(() => shadowClick('[data-test-id="open-sizes-footwear-picker"]'));
   await page.waitForFunction(
     () =>
       !!getWidgetHost()?.shadowRoot?.querySelector(
@@ -794,7 +799,7 @@ async function runFootwearFlow(page, shoeAPI) {
       ),
     { timeout: 5000 },
   );
-  await page.evaluate(() => {
+  await interact(() => page.evaluate(() => {
     const modal = getWidgetHost()?.shadowRoot?.querySelector(
       "#vs-aoyama-main-modal",
     );
@@ -803,12 +808,11 @@ async function runFootwearFlow(page, shoeAPI) {
       radio.click();
       radio.dispatchEvent(new Event("change", { bubbles: true }));
     }
-  });
-  await page.waitForTimeout(800);
+  }));
   await clickNext();
 
   // Step 6: Privacy policy
-  await page.evaluate(() => {
+  await interact(() => page.evaluate(() => {
     const modal = getWidgetHost()?.shadowRoot?.querySelector(
       "#vs-aoyama-main-modal",
     );
@@ -819,8 +823,7 @@ async function runFootwearFlow(page, shoeAPI) {
       checkbox.click();
       checkbox.dispatchEvent(new Event("change", { bubbles: true }));
     }
-  });
-  await page.waitForTimeout(800);
+  }));
   await clickNext();
 
   const shoeStatus = await waitForStatus(() => shoeAPI.getStatus(), 8000);
