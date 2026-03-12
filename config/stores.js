@@ -74,7 +74,6 @@ export const STORES = {
   // ── F ────────────────────────────────────────────────────────────────
   fashion_square: { id: 757, monitor: true },
   felissimo: { id: 851, monitor: true, luxury: true },
-  fl_sportswear: { id: 854, monitor: true },
   flandre: { id: 294, monitor: true },
   frans_boone: { id: 122, monitor: true },
   fray_i_d: { id: 693, monitor: true },
