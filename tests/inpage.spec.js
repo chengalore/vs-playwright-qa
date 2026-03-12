@@ -769,7 +769,7 @@ async function runFootwearFlow(page, shoeAPI) {
     const root = getWidgetHost()?.shadowRoot;
     root
       ?.querySelector(
-        '[data-test-id="footwear-picker"] label[for="radioButton-0"]',
+        '[data-test-id="footwear-picker"] label[for="radioButton-1"]',
       )
       ?.click();
   }));
