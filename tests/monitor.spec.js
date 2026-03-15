@@ -308,7 +308,7 @@ async function triggerVirtusizeUI(page) {
     // Open size/fit guide accordions (e.g. Camilla & Marc)
     document.querySelectorAll("summary").forEach((el) => {
       const text = el.textContent?.toLowerCase() || "";
-      if (text.includes("size") || text.includes("fit")) {
+      if (text.includes("size") || text.includes("fit") || text.includes("サイズ")) {
         const details = el.closest("details");
         if (details && !details.open) details.open = true;
       }
