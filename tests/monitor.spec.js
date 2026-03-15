@@ -122,6 +122,10 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
         return; // skip without failing
       }
 
+      // Start PDC watcher immediately after navigation — many stores (Mash/Snidel)
+      // only inject the widget after the product/check API resolves.
+      const pdc = startPDCWatcher(page);
+
       // Scroll to trigger lazy-mounted widgets
       await page.evaluate(() => {
         const widget = document.querySelector(
@@ -141,6 +145,39 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
       await page.waitForTimeout(1000);
 
       if (phase === "widget" || phase === "events") {
+        // Wait for PDC API to resolve before checking widget presence
+        const pdcStart = Date.now();
+        while (Date.now() - pdcStart < 20000) {
+          if (pdc.validProduct !== undefined) break;
+          await page.waitForTimeout(200);
+        }
+
+        if (pdc.validProduct !== true) {
+          logMonitorResult({
+            storeAlias,
+            storeId,
+            url: resolvedUrl,
+            phase,
+            status: "skipped",
+            reason: "invalid_product",
+            browser: testInfo.project.name,
+            durationMs: Date.now() - startTime,
+          });
+          return;
+        }
+
+        // Scroll again now that PDC has resolved — widget may now be ready to mount
+        await page.evaluate(() => {
+          const widget = document.querySelector(
+            "#vs-inpage, #vs-inpage-luxury, #vs-legacy-inpage, #vs-kid, #vs-placeholder-cart"
+          );
+          if (widget) {
+            widget.scrollIntoView({ block: "center", behavior: "instant" });
+          } else {
+            window.scrollTo({ top: 1500, behavior: "instant" });
+          }
+        });
+
         // Check widget element is present in DOM
         await page.waitForFunction(
           () =>
@@ -155,19 +192,7 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
 
       if (phase === "api") {
         // Check PDC API fires and returns a valid product
-        const pdc = startPDCWatcher(page);
-        await page.reload({ waitUntil: "domcontentloaded" });
-        await page.evaluate(() => {
-          const widget = document.querySelector(
-            "#vs-inpage, #vs-inpage-luxury, #vs-legacy-inpage, #vs-kid, #vs-placeholder-cart"
-          );
-          if (widget) {
-            widget.scrollIntoView({ block: "center", behavior: "instant" });
-          } else {
-            window.scrollTo({ top: 1500, behavior: "instant" });
-          }
-        });
-
+        // pdc watcher was started after navigation above — reuse it here
         const start = Date.now();
         while (Date.now() - start < 15000) {
           if (pdc.validProduct !== undefined) break;

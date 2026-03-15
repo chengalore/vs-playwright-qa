@@ -316,11 +316,26 @@ jobs:
 
           const tested = results.length - botProtected.length;
           let message = `🏬 VS Inpage Monitor — ${phase}\n\n`;
-          message += `Stores checked: ${tested} (${botProtected.length} skipped — bot protection)\n`;
+          message += `Stores checked: ${tested}\n`;
+
+          if (botProtected.length > 0) {
+            message += `🛡 ${botProtected.length} skipped — bot protection\n`;
+          }
+
           message += `✅ ${passed.length} passed\n`;
-          if (widgetMissing.length > 0) message += `⚠️ ${widgetMissing.length} widget missing\n`;
-          if (failed.length > 0) message += `❌ ${failed.length} failed\n`;
-          if (skipped.length > 0) message += `⏭ ${skipped.length} skipped (cdn/nav error)\n`;
+
+          if (widgetMissing.length > 0) {
+            message += `⚠️ ${widgetMissing.length} widget missing\n`;
+          }
+
+          if (failed.length > 0) {
+            message += `❌ ${failed.length} failed\n`;
+          }
+
+          if (skipped.length > 0) {
+            message += `⏭ ${skipped.length} skipped (cdn/nav error)\n`;
+          }
+
           if (autoBlacklisted.length > 0) message += `🚫 ${autoBlacklisted.length} auto-blacklisted\n`;
           if (fromFallback.length > 0) message += `\n📦 ${fromFallback.length} used fallback URL\n`;
 
@@ -332,6 +347,20 @@ jobs:
               message += `${icon} <${r.url}|${r.storeAlias}>`;
               if (r.error) message += ` — ${r.error.slice(0, 100)}`;
               message += '\n';
+            }
+          }
+
+          if (botProtected.length > 0) {
+            message += '\nBot-protected stores:\n';
+            for (const r of botProtected) {
+              message += `🛡 <${r.url}|${r.storeAlias}>\n`;
+            }
+          }
+
+          if (skipped.length > 0) {
+            message += '\nSkipped stores (CDN / navigation errors):\n';
+            for (const r of skipped) {
+              message += `⏭ <${r.url}|${r.storeAlias}>\n`;
             }
           }
 
