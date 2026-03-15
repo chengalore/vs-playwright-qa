@@ -110,8 +110,10 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
           }
         }
         if (navErr) throw navErr;
-        // Stabilize page context after any redirects before running evaluate()
+        // Stabilize page context; wait for full load so Snidel-style
+        // window.addEventListener("load", init) patterns fire before we scroll.
         await page.waitForLoadState("domcontentloaded");
+        await page.waitForLoadState("load");
       } catch (navError) {
         const msg = navError.message || "";
         const isCdnError = CDN_ERROR_PATTERNS.some((p) => msg.includes(p));
@@ -139,12 +141,18 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
 
       // Scroll to trigger lazy-mounted widgets
       await page.evaluate(() => {
-        const widget = document.querySelector(
-          "#vs-inpage, #vs-inpage-luxury, #vs-legacy-inpage, #vs-kid, #vs-placeholder-cart"
-        );
+        const container =
+          document.querySelector("#vs-inpage") ||
+          document.querySelector("#vs-inpage-luxury") ||
+          document.querySelector("#vs-legacy-inpage") ||
+          document.querySelector("#vs-kid") ||
+          document.querySelector("#vs-smart-table") ||
+          document.querySelector("#vs-placeholder-cart") ||
+          document.querySelector(".block-right") ||
+          document.querySelector(".block-detail");
 
-        if (widget) {
-          widget.scrollIntoView({ block: "center", behavior: "instant" });
+        if (container) {
+          container.scrollIntoView({ block: "center", behavior: "instant" });
         } else {
           const height =
             document?.body?.scrollHeight ||
@@ -189,11 +197,18 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
 
         // Scroll again now that PDC has resolved — widget may now be ready to mount
         await page.evaluate(() => {
-          const widget = document.querySelector(
-            "#vs-inpage, #vs-inpage-luxury, #vs-legacy-inpage, #vs-kid, #vs-placeholder-cart"
-          );
-          if (widget) {
-            widget.scrollIntoView({ block: "center", behavior: "instant" });
+          const container =
+            document.querySelector("#vs-inpage") ||
+            document.querySelector("#vs-inpage-luxury") ||
+            document.querySelector("#vs-legacy-inpage") ||
+            document.querySelector("#vs-kid") ||
+            document.querySelector("#vs-smart-table") ||
+            document.querySelector("#vs-placeholder-cart") ||
+            document.querySelector(".block-right") ||
+            document.querySelector(".block-detail");
+
+          if (container) {
+            container.scrollIntoView({ block: "center", behavior: "instant" });
           } else {
             const height =
               document?.body?.scrollHeight ||
@@ -203,15 +218,24 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
           }
         });
 
-        // Check widget element is present in DOM
+        // Check widget has mounted (shadowRoot confirms VS initialized, not just placeholder)
         await page.waitForFunction(
-          () =>
-            document.querySelector("#vs-placeholder-cart") ||
-            document.querySelector("#vs-inpage") ||
-            document.querySelector("#vs-inpage-luxury") ||
-            document.querySelector("#vs-legacy-inpage") ||
-            document.querySelector("#vs-kid") ||
-            document.querySelector("#vs-smart-table"),
+          () => {
+            const selectors = [
+              "#vs-inpage",
+              "#vs-inpage-luxury",
+              "#vs-legacy-inpage",
+              "#vs-kid",
+              "#vs-smart-table",
+            ];
+            const hasShadowRoot = selectors.some((sel) => {
+              const el = document.querySelector(sel);
+              return el && el.shadowRoot;
+            });
+            // Also accept placeholder mount (no shadow root yet)
+            const hasPlaceholder = !!document.querySelector("#vs-placeholder-cart");
+            return hasShadowRoot || hasPlaceholder;
+          },
           { timeout: 30000 },
         );
       }
