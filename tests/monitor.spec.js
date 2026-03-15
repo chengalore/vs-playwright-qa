@@ -175,6 +175,10 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
       await page.waitForTimeout(1000);
 
       if (phase === "widget" || phase === "events") {
+        // Wait for product form if present — some stores inject VS only after form is ready
+        await page.waitForSelector("form.js-product-form", { timeout: 15000 }).catch(() => {});
+        await page.waitForTimeout(2000);
+
         // Wait for PDC API to resolve before checking widget presence
         const pdcStart = Date.now();
         while (Date.now() - pdcStart < 40000) {
