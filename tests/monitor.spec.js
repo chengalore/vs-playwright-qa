@@ -143,6 +143,7 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
       await page.evaluate(() => {
         const container =
           document.querySelector("#vs-inpage") ||
+          document.querySelector("#vs-inpage-mini") ||
           document.querySelector("#vs-inpage-luxury") ||
           document.querySelector("#vs-legacy-inpage") ||
           document.querySelector("#vs-kid") ||
@@ -227,6 +228,7 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
             // Container widgets — confirmed initialized when shadow root exists
             const containerSelectors = [
               "#vs-inpage",
+              "#vs-inpage-mini",
               "#vs-inpage-luxury",
               "#vs-legacy-inpage",
               "#vs-kid",
