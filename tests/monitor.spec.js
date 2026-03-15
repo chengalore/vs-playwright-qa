@@ -128,6 +128,10 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
         return; // skip without failing
       }
 
+      // Open any size guide accordion — some stores (e.g. Camilla & Marc) only
+      // mount the Virtusize widget inside a collapsed <details> element.
+      await openSizeGuideAccordion(page);
+
       // Start PDC watcher immediately after navigation — many stores (Mash/Snidel)
       // only inject the widget after the product/check API resolves.
       const pdc = startPDCWatcher(page);
@@ -259,4 +263,19 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
 
 function logMonitorResult(result) {
   console.log("MONITOR_RESULT:", JSON.stringify(result));
+}
+
+async function openSizeGuideAccordion(page) {
+  await page.evaluate(() => {
+    const summaries = [...document.querySelectorAll("summary")];
+    const sizeGuide = summaries.find((el) =>
+      el.textContent?.toLowerCase().includes("size")
+    );
+    if (sizeGuide) {
+      const details = sizeGuide.closest("details");
+      if (details && !details.open) {
+        details.open = true;
+      }
+    }
+  });
 }
