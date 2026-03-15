@@ -103,7 +103,6 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
         for (let i = 0; i < 2; i++) {
           try {
             await page.goto(resolvedUrl, { timeout: 60000, waitUntil: "commit" });
-            await page.waitForLoadState("domcontentloaded");
             navErr = undefined;
             break;
           } catch (err) {
@@ -111,6 +110,8 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
           }
         }
         if (navErr) throw navErr;
+        // Stabilize page context after any redirects before running evaluate()
+        await page.waitForLoadState("domcontentloaded");
       } catch (navError) {
         const msg = navError.message || "";
         const isCdnError = CDN_ERROR_PATTERNS.some((p) => msg.includes(p));
@@ -128,12 +129,13 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
         return; // skip without failing
       }
 
-      // Trigger Virtusize UI — opens accordions and clicks VS button if present.
-      await triggerVirtusizeUI(page);
-
       // Start PDC watcher immediately after navigation — many stores (Mash/Snidel)
       // only inject the widget after the product/check API resolves.
       const pdc = startPDCWatcher(page);
+
+      // Trigger Virtusize UI — opens accordions and clicks VS button if present.
+      // Must run after PDC watcher is set up so button-click-triggered requests are captured.
+      await triggerVirtusizeUI(page);
 
       // Scroll to trigger lazy-mounted widgets
       await page.evaluate(() => {
