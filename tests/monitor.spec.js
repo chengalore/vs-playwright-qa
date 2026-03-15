@@ -144,11 +144,11 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
         // Check widget element is present in DOM
         await page.waitForFunction(
           () =>
+            document.querySelector("#vs-placeholder-cart") ||
             document.querySelector("#vs-inpage") ||
             document.querySelector("#vs-inpage-luxury") ||
             document.querySelector("#vs-legacy-inpage") ||
-            document.querySelector("#vs-kid") ||
-            document.querySelector("#vs-placeholder-cart"),
+            document.querySelector("#vs-kid"),
           { timeout: 30000 },
         );
       }
@@ -157,7 +157,16 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
         // Check PDC API fires and returns a valid product
         const pdc = startPDCWatcher(page);
         await page.reload({ waitUntil: "domcontentloaded" });
-        await page.evaluate(() => window.scrollTo({ top: 800, behavior: "instant" }));
+        await page.evaluate(() => {
+          const widget = document.querySelector(
+            "#vs-inpage, #vs-inpage-luxury, #vs-legacy-inpage, #vs-kid, #vs-placeholder-cart"
+          );
+          if (widget) {
+            widget.scrollIntoView({ block: "center", behavior: "instant" });
+          } else {
+            window.scrollTo({ top: 1500, behavior: "instant" });
+          }
+        });
 
         const start = Date.now();
         while (Date.now() - start < 15000) {
