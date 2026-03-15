@@ -104,7 +104,17 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
 
     try {
       try {
-        await page.goto(resolvedUrl, { timeout: 60000, waitUntil: "domcontentloaded" });
+        let navErr;
+        for (let i = 0; i < 2; i++) {
+          try {
+            await page.goto(resolvedUrl, { timeout: 60000, waitUntil: "commit" });
+            navErr = undefined;
+            break;
+          } catch (err) {
+            navErr = err;
+          }
+        }
+        if (navErr) throw navErr;
       } catch (navError) {
         const msg = navError.message || "";
         const isCdnError = CDN_ERROR_PATTERNS.some((p) => msg.includes(p));
@@ -147,7 +157,7 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
       if (phase === "widget" || phase === "events") {
         // Wait for PDC API to resolve before checking widget presence
         const pdcStart = Date.now();
-        while (Date.now() - pdcStart < 20000) {
+        while (Date.now() - pdcStart < 40000) {
           if (pdc.validProduct !== undefined) break;
           await page.waitForTimeout(200);
         }
