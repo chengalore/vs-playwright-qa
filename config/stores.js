@@ -15,7 +15,7 @@
 export const STORES = {
   // ── A ────────────────────────────────────────────────────────────────
   acne: { id: 54 },
-  adidas: { id: 821, botProtected: true },
+  adidas: { id: 821, monitor: true, botProtected: true },
   adidas_japan: { id: 821, botProtected: true },
   adidas_korea: { id: 910, botProtected: true },
   agnes_b: { id: 800, monitor: true },
@@ -42,7 +42,7 @@ export const STORES = {
   barneys_japan: { id: 731, monitor: true },
   beams: { id: 792, monitor: true },
   bottega: { id: 914, botProtected: true },
-  bottega_veneta: { id: 914, botProtected: true },
+  bottega_veneta: { id: 914, monitor: true, botProtected: true },
   bottega_veneta_japan: { id: 914, botProtected: true },
   bottega_veneta_korea: { id: 915, botProtected: true },
   brooks_brothers: { id: 730, monitor: true },
@@ -128,7 +128,7 @@ export const STORES = {
 
   // ── R ────────────────────────────────────────────────────────────────
   ragtag: { id: 135, monitor: true },
-  ralph_lauren: { id: 785, botProtected: true },
+  ralph_lauren: { id: 785, monitor: true, botProtected: true },
   ralph_lauren_australia: { id: 804, botProtected: true },
   ralph_lauren_china: { id: 830, botProtected: true },
   ralph_lauren_korea: { id: 829, botProtected: true },
