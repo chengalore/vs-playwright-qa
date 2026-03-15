@@ -329,10 +329,10 @@ jobs:
             message += '\nIssues:\n';
             for (const r of issues) {
               const icon = r.status === 'widget_missing' ? '⚠️' : '❌';
-              message += `${icon} ${r.storeAlias}`;
+              const link = r.url ? `<${r.url}|${r.storeAlias}>` : r.storeAlias;
+              message += `${icon} ${link}`;
               if (r.error) message += ` — ${r.error.slice(0, 100)}`;
               message += '\n';
-              if (r.url) message += `   🔗 ${r.url}\n`;
             }
           }
 

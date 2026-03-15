@@ -113,7 +113,7 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 64554,
+                  "duration": 64975,
                   "errors": [],
                   "stdout": [
                     {
@@ -138,16 +138,16 @@
                       "text": "[integration] user-saw-widget-button\n"
                     },
                     {
-                      "text": "PDC resolved: snidel shirt valid: \u001b[33mtrue\u001b[39m\n"
-                    },
-                    {
-                      "text": "Flow: apparel\n"
-                    },
-                    {
                       "text": "[integration] inpage-mounted\n"
                     },
                     {
                       "text": "[smart-table] user-saw-measurements-view\n"
+                    },
+                    {
+                      "text": "PDC resolved: snidel shirt valid: \u001b[33mtrue\u001b[39m\n"
+                    },
+                    {
+                      "text": "Flow: apparel\n"
                     },
                     {
                       "text": "[inpage] user-opened-widget\n"
@@ -210,12 +210,6 @@
                       "text": "[smart-table] user-saw-measurements-view\n"
                     },
                     {
-                      "text": "[inpage] user-opened-widget\n"
-                    },
-                    {
-                      "text": "[fit-illustrator] user-opened-panel-tryiton\n"
-                    },
-                    {
                       "text": "Recommendation API Status: \u001b[33m200\u001b[39m\n"
                     },
                     {
@@ -223,6 +217,12 @@
                     },
                     {
                       "text": "[inpage] user-selected-size\n"
+                    },
+                    {
+                      "text": "[inpage] user-opened-widget\n"
+                    },
+                    {
+                      "text": "[fit-illustrator] user-opened-panel-tryiton\n"
                     },
                     {
                       "text": "[EVENT WATCHER] Phase → gift\n"
@@ -309,16 +309,7 @@
                       "text": "[integration] inpage-mounted\n"
                     },
                     {
-                      "text": "[smart-table] user-saw-measurements-view\n"
-                    },
-                    {
                       "text": "Recommendation API Status: \u001b[33m200\u001b[39m\n"
-                    },
-                    {
-                      "text": "[inpage] user-opened-widget\n"
-                    },
-                    {
-                      "text": "[fit-illustrator] user-opened-panel-tryiton\n"
                     },
                     {
                       "text": "Recommendation API Status: \u001b[33m200\u001b[39m\n"
@@ -328,6 +319,15 @@
                     },
                     {
                       "text": "[inpage] user-selected-size\n"
+                    },
+                    {
+                      "text": "[smart-table] user-saw-measurements-view\n"
+                    },
+                    {
+                      "text": "[inpage] user-opened-widget\n"
+                    },
+                    {
+                      "text": "[fit-illustrator] user-opened-panel-tryiton\n"
                     },
                     {
                       "text": "[gift] user-opened-widget\n"
@@ -345,12 +345,12 @@
                       "text": "Gift refresh: recommendation visible\n"
                     },
                     {
-                      "text": "QA_RESULT: {\"url\":\"https://snidel.com/Form/Product/ProductDetail.aspx?shop=0&pid=SHFT261075&vid=&bid=SNH01&cid=&_type=&cat=&swrd=\",\"store\":\"snidel\",\"productType\":\"shirt\",\"userType\":\"NEW\",\"status\":\"passed\",\"browser\":\"chromium\",\"durationMs\":63674}\n"
+                      "text": "QA_RESULT: {\"url\":\"https://snidel.com/Form/Product/ProductDetail.aspx?shop=0&pid=SHFT261075&vid=&bid=SNH01&cid=&_type=&cat=&swrd=\",\"store\":\"snidel\",\"productType\":\"shirt\",\"userType\":\"NEW\",\"status\":\"passed\",\"browser\":\"chromium\",\"durationMs\":63999}\n"
                     }
                   ],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-03-15T13:50:21.938Z",
+                  "startTime": "2026-03-15T13:59:39.714Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -368,8 +368,8 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2026-03-15T13:50:21.280Z",
-    "duration": 66572.755,
+    "startTime": "2026-03-15T13:59:39.148Z",
+    "duration": 67021.172,
     "expected": 1,
     "skipped": 0,
     "unexpected": 0,
