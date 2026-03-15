@@ -200,6 +200,7 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
         await page.evaluate(() => {
           const container =
             document.querySelector("#vs-inpage") ||
+            document.querySelector("#vs-inpage-mini") ||
             document.querySelector("#vs-inpage-luxury") ||
             document.querySelector("#vs-legacy-inpage") ||
             document.querySelector("#vs-kid") ||
