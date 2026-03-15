@@ -123,8 +123,22 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
       }
 
       // Scroll to trigger lazy-mounted widgets
-      await page.evaluate(() => window.scrollTo({ top: 800, behavior: "instant" }));
-      await page.waitForTimeout(1500);
+      await page.evaluate(() => {
+        const widget = document.querySelector(
+          "#vs-inpage, #vs-inpage-luxury, #vs-legacy-inpage, #vs-kid, #vs-placeholder-cart"
+        );
+
+        if (widget) {
+          widget.scrollIntoView({ block: "center", behavior: "instant" });
+        } else {
+          window.scrollTo({ top: 1500, behavior: "instant" });
+        }
+      });
+      await page.waitForTimeout(2000);
+
+      // Extra scroll — some stores (Snidel-style) don't inject until scrolled twice
+      await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+      await page.waitForTimeout(1000);
 
       if (phase === "widget" || phase === "events") {
         // Check widget element is present in DOM
@@ -133,8 +147,9 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
             document.querySelector("#vs-inpage") ||
             document.querySelector("#vs-inpage-luxury") ||
             document.querySelector("#vs-legacy-inpage") ||
-            document.querySelector("#vs-kid"),
-          { timeout: 20000 },
+            document.querySelector("#vs-kid") ||
+            document.querySelector("#vs-placeholder-cart"),
+          { timeout: 30000 },
         );
       }
 

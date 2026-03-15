@@ -99,7 +99,7 @@
       "specs": [
         {
           "title": "Inpage basic flow",
-          "ok": false,
+          "ok": true,
           "tags": [],
           "tests": [
             {
@@ -112,43 +112,24 @@
                 {
                   "workerIndex": 0,
                   "parallelIndex": 0,
-                  "status": "failed",
-                  "duration": 72019,
-                  "error": {
-                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('[data-test-id=\"adjustYourSilhouette.header\"], .rec-main').first()\nExpected: visible\nTimeout: 20000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 20000ms\u001b[22m\n\u001b[2m  - waiting for locator('[data-test-id=\"adjustYourSilhouette.header\"], .rec-main').first()\u001b[22m\n",
-                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('[data-test-id=\"adjustYourSilhouette.header\"], .rec-main').first()\nExpected: visible\nTimeout: 20000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 20000ms\u001b[22m\n\u001b[2m  - waiting for locator('[data-test-id=\"adjustYourSilhouette.header\"], .rec-main').first()\u001b[22m\n\n    at runGiftFlow (/Users/rachel/virtusize/Playwright/tests/inpage.spec.js:1109:5)\n    at /Users/rachel/virtusize/Playwright/tests/inpage.spec.js:346:7",
-                    "location": {
-                      "file": "/Users/rachel/virtusize/Playwright/tests/inpage.spec.js",
-                      "column": 5,
-                      "line": 1109
-                    },
-                    "snippet": "  1107 |   await expect(\n  1108 |     page.locator('[data-test-id=\"adjustYourSilhouette.header\"], .rec-main').first()\n> 1109 |   ).toBeVisible({ timeout: 20_000 });\n       |     ^\n  1110 |\n  1111 |   console.log(\"Gift recommendation result detected\");\n  1112 |"
-                  },
-                  "errors": [
-                    {
-                      "location": {
-                        "file": "/Users/rachel/virtusize/Playwright/tests/inpage.spec.js",
-                        "column": 5,
-                        "line": 1109
-                      },
-                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('[data-test-id=\"adjustYourSilhouette.header\"], .rec-main').first()\nExpected: visible\nTimeout: 20000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 20000ms\u001b[22m\n\u001b[2m  - waiting for locator('[data-test-id=\"adjustYourSilhouette.header\"], .rec-main').first()\u001b[22m\n\n\n  1107 |   await expect(\n  1108 |     page.locator('[data-test-id=\"adjustYourSilhouette.header\"], .rec-main').first()\n> 1109 |   ).toBeVisible({ timeout: 20_000 });\n       |     ^\n  1110 |\n  1111 |   console.log(\"Gift recommendation result detected\");\n  1112 |\n    at runGiftFlow (/Users/rachel/virtusize/Playwright/tests/inpage.spec.js:1109:5)\n    at /Users/rachel/virtusize/Playwright/tests/inpage.spec.js:346:7"
-                    }
-                  ],
+                  "status": "passed",
+                  "duration": 64554,
+                  "errors": [],
                   "stdout": [
                     {
-                      "text": "Testing URL: https://gelatopique.com/Form/Product/ProductDetail.aspx?shop=0&pid=PWCO261297&vid=&bid=PIQ01&cid=&_type=&cat=WOM003001&swrd=\n"
+                      "text": "Testing URL: https://snidel.com/Form/Product/ProductDetail.aspx?shop=0&pid=SHFT261075&vid=&bid=SNH01&cid=&_type=&cat=&swrd=\n"
                     },
                     {
                       "text": "[EVENT WATCHER] Phase → onboarding\n"
                     },
                     {
-                      "text": "Navigating to: https://gelatopique.com/Form/Product/ProductDetail.aspx?shop=0&pid=PWCO261297&vid=&bid=PIQ01&cid=&_type=&cat=WOM003001&swrd=\n"
+                      "text": "Navigating to: https://snidel.com/Form/Product/ProductDetail.aspx?shop=0&pid=SHFT261075&vid=&bid=SNH01&cid=&_type=&cat=&swrd=\n"
                     },
                     {
                       "text": "Page loaded\n"
                     },
                     {
-                      "text": "PDC UPDATE: \u001b[33mtrue\u001b[39m dressALine\n"
+                      "text": "PDC UPDATE: \u001b[33mtrue\u001b[39m shirt\n"
                     },
                     {
                       "text": "[integration] user-saw-product\n"
@@ -157,13 +138,16 @@
                       "text": "[integration] user-saw-widget-button\n"
                     },
                     {
-                      "text": "PDC resolved: gelato_pique dressALine valid: \u001b[33mtrue\u001b[39m\n"
+                      "text": "PDC resolved: snidel shirt valid: \u001b[33mtrue\u001b[39m\n"
                     },
                     {
                       "text": "Flow: apparel\n"
                     },
                     {
                       "text": "[integration] inpage-mounted\n"
+                    },
+                    {
+                      "text": "[smart-table] user-saw-measurements-view\n"
                     },
                     {
                       "text": "[inpage] user-opened-widget\n"
@@ -211,7 +195,7 @@
                       "text": "[EVENT WATCHER] Phase → refresh\n"
                     },
                     {
-                      "text": "PDC UPDATE: \u001b[33mtrue\u001b[39m dressALine\n"
+                      "text": "PDC UPDATE: \u001b[33mtrue\u001b[39m shirt\n"
                     },
                     {
                       "text": "[integration] user-saw-product\n"
@@ -221,6 +205,9 @@
                     },
                     {
                       "text": "[integration] inpage-mounted\n"
+                    },
+                    {
+                      "text": "[smart-table] user-saw-measurements-view\n"
                     },
                     {
                       "text": "[inpage] user-opened-widget\n"
@@ -298,31 +285,77 @@
                       "text": "Recommendation API Status: \u001b[33m200\u001b[39m\n"
                     },
                     {
-                      "text": "[fit-illustrator] user-opened-panel-rec\n"
+                      "text": "[gift] user-opened-panel-rec\n"
                     },
                     {
-                      "text": "QA_RESULT: {\"url\":\"https://gelatopique.com/Form/Product/ProductDetail.aspx?shop=0&pid=PWCO261297&vid=&bid=PIQ01&cid=&_type=&cat=WOM003001&swrd=\",\"status\":\"failed\",\"browser\":\"chromium\",\"error\":\"\\u001b[2mexpect(\\u001b[22m\\u001b[31mlocator\\u001b[39m\\u001b[2m).\\u001b[22mtoBeVisible\\u001b[2m(\\u001b[22m\\u001b[2m)\\u001b[22m failed\\n\\nLocator: locator('[data-test-id=\\\"adjustYourSilhouette.header\\\"], .rec-main').first()\\nExpected: visible\\nTimeout: 20000ms\\nError: element(s) not found\\n\\nCall log:\\n\\u001b[2m  - Expect \\\"toBeVisible\\\" with timeout 20000ms\\u001b[22m\\n\\u001b[2m  - waiting for locator('[data-test-id=\\\"adjustYourSilhouette.header\\\"], .rec-main').first()\\u001b[22m\\n\",\"missingEvents\":[],\"durationMs\":71029}\n"
+                      "text": "Gift recommendation result detected\n"
+                    },
+                    {
+                      "text": "Validating gift refresh behavior\n"
+                    },
+                    {
+                      "text": "[EVENT WATCHER] Phase → gift-refresh\n"
+                    },
+                    {
+                      "text": "PDC UPDATE: \u001b[33mtrue\u001b[39m shirt\n"
+                    },
+                    {
+                      "text": "[integration] user-saw-product\n"
+                    },
+                    {
+                      "text": "[integration] user-saw-widget-button\n"
+                    },
+                    {
+                      "text": "[integration] inpage-mounted\n"
+                    },
+                    {
+                      "text": "[smart-table] user-saw-measurements-view\n"
+                    },
+                    {
+                      "text": "Recommendation API Status: \u001b[33m200\u001b[39m\n"
+                    },
+                    {
+                      "text": "[inpage] user-opened-widget\n"
+                    },
+                    {
+                      "text": "[fit-illustrator] user-opened-panel-tryiton\n"
+                    },
+                    {
+                      "text": "Recommendation API Status: \u001b[33m200\u001b[39m\n"
+                    },
+                    {
+                      "text": "[integration] user-got-size-recommendation\n"
+                    },
+                    {
+                      "text": "[inpage] user-selected-size\n"
+                    },
+                    {
+                      "text": "[gift] user-opened-widget\n"
+                    },
+                    {
+                      "text": "Body Measurement API Status: \u001b[33m200\u001b[39m\n"
+                    },
+                    {
+                      "text": "Recommendation API Status: \u001b[33m200\u001b[39m\n"
+                    },
+                    {
+                      "text": "[gift] user-opened-panel-rec\n"
+                    },
+                    {
+                      "text": "Gift refresh: recommendation visible\n"
+                    },
+                    {
+                      "text": "QA_RESULT: {\"url\":\"https://snidel.com/Form/Product/ProductDetail.aspx?shop=0&pid=SHFT261075&vid=&bid=SNH01&cid=&_type=&cat=&swrd=\",\"store\":\"snidel\",\"productType\":\"shirt\",\"userType\":\"NEW\",\"status\":\"passed\",\"browser\":\"chromium\",\"durationMs\":63674}\n"
                     }
                   ],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-03-11T10:05:50.715Z",
+                  "startTime": "2026-03-15T13:50:21.938Z",
                   "annotations": [],
-                  "attachments": [
-                    {
-                      "name": "error-context",
-                      "contentType": "text/markdown",
-                      "path": "/Users/rachel/virtusize/Playwright/test-results/inpage-Inpage-basic-flow-chromium/error-context.md"
-                    }
-                  ],
-                  "errorLocation": {
-                    "file": "/Users/rachel/virtusize/Playwright/tests/inpage.spec.js",
-                    "column": 5,
-                    "line": 1109
-                  }
+                  "attachments": []
                 }
               ],
-              "status": "unexpected"
+              "status": "expected"
             }
           ],
           "id": "4b94f1d2e5793e5150b0-f2c92c2862e29089a395",
@@ -335,11 +368,11 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2026-03-11T10:05:50.123Z",
-    "duration": 74042.025,
-    "expected": 0,
+    "startTime": "2026-03-15T13:50:21.280Z",
+    "duration": 66572.755,
+    "expected": 1,
     "skipped": 0,
-    "unexpected": 1,
+    "unexpected": 0,
     "flaky": 0
   }
 }
