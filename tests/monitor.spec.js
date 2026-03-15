@@ -128,9 +128,8 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
         return; // skip without failing
       }
 
-      // Open any size guide accordion — some stores (e.g. Camilla & Marc) only
-      // mount the Virtusize widget inside a collapsed <details> element.
-      await openSizeGuideAccordion(page);
+      // Trigger Virtusize UI — opens accordions and clicks VS button if present.
+      await triggerVirtusizeUI(page);
 
       // Start PDC watcher immediately after navigation — many stores (Mash/Snidel)
       // only inject the widget after the product/check API resolves.
@@ -209,7 +208,8 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
             document.querySelector("#vs-inpage") ||
             document.querySelector("#vs-inpage-luxury") ||
             document.querySelector("#vs-legacy-inpage") ||
-            document.querySelector("#vs-kid"),
+            document.querySelector("#vs-kid") ||
+            document.querySelector("#vs-smart-table"),
           { timeout: 30000 },
         );
       }
@@ -265,17 +265,24 @@ function logMonitorResult(result) {
   console.log("MONITOR_RESULT:", JSON.stringify(result));
 }
 
-async function openSizeGuideAccordion(page) {
+async function triggerVirtusizeUI(page) {
   await page.evaluate(() => {
-    const summaries = [...document.querySelectorAll("summary")];
-    const sizeGuide = summaries.find((el) =>
-      el.textContent?.toLowerCase().includes("size")
-    );
-    if (sizeGuide) {
-      const details = sizeGuide.closest("details");
-      if (details && !details.open) {
-        details.open = true;
+    // Open size/fit guide accordions (e.g. Camilla & Marc)
+    document.querySelectorAll("summary").forEach((el) => {
+      const text = el.textContent?.toLowerCase() || "";
+      if (text.includes("size") || text.includes("fit")) {
+        const details = el.closest("details");
+        if (details && !details.open) details.open = true;
       }
+    });
+
+    // Click Virtusize button if present (button-trigger stores)
+    const vsButton = document.querySelector("#virtusize-button");
+    if (vsButton) {
+      vsButton.scrollIntoView({ block: "center" });
+      vsButton.click();
     }
   });
+
+  await page.waitForTimeout(1000);
 }
