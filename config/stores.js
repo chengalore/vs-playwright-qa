@@ -49,7 +49,7 @@ export const STORES = {
   brooks_brothers_korea: { id: 905, monitor: true },
   bshop: { id: 768, monitor: true },
   buyma: { id: 561, monitor: true },
-  by_malene_birger: { id: 490, monitor: true, botProtected: true },
+  by_malene_birger: { id: 490, monitor: true },
 
   // ── C ────────────────────────────────────────────────────────────────
   callaway: { id: 837 }, // shorthand
@@ -215,11 +215,17 @@ export const BOT_PROTECTED_REASON =
  * Used to block direct URL submissions that bypass the alias check.
  */
 export const BOT_PROTECTED_DOMAINS = [
-  "adidas.jp", "adidas.com", "adidas.co.kr",
+  "adidas.jp",
+  "adidas.com",
+  "adidas.co.kr",
   "asics.com",
   "bottegaveneta.com",
   "by-malene-birger.com",
-  "ralphlauren.com", "ralphlauren.co.jp", "ralphlauren.co.kr",
-  "ralphlauren.com.au", "ralphlauren.cn", "ralphlauren.com.sg",
+  "ralphlauren.com",
+  "ralphlauren.co.jp",
+  "ralphlauren.co.kr",
+  "ralphlauren.com.au",
+  "ralphlauren.cn",
+  "ralphlauren.com.sg",
   "ralphlauren.co.uk",
 ];
