@@ -193,7 +193,6 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
             ".vs-placeholder-inpage",
             "#inpage-placeholder-wrapper",
             "#virtusize-button",
-            "[id^='vs-']",
           ];
           return selectors.some((sel) => !!document.querySelector(sel));
         });
