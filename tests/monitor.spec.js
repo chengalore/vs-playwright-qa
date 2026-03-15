@@ -19,7 +19,7 @@ import { startPDCWatcher } from "../utils/pdcWatcher.js";
 import { loadFallback } from "../utils/fallbackStore.js";
 import { BOT_PROTECTED_ALIASES, BOT_PROTECTED_REASON } from "../config/botProtectedStores.js";
 
-test.setTimeout(60000);
+test.setTimeout(90000);
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const URLS_FILE = join(__dirname, "../data/monitor-urls.json");
@@ -190,7 +190,11 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
           if (widget) {
             widget.scrollIntoView({ block: "center", behavior: "instant" });
           } else {
-            window.scrollTo({ top: 1500, behavior: "instant" });
+            const height =
+              document?.body?.scrollHeight ||
+              document?.documentElement?.scrollHeight ||
+              2000;
+            window.scrollTo(0, height);
           }
         });
 
