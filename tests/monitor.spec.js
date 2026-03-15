@@ -50,14 +50,9 @@ if (stores.length === 0) {
 }
 
 const CDN_ERROR_PATTERNS = [
-  "ERR_HTTP2_PROTOCOL_ERROR",
   "ERR_CONNECTION_REFUSED",
   "ERR_CONNECTION_RESET",
   "ERR_NAME_NOT_RESOLVED",
-  "ERR_NETWORK_CHANGED",
-  "net::ERR_",
-  "Navigation timeout",
-  "Timeout exceeded while waiting",
 ];
 
 const phase = process.env.TEST_PHASE || "widget";
@@ -108,6 +103,7 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
         for (let i = 0; i < 2; i++) {
           try {
             await page.goto(resolvedUrl, { timeout: 60000, waitUntil: "commit" });
+            await page.waitForLoadState("domcontentloaded");
             navErr = undefined;
             break;
           } catch (err) {
@@ -145,13 +141,23 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
         if (widget) {
           widget.scrollIntoView({ block: "center", behavior: "instant" });
         } else {
-          window.scrollTo({ top: 1500, behavior: "instant" });
+          const height =
+            document?.body?.scrollHeight ||
+            document?.documentElement?.scrollHeight ||
+            2000;
+          window.scrollTo(0, height);
         }
       });
       await page.waitForTimeout(2000);
 
       // Extra scroll — some stores (Snidel-style) don't inject until scrolled twice
-      await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+      await page.evaluate(() => {
+        const height =
+          document?.body?.scrollHeight ||
+          document?.documentElement?.scrollHeight ||
+          2000;
+        window.scrollTo(0, height);
+      });
       await page.waitForTimeout(1000);
 
       if (phase === "widget" || phase === "events") {
