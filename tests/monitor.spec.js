@@ -179,6 +179,40 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
         await page.waitForSelector("form.js-product-form", { timeout: 15000 }).catch(() => {});
         await page.waitForTimeout(2000);
 
+        // Early exit: if a widget container is already in the DOM, pass immediately
+        // without waiting for /product/check (handles slow-PDC stores like Brooks Brothers)
+        const earlyWidget = await page.evaluate(() => {
+          const selectors = [
+            "#vs-inpage",
+            "#vs-inpage-mini",
+            "#vs-inpage-luxury",
+            "#vs-legacy-inpage",
+            "#vs-kid",
+            "#vs-smart-table",
+            "#vs-placeholder-cart",
+            ".vs-placeholder-inpage",
+            "#inpage-placeholder-wrapper",
+            "#virtusize-button",
+            "[id^='vs-']",
+          ];
+          return selectors.some((sel) => !!document.querySelector(sel));
+        });
+
+        if (earlyWidget) {
+          logMonitorResult({
+            storeAlias,
+            storeId,
+            url: resolvedUrl,
+            phase,
+            status: "passed",
+            reason: "widget_detected",
+            fromFallback: fromFallback || false,
+            browser: testInfo.project.name,
+            durationMs: Date.now() - startTime,
+          });
+          return;
+        }
+
         // Step 1: Wait for product/check API response (up to 20s)
         const pdcStart = Date.now();
         while (Date.now() - pdcStart < 20000) {
