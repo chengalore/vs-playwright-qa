@@ -241,7 +241,11 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
             });
 
             // Placeholder slot — widget not yet initialized but VS script ran
-            const hasPlaceholder = !!document.querySelector("#vs-placeholder-cart");
+            const hasPlaceholder = !!(
+              document.querySelector("#vs-placeholder-cart") ||
+              document.querySelector(".vs-placeholder-inpage") ||
+              document.querySelector("#inpage-placeholder-wrapper")
+            );
 
             // Custom entry button integration
             const hasEntryButton = !!document.querySelector("#virtusize-button");
