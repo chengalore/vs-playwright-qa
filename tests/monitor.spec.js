@@ -186,6 +186,28 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
           await page.waitForTimeout(200);
         }
 
+        // If PDC hasn't resolved yet, check whether VS containers are already in the DOM.
+        // Their presence means the VS script loaded and is initializing — wait longer.
+        if (pdc.validProduct === undefined) {
+          const vsContainerExists = await page.evaluate(() =>
+            !!(
+              document.querySelector("#vs-inpage") ||
+              document.querySelector("#vs-inpage-mini") ||
+              document.querySelector("#vs-placeholder-cart") ||
+              document.querySelector(".vs-placeholder-inpage") ||
+              document.querySelector("#inpage-placeholder-wrapper")
+            )
+          );
+
+          if (vsContainerExists) {
+            const extStart = Date.now();
+            while (Date.now() - extStart < 20000) {
+              if (pdc.validProduct !== undefined) break;
+              await page.waitForTimeout(200);
+            }
+          }
+        }
+
         // Step 2: If product is not supported, skip — widget will never mount
         if (pdc.validProduct === false) {
           logMonitorResult({
