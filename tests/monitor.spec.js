@@ -227,6 +227,8 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
             !!(
               document.querySelector("#vs-inpage") ||
               document.querySelector("#vs-inpage-mini") ||
+              document.querySelector("#vs-smart-table") ||
+              document.querySelector("#vs-kid") ||
               document.querySelector("#vs-placeholder-cart") ||
               document.querySelector(".vs-placeholder-inpage") ||
               document.querySelector("#inpage-placeholder-wrapper")
