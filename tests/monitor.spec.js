@@ -179,23 +179,64 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
         await page.waitForSelector("form.js-product-form", { timeout: 15000 }).catch(() => {});
         await page.waitForTimeout(2000);
 
-        // Validate integration via product/check API response.
-        // This is faster and more reliable than DOM detection since it confirms
-        // the VS script loaded, fired the API, and received a valid product.
+        // Step 1: Wait for product/check API response (up to 20s)
         const pdcStart = Date.now();
-        while (Date.now() - pdcStart < 40000) {
-          if (pdc.validProduct === true) break;
+        while (Date.now() - pdcStart < 20000) {
+          if (pdc.validProduct !== undefined) break;
           await page.waitForTimeout(200);
         }
 
-        if (pdc.validProduct !== true) {
+        // Step 2: If product is not supported, skip — widget will never mount
+        if (pdc.validProduct === false) {
+          logMonitorResult({
+            storeAlias,
+            storeId,
+            url: resolvedUrl,
+            phase,
+            status: "skipped",
+            reason: "invalid_product",
+            browser: testInfo.project.name,
+            durationMs: Date.now() - startTime,
+          });
+          return;
+        }
+
+        // Step 3: If validProduct is true, widget must appear — verify DOM
+        // (If pdc.validProduct is still undefined, API never fired — still check DOM)
+        const widgetFound = await page.waitForFunction(
+          () => {
+            const containerSelectors = [
+              "#vs-inpage",
+              "#vs-inpage-mini",
+              "#vs-inpage-luxury",
+              "#vs-legacy-inpage",
+              "#vs-kid",
+              "#vs-smart-table",
+            ];
+            const hasWidget = containerSelectors.some((sel) => {
+              const el = document.querySelector(sel);
+              return el && el.shadowRoot;
+            });
+            const hasPlaceholder = !!(
+              document.querySelector("#vs-placeholder-cart") ||
+              document.querySelector(".vs-placeholder-inpage") ||
+              document.querySelector("#inpage-placeholder-wrapper")
+            );
+            const hasEntryButton = !!document.querySelector("#virtusize-button");
+            return hasWidget || hasPlaceholder || hasEntryButton;
+          },
+          { timeout: 20000 },
+        ).catch(() => null);
+
+        // Step 4: Widget did not appear — report as widget_missing
+        if (!widgetFound) {
           logMonitorResult({
             storeAlias,
             storeId,
             url: resolvedUrl,
             phase,
             status: "widget_missing",
-            reason: "product_check_not_valid",
+            reason: "widget_not_rendered",
             error: `validProduct=${pdc.validProduct}`,
             browser: testInfo.project.name,
             durationMs: Date.now() - startTime,
