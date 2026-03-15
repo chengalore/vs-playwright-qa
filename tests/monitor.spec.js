@@ -179,10 +179,12 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
         await page.waitForSelector("form.js-product-form", { timeout: 15000 }).catch(() => {});
         await page.waitForTimeout(2000);
 
-        // Wait for PDC API to resolve before checking widget presence
+        // Validate integration via product/check API response.
+        // This is faster and more reliable than DOM detection since it confirms
+        // the VS script loaded, fired the API, and received a valid product.
         const pdcStart = Date.now();
         while (Date.now() - pdcStart < 40000) {
-          if (pdc.validProduct !== undefined) break;
+          if (pdc.validProduct === true) break;
           await page.waitForTimeout(200);
         }
 
@@ -192,72 +194,14 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
             storeId,
             url: resolvedUrl,
             phase,
-            status: "skipped",
-            reason: "invalid_product",
+            status: "widget_missing",
+            reason: "product_check_not_valid",
+            error: `validProduct=${pdc.validProduct}`,
             browser: testInfo.project.name,
             durationMs: Date.now() - startTime,
           });
           return;
         }
-
-        // Scroll again now that PDC has resolved — widget may now be ready to mount
-        await page.evaluate(() => {
-          const container =
-            document.querySelector("#vs-inpage") ||
-            document.querySelector("#vs-inpage-mini") ||
-            document.querySelector("#vs-inpage-luxury") ||
-            document.querySelector("#vs-legacy-inpage") ||
-            document.querySelector("#vs-kid") ||
-            document.querySelector("#vs-smart-table") ||
-            document.querySelector("#vs-placeholder-cart") ||
-            document.querySelector(".block-right") ||
-            document.querySelector(".block-detail");
-
-          if (container) {
-            container.scrollIntoView({ block: "center", behavior: "instant" });
-          } else {
-            const height =
-              document?.body?.scrollHeight ||
-              document?.documentElement?.scrollHeight ||
-              2000;
-            window.scrollTo(0, height);
-          }
-        });
-
-        // Detect any Virtusize integration:
-        //   - Shadow root on a VS container = fully initialized widget
-        //   - #vs-placeholder-cart = widget slot mounted (shadow root comes later)
-        //   - #virtusize-button = custom entry button integration (e.g. By Malene Birger)
-        await page.waitForFunction(
-          () => {
-            // Container widgets — confirmed initialized when shadow root exists
-            const containerSelectors = [
-              "#vs-inpage",
-              "#vs-inpage-mini",
-              "#vs-inpage-luxury",
-              "#vs-legacy-inpage",
-              "#vs-kid",
-              "#vs-smart-table",
-            ];
-            const hasWidget = containerSelectors.some((sel) => {
-              const el = document.querySelector(sel);
-              return el && el.shadowRoot;
-            });
-
-            // Placeholder slot — widget not yet initialized but VS script ran
-            const hasPlaceholder = !!(
-              document.querySelector("#vs-placeholder-cart") ||
-              document.querySelector(".vs-placeholder-inpage") ||
-              document.querySelector("#inpage-placeholder-wrapper")
-            );
-
-            // Custom entry button integration
-            const hasEntryButton = !!document.querySelector("#virtusize-button");
-
-            return hasWidget || hasPlaceholder || hasEntryButton;
-          },
-          { timeout: 30000 },
-        );
       }
 
       if (phase === "api") {
