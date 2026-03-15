@@ -329,8 +329,7 @@ jobs:
             message += '\nIssues:\n';
             for (const r of issues) {
               const icon = r.status === 'widget_missing' ? '⚠️' : '❌';
-              const link = r.url ? `<${r.url}|${r.storeAlias}>` : r.storeAlias;
-              message += `${icon} ${link}`;
+              message += `${icon} <${r.url}|${r.storeAlias}>`;
               if (r.error) message += ` — ${r.error.slice(0, 100)}`;
               message += '\n';
             }
