@@ -218,23 +218,32 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
           }
         });
 
-        // Check widget has mounted (shadowRoot confirms VS initialized, not just placeholder)
+        // Detect any Virtusize integration:
+        //   - Shadow root on a VS container = fully initialized widget
+        //   - #vs-placeholder-cart = widget slot mounted (shadow root comes later)
+        //   - #virtusize-button = custom entry button integration (e.g. By Malene Birger)
         await page.waitForFunction(
           () => {
-            const selectors = [
+            // Container widgets — confirmed initialized when shadow root exists
+            const containerSelectors = [
               "#vs-inpage",
               "#vs-inpage-luxury",
               "#vs-legacy-inpage",
               "#vs-kid",
               "#vs-smart-table",
             ];
-            const hasShadowRoot = selectors.some((sel) => {
+            const hasWidget = containerSelectors.some((sel) => {
               const el = document.querySelector(sel);
               return el && el.shadowRoot;
             });
-            // Also accept placeholder mount (no shadow root yet)
+
+            // Placeholder slot — widget not yet initialized but VS script ran
             const hasPlaceholder = !!document.querySelector("#vs-placeholder-cart");
-            return hasShadowRoot || hasPlaceholder;
+
+            // Custom entry button integration
+            const hasEntryButton = !!document.querySelector("#virtusize-button");
+
+            return hasWidget || hasPlaceholder || hasEntryButton;
           },
           { timeout: 30000 },
         );
