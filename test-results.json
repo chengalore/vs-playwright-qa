@@ -112,23 +112,26 @@
                 {
                   "workerIndex": 0,
                   "parallelIndex": 0,
-                  "status": "timedOut",
-                  "duration": 180291,
+                  "status": "failed",
+                  "duration": 38354,
                   "error": {
-                    "message": "\u001b[31mTest timeout of 180000ms exceeded.\u001b[39m",
-                    "stack": "\u001b[31mTest timeout of 180000ms exceeded.\u001b[39m"
+                    "message": "Error: Timed out waiting for event: user-selected-size",
+                    "stack": "Error: Timed out waiting for event: user-selected-size\n    at waitForEvent (/Users/rachel/virtusize/Playwright/tests/inpage.spec.js:1328:9)\n    at validateRefresh (/Users/rachel/virtusize/Playwright/tests/inpage.spec.js:509:7)\n    at /Users/rachel/virtusize/Playwright/tests/inpage.spec.js:335:5",
+                    "location": {
+                      "file": "/Users/rachel/virtusize/Playwright/tests/inpage.spec.js",
+                      "column": 9,
+                      "line": 1328
+                    },
+                    "snippet": "\u001b[0m \u001b[90m 1326 |\u001b[39m     \u001b[36mawait\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mPromise\u001b[39m((r) \u001b[33m=>\u001b[39m setTimeout(r\u001b[33m,\u001b[39m \u001b[35m200\u001b[39m))\u001b[33m;\u001b[39m\n \u001b[90m 1327 |\u001b[39m   }\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 1328 |\u001b[39m   \u001b[36mthrow\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mError\u001b[39m(\u001b[32m`Timed out waiting for event: ${eventKey}`\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m      |\u001b[39m         \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 1329 |\u001b[39m }\n \u001b[90m 1330 |\u001b[39m\n \u001b[90m 1331 |\u001b[39m \u001b[90m// --------------------------------------------------\u001b[39m\u001b[0m"
                   },
                   "errors": [
                     {
-                      "message": "\u001b[31mTest timeout of 180000ms exceeded.\u001b[39m"
-                    },
-                    {
                       "location": {
                         "file": "/Users/rachel/virtusize/Playwright/tests/inpage.spec.js",
-                        "column": 14,
-                        "line": 748
+                        "column": 9,
+                        "line": 1328
                       },
-                      "message": "Error: page.waitForFunction: Test timeout of 180000ms exceeded.\n\n\u001b[0m \u001b[90m 746 |\u001b[39m   \u001b[90m// Step 4: Footwear size – open picker, wait for it, then select first radio\u001b[39m\n \u001b[90m 747 |\u001b[39m   \u001b[36mawait\u001b[39m shadowClick(\u001b[32m'[data-test-id=\"open-sizes-footwear-picker\"]'\u001b[39m)\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 748 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForFunction(\n \u001b[90m     |\u001b[39m              \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 749 |\u001b[39m     () \u001b[33m=>\u001b[39m\n \u001b[90m 750 |\u001b[39m       \u001b[33m!\u001b[39m\u001b[33m!\u001b[39mgetWidgetHost()\u001b[33m?\u001b[39m\u001b[33m.\u001b[39mshadowRoot\u001b[33m?\u001b[39m\u001b[33m.\u001b[39mquerySelector(\n \u001b[90m 751 |\u001b[39m         \u001b[32m\"#footwear-picker input#radioButton-1\"\u001b[39m\u001b[33m,\u001b[39m\u001b[0m\n\u001b[2m    at runFootwearFlow (/Users/rachel/virtusize/Playwright/tests/inpage.spec.js:748:14)\u001b[22m\n\u001b[2m    at /Users/rachel/virtusize/Playwright/tests/inpage.spec.js:264:19\u001b[22m"
+                      "message": "Error: Timed out waiting for event: user-selected-size\n\n\u001b[0m \u001b[90m 1326 |\u001b[39m     \u001b[36mawait\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mPromise\u001b[39m((r) \u001b[33m=>\u001b[39m setTimeout(r\u001b[33m,\u001b[39m \u001b[35m200\u001b[39m))\u001b[33m;\u001b[39m\n \u001b[90m 1327 |\u001b[39m   }\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 1328 |\u001b[39m   \u001b[36mthrow\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mError\u001b[39m(\u001b[32m`Timed out waiting for event: ${eventKey}`\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m      |\u001b[39m         \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 1329 |\u001b[39m }\n \u001b[90m 1330 |\u001b[39m\n \u001b[90m 1331 |\u001b[39m \u001b[90m// --------------------------------------------------\u001b[39m\u001b[0m\n\u001b[2m    at waitForEvent (/Users/rachel/virtusize/Playwright/tests/inpage.spec.js:1328:9)\u001b[22m\n\u001b[2m    at validateRefresh (/Users/rachel/virtusize/Playwright/tests/inpage.spec.js:509:7)\u001b[22m\n\u001b[2m    at /Users/rachel/virtusize/Playwright/tests/inpage.spec.js:335:5\u001b[22m"
                     }
                   ],
                   "stdout": [
@@ -142,10 +145,10 @@
                       "text": "Navigating to: https://www.underarmour.co.jp/f/dsg-1066979\n"
                     },
                     {
-                      "text": "PDC UPDATE: \u001b[33mtrue\u001b[39m shoe\n"
+                      "text": "Page loaded\n"
                     },
                     {
-                      "text": "Page loaded\n"
+                      "text": "PDC UPDATE: \u001b[33mtrue\u001b[39m shoe\n"
                     },
                     {
                       "text": "[integration] user-saw-product\n"
@@ -184,12 +187,75 @@
                       "text": "[fit-illustrator] user-clicked-proceed-foot-shape\n"
                     },
                     {
-                      "text": "QA_RESULT: {\"url\":\"https://www.underarmour.co.jp/f/dsg-1066979\",\"status\":\"failed\",\"browser\":\"chromium\",\"error\":\"page.waitForFunction: Test timeout of 180000ms exceeded.\",\"missingEvents\":[],\"durationMs\":179337}\n"
+                      "text": "[fit-illustrator] user-clicked-proceed-shoe-style-size\n"
+                    },
+                    {
+                      "text": "[fit-illustrator] user-selected-shoe-style\n"
+                    },
+                    {
+                      "text": "[fit-illustrator] user-clicked-proceed-shoe-brand\n"
+                    },
+                    {
+                      "text": "[fit-illustrator] user-created-footwear-silhouette\n"
+                    },
+                    {
+                      "text": "Body Measurement API Status: \u001b[33m200\u001b[39m\n"
+                    },
+                    {
+                      "text": "Recommendation API Status: \u001b[33m200\u001b[39m\n"
+                    },
+                    {
+                      "text": "Shoe Recommendation API Status: \u001b[33m200\u001b[39m\n"
+                    },
+                    {
+                      "text": "Body Measurement API Status: \u001b[33m200\u001b[39m\n"
+                    },
+                    {
+                      "text": "Recommendation API Status: \u001b[33m200\u001b[39m\n"
+                    },
+                    {
+                      "text": "Shoe Recommendation API Status: \u001b[33m200\u001b[39m\n"
+                    },
+                    {
+                      "text": "[fit-illustrator] user-opened-panel-rec\n"
+                    },
+                    {
+                      "text": "[EVENT WATCHER] Phase → refresh\n"
+                    },
+                    {
+                      "text": "PDC UPDATE: \u001b[33mtrue\u001b[39m shoe\n"
+                    },
+                    {
+                      "text": "[integration] user-saw-product\n"
+                    },
+                    {
+                      "text": "[integration] user-saw-widget-button\n"
+                    },
+                    {
+                      "text": "[integration] inpage-mounted\n"
+                    },
+                    {
+                      "text": "Recommendation API Status: \u001b[33m200\u001b[39m\n"
+                    },
+                    {
+                      "text": "Shoe Recommendation API Status: \u001b[33m200\u001b[39m\n"
+                    },
+                    {
+                      "text": "[inpage] user-selected-size\n"
+                    },
+                    {
+                      "text": "[inpage] user-opened-widget\n"
+                    },
+                    {
+                      "text": "[fit-illustrator] user-opened-panel-rec\n"
+                    },
+                    {
+                      "text": "QA_RESULT: {\"url\":\"https://www.underarmour.co.jp/f/dsg-1066979\",\"status\":\"failed\",\"browser\":\"chromium\",\"error\":\"Timed out waiting for event: user-selected-size\",\"missingEvents\":[],\"durationMs\":37364}\n"
                     }
                   ],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-03-16T09:54:28.900Z",
+                  "startTime": "2026-03-16T10:02:00.657Z",
                   "annotations": [],
                   "attachments": [
                     {
@@ -197,7 +263,12 @@
                       "contentType": "text/markdown",
                       "path": "/Users/rachel/virtusize/Playwright/test-results/inpage-Inpage-basic-flow-chromium/error-context.md"
                     }
-                  ]
+                  ],
+                  "errorLocation": {
+                    "file": "/Users/rachel/virtusize/Playwright/tests/inpage.spec.js",
+                    "column": 9,
+                    "line": 1328
+                  }
                 }
               ],
               "status": "unexpected"
@@ -213,8 +284,8 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2026-03-16T09:54:28.330Z",
-    "duration": 182953.34,
+    "startTime": "2026-03-16T10:02:00.007Z",
+    "duration": 40900.334,
     "expected": 0,
     "skipped": 0,
     "unexpected": 1,

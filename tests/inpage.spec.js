@@ -506,7 +506,7 @@ async function validateRefresh(page, eventWatcher, recommendationAPI, flow) {
     }
 
     if (flow === "footwear") {
-      await waitForEvent(eventWatcher, "user-selected-size", 10000);
+      await waitForEvent(eventWatcher, "user-opened-panel-rec", 10000);
     }
   }
 
