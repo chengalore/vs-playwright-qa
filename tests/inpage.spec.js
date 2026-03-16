@@ -723,25 +723,36 @@ async function runFootwearFlow(page, shoeAPI) {
   });
   await clickNext();
 
-  // Step 3: Gender – select female
-  await page.evaluate(() => {
+  // Step 3: Gender (optional)
+  const hasGender = await page.evaluate(() => {
     const modal = getWidgetHost()?.shadowRoot?.querySelector(
-      "#vs-aoyama-main-modal",
+      "#vs-aoyama-main-modal"
     );
-    const radios = modal?.querySelectorAll(
-      '[data-test-id="gender-radio-buttons"] input[type="radio"]',
+    return !!modal?.querySelector(
+      '[data-test-id="gender-radio-buttons"] input[type="radio"]'
     );
-    if (!radios?.length) return;
-    const female = [...radios].find(
-      (el) => el.value.toLowerCase() === "female",
-    );
-    if (female) {
-      female.click();
-      female.dispatchEvent(new Event("change", { bubbles: true }));
-    }
   });
-  await page.waitForTimeout(800);
-  await clickNext();
+
+  if (hasGender) {
+    await page.evaluate(() => {
+      const modal = getWidgetHost()?.shadowRoot?.querySelector(
+        "#vs-aoyama-main-modal"
+      );
+      const radios = modal?.querySelectorAll(
+        '[data-test-id="gender-radio-buttons"] input[type="radio"]'
+      );
+      const female = [...radios].find(
+        (el) => el.value.toLowerCase() === "female"
+      );
+      if (female) {
+        female.click();
+        female.dispatchEvent(new Event("change", { bubbles: true }));
+      }
+    });
+
+    await page.waitForTimeout(800);
+    await clickNext();
+  }
 
   // Step 4: Footwear size – open picker, wait for it, then select first radio
   await shadowClick('[data-test-id="open-sizes-footwear-picker"]');
