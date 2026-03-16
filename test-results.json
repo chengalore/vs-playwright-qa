@@ -113,10 +113,10 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "failed",
-                  "duration": 38354,
+                  "duration": 33805,
                   "error": {
-                    "message": "Error: Timed out waiting for event: user-selected-size",
-                    "stack": "Error: Timed out waiting for event: user-selected-size\n    at waitForEvent (/Users/rachel/virtusize/Playwright/tests/inpage.spec.js:1328:9)\n    at validateRefresh (/Users/rachel/virtusize/Playwright/tests/inpage.spec.js:509:7)\n    at /Users/rachel/virtusize/Playwright/tests/inpage.spec.js:335:5",
+                    "message": "Error: Timed out waiting for event: user-opened-panel-rec",
+                    "stack": "Error: Timed out waiting for event: user-opened-panel-rec\n    at waitForEvent (/Users/rachel/virtusize/Playwright/tests/inpage.spec.js:1328:9)\n    at validateRefresh (/Users/rachel/virtusize/Playwright/tests/inpage.spec.js:509:7)\n    at /Users/rachel/virtusize/Playwright/tests/inpage.spec.js:335:5",
                     "location": {
                       "file": "/Users/rachel/virtusize/Playwright/tests/inpage.spec.js",
                       "column": 9,
@@ -131,7 +131,7 @@
                         "column": 9,
                         "line": 1328
                       },
-                      "message": "Error: Timed out waiting for event: user-selected-size\n\n\u001b[0m \u001b[90m 1326 |\u001b[39m     \u001b[36mawait\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mPromise\u001b[39m((r) \u001b[33m=>\u001b[39m setTimeout(r\u001b[33m,\u001b[39m \u001b[35m200\u001b[39m))\u001b[33m;\u001b[39m\n \u001b[90m 1327 |\u001b[39m   }\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 1328 |\u001b[39m   \u001b[36mthrow\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mError\u001b[39m(\u001b[32m`Timed out waiting for event: ${eventKey}`\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m      |\u001b[39m         \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 1329 |\u001b[39m }\n \u001b[90m 1330 |\u001b[39m\n \u001b[90m 1331 |\u001b[39m \u001b[90m// --------------------------------------------------\u001b[39m\u001b[0m\n\u001b[2m    at waitForEvent (/Users/rachel/virtusize/Playwright/tests/inpage.spec.js:1328:9)\u001b[22m\n\u001b[2m    at validateRefresh (/Users/rachel/virtusize/Playwright/tests/inpage.spec.js:509:7)\u001b[22m\n\u001b[2m    at /Users/rachel/virtusize/Playwright/tests/inpage.spec.js:335:5\u001b[22m"
+                      "message": "Error: Timed out waiting for event: user-opened-panel-rec\n\n\u001b[0m \u001b[90m 1326 |\u001b[39m     \u001b[36mawait\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mPromise\u001b[39m((r) \u001b[33m=>\u001b[39m setTimeout(r\u001b[33m,\u001b[39m \u001b[35m200\u001b[39m))\u001b[33m;\u001b[39m\n \u001b[90m 1327 |\u001b[39m   }\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 1328 |\u001b[39m   \u001b[36mthrow\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mError\u001b[39m(\u001b[32m`Timed out waiting for event: ${eventKey}`\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m      |\u001b[39m         \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 1329 |\u001b[39m }\n \u001b[90m 1330 |\u001b[39m\n \u001b[90m 1331 |\u001b[39m \u001b[90m// --------------------------------------------------\u001b[39m\u001b[0m\n\u001b[2m    at waitForEvent (/Users/rachel/virtusize/Playwright/tests/inpage.spec.js:1328:9)\u001b[22m\n\u001b[2m    at validateRefresh (/Users/rachel/virtusize/Playwright/tests/inpage.spec.js:509:7)\u001b[22m\n\u001b[2m    at /Users/rachel/virtusize/Playwright/tests/inpage.spec.js:335:5\u001b[22m"
                     }
                   ],
                   "stdout": [
@@ -145,9 +145,6 @@
                       "text": "Navigating to: https://www.underarmour.co.jp/f/dsg-1066979\n"
                     },
                     {
-                      "text": "Page loaded\n"
-                    },
-                    {
                       "text": "PDC UPDATE: \u001b[33mtrue\u001b[39m shoe\n"
                     },
                     {
@@ -155,6 +152,9 @@
                     },
                     {
                       "text": "[integration] user-saw-widget-button\n"
+                    },
+                    {
+                      "text": "Page loaded\n"
                     },
                     {
                       "text": "[integration] inpage-mounted\n"
@@ -208,15 +208,6 @@
                       "text": "Shoe Recommendation API Status: \u001b[33m200\u001b[39m\n"
                     },
                     {
-                      "text": "Body Measurement API Status: \u001b[33m200\u001b[39m\n"
-                    },
-                    {
-                      "text": "Recommendation API Status: \u001b[33m200\u001b[39m\n"
-                    },
-                    {
-                      "text": "Shoe Recommendation API Status: \u001b[33m200\u001b[39m\n"
-                    },
-                    {
                       "text": "[fit-illustrator] user-opened-panel-rec\n"
                     },
                     {
@@ -250,12 +241,12 @@
                       "text": "[fit-illustrator] user-opened-panel-rec\n"
                     },
                     {
-                      "text": "QA_RESULT: {\"url\":\"https://www.underarmour.co.jp/f/dsg-1066979\",\"status\":\"failed\",\"browser\":\"chromium\",\"error\":\"Timed out waiting for event: user-selected-size\",\"missingEvents\":[],\"durationMs\":37364}\n"
+                      "text": "QA_RESULT: {\"url\":\"https://www.underarmour.co.jp/f/dsg-1066979\",\"status\":\"failed\",\"browser\":\"chromium\",\"error\":\"Timed out waiting for event: user-opened-panel-rec\",\"missingEvents\":[],\"durationMs\":32687}\n"
                     }
                   ],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-03-16T10:02:00.657Z",
+                  "startTime": "2026-03-16T10:04:43.033Z",
                   "annotations": [],
                   "attachments": [
                     {
@@ -284,8 +275,8 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2026-03-16T10:02:00.007Z",
-    "duration": 40900.334,
+    "startTime": "2026-03-16T10:04:42.379Z",
+    "duration": 35955.661,
     "expected": 0,
     "skipped": 0,
     "unexpected": 1,
