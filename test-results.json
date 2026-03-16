@@ -99,7 +99,7 @@
       "specs": [
         {
           "title": "Inpage basic flow",
-          "ok": false,
+          "ok": true,
           "tags": [],
           "tests": [
             {
@@ -112,28 +112,9 @@
                 {
                   "workerIndex": 0,
                   "parallelIndex": 0,
-                  "status": "failed",
-                  "duration": 33805,
-                  "error": {
-                    "message": "Error: Timed out waiting for event: user-opened-panel-rec",
-                    "stack": "Error: Timed out waiting for event: user-opened-panel-rec\n    at waitForEvent (/Users/rachel/virtusize/Playwright/tests/inpage.spec.js:1328:9)\n    at validateRefresh (/Users/rachel/virtusize/Playwright/tests/inpage.spec.js:509:7)\n    at /Users/rachel/virtusize/Playwright/tests/inpage.spec.js:335:5",
-                    "location": {
-                      "file": "/Users/rachel/virtusize/Playwright/tests/inpage.spec.js",
-                      "column": 9,
-                      "line": 1328
-                    },
-                    "snippet": "\u001b[0m \u001b[90m 1326 |\u001b[39m     \u001b[36mawait\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mPromise\u001b[39m((r) \u001b[33m=>\u001b[39m setTimeout(r\u001b[33m,\u001b[39m \u001b[35m200\u001b[39m))\u001b[33m;\u001b[39m\n \u001b[90m 1327 |\u001b[39m   }\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 1328 |\u001b[39m   \u001b[36mthrow\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mError\u001b[39m(\u001b[32m`Timed out waiting for event: ${eventKey}`\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m      |\u001b[39m         \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 1329 |\u001b[39m }\n \u001b[90m 1330 |\u001b[39m\n \u001b[90m 1331 |\u001b[39m \u001b[90m// --------------------------------------------------\u001b[39m\u001b[0m"
-                  },
-                  "errors": [
-                    {
-                      "location": {
-                        "file": "/Users/rachel/virtusize/Playwright/tests/inpage.spec.js",
-                        "column": 9,
-                        "line": 1328
-                      },
-                      "message": "Error: Timed out waiting for event: user-opened-panel-rec\n\n\u001b[0m \u001b[90m 1326 |\u001b[39m     \u001b[36mawait\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mPromise\u001b[39m((r) \u001b[33m=>\u001b[39m setTimeout(r\u001b[33m,\u001b[39m \u001b[35m200\u001b[39m))\u001b[33m;\u001b[39m\n \u001b[90m 1327 |\u001b[39m   }\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 1328 |\u001b[39m   \u001b[36mthrow\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mError\u001b[39m(\u001b[32m`Timed out waiting for event: ${eventKey}`\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m      |\u001b[39m         \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 1329 |\u001b[39m }\n \u001b[90m 1330 |\u001b[39m\n \u001b[90m 1331 |\u001b[39m \u001b[90m// --------------------------------------------------\u001b[39m\u001b[0m\n\u001b[2m    at waitForEvent (/Users/rachel/virtusize/Playwright/tests/inpage.spec.js:1328:9)\u001b[22m\n\u001b[2m    at validateRefresh (/Users/rachel/virtusize/Playwright/tests/inpage.spec.js:509:7)\u001b[22m\n\u001b[2m    at /Users/rachel/virtusize/Playwright/tests/inpage.spec.js:335:5\u001b[22m"
-                    }
-                  ],
+                  "status": "passed",
+                  "duration": 27105,
+                  "errors": [],
                   "stdout": [
                     {
                       "text": "Testing URL: https://www.underarmour.co.jp/f/dsg-1066979\n"
@@ -154,10 +135,10 @@
                       "text": "[integration] user-saw-widget-button\n"
                     },
                     {
-                      "text": "Page loaded\n"
+                      "text": "[integration] inpage-mounted\n"
                     },
                     {
-                      "text": "[integration] inpage-mounted\n"
+                      "text": "Page loaded\n"
                     },
                     {
                       "text": "PDC resolved: under_armour shoe valid: \u001b[33mtrue\u001b[39m\n"
@@ -241,28 +222,17 @@
                       "text": "[fit-illustrator] user-opened-panel-rec\n"
                     },
                     {
-                      "text": "QA_RESULT: {\"url\":\"https://www.underarmour.co.jp/f/dsg-1066979\",\"status\":\"failed\",\"browser\":\"chromium\",\"error\":\"Timed out waiting for event: user-opened-panel-rec\",\"missingEvents\":[],\"durationMs\":32687}\n"
+                      "text": "QA_RESULT: {\"url\":\"https://www.underarmour.co.jp/f/dsg-1066979\",\"store\":\"under_armour\",\"productType\":\"shoe\",\"userType\":\"NEW\",\"status\":\"passed\",\"browser\":\"chromium\",\"durationMs\":25992}\n"
                     }
                   ],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-03-16T10:04:43.033Z",
+                  "startTime": "2026-03-16T10:10:45.442Z",
                   "annotations": [],
-                  "attachments": [
-                    {
-                      "name": "error-context",
-                      "contentType": "text/markdown",
-                      "path": "/Users/rachel/virtusize/Playwright/test-results/inpage-Inpage-basic-flow-chromium/error-context.md"
-                    }
-                  ],
-                  "errorLocation": {
-                    "file": "/Users/rachel/virtusize/Playwright/tests/inpage.spec.js",
-                    "column": 9,
-                    "line": 1328
-                  }
+                  "attachments": []
                 }
               ],
-              "status": "unexpected"
+              "status": "expected"
             }
           ],
           "id": "4b94f1d2e5793e5150b0-f2c92c2862e29089a395",
@@ -275,11 +245,11 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2026-03-16T10:04:42.379Z",
-    "duration": 35955.661,
-    "expected": 0,
+    "startTime": "2026-03-16T10:10:44.749Z",
+    "duration": 29201.754999999997,
+    "expected": 1,
     "skipped": 0,
-    "unexpected": 1,
+    "unexpected": 0,
     "flaky": 0
   }
 }

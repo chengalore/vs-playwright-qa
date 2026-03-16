@@ -1320,14 +1320,16 @@ async function waitForStatus(getter, timeout = 5000) {
 }
 
 async function waitForEvent(eventWatcher, eventKey, timeout = 20000) {
-  // already fired
-  if (eventWatcher.getEvents().includes(eventKey)) return;
+  const hasEvent = () =>
+    eventWatcher.getEvents().some(e => e.startsWith(eventKey));
+
+  if (hasEvent()) return;
 
   const start = Date.now();
 
   while (Date.now() - start < timeout) {
-    if (eventWatcher.getEvents().includes(eventKey)) return;
-    await new Promise((r) => setTimeout(r, 200));
+    if (hasEvent()) return;
+    await new Promise(r => setTimeout(r, 200));
   }
 
   throw new Error(`Timed out waiting for event: ${eventKey}`);
