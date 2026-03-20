@@ -34,6 +34,7 @@
  */
 
 const RANDOM_PRODUCT_API =
+  process.env.RANDOM_PRODUCT_API_URL ||
   "https://dcai264p3l.execute-api.ap-northeast-1.amazonaws.com/prod/random_product";
 
 

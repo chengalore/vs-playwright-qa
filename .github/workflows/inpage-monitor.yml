@@ -122,6 +122,7 @@ jobs:
           STORE_ID: ${{ github.event.inputs.store_id }}
           PRODUCT_TYPE_ID: ${{ github.event.inputs.product_type_id }}
           GENDER: ${{ github.event.inputs.gender }}
+          RANDOM_PRODUCT_API_URL: ${{ secrets.RANDOM_PRODUCT_API_URL }}
 
       - name: Split stores into chunks
         run: node scripts/split-monitor-chunks.js

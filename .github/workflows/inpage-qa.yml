@@ -84,6 +84,7 @@ jobs:
           GENDER: ${{ github.event.inputs.gender }}
           EXCLUDE_KIDS: ${{ github.event.inputs.exclude_kids }}
           TEST_PHASE: ${{ github.event.inputs.phase }}
+          RANDOM_PRODUCT_API_URL: ${{ secrets.RANDOM_PRODUCT_API_URL }}
 
       - name: Save successful URL as fallback
         if: success()

@@ -10,3 +10,9 @@ node_modules/
 # Runtime data (generated during CI, not committed)
 data/monitor-urls.json
 monitor-output.log
+
+# Test results
+test-results.json
+
+# Claude Code local settings
+.claude/
