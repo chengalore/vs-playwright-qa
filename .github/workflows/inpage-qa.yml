@@ -65,32 +65,11 @@ jobs:
         if: ${{ github.event.inputs.url != '' }}
         run: echo "TEST_URL=${{ github.event.inputs.url }}" >> $GITHUB_ENV
 
-      - name: Resolve URL from store filters
-        if: ${{ github.event.inputs.url == '' }}
-        run: |
-          node --input-type=module <<'SCRIPT'
-          import { resolveTestUrl } from './utils/fetchRandomProduct.js';
-          import { appendFileSync } from 'fs';
-
-          const url = await resolveTestUrl(null);
-          if (!url) {
-            console.error('Could not find a valid product URL');
-            process.exit(1);
-          }
-          appendFileSync(process.env.GITHUB_ENV, `TEST_URL=${url}\n`);
-          console.log(`Resolved TEST_URL: ${url}`);
-          SCRIPT
-        env:
-          STORE_ID: ${{ github.event.inputs.store_id }}
-          PRODUCT_TYPE_ID: ${{ github.event.inputs.product_type_id }}
-          GENDER: ${{ github.event.inputs.gender }}
-          EXCLUDE_KIDS: ${{ github.event.inputs.exclude_kids }}
-
       - name: Notify Slack - test starting
         run: |
           curl -s -X POST \
             -H "Content-type: application/json" \
-            --data "{\"text\":\"🔍 Testing: ${TEST_URL}\"}" \
+            --data "{\"text\":\"🔍 Running QA (store_id=${{ github.event.inputs.store_id }})\"}" \
             "$SLACK_WEBHOOK_URL"
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -100,6 +79,10 @@ jobs:
           npx playwright test tests/inpage.spec.js | tee test-output.log
         env:
           TEST_URL: ${{ env.TEST_URL }}
+          STORE_ID: ${{ github.event.inputs.store_id }}
+          PRODUCT_TYPE_ID: ${{ github.event.inputs.product_type_id }}
+          GENDER: ${{ github.event.inputs.gender }}
+          EXCLUDE_KIDS: ${{ github.event.inputs.exclude_kids }}
           TEST_PHASE: ${{ github.event.inputs.phase }}
 
       - name: Save successful URL as fallback

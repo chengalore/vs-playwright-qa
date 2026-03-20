@@ -229,6 +229,7 @@ test(`Inpage basic flow${TEST_COUNT > 1 ? ` (${i + 1}/${TEST_COUNT})` : ""}`, as
       console.log("[bag] Bag flow completed");
 
       eventWatcher.reset();
+      eventWatcher.setPhase("refresh");
       await page.reload();
       console.log("[bag] Page refreshed — collecting events");
       await page.waitForTimeout(3000);
