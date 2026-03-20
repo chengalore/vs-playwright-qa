@@ -162,7 +162,7 @@ jobs:
 
       - run: npm ci
 
-      - run: npx playwright install --with-deps chromium
+      - run: npx playwright install --with-deps ${{ github.event.inputs.browser || 'chromium' }}
 
       - name: Download monitor chunks
         uses: actions/download-artifact@v4

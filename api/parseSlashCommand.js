@@ -73,6 +73,9 @@ const GENDER_ALIASES = {
 // Phase keywords for TEST_PHASE
 const PHASES = new Set(['widget', 'events', 'api', 'onboarding', 'full']);
 
+// Browser keywords
+const BROWSERS = new Set(['chromium', 'firefox', 'webkit']);
+
 /**
  * Parse slash command text into API params.
  * Returns { url } if text is a direct URL.
@@ -80,6 +83,7 @@ const PHASES = new Set(['widget', 'events', 'api', 'onboarding', 'full']);
  *
  * scope='all'  → monitor all stores (dispatch inpage-monitor.yml)
  * phase        → one of widget | events | api | onboarding | full (default: full)
+ * browser      → one of chromium | firefox | webkit (default: chromium)
  */
 export function parseSlashCommand(text) {
   const trimmed = (text || "").trim();
@@ -112,6 +116,8 @@ export function parseSlashCommand(text) {
       params.gender = GENDER_ALIASES[token];
     } else if (token === "exclude_kids" || token === "excludekids") {
       params.exclude_kids = true;
+    } else if (BROWSERS.has(token)) {
+      params.browser = token;
     }
     // unknown tokens are ignored
   }
