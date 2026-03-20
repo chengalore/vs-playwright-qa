@@ -239,20 +239,25 @@ jobs:
           const BOT_STATUSES = new Set(['cdn_blocked', 'navigation_error']);
 
           for (const [alias, result] of Object.entries(byStore)) {
-            if (!health[alias]) health[alias] = { consecutiveFailures: 0 };
+            if (!health[alias]) health[alias] = { consecutiveFailures: 0, consecutiveWidgetMissing: 0 };
 
             if (BOT_STATUSES.has(result.status)) {
               health[alias].consecutiveFailures = (health[alias].consecutiveFailures || 0) + 1;
               health[alias].lastFailureReason = result.status;
+              health[alias].consecutiveWidgetMissing = 0;
               if (health[alias].consecutiveFailures >= BLACKLIST_THRESHOLD && !health[alias].autoBlacklisted) {
                 health[alias].autoBlacklisted = true;
                 console.log(`🚫 [${alias}] Auto-blacklisted after ${health[alias].consecutiveFailures} consecutive ${result.status} failures`);
               }
+            } else if (result.status === 'widget_missing') {
+              health[alias].consecutiveWidgetMissing = (health[alias].consecutiveWidgetMissing || 0) + 1;
+              health[alias].consecutiveFailures = 0;
             } else if (result.status === 'passed') {
               if (health[alias].autoBlacklisted) {
                 console.log(`✅ [${alias}] Recovered — removing from auto-blacklist`);
               }
               health[alias].consecutiveFailures = 0;
+              health[alias].consecutiveWidgetMissing = 0;
               health[alias].autoBlacklisted = false;
               delete health[alias].lastFailureReason;
             }
@@ -341,14 +346,26 @@ jobs:
           if (autoBlacklisted.length > 0) message += `🚫 ${autoBlacklisted.length} auto-blacklisted\n`;
           if (fromFallback.length > 0) message += `\n📦 ${fromFallback.length} used fallback URL\n`;
 
-          const issues = [...widgetMissing, ...failed];
-          if (issues.length > 0) {
-            message += '\nIssues:\n';
-            for (const r of issues) {
-              const icon = r.status === 'widget_missing' ? '⚠️' : '❌';
-              message += `${icon} <${r.url}|${r.storeAlias}>`;
+          const newWidgetMissing = widgetMissing.filter(r => (health[r.storeAlias]?.consecutiveWidgetMissing ?? 0) <= 1);
+          const ongoingWidgetMissing = widgetMissing.filter(r => (health[r.storeAlias]?.consecutiveWidgetMissing ?? 0) > 1);
+
+          if (failed.length > 0 || newWidgetMissing.length > 0) {
+            message += '\n🆕 New issues:\n';
+            for (const r of failed) {
+              message += `❌ <${r.url}|${r.storeAlias}>`;
               if (r.error) message += ` — ${r.error.slice(0, 100)}`;
               message += '\n';
+            }
+            for (const r of newWidgetMissing) {
+              message += `⚠️ <${r.url}|${r.storeAlias}> — widget missing\n`;
+            }
+          }
+
+          if (ongoingWidgetMissing.length > 0) {
+            message += '\n🔁 Ongoing widget missing:\n';
+            for (const r of ongoingWidgetMissing) {
+              const runs = health[r.storeAlias]?.consecutiveWidgetMissing ?? 0;
+              message += `⚠️ <${r.url}|${r.storeAlias}> — ${runs} consecutive runs\n`;
             }
           }
 

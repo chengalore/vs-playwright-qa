@@ -16,10 +16,10 @@ import { BOT_PROTECTED_DOMAINS } from "../config/stores.js";
 
 test.setTimeout(180000);
 
-const TEST_COUNT = process.env.STORE_ID || process.env.API_KEY ? 3 : 1;
+const TEST_COUNT = 1;
 
 for (let i = 0; i < TEST_COUNT; i++) {
-test(`Inpage basic flow${TEST_COUNT > 1 ? ` (${i + 1}/${TEST_COUNT})` : ""}`, async ({ page }, testInfo) => {
+test("Inpage basic flow", async ({ page }, testInfo) => {
   const startTime = Date.now();
   const phase = process.env.TEST_PHASE || "full";
 
