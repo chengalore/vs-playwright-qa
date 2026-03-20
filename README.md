@@ -1,6 +1,6 @@
 # VS Playwright QA
 
-Automated end-to-end QA test framework for Virtusize widgets using **Playwright**.
+Automated end-to-end QA test framework for vs widgets using **Playwright**.
 
 This repository captures real user interaction flows on product pages (PDPs), intercepts vs network events, verifies expected event sequences, and produces a structured test summary across Chromium, Firefox, and WebKit.
 
