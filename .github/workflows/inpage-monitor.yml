@@ -351,8 +351,8 @@ jobs:
           if (autoBlacklisted.length > 0) message += `🚫 ${autoBlacklisted.length} auto-blacklisted\n`;
           if (fromFallback.length > 0) message += `\n📦 ${fromFallback.length} used fallback URL\n`;
 
-          const newWidgetMissing = widgetMissing.filter(r => (health[r.storeAlias]?.consecutiveWidgetMissing ?? 0) <= 1);
-          const ongoingWidgetMissing = widgetMissing.filter(r => (health[r.storeAlias]?.consecutiveWidgetMissing ?? 0) > 1);
+          const newWidgetMissing = widgetMissing.filter(r => (health[r.storeAlias]?.consecutiveWidgetMissing ?? 0) === 0);
+          const ongoingWidgetMissing = widgetMissing.filter(r => (health[r.storeAlias]?.consecutiveWidgetMissing ?? 0) > 0);
 
           if (failed.length > 0 || newWidgetMissing.length > 0) {
             message += '\n🆕 New issues:\n';
