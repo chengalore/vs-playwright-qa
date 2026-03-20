@@ -113,20 +113,29 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 27105,
+                  "duration": 60185,
                   "errors": [],
                   "stdout": [
                     {
-                      "text": "Testing URL: https://www.underarmour.co.jp/f/dsg-1066979\n"
+                      "text": "Testing URL: https://snidel.com/Form/Product/ProductDetail.aspx?shop=0&pid=SHFT261075&vid=&bid=SNH01&cid=&_type=&cat=&swrd=\n"
                     },
                     {
                       "text": "[EVENT WATCHER] Phase → onboarding\n"
                     },
                     {
-                      "text": "Navigating to: https://www.underarmour.co.jp/f/dsg-1066979\n"
+                      "text": "Navigating to: https://snidel.com/Form/Product/ProductDetail.aspx?shop=0&pid=SHFT261075&vid=&bid=SNH01&cid=&_type=&cat=&swrd=\n"
                     },
                     {
-                      "text": "PDC UPDATE: \u001b[33mtrue\u001b[39m shoe\n"
+                      "text": "Page loaded\n"
+                    },
+                    {
+                      "text": "PDC UPDATE: \u001b[33mtrue\u001b[39m shirt\n"
+                    },
+                    {
+                      "text": "PDC resolved: snidel shirt valid: \u001b[33mtrue\u001b[39m\n"
+                    },
+                    {
+                      "text": "Flow: apparel\n"
                     },
                     {
                       "text": "[integration] user-saw-product\n"
@@ -138,13 +147,7 @@
                       "text": "[integration] inpage-mounted\n"
                     },
                     {
-                      "text": "Page loaded\n"
-                    },
-                    {
-                      "text": "PDC resolved: under_armour shoe valid: \u001b[33mtrue\u001b[39m\n"
-                    },
-                    {
-                      "text": "Flow: footwear\n"
+                      "text": "[smart-table] user-saw-measurements-view\n"
                     },
                     {
                       "text": "[inpage] user-opened-widget\n"
@@ -153,31 +156,19 @@
                       "text": "[fit-illustrator] user-saw-onboarding-screen\n"
                     },
                     {
-                      "text": "New user → running footwear onboarding\n"
+                      "text": "[fit-illustrator] user-selected-age\n"
                     },
                     {
-                      "text": "[fit-illustrator] user-selected-narrow\n"
+                      "text": "[fit-illustrator] user-selected-height\n"
                     },
                     {
-                      "text": "[fit-illustrator] user-clicked-proceed-foot-width\n"
+                      "text": "[fit-illustrator] user-selected-weight\n"
                     },
                     {
-                      "text": "[fit-illustrator] user-selected-egyptian\n"
+                      "text": "[fit-illustrator] user-completed-onboarding\n"
                     },
                     {
-                      "text": "[fit-illustrator] user-clicked-proceed-foot-shape\n"
-                    },
-                    {
-                      "text": "[fit-illustrator] user-clicked-proceed-shoe-style-size\n"
-                    },
-                    {
-                      "text": "[fit-illustrator] user-selected-shoe-style\n"
-                    },
-                    {
-                      "text": "[fit-illustrator] user-clicked-proceed-shoe-brand\n"
-                    },
-                    {
-                      "text": "[fit-illustrator] user-created-footwear-silhouette\n"
+                      "text": "[fit-illustrator] user-created-silhouette\n"
                     },
                     {
                       "text": "Body Measurement API Status: \u001b[33m200\u001b[39m\n"
@@ -186,16 +177,25 @@
                       "text": "Recommendation API Status: \u001b[33m200\u001b[39m\n"
                     },
                     {
-                      "text": "Shoe Recommendation API Status: \u001b[33m200\u001b[39m\n"
+                      "text": "[integration] user-got-size-recommendation\n"
                     },
                     {
-                      "text": "[fit-illustrator] user-opened-panel-rec\n"
+                      "text": "[fit-illustrator] user-opened-panel-tryiton\n"
+                    },
+                    {
+                      "text": "[fit-illustrator] user-opened-panel-details\n"
+                    },
+                    {
+                      "text": "[fit-illustrator] user-opened-panel-compare\n"
+                    },
+                    {
+                      "text": "[fit-illustrator] user-added-product\n"
                     },
                     {
                       "text": "[EVENT WATCHER] Phase → refresh\n"
                     },
                     {
-                      "text": "PDC UPDATE: \u001b[33mtrue\u001b[39m shoe\n"
+                      "text": "PDC UPDATE: \u001b[33mtrue\u001b[39m shirt\n"
                     },
                     {
                       "text": "[integration] user-saw-product\n"
@@ -207,10 +207,13 @@
                       "text": "[integration] inpage-mounted\n"
                     },
                     {
+                      "text": "[smart-table] user-saw-measurements-view\n"
+                    },
+                    {
                       "text": "Recommendation API Status: \u001b[33m200\u001b[39m\n"
                     },
                     {
-                      "text": "Shoe Recommendation API Status: \u001b[33m200\u001b[39m\n"
+                      "text": "[integration] user-got-size-recommendation\n"
                     },
                     {
                       "text": "[inpage] user-selected-size\n"
@@ -219,15 +222,135 @@
                       "text": "[inpage] user-opened-widget\n"
                     },
                     {
-                      "text": "[fit-illustrator] user-opened-panel-rec\n"
+                      "text": "[fit-illustrator] user-opened-panel-tryiton\n"
                     },
                     {
-                      "text": "QA_RESULT: {\"url\":\"https://www.underarmour.co.jp/f/dsg-1066979\",\"store\":\"under_armour\",\"productType\":\"shoe\",\"userType\":\"NEW\",\"status\":\"passed\",\"browser\":\"chromium\",\"durationMs\":25992}\n"
+                      "text": "[EVENT WATCHER] Phase → gift\n"
+                    },
+                    {
+                      "text": "Running VS Gift flow\n"
+                    },
+                    {
+                      "text": "[gift] user-opened-widget\n"
+                    },
+                    {
+                      "text": "[gift] user-saw-onboarding-screen\n"
+                    },
+                    {
+                      "text": "Gift onboarding detected\n"
+                    },
+                    {
+                      "text": "[gift] user-selected-gender\n"
+                    },
+                    {
+                      "text": "Selected gender: female\n"
+                    },
+                    {
+                      "text": "[gift] user-clicked-age\n"
+                    },
+                    {
+                      "text": "[gift] user-selected-age-16_19\n"
+                    },
+                    {
+                      "text": "Selected age\n"
+                    },
+                    {
+                      "text": "[gift] user-clicked-height\n"
+                    },
+                    {
+                      "text": "[gift] user-selected-height-145_149\n"
+                    },
+                    {
+                      "text": "Selected height\n"
+                    },
+                    {
+                      "text": "[gift] user-clicked-bodyType\n"
+                    },
+                    {
+                      "text": "[gift] user-selected-bodyType-1\n"
+                    },
+                    {
+                      "text": "Selected body type\n"
+                    },
+                    {
+                      "text": "[gift] user-completed-onboarding\n"
+                    },
+                    {
+                      "text": "Clicked see ideal fit button\n"
+                    },
+                    {
+                      "text": "Body Measurement API Status: \u001b[33m200\u001b[39m\n"
+                    },
+                    {
+                      "text": "Recommendation API Status: \u001b[33m200\u001b[39m\n"
+                    },
+                    {
+                      "text": "[gift] user-opened-panel-rec\n"
+                    },
+                    {
+                      "text": "Gift recommendation result detected\n"
+                    },
+                    {
+                      "text": "Validating gift refresh behavior\n"
+                    },
+                    {
+                      "text": "[EVENT WATCHER] Phase → gift-refresh\n"
+                    },
+                    {
+                      "text": "PDC UPDATE: \u001b[33mtrue\u001b[39m shirt\n"
+                    },
+                    {
+                      "text": "[integration] user-saw-product\n"
+                    },
+                    {
+                      "text": "[integration] user-saw-widget-button\n"
+                    },
+                    {
+                      "text": "[integration] inpage-mounted\n"
+                    },
+                    {
+                      "text": "[smart-table] user-saw-measurements-view\n"
+                    },
+                    {
+                      "text": "Recommendation API Status: \u001b[33m200\u001b[39m\n"
+                    },
+                    {
+                      "text": "Recommendation API Status: \u001b[33m200\u001b[39m\n"
+                    },
+                    {
+                      "text": "[integration] user-got-size-recommendation\n"
+                    },
+                    {
+                      "text": "[inpage] user-selected-size\n"
+                    },
+                    {
+                      "text": "[inpage] user-opened-widget\n"
+                    },
+                    {
+                      "text": "[fit-illustrator] user-opened-panel-tryiton\n"
+                    },
+                    {
+                      "text": "[gift] user-opened-widget\n"
+                    },
+                    {
+                      "text": "Body Measurement API Status: \u001b[33m200\u001b[39m\n"
+                    },
+                    {
+                      "text": "Recommendation API Status: \u001b[33m200\u001b[39m\n"
+                    },
+                    {
+                      "text": "[gift] user-opened-panel-rec\n"
+                    },
+                    {
+                      "text": "Gift refresh: recommendation visible\n"
+                    },
+                    {
+                      "text": "QA_RESULT: {\"url\":\"https://snidel.com/Form/Product/ProductDetail.aspx?shop=0&pid=SHFT261075&vid=&bid=SNH01&cid=&_type=&cat=&swrd=\",\"store\":\"snidel\",\"productType\":\"shirt\",\"userType\":\"NEW\",\"status\":\"passed\",\"browser\":\"chromium\",\"durationMs\":59782}\n"
                     }
                   ],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-03-16T10:10:45.442Z",
+                  "startTime": "2026-03-20T09:46:24.416Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -245,8 +368,8 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2026-03-16T10:10:44.749Z",
-    "duration": 29201.754999999997,
+    "startTime": "2026-03-20T09:46:23.844Z",
+    "duration": 61904.257,
     "expected": 1,
     "skipped": 0,
     "unexpected": 0,

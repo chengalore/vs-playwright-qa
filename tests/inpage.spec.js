@@ -112,7 +112,7 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
     await page.evaluate(() => {
       // #vs-placeholder-cart is a mounting point only — scroll to the actual widget element.
       const widget = document.querySelector(
-        "#vs-inpage, #vs-inpage-luxury, #vs-legacy-inpage, #vs-kid, #vs-placeholder-cart"
+        "#vs-inpage, #vs-inpage-luxury, #vs-legacy-inpage, #vs-kid, #vs-placeholder-cart",
       );
       if (widget) {
         widget.scrollIntoView({ block: "center", behavior: "instant" });
@@ -128,15 +128,118 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
       document
         .querySelectorAll(
           'button[data-testid="uc-accept-all-button"], ' +
-          '#onetrust-accept-btn-handler, ' +
-          'button[id*="cookie"][id*="accept"], ' +
-          'button[class*="cookie"][class*="accept"]',
+            "#onetrust-accept-btn-handler, " +
+            'button[id*="cookie"][id*="accept"], ' +
+            'button[class*="cookie"][class*="accept"]',
         )
         .forEach((btn) => btn.click());
     });
 
     await waitForPDC(pdc);
-    console.log("PDC resolved:", pdc.store, pdc.productType, "valid:", pdc.validProduct);
+    console.log(
+      "PDC resolved:",
+      pdc.store,
+      pdc.productType,
+      "valid:",
+      pdc.validProduct,
+    );
+
+    // -----------------------------
+    // Bag Gatekeeping
+    // -----------------------------
+
+    if (isBagProduct(pdc)) {
+      console.log("[bag] Bag product detected:", pdc.productType);
+
+      if (pdc.validProduct !== true) {
+        console.log("SKIPPED: Invalid bag product");
+        logResult({
+          url,
+          store: pdc.store,
+          productType: pdc.productType,
+          status: "skipped",
+          browser: testInfo.project.name,
+          reason: "Invalid product",
+          durationMs: Date.now() - startTime,
+        });
+        return;
+      }
+
+      if (phase === "api") {
+        logResult({
+          url,
+          store: pdc.store,
+          productType: pdc.productType,
+          status: "passed",
+          browser: testInfo.project.name,
+          phase,
+          durationMs: Date.now() - startTime,
+        });
+        return;
+      }
+
+      // Wait for and click inpage button
+      await page.waitForFunction(
+        () => {
+          const root =
+            document.querySelector("#vs-inpage")?.shadowRoot ||
+            document.querySelector("#vs-inpage-luxury")?.shadowRoot;
+          return !!root?.querySelector(
+            '[data-test-id="inpage-open-aoyama-btn"]',
+          );
+        },
+        { timeout: 15000 },
+      );
+
+      await page.evaluate(() => {
+        const root =
+          document.querySelector("#vs-inpage")?.shadowRoot ||
+          document.querySelector("#vs-inpage-luxury")?.shadowRoot;
+        const btn = root?.querySelector(
+          '[data-test-id="inpage-open-aoyama-btn"]',
+        );
+        btn?.click();
+      });
+
+      console.log("[bag] Clicked inpage button");
+      await page.waitForTimeout(2000);
+
+      if (phase === "widget") {
+        logResult({
+          url,
+          store: pdc.store,
+          productType: pdc.productType,
+          status: "passed",
+          browser: testInfo.project.name,
+          phase,
+          durationMs: Date.now() - startTime,
+        });
+        return;
+      }
+
+      await page.waitForFunction(() => !!getWidgetHost()?.shadowRoot, {
+        timeout: 15000,
+      });
+
+      await runBagFlow(page);
+
+      console.log("[bag] Bag flow completed");
+
+      eventWatcher.reset();
+      await page.reload();
+      console.log("[bag] Page refreshed — collecting events");
+      await page.waitForTimeout(3000);
+
+      logResult({
+        url,
+        store: pdc.store,
+        productType: pdc.productType,
+        status: "passed",
+        browser: testInfo.project.name,
+        durationMs: Date.now() - startTime,
+      });
+      return;
+    }
 
     // -----------------------------
     // Gatekeeping
@@ -145,14 +248,22 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
     const isBotProtectedUrl = (() => {
       try {
         const hostname = new URL(url).hostname.replace(/^www\./, "");
-        return BOT_PROTECTED_DOMAINS.some((d) => hostname === d || hostname.endsWith(`.${d}`));
-      } catch { return false; }
+        return BOT_PROTECTED_DOMAINS.some(
+          (d) => hostname === d || hostname.endsWith(`.${d}`),
+        );
+      } catch {
+        return false;
+      }
     })();
 
     const skipReason =
       getSkipReason(pdc) ??
-      (isBotProtectedUrl ? "Bot-protected store — cannot be automated (bot detection)" : null) ??
-      (pdc.validProduct !== true ? "No valid Virtusize product detected on this PDP" : null);
+      (isBotProtectedUrl
+        ? "Bot-protected store — cannot be automated (bot detection)"
+        : null) ??
+      (pdc.validProduct !== true
+        ? "No valid Virtusize product detected on this PDP"
+        : null);
 
     if (skipReason) {
       console.log("SKIPPED:", skipReason);
@@ -381,7 +492,7 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
 // --------------------------------------------------
 
 function getSkipReason(pdc) {
-  const excludedTypes = ["bag", "wallet", "clutch", "panties"];
+  const excludedTypes = ["panties"];
 
   if (pdc.validProduct === false) return "Invalid Product (validProduct=false)";
   // allow no-visor flow to run
@@ -406,30 +517,30 @@ async function validateCoreEvents(page, eventWatcher, flow) {
         : flow === "gift"
           ? await verifyEvents(page, getEvents, expectedEvents.strict.gift)
           : [
-            ...(await verifyEvents(
-              page,
-              getEvents,
-              expectedEvents.strict.baseline,
-            )),
-            ...(flow === "footwear"
-              ? await verifyEvents(
-                  page,
-                  getEvents,
-                  expectedEvents.strict.footwear,
-                )
-              : [
-                  ...(await verifyEvents(
+              ...(await verifyEvents(
+                page,
+                getEvents,
+                expectedEvents.strict.baseline,
+              )),
+              ...(flow === "footwear"
+                ? await verifyEvents(
                     page,
                     getEvents,
-                    expectedEvents.strict.recommendation,
-                  )),
-                  ...(await verifyEvents(
-                    page,
-                    getEvents,
-                    expectedEvents.strict.panels,
-                  )),
-                ]),
-          ];
+                    expectedEvents.strict.footwear,
+                  )
+                : [
+                    ...(await verifyEvents(
+                      page,
+                      getEvents,
+                      expectedEvents.strict.recommendation,
+                    )),
+                    ...(await verifyEvents(
+                      page,
+                      getEvents,
+                      expectedEvents.strict.panels,
+                    )),
+                  ]),
+            ];
 
   if (missing.length > 0) {
     const error = new Error(`Missing events: ${missing.join(", ")}`);
@@ -451,7 +562,11 @@ async function validateRefresh(page, eventWatcher, recommendationAPI, flow) {
 
     console.log("Waiting for kids recommendation after refresh");
 
-    await waitForEvent(eventWatcher, "user-selected-size-kids-rec::kids", 15000);
+    await waitForEvent(
+      eventWatcher,
+      "user-selected-size-kids-rec::kids",
+      15000,
+    );
 
     const failures = await verifyEvents(
       page,
@@ -588,6 +703,11 @@ function validateStrictDuplicates(eventWatcher) {
 // Flow Detection
 // --------------------------------------------------
 
+function isBagProduct(pdc) {
+  const bagTypes = ["bag", "clutch", "wallet"];
+  return bagTypes.includes(pdc.productType?.toLowerCase());
+}
+
 function detectFlow(pdc) {
   const gender = pdc.gender?.toLowerCase();
   const isKid = pdc.isKid || gender === "boy" || gender === "girl";
@@ -624,6 +744,68 @@ async function runApparelFlow(page, bodyAPI, eventWatcher, recommendationAPI) {
   }
 
   return isNewUser;
+}
+
+// --------------------------------------------------
+// Bag Flow
+// --------------------------------------------------
+
+async function runBagFlow(page) {
+  console.log("[bag] Starting bag flow");
+
+  // Wait for the privacy policy checkbox to appear
+  await page.waitForFunction(
+    () => !!findInShadow('[data-test-id="privacy-policy-checkbox"]'),
+    { timeout: 15000 },
+  );
+
+  console.log("[bag] Privacy policy modal found");
+
+  await page.evaluate(() => {
+    const checkbox = findInShadow('[data-test-id="privacy-policy-checkbox"]');
+    if (!checkbox) return;
+    // Remove id from the linkText Button so the label's for="linkText" points to nothing
+    const root = checkbox.getRootNode();
+    const linkButton = root.querySelector?.("#linkText");
+    if (linkButton) linkButton.removeAttribute("id");
+    checkbox.click();
+  });
+
+  console.log("[bag] Privacy policy checked");
+
+  // Wait for next button to become enabled, then click it
+  const nextBtn = page.locator('[data-test-id="accept-privacy-policy-btn"]');
+  await expect(nextBtn).toBeEnabled({ timeout: 5000 });
+  await nextBtn.click();
+
+  console.log("[bag] Clicked accept privacy policy");
+
+  await page.waitForTimeout(2000);
+
+  await page.waitForFunction(
+    () => !!findInShadow('button.everyday-item-btns'),
+    { timeout: 20000 },
+  );
+  await page.evaluate(() => {
+    findInShadow('button.everyday-item-btns')?.click();
+  });
+  console.log("[bag] Clicked budget button");
+
+  // Select a size option from the hidden select inside the everyday-item button
+  await page.waitForFunction(() => !!findInShadow(".hidden-select"), {
+    timeout: 10000,
+  });
+
+  await page.evaluate(() => {
+    const select = findInShadow(".hidden-select");
+    if (!select) return;
+    select.value = "JPY_5000";
+    select.dispatchEvent(new Event("change", { bubbles: true }));
+  });
+
+  console.log("[bag] Selected size option");
+
+  return false;
 }
 
 // --------------------------------------------------
@@ -726,23 +908,23 @@ async function runFootwearFlow(page, shoeAPI) {
   // Step 3: Gender (optional)
   const hasGender = await page.evaluate(() => {
     const modal = getWidgetHost()?.shadowRoot?.querySelector(
-      "#vs-aoyama-main-modal"
+      "#vs-aoyama-main-modal",
     );
     return !!modal?.querySelector(
-      '[data-test-id="gender-radio-buttons"] input[type="radio"]'
+      '[data-test-id="gender-radio-buttons"] input[type="radio"]',
     );
   });
 
   if (hasGender) {
     await page.evaluate(() => {
       const modal = getWidgetHost()?.shadowRoot?.querySelector(
-        "#vs-aoyama-main-modal"
+        "#vs-aoyama-main-modal",
       );
       const radios = modal?.querySelectorAll(
-        '[data-test-id="gender-radio-buttons"] input[type="radio"]'
+        '[data-test-id="gender-radio-buttons"] input[type="radio"]',
       );
       const female = [...radios].find(
-        (el) => el.value.toLowerCase() === "female"
+        (el) => el.value.toLowerCase() === "female",
       );
       if (female) {
         female.click();
@@ -758,19 +940,28 @@ async function runFootwearFlow(page, shoeAPI) {
   await shadowClick('[data-test-id="open-sizes-footwear-picker"]');
 
   // Wait for picker radios
-  await page.waitForFunction(() => {
-    const root = getWidgetHost()?.shadowRoot;
-    return root?.querySelector('[data-test-id="footwear-picker"] input[type="radio"]');
-  }, { timeout: 5000 });
+  await page.waitForFunction(
+    () => {
+      const root = getWidgetHost()?.shadowRoot;
+      return root?.querySelector(
+        '[data-test-id="footwear-picker"] input[type="radio"]',
+      );
+    },
+    { timeout: 5000 },
+  );
 
   // Select radio only if nothing is selected
   await page.evaluate(() => {
-    const modal = getWidgetHost()?.shadowRoot?.querySelector("#vs-aoyama-main-modal");
-    const radios = modal?.querySelectorAll('[data-test-id="footwear-picker"] input[type="radio"]');
+    const modal = getWidgetHost()?.shadowRoot?.querySelector(
+      "#vs-aoyama-main-modal",
+    );
+    const radios = modal?.querySelectorAll(
+      '[data-test-id="footwear-picker"] input[type="radio"]',
+    );
 
     if (!radios?.length) return;
 
-    const alreadyChecked = [...radios].find(r => r.checked);
+    const alreadyChecked = [...radios].find((r) => r.checked);
 
     if (!alreadyChecked) {
       const first = radios[0];
@@ -861,48 +1052,64 @@ async function runKidsFlow(page, _pdc) {
   console.log("[kids] Gender radio buttons detected");
 
   // Click girl radio
-  await kidsRetry(page, async () => {
-    await page.evaluate(() => {
-      const radio = findInShadow('input[name="selectKidGender"][value="girl"]');
-      if (!radio) throw new Error("Girl gender radio not found");
-      radio.click();
-      radio.dispatchEvent(new Event("change", { bubbles: true }));
-    });
-  }, "click girl gender radio");
+  await kidsRetry(
+    page,
+    async () => {
+      await page.evaluate(() => {
+        const radio = findInShadow(
+          'input[name="selectKidGender"][value="girl"]',
+        );
+        if (!radio) throw new Error("Girl gender radio not found");
+        radio.click();
+        radio.dispatchEvent(new Event("change", { bubbles: true }));
+      });
+    },
+    "click girl gender radio",
+  );
   console.log("[kids] Gender selected: girl");
 
   // Open age selector — try both known selector patterns
-  await kidsRetry(page, async () => {
-    await page.evaluate(() => {
-      const root = document.querySelector("#vs-kid-app")?.nextElementSibling?.shadowRoot;
-      if (!root) throw new Error("Kids shadow root not found");
-      const ageSpan =
-        root.querySelector("span.age-input-value") ??
-        root.querySelector('[data-test-id="age-input-value"]');
-      if (!ageSpan) throw new Error("Age input span not found");
-      ageSpan.click();
-    });
-  }, "open age selector");
+  await kidsRetry(
+    page,
+    async () => {
+      await page.evaluate(() => {
+        const root =
+          document.querySelector("#vs-kid-app")?.nextElementSibling?.shadowRoot;
+        if (!root) throw new Error("Kids shadow root not found");
+        const ageSpan =
+          root.querySelector("span.age-input-value") ??
+          root.querySelector('[data-test-id="age-input-value"]');
+        if (!ageSpan) throw new Error("Age input span not found");
+        ageSpan.click();
+      });
+    },
+    "open age selector",
+  );
   console.log("[kids] Age selector opened");
 
   // Wait for age picker radios — any radio that is NOT the gender radio
   await page.waitForFunction(
     () => {
-      const root = document.querySelector("#vs-kid-app")?.nextElementSibling?.shadowRoot;
+      const root =
+        document.querySelector("#vs-kid-app")?.nextElementSibling?.shadowRoot;
       if (!root) return false;
-      return [...root.querySelectorAll('input[type="radio"]')]
-        .some((r) => r.name !== "selectKidGender");
+      return [...root.querySelectorAll('input[type="radio"]')].some(
+        (r) => r.name !== "selectKidGender",
+      );
     },
     { timeout: 10000 },
   );
 
   // Select age radio — 6th option (index 5) or first if fewer exist
   await page.evaluate(() => {
-    const root = document.querySelector("#vs-kid-app")?.nextElementSibling?.shadowRoot;
-    if (!root) throw new Error("[kids] Shadow root not found for age selection");
+    const root =
+      document.querySelector("#vs-kid-app")?.nextElementSibling?.shadowRoot;
+    if (!root)
+      throw new Error("[kids] Shadow root not found for age selection");
 
-    const ageRadios = [...root.querySelectorAll('input[type="radio"]')]
-      .filter((r) => r.name !== "selectKidGender");
+    const ageRadios = [...root.querySelectorAll('input[type="radio"]')].filter(
+      (r) => r.name !== "selectKidGender",
+    );
 
     if (!ageRadios.length) throw new Error("[kids] No age radio buttons found");
 
@@ -918,9 +1125,12 @@ async function runKidsFlow(page, _pdc) {
 
   await page.waitForFunction(
     () => {
-      const root = document.querySelector("#vs-kid-app")?.nextElementSibling?.shadowRoot;
+      const root =
+        document.querySelector("#vs-kid-app")?.nextElementSibling?.shadowRoot;
       return !!(
-        root?.querySelector('[data-test-id="kids-height-input-desktop"] input') &&
+        root?.querySelector(
+          '[data-test-id="kids-height-input-desktop"] input',
+        ) &&
         root?.querySelector('[data-test-id="kids-weight-input-desktop"] input')
       );
     },
@@ -933,7 +1143,8 @@ async function runKidsFlow(page, _pdc) {
   ]) {
     await page.evaluate(
       ({ testId, value }) => {
-        const root = document.querySelector("#vs-kid-app")?.nextElementSibling?.shadowRoot;
+        const root =
+          document.querySelector("#vs-kid-app")?.nextElementSibling?.shadowRoot;
         const input = root?.querySelector(`[data-test-id="${testId}"] input`);
         if (!input) throw new Error(`[kids] Input not found: ${testId}`);
         input.focus();
@@ -950,33 +1161,43 @@ async function runKidsFlow(page, _pdc) {
   /* -------------------- PRIVACY POLICY -------------------- */
 
   await page.evaluate(() => {
-    const root = document.querySelector("#vs-kid-app")?.nextElementSibling?.shadowRoot;
+    const root =
+      document.querySelector("#vs-kid-app")?.nextElementSibling?.shadowRoot;
     if (!root) return;
-    const checkbox = root.querySelector('[data-test-id="privacy-policy-checkbox"]');
+    const checkbox = root.querySelector(
+      '[data-test-id="privacy-policy-checkbox"]',
+    );
     if (checkbox && !checkbox.checked) {
+      const label = checkbox.closest("label");
+      if (label) label.removeAttribute("for");
       checkbox.click();
-      checkbox.dispatchEvent(new Event("change", { bubbles: true }));
     }
   });
   console.log("[kids] Privacy policy accepted");
 
   /* -------------------- CTA BUTTON -------------------- */
 
-  await kidsRetry(page, async () => {
-    await page.evaluate(() => {
-      const root = document.querySelector("#vs-kid-app")?.nextElementSibling?.shadowRoot;
-      const btn = root?.querySelector('[data-test-id="see-ideal-fit-btn"]');
-      if (!btn) throw new Error("[kids] CTA button not found");
-      btn.click();
-    });
-  }, "click see-ideal-fit-btn");
+  await kidsRetry(
+    page,
+    async () => {
+      await page.evaluate(() => {
+        const root =
+          document.querySelector("#vs-kid-app")?.nextElementSibling?.shadowRoot;
+        const btn = root?.querySelector('[data-test-id="see-ideal-fit-btn"]');
+        if (!btn) throw new Error("[kids] CTA button not found");
+        btn.click();
+      });
+    },
+    "click see-ideal-fit-btn",
+  );
   console.log("[kids] Clicked See Your Perfect Fit");
 
   /* -------------------- WAIT FOR RESULT -------------------- */
 
   await page.waitForFunction(
     () => {
-      const root = document.querySelector("#vs-kid-app")?.nextElementSibling?.shadowRoot;
+      const root =
+        document.querySelector("#vs-kid-app")?.nextElementSibling?.shadowRoot;
       return !!root?.querySelector('[data-test-id="kids-recommended-size"]');
     },
     { timeout: 30000 },
@@ -995,10 +1216,12 @@ async function runGiftFlow(page, eventWatcher) {
 
   // detect gift CTA in widget — not all stores enable it
   // wait briefly since the CTA can appear after the recommendation panel loads
-  const hasGift = await page.waitForFunction(
-    () => !!findInShadow('[data-test-id="gift-cta-section"]'),
-    { timeout: 5000 }
-  ).catch(() => false);
+  const hasGift = await page
+    .waitForFunction(
+      () => !!findInShadow('[data-test-id="gift-cta-section"]'),
+      { timeout: 5000 },
+    )
+    .catch(() => false);
 
   if (!hasGift) {
     console.log("Gift CTA not found — skipping gift flow");
@@ -1011,17 +1234,15 @@ async function runGiftFlow(page, eventWatcher) {
   // before the button is rendered (e.g. lazy shadow init on CELFORD).
   await page.waitForFunction(
     () => !!findInShadow('[data-test-id="gift-cta"]'),
-    { timeout: 15000 }
+    { timeout: 15000 },
   );
 
-  await page.evaluate(() =>
-    findInShadow('[data-test-id="gift-cta"]')?.click()
-  );
+  await page.evaluate(() => findInShadow('[data-test-id="gift-cta"]')?.click());
 
   // Wait for onboarding to mount
   await page.waitForFunction(
     () => !!findInShadow('[data-test-id="input-age-desktop"]'),
-    { timeout: 15000 }
+    { timeout: 15000 },
   );
 
   console.log("Gift onboarding detected");
@@ -1049,15 +1270,17 @@ async function runGiftFlow(page, eventWatcher) {
   // Wait for age options (span[role="radio"]) to appear inside #sheet in the shadow DOM.
   // Scope to #sheet so we don't accidentally click gender radio buttons which share the selector.
   await page.waitForFunction(
-    () => !!findInShadow('#sheet')?.querySelector('span[role="radio"]'),
-    { timeout: 10000 }
+    () => !!findInShadow("#sheet")?.querySelector('span[role="radio"]'),
+    { timeout: 10000 },
   );
-  await page.evaluate(() => findInShadow('#sheet')?.querySelector('span[role="radio"]')?.click());
+  await page.evaluate(() =>
+    findInShadow("#sheet")?.querySelector('span[role="radio"]')?.click(),
+  );
 
   // Wait for the age sheet to close
   await page.waitForFunction(
-    () => !findInShadow('#sheet')?.querySelector('span[role="radio"]'),
-    { timeout: 8000 }
+    () => !findInShadow("#sheet")?.querySelector('span[role="radio"]'),
+    { timeout: 8000 },
   );
 
   console.log("Selected age");
@@ -1070,22 +1293,27 @@ async function runGiftFlow(page, eventWatcher) {
 
   // Wait for height options to appear inside #sheet, then click first one
   await page.waitForFunction(
-    () => !!findInShadow('#sheet')?.querySelector('span[role="radio"]'),
-    { timeout: 10000 }
+    () => !!findInShadow("#sheet")?.querySelector('span[role="radio"]'),
+    { timeout: 10000 },
   );
-  await page.evaluate(() => findInShadow('#sheet')?.querySelector('span[role="radio"]')?.click());
+  await page.evaluate(() =>
+    findInShadow("#sheet")?.querySelector('span[role="radio"]')?.click(),
+  );
 
   // Wait for the height sheet to close
   await page.waitForFunction(
-    () => !findInShadow('#sheet')?.querySelector('span[role="radio"]'),
-    { timeout: 8000 }
+    () => !findInShadow("#sheet")?.querySelector('span[role="radio"]'),
+    { timeout: 8000 },
   );
 
   // verify value updated away from placeholder
-  await page.waitForFunction(() => {
-    const el = findInShadow('[data-test-id="input-height-desktop"]');
-    return el && !/^\s*-\s*$/.test(el.textContent ?? '');
-  }, { timeout: 8000 });
+  await page.waitForFunction(
+    () => {
+      const el = findInShadow('[data-test-id="input-height-desktop"]');
+      return el && !/^\s*-\s*$/.test(el.textContent ?? "");
+    },
+    { timeout: 8000 },
+  );
 
   console.log("Selected height");
 
@@ -1106,7 +1334,9 @@ async function runGiftFlow(page, eventWatcher) {
 
   // ── 6. Privacy policy (new users only) ───────────────────────────────────
 
-  const privacyCheckbox = page.locator('[data-test-id="privacy-policy-checkbox"]');
+  const privacyCheckbox = page.locator(
+    '[data-test-id="privacy-policy-checkbox"]',
+  );
   if (await privacyCheckbox.isVisible()) {
     await privacyCheckbox.click();
     console.log("Accepted privacy policy");
@@ -1123,7 +1353,9 @@ async function runGiftFlow(page, eventWatcher) {
   // ── 8. Wait for result ────────────────────────────────────────────────────
 
   await expect(
-    page.locator('[data-test-id="adjustYourSilhouette.header"], .rec-main').first()
+    page
+      .locator('[data-test-id="adjustYourSilhouette.header"], .rec-main')
+      .first(),
   ).toBeVisible({ timeout: 20_000 });
 
   console.log("Gift recommendation result detected");
@@ -1133,7 +1365,7 @@ async function runGiftFlow(page, eventWatcher) {
   const giftMissing = await verifyEvents(
     page,
     () => eventWatcher.getEvents(),
-    expectedEvents.strict.gift
+    expectedEvents.strict.gift,
   );
   if (giftMissing.length > 0) {
     const error = new Error(`Gift missing events: ${giftMissing.join(", ")}`);
@@ -1157,7 +1389,7 @@ async function runGiftFlow(page, eventWatcher) {
   // is clicked next. Wait directly for the gift CTA to appear instead.
   await page.waitForFunction(
     () => !!findInShadow('[data-test-id="gift-cta"]'),
-    { timeout: 20000 }
+    { timeout: 20000 },
   );
 
   await page.evaluate(() => findInShadow('[data-test-id="gift-cta"]')?.click());
@@ -1170,10 +1402,12 @@ async function runGiftFlow(page, eventWatcher) {
   const refreshMissing = await verifyEvents(
     page,
     () => eventWatcher.getEvents(),
-    expectedEvents.refresh.gift
+    expectedEvents.refresh.gift,
   );
   if (refreshMissing.length > 0) {
-    const error = new Error(`Gift refresh missing events: ${refreshMissing.join(", ")}`);
+    const error = new Error(
+      `Gift refresh missing events: ${refreshMissing.join(", ")}`,
+    );
     error.missingEvents = refreshMissing;
     throw error;
   }
@@ -1193,7 +1427,8 @@ async function runGiftFlow(page, eventWatcher) {
 async function waitForKidsWidgetReady(page) {
   await page.waitForFunction(
     () => {
-      if (document.querySelector("#vs-kid-app")?.nextElementSibling?.shadowRoot) return true;
+      if (document.querySelector("#vs-kid-app")?.nextElementSibling?.shadowRoot)
+        return true;
       return !!document.querySelector("#vs-kid")?.shadowRoot;
     },
     { timeout: 20000 },
@@ -1212,9 +1447,13 @@ async function kidsRetry(page, fn, label, maxAttempts = 3, delayMs = 500) {
       return;
     } catch (e) {
       if (attempt === maxAttempts) {
-        throw new Error(`[kids] "${label}" failed after ${maxAttempts} attempts: ${e.message}`);
+        throw new Error(
+          `[kids] "${label}" failed after ${maxAttempts} attempts: ${e.message}`,
+        );
       }
-      console.warn(`[kids] "${label}" attempt ${attempt} failed: ${e.message} — retrying...`);
+      console.warn(
+        `[kids] "${label}" attempt ${attempt} failed: ${e.message} — retrying...`,
+      );
       await page.waitForTimeout(delayMs);
     }
   }
@@ -1321,7 +1560,7 @@ async function waitForStatus(getter, timeout = 5000) {
 
 async function waitForEvent(eventWatcher, eventKey, timeout = 20000) {
   const hasEvent = () =>
-    eventWatcher.getEvents().some(e => e.startsWith(eventKey));
+    eventWatcher.getEvents().some((e) => e.startsWith(eventKey));
 
   if (hasEvent()) return;
 
@@ -1329,7 +1568,7 @@ async function waitForEvent(eventWatcher, eventKey, timeout = 20000) {
 
   while (Date.now() - start < timeout) {
     if (hasEvent()) return;
-    await new Promise(r => setTimeout(r, 200));
+    await new Promise((r) => setTimeout(r, 200));
   }
 
   throw new Error(`Timed out waiting for event: ${eventKey}`);
@@ -1342,7 +1581,10 @@ async function waitForEvent(eventWatcher, eventKey, timeout = 20000) {
 async function waitForWidget(page, flow) {
   // #vs-placeholder-cart is always a mounting point only (never the widget itself),
   // so exclude it here — wait for the actual widget element to become visible.
-  const selector = flow === "kids" ? "#vs-kid" : ":is(#vs-inpage, #vs-inpage-luxury, #vs-legacy-inpage)";
+  const selector =
+    flow === "kids"
+      ? "#vs-kid"
+      : ":is(#vs-inpage, #vs-inpage-luxury, #vs-legacy-inpage)";
 
   await page.waitForFunction(
     (sel) => {
@@ -1383,7 +1625,10 @@ async function clickKidsWidget(page) {
 
 async function clickWidget(page, flow) {
   // #vs-placeholder-cart excluded — it's a mounting point, never the actual widget.
-  const selector = flow === "kids" ? "#vs-kid" : ":is(#vs-inpage, #vs-inpage-luxury, #vs-legacy-inpage)";
+  const selector =
+    flow === "kids"
+      ? "#vs-kid"
+      : ":is(#vs-inpage, #vs-inpage-luxury, #vs-legacy-inpage)";
 
   await page.evaluate((sel) => {
     document.querySelector(sel)?.scrollIntoView({ block: "center" });
@@ -1395,22 +1640,28 @@ async function clickWidget(page, flow) {
   // #vs-placeholder-cart is a mounting point only — #vs-inpage is injected inside it
   // and is the actual shadow host. Legacy inpage (#vs-legacy-inpage) has no shadow root.
   if (flow !== "kids") {
-    if (await page.evaluate(() =>
-      !!document.querySelector("#vs-inpage") ||
-      !!document.querySelector("#vs-inpage-luxury")
-    )) {
+    if (
+      await page.evaluate(
+        () =>
+          !!document.querySelector("#vs-inpage") ||
+          !!document.querySelector("#vs-inpage-luxury"),
+      )
+    ) {
       // Wait for the shadow root to render its entry point — either the standard
       // open button or the gift CTA (e.g. CELFORD renders gift-cta directly).
-      await page.waitForFunction(() => {
-        const root = (
-          document.querySelector("#vs-inpage") ||
-          document.querySelector("#vs-inpage-luxury")
-        )?.shadowRoot;
-        return (
-          !!root?.querySelector('[data-test-id="inpage-open-aoyama-btn"]') ||
-          !!root?.querySelector('[data-test-id="gift-cta"]')
-        );
-      }, { timeout: 15000 });
+      await page.waitForFunction(
+        () => {
+          const root = (
+            document.querySelector("#vs-inpage") ||
+            document.querySelector("#vs-inpage-luxury")
+          )?.shadowRoot;
+          return (
+            !!root?.querySelector('[data-test-id="inpage-open-aoyama-btn"]') ||
+            !!root?.querySelector('[data-test-id="gift-cta"]')
+          );
+        },
+        { timeout: 15000 },
+      );
 
       await page.evaluate(() => {
         const root = (
@@ -1437,7 +1688,6 @@ async function clickWidget(page, flow) {
 // --------------------------------------------------
 // Overlay Cleanup
 // --------------------------------------------------
-
 
 function logResult(result) {
   console.log("QA_RESULT:", JSON.stringify(result));

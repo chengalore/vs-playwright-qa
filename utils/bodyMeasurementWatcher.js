@@ -10,7 +10,7 @@ export function startBodyMeasurementWatcher(page) {
       ["GET", "POST", "PUT"].includes(method)
     ) {
       status = response.status();
-      console.log("Body Measurement API Status:", status);
+      if (status !== 404) console.log("Body Measurement API Status:", status);
     }
   });
 
