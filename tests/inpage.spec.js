@@ -1072,6 +1072,7 @@ async function runKidsFlow(page, _pdc) {
     "click girl gender radio",
   );
   console.log("[kids] Gender selected: girl");
+  await page.waitForTimeout(1000);
 
   // Open age selector — try both known selector patterns
   await kidsRetry(
@@ -1091,6 +1092,7 @@ async function runKidsFlow(page, _pdc) {
     "open age selector",
   );
   console.log("[kids] Age selector opened");
+  await page.waitForTimeout(1000);
 
   // Wait for age picker radios — any radio that is NOT the gender radio
   await page.waitForFunction(
@@ -1123,6 +1125,7 @@ async function runKidsFlow(page, _pdc) {
     target.dispatchEvent(new Event("change", { bubbles: true }));
   });
   console.log("[kids] Age selected");
+  await page.waitForTimeout(1000);
 
   /* -------------------- HEIGHT & WEIGHT -------------------- */
 
@@ -1162,6 +1165,7 @@ async function runKidsFlow(page, _pdc) {
     );
   }
   console.log("[kids] Height and weight filled");
+  await page.waitForTimeout(1000);
 
   /* -------------------- PRIVACY POLICY -------------------- */
 
@@ -1179,6 +1183,7 @@ async function runKidsFlow(page, _pdc) {
     }
   });
   console.log("[kids] Privacy policy accepted");
+  await page.waitForTimeout(1000);
 
   /* -------------------- CTA BUTTON -------------------- */
 
