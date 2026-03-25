@@ -72,7 +72,7 @@ const GENDER_ALIASES = {
 };
 
 // Phase keywords for TEST_PHASE
-const PHASES = new Set(['widget', 'events', 'api', 'onboarding', 'full']);
+const PHASES = new Set(['widget', 'events', 'api', 'onboarding', 'full', 'addtocart', 'add-to-cart']);
 
 // Browser keywords
 const BROWSERS = new Set(['chromium', 'firefox', 'webkit']);

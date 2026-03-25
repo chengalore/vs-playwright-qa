@@ -76,7 +76,11 @@ jobs:
 
       - name: Run Playwright test
         run: |
-          npx playwright test tests/inpage.spec.js | tee test-output.log
+          if [ "$TEST_PHASE" = "addtocart" ] || [ "$TEST_PHASE" = "add-to-cart" ]; then
+            npx playwright test tests/addToCart.spec.js | tee test-output.log
+          else
+            npx playwright test tests/inpage.spec.js | tee test-output.log
+          fi
         env:
           TEST_URL: ${{ env.TEST_URL }}
           STORE_ID: ${{ github.event.inputs.store_id }}
