@@ -55,6 +55,29 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
       return walk(document);
     };
 
+    // Track how many times the inpage widget is added to the DOM.
+    // For SPA clients the widget can be removed and re-injected on product change,
+    // which would show as a count > 1 without any network dependency.
+    window.__vsInpageMountCount = 0;
+    const mountObserver = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        for (const node of mutation.addedNodes) {
+          if (node.nodeType !== 1) continue;
+          if (
+            node.id === "vs-inpage" ||
+            node.id === "vs-inpage-luxury" ||
+            node.querySelector?.("#vs-inpage, #vs-inpage-luxury")
+          ) {
+            window.__vsInpageMountCount++;
+          }
+        }
+      }
+    });
+    mountObserver.observe(document.documentElement, {
+      childList: true,
+      subtree: true,
+    });
+
     // Continuously dismiss known marketing overlays as they appear (throttled)
     let lastDismiss = 0;
     const dismissOverlays = () => {
@@ -472,6 +495,16 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
     // PASS
     // -----------------------------
 
+    const inpageMountCount = await page
+      .evaluate(() => window.__vsInpageMountCount ?? 0)
+      .catch(() => 0);
+
+    if (inpageMountCount > 1) {
+      console.warn(
+        `[SPA] Inpage widget mounted ${inpageMountCount}x — possible double-mount`,
+      );
+    }
+
     logResult({
       url,
       store: pdc.store,
@@ -480,6 +513,7 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
       status: testInfo.status === "timedOut" ? "passed" : testInfo.status,
       browser: testInfo.project.name,
       durationMs: Date.now() - startTime,
+      ...(inpageMountCount > 1 && { doubleMount: inpageMountCount }),
     });
   } catch (error) {
     logResult({
