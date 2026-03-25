@@ -1638,6 +1638,21 @@ async function clickKidsWidget(page) {
 }
 
 async function clickWidget(page, flow) {
+  // Some stores hide the VS widget inside a collapsed accordion (e.g. enfold/ec-store.net
+  // uses h3.enf-detail-link). Click the accordion trigger first if present so the widget
+  // becomes visible before we try to interact with it.
+  const accordionClicked = await page.evaluate(() => {
+    const trigger = document.querySelector("h3.enf-detail-link");
+    if (trigger) {
+      trigger.click();
+      return true;
+    }
+    return false;
+  });
+  if (accordionClicked) {
+    await page.waitForTimeout(1000);
+  }
+
   // #vs-placeholder-cart excluded — it's a mounting point, never the actual widget.
   const selector =
     flow === "kids"
