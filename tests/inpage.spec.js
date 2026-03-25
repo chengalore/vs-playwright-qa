@@ -564,6 +564,7 @@ async function validateRefresh(page, eventWatcher, recommendationAPI, flow) {
     await page.reload({ waitUntil: "domcontentloaded", timeout: 30000 });
     await waitForWidget(page, "kids");
     await clickKidsWidget(page);
+    await page.waitForTimeout(1000);
 
     console.log("Waiting for kids recommendation after refresh");
 
@@ -1049,6 +1050,11 @@ async function runFootwearFlow(page, shoeAPI) {
 async function runKidsFlow(page, _pdc) {
   console.log("[kids] Starting Kids flow");
 
+  // Wait for gender radio buttons to appear
+  await page.waitForFunction(
+    () => !!findInShadow('input[name="selectKidGender"]'),
+    { timeout: 30000 },
+  );
   console.log("[kids] Gender radio buttons detected");
 
   // Click girl radio
@@ -1439,12 +1445,6 @@ async function waitForKidsWidgetReady(page) {
     { timeout: 20000 },
   );
   console.log("[kids] Widget shadow root ready");
-
-  // Wait for onboarding content to render inside the shadow root
-  await page.waitForFunction(
-    () => !!findInShadow('input[name="selectKidGender"]'),
-    { timeout: 20000 },
-  );
 }
 
 /**
@@ -1629,11 +1629,12 @@ async function clickKidsWidget(page) {
   await page.waitForFunction(() =>
     findInShadow('[data-test-id="kids-inpage-button"]'),
   );
-  await page.evaluate(() => {
-    const btn = findInShadow('[data-test-id="kids-inpage-button"]');
-    btn?.scrollIntoView({ block: "center" });
-    btn?.click();
-  });
+  await page.evaluate(() =>
+    findInShadow('[data-test-id="kids-inpage-button"]')?.scrollIntoView({ block: "center" }),
+  );
+  await page.waitForTimeout(500);
+  const btn = page.locator('[data-test-id="kids-inpage-button"]');
+  await btn.click();
 }
 
 async function clickWidget(page, flow) {
