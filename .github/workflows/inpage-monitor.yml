@@ -216,69 +216,6 @@ jobs:
       - name: Combine logs
         run: cat logs/monitor-output-*.log > monitor-output.log 2>/dev/null || echo "No logs found" > monitor-output.log
 
-      - name: Update store health
-        run: |
-          node --input-type=module <<'SCRIPT'
-          import { readFileSync, writeFileSync, existsSync } from 'fs';
-
-          const HEALTH_FILE = 'data/storeHealth.json';
-          const health = existsSync(HEALTH_FILE)
-            ? JSON.parse(readFileSync(HEALTH_FILE, 'utf8'))
-            : {};
-
-          if (!existsSync('monitor-output.log')) process.exit(0);
-
-          const log = readFileSync('monitor-output.log', 'utf8');
-          const lines = log.split('\n').filter(l => l.includes('MONITOR_RESULT:'));
-
-          const byStore = {};
-          for (const line of lines) {
-            try {
-              const json = JSON.parse(line.replace(/^.*MONITOR_RESULT:\s*/, ''));
-              byStore[json.storeAlias] = json;
-            } catch {}
-          }
-
-          const BLACKLIST_THRESHOLD = 3;
-          const BOT_STATUSES = new Set(['cdn_blocked', 'navigation_error']);
-
-          for (const [alias, result] of Object.entries(byStore)) {
-            if (!health[alias]) health[alias] = { consecutiveFailures: 0, consecutiveWidgetMissing: 0 };
-
-            if (BOT_STATUSES.has(result.status)) {
-              health[alias].consecutiveFailures = (health[alias].consecutiveFailures || 0) + 1;
-              health[alias].lastFailureReason = result.status;
-              health[alias].consecutiveWidgetMissing = 0;
-              if (health[alias].consecutiveFailures >= BLACKLIST_THRESHOLD && !health[alias].autoBlacklisted) {
-                health[alias].autoBlacklisted = true;
-                console.log(`🚫 [${alias}] Auto-blacklisted after ${health[alias].consecutiveFailures} consecutive ${result.status} failures`);
-              }
-            } else if (result.status === 'widget_missing') {
-              health[alias].consecutiveWidgetMissing = (health[alias].consecutiveWidgetMissing || 0) + 1;
-              health[alias].consecutiveFailures = 0;
-            } else if (result.status === 'passed') {
-              if (health[alias].autoBlacklisted) {
-                console.log(`✅ [${alias}] Recovered — removing from auto-blacklist`);
-              }
-              health[alias].consecutiveFailures = 0;
-              health[alias].consecutiveWidgetMissing = 0;
-              health[alias].autoBlacklisted = false;
-              delete health[alias].lastFailureReason;
-            }
-          }
-
-          writeFileSync(HEALTH_FILE, JSON.stringify(health, null, 2));
-          const blacklisted = Object.values(health).filter(h => h.autoBlacklisted).length;
-          console.log(`Store health saved. Auto-blacklisted: ${blacklisted}`);
-          SCRIPT
-
-      - name: Save store health cache
-        if: always()
-        uses: actions/cache@v4
-        with:
-          path: data/storeHealth.json
-          key: store-health-v1-${{ github.run_id }}
-
       - name: Send Slack summary
         if: always()
         run: |
@@ -411,3 +348,67 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           GITHUB_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
           PHASE: ${{ github.event.inputs.phase }}
+
+      - name: Update store health
+        if: always()
+        run: |
+          node --input-type=module <<'SCRIPT'
+          import { readFileSync, writeFileSync, existsSync } from 'fs';
+
+          const HEALTH_FILE = 'data/storeHealth.json';
+          const health = existsSync(HEALTH_FILE)
+            ? JSON.parse(readFileSync(HEALTH_FILE, 'utf8'))
+            : {};
+
+          if (!existsSync('monitor-output.log')) process.exit(0);
+
+          const log = readFileSync('monitor-output.log', 'utf8');
+          const lines = log.split('\n').filter(l => l.includes('MONITOR_RESULT:'));
+
+          const byStore = {};
+          for (const line of lines) {
+            try {
+              const json = JSON.parse(line.replace(/^.*MONITOR_RESULT:\s*/, ''));
+              byStore[json.storeAlias] = json;
+            } catch {}
+          }
+
+          const BLACKLIST_THRESHOLD = 3;
+          const BOT_STATUSES = new Set(['cdn_blocked', 'navigation_error']);
+
+          for (const [alias, result] of Object.entries(byStore)) {
+            if (!health[alias]) health[alias] = { consecutiveFailures: 0, consecutiveWidgetMissing: 0 };
+
+            if (BOT_STATUSES.has(result.status)) {
+              health[alias].consecutiveFailures = (health[alias].consecutiveFailures || 0) + 1;
+              health[alias].lastFailureReason = result.status;
+              health[alias].consecutiveWidgetMissing = 0;
+              if (health[alias].consecutiveFailures >= BLACKLIST_THRESHOLD && !health[alias].autoBlacklisted) {
+                health[alias].autoBlacklisted = true;
+                console.log(`🚫 [${alias}] Auto-blacklisted after ${health[alias].consecutiveFailures} consecutive ${result.status} failures`);
+              }
+            } else if (result.status === 'widget_missing') {
+              health[alias].consecutiveWidgetMissing = (health[alias].consecutiveWidgetMissing || 0) + 1;
+              health[alias].consecutiveFailures = 0;
+            } else if (result.status === 'passed') {
+              if (health[alias].autoBlacklisted) {
+                console.log(`✅ [${alias}] Recovered — removing from auto-blacklist`);
+              }
+              health[alias].consecutiveFailures = 0;
+              health[alias].consecutiveWidgetMissing = 0;
+              health[alias].autoBlacklisted = false;
+              delete health[alias].lastFailureReason;
+            }
+          }
+
+          writeFileSync(HEALTH_FILE, JSON.stringify(health, null, 2));
+          const blacklisted = Object.values(health).filter(h => h.autoBlacklisted).length;
+          console.log(`Store health saved. Auto-blacklisted: ${blacklisted}`);
+          SCRIPT
+
+      - name: Save store health cache
+        if: always()
+        uses: actions/cache@v4
+        with:
+          path: data/storeHealth.json
+          key: store-health-v1-${{ github.run_id }}
