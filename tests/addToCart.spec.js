@@ -1,9 +1,10 @@
-import { test, expect } from "@playwright/test";
+import { test } from "@playwright/test";
 import { startVirtusizeEventWatcher } from "../utils/eventWatcher.js";
 import { startPDCWatcher } from "../utils/pdcWatcher.js";
 import { blockMarketingScripts } from "../utils/blockMarketingScripts.js";
 import { resolveTestUrl } from "../utils/fetchRandomProduct.js";
 import { BOT_PROTECTED_DOMAINS } from "../config/stores.js";
+import { completeOnboarding } from "../utils/completeOnboarding.js";
 
 test.setTimeout(180000);
 
@@ -26,7 +27,6 @@ test("Add to Cart flow", async ({ page }, testInfo) => {
   } catch {}
 
   const eventWatcher = startVirtusizeEventWatcher(page);
-  eventWatcher.setPhase("addtocart");
   const pdc = startPDCWatcher(page);
 
   await page.addInitScript(() => {
@@ -73,117 +73,52 @@ test("Add to Cart flow", async ({ page }, testInfo) => {
   await blockMarketingScripts(page);
 
   try {
+    // ── Phase 1: New user ─────────────────────────────────────────────
+    eventWatcher.setPhase("new-user");
     console.log("Navigating to:", url);
     await page.goto(url, { waitUntil: "domcontentloaded", timeout: 30000 });
     console.log("Page loaded");
 
-    // Scroll to widget to trigger IntersectionObserver
-    await page.evaluate(() => {
-      const widget = document.querySelector(
-        "#vs-inpage, #vs-inpage-luxury, #vs-legacy-inpage, #vs-kid, #vs-placeholder-cart",
-      );
-      if (widget) widget.scrollIntoView({ block: "center", behavior: "instant" });
-      else window.scrollTo({ top: 1000, behavior: "instant" });
-    });
+    await waitForWidgetAndOpen(page);
 
-    // Wait for widget to appear
-    await page.waitForFunction(
-      () =>
-        document.querySelector("#vs-placeholder-cart") ||
-        document.querySelector("#vs-inpage") ||
-        document.querySelector("#vs-inpage-luxury") ||
-        document.querySelector("#vs-legacy-inpage"),
-      { timeout: 30000 },
-    );
-    console.log("Widget element found");
-
-    await page.waitForTimeout(2000);
-
-    // Click the accordion trigger if needed (e.g. enfold/ec-store.net)
-    const accordionClicked = await page.evaluate(() => {
-      const trigger = document.querySelector("h3.enf-detail-link");
-      if (trigger) { trigger.click(); return true; }
-      return false;
-    });
-    if (accordionClicked) await page.waitForTimeout(1000);
-
-    // Open the widget
-    await page.evaluate((sel) => {
-      document.querySelector(sel)?.scrollIntoView({ block: "center" });
-    }, ":is(#vs-inpage, #vs-inpage-luxury, #vs-legacy-inpage)");
-
-    if (await page.evaluate(() => !!document.querySelector("#vs-inpage") || !!document.querySelector("#vs-inpage-luxury"))) {
-      const isLuxury = await page.evaluate(() => !!document.querySelector("#vs-inpage-luxury"));
-      await page.waitForFunction(
-        (luxury) => {
-          const root = (
-            document.querySelector("#vs-inpage") ||
-            document.querySelector("#vs-inpage-luxury")
-          )?.shadowRoot;
-          return (
-            !!root?.querySelector('[data-test-id="inpage-open-aoyama-btn"]') ||
-            !!root?.querySelector('[data-test-id="inpage-luxury-open-aoyama"]') ||
-            (!luxury && !!root?.querySelector('[data-test-id="gift-cta"]'))
-          );
-        },
-        { timeout: 15000 },
-        isLuxury,
-      );
-      await page.evaluate((luxury) => {
-        const root = (
-          document.querySelector("#vs-inpage") ||
-          document.querySelector("#vs-inpage-luxury")
-        )?.shadowRoot;
-        const btn =
-          root?.querySelector('[data-test-id="inpage-open-aoyama-btn"]') ||
-          root?.querySelector('[data-test-id="inpage-luxury-open-aoyama"]') ||
-          (!luxury && root?.querySelector('[data-test-id="gift-cta"]')) ||
-          null;
-        btn?.click();
-      }, isLuxury);
-    } else {
-      await page.locator("#vs-legacy-inpage").click({ force: true });
-    }
-
-    console.log("Widget opened");
-    await page.waitForTimeout(2000);
-
-    // Detect new vs returning user:
-    // - Returning: add-to-cart button appears immediately on result screen
-    // - New: onboarding form appears first (has age input or see-ideal-fit-btn)
-    const screenType = await page.waitForFunction(
-      () => {
-        const hasAddToCart = !!findInShadow('[data-test-id="add-to-cart-button"]');
-        const hasOnboarding =
-          !!findInShadow('[data-test-id="input-age"]') ||
-          !!findInShadow('[data-test-id="see-ideal-fit-btn"]');
-        if (hasAddToCart) return "result";
-        if (hasOnboarding) return "onboarding";
-        return null;
-      },
-      { timeout: 20000 },
-    ).then((h) => h.jsonValue());
-
+    const screenType = await detectScreen(page);
     console.log(`Screen: ${screenType}`);
 
     if (screenType === "onboarding") {
       console.log("New user — completing onboarding");
-      await completeOnboardingInline(page);
+      await completeOnboarding(page);
       console.log("Onboarding done — waiting for result screen");
-
-      // Wait for add-to-cart after onboarding
       await page.waitForFunction(
         () => !!findInShadow('[data-test-id="add-to-cart-button"]'),
         { timeout: 30000 },
       );
     }
 
-    console.log("Result screen visible — clicking Add to Cart");
+    console.log("[new-user] Clicking Add to Cart");
     await page.evaluate(() => {
       findInShadow('[data-test-id="add-to-cart-button"]')?.click();
     });
-    console.log("Add to Cart clicked");
+    await page.waitForTimeout(2000);
+    eventWatcher.logPhaseSummary();
 
+    // ── Phase 2: Returning user (reload) ──────────────────────────────
+    eventWatcher.setPhase("returning-user");
+    eventWatcher.reset();
+    console.log("Reloading for returning user...");
+    await page.reload({ waitUntil: "domcontentloaded", timeout: 30000 });
+    await page.waitForTimeout(2000);
+
+    await waitForWidgetAndOpen(page);
+
+    // Returning user — result screen should appear directly
+    await page.waitForFunction(
+      () => !!findInShadow('[data-test-id="add-to-cart-button"]'),
+      { timeout: 20000 },
+    );
+    console.log("[returning-user] Result screen visible — clicking Add to Cart");
+    await page.evaluate(() => {
+      findInShadow('[data-test-id="add-to-cart-button"]')?.click();
+    });
     await page.waitForTimeout(2000);
     eventWatcher.logPhaseSummary();
 
@@ -209,56 +144,88 @@ test("Add to Cart flow", async ({ page }, testInfo) => {
 });
 
 // --------------------------------------------------
-// Inline onboarding for add-to-cart flow
-// (uses findInShadow instead of #router-view-wrapper handle)
+// Helpers
 // --------------------------------------------------
 
-async function completeOnboardingInline(page) {
-  const fill = async (testId, value) => {
-    await page.waitForFunction(
-      (id) => !!findInShadow(`[data-test-id="${id}"] input`),
-      { timeout: 15000 },
-      testId,
+async function waitForWidgetAndOpen(page) {
+  await page.evaluate(() => {
+    const widget = document.querySelector(
+      "#vs-inpage, #vs-inpage-luxury, #vs-legacy-inpage, #vs-placeholder-cart",
     );
-    await page.evaluate(({ id, val }) => {
-      const input = findInShadow(`[data-test-id="${id}"] input`);
-      if (!input) throw new Error(`Input not found: ${id}`);
-      input.focus();
-      input.value = val;
-      input.dispatchEvent(new Event("input", { bubbles: true }));
-      input.dispatchEvent(new Event("change", { bubbles: true }));
-      input.blur();
-    }, { id: testId, val: value });
-    await page.waitForTimeout(2000);
-  };
+    if (widget) widget.scrollIntoView({ block: "center", behavior: "instant" });
+    else window.scrollTo({ top: 1000, behavior: "instant" });
+  });
 
-  await fill("input-age", "35");
-  await fill("input-height", "161");
-  await fill("input-weight", "54");
-
-  // Privacy policy
-  const hasPrivacy = await page.evaluate(
-    () => !!findInShadow('[data-test-id="privacy-policy-checkbox"]'),
+  await page.waitForFunction(
+    () =>
+      document.querySelector("#vs-placeholder-cart") ||
+      document.querySelector("#vs-inpage") ||
+      document.querySelector("#vs-inpage-luxury") ||
+      document.querySelector("#vs-legacy-inpage"),
+    { timeout: 30000 },
   );
-  if (hasPrivacy) {
-    await page.evaluate(() => {
-      const cb = findInShadow('[data-test-id="privacy-policy-checkbox"]');
-      if (cb && !cb.checked) {
-        cb.checked = true;
-        cb.dispatchEvent(new Event("change", { bubbles: true }));
-      }
-    });
-    await page.waitForTimeout(2000);
+
+  await page.waitForTimeout(2000);
+
+  // Accordion trigger (e.g. enfold)
+  const accordionClicked = await page.evaluate(() => {
+    const trigger = document.querySelector("h3.enf-detail-link");
+    if (trigger) { trigger.click(); return true; }
+    return false;
+  });
+  if (accordionClicked) await page.waitForTimeout(1000);
+
+  // Click open button
+  if (await page.evaluate(() => !!document.querySelector("#vs-inpage") || !!document.querySelector("#vs-inpage-luxury"))) {
+    const isLuxury = await page.evaluate(() => !!document.querySelector("#vs-inpage-luxury"));
+    await page.waitForFunction(
+      (luxury) => {
+        const root = (
+          document.querySelector("#vs-inpage") ||
+          document.querySelector("#vs-inpage-luxury")
+        )?.shadowRoot;
+        return (
+          !!root?.querySelector('[data-test-id="inpage-open-aoyama-btn"]') ||
+          !!root?.querySelector('[data-test-id="inpage-luxury-open-aoyama"]') ||
+          (!luxury && !!root?.querySelector('[data-test-id="gift-cta"]'))
+        );
+      },
+      { timeout: 15000 },
+      isLuxury,
+    );
+    await page.evaluate((luxury) => {
+      const root = (
+        document.querySelector("#vs-inpage") ||
+        document.querySelector("#vs-inpage-luxury")
+      )?.shadowRoot;
+      const btn =
+        root?.querySelector('[data-test-id="inpage-open-aoyama-btn"]') ||
+        root?.querySelector('[data-test-id="inpage-luxury-open-aoyama"]') ||
+        (!luxury && root?.querySelector('[data-test-id="gift-cta"]')) ||
+        null;
+      btn?.click();
+    }, isLuxury);
+  } else {
+    await page.locator("#vs-legacy-inpage").click({ force: true });
   }
 
-  // Submit
-  await page.waitForFunction(
-    () => !!findInShadow('[data-test-id="see-ideal-fit-btn"]'),
-    { timeout: 10000 },
-  );
-  await page.evaluate(() => {
-    findInShadow('[data-test-id="see-ideal-fit-btn"]')?.click();
-  });
+  console.log("Widget opened");
+  await page.waitForTimeout(2000);
+}
+
+async function detectScreen(page) {
+  return page.waitForFunction(
+    () => {
+      const hasAddToCart = !!findInShadow('[data-test-id="add-to-cart-button"]');
+      const hasOnboarding =
+        !!findInShadow('[data-test-id="input-age"]') ||
+        !!findInShadow('[data-test-id="see-ideal-fit-btn"]');
+      if (hasAddToCart) return "result";
+      if (hasOnboarding) return "onboarding";
+      return null;
+    },
+    { timeout: 20000 },
+  ).then((h) => h.jsonValue());
 }
 
 function logResult(result) {
