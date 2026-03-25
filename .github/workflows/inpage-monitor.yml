@@ -182,9 +182,13 @@ jobs:
     needs: monitor
     if: always()
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: actions/setup-node@v4
         with:
@@ -399,4 +403,4 @@ jobs:
           git config user.email "github-actions@github.com"
           git add data/storeHealth.json
           git diff --staged --quiet || git commit -m "chore: update store health [skip ci]"
-          git push
+          git push origin HEAD:${{ github.ref_name }}

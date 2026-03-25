@@ -187,8 +187,9 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
           const root =
             document.querySelector("#vs-inpage")?.shadowRoot ||
             document.querySelector("#vs-inpage-luxury")?.shadowRoot;
-          return !!root?.querySelector(
-            '[data-test-id="inpage-open-aoyama-btn"]',
+          return (
+            !!root?.querySelector('[data-test-id="inpage-open-aoyama-btn"]') ||
+            !!root?.querySelector('[data-test-id="inpage-luxury-open-aoyama"]')
           );
         },
         { timeout: 15000 },
@@ -198,9 +199,9 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
         const root =
           document.querySelector("#vs-inpage")?.shadowRoot ||
           document.querySelector("#vs-inpage-luxury")?.shadowRoot;
-        const btn = root?.querySelector(
-          '[data-test-id="inpage-open-aoyama-btn"]',
-        );
+        const btn =
+          root?.querySelector('[data-test-id="inpage-open-aoyama-btn"]') ||
+          root?.querySelector('[data-test-id="inpage-luxury-open-aoyama"]');
         btn?.click();
       });
 
@@ -453,7 +454,11 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
     // Gift Flow (apparel only, if CTA present)
     // -----------------------------
 
-    if (flow === "apparel") {
+    const isLuxuryInpage = await page.evaluate(
+      () => !!document.querySelector("#vs-inpage-luxury"),
+    );
+
+    if (flow === "apparel" && !isLuxuryInpage) {
       // GIFT
       // Give Virtusize time to settle after size selection before starting gift flow
       await page.waitForTimeout(10000);
@@ -1676,30 +1681,35 @@ async function clickWidget(page, flow) {
           !!document.querySelector("#vs-inpage-luxury"),
       )
     ) {
-      // Wait for the shadow root to render its entry point — either the standard
-      // open button or the gift CTA (e.g. CELFORD renders gift-cta directly).
+      // Wait for the shadow root to render its entry point.
+      // #vs-inpage-luxury never has a gift CTA — only check gift-cta for #vs-inpage.
       await page.waitForFunction(
         () => {
+          const isLuxury = !!document.querySelector("#vs-inpage-luxury");
           const root = (
             document.querySelector("#vs-inpage") ||
             document.querySelector("#vs-inpage-luxury")
           )?.shadowRoot;
           return (
             !!root?.querySelector('[data-test-id="inpage-open-aoyama-btn"]') ||
-            !!root?.querySelector('[data-test-id="gift-cta"]')
+            !!root?.querySelector('[data-test-id="inpage-luxury-open-aoyama"]') ||
+            (!isLuxury && !!root?.querySelector('[data-test-id="gift-cta"]'))
           );
         },
         { timeout: 15000 },
       );
 
       await page.evaluate(() => {
+        const isLuxury = !!document.querySelector("#vs-inpage-luxury");
         const root = (
           document.querySelector("#vs-inpage") ||
           document.querySelector("#vs-inpage-luxury")
         )?.shadowRoot;
         const btn =
           root?.querySelector('[data-test-id="inpage-open-aoyama-btn"]') ||
-          root?.querySelector('[data-test-id="gift-cta"]');
+          root?.querySelector('[data-test-id="inpage-luxury-open-aoyama"]') ||
+          (!isLuxury && root?.querySelector('[data-test-id="gift-cta"]')) ||
+          null;
         btn?.click();
       });
     } else {
