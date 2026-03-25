@@ -1,1 +1,414 @@
-{}
+{
+  "adidas": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0
+  },
+  "callawaygolf": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "banana_republic": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "andar_japan": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "coen": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "frans_boone": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "emmi": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "lily_brown": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "miesrohe": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "brooks_brothers": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 2
+  },
+  "paul_smith": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "re_edit": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "seilin_online_shop": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "strasburgo": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "top_floor": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "hankyu_hanshin": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 2
+  },
+  "yohji_global": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 2
+  },
+  "agnes_b": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "barbour": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "another_address": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "brooks_brothers_korea": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "camilla_and_marc": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "estnation": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "fray_i_d": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "cox": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "hankyu_mens": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 1,
+    "autoBlacklisted": false
+  },
+  "llbean": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "milaowen": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "poppy": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "strasburgo_outlet": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "shel_tter": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "ua_taiwan": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "yohji_wildside": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "reebok_korea": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 2
+  },
+  "aoure": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "allsaints_korea": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "bshop": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "barneys_japan": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "celford": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "fashion_square": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "furfur": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "denimlife": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "id_look": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "lumine": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "nagaileben": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "punyus": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "restir": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "style_deli": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "under_armour": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "sixpad": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "yohji_yamamoto": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "asics_japan": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0
+  },
+  "beams": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0
+  },
+  "classico_global": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "dinos": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "ameri_vintage": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "buyma": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "gap_japan": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "felissimo": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "ragtag": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0
+  },
+  "jamie_kay": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "makes": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "retouch": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "natulan": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "studio_nicholson": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "yosoou": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "unitedarrows_global": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "snidel": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 2
+  },
+  "bottega_veneta": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0
+  },
+  "by_malene_birger": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "classico_taiwan": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "and_mall": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "azul_by_moussy": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "edwin": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "levi_japan": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "flandre": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "ralph_lauren": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0
+  },
+  "marui": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "onward": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "sanyo_online_store": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "world": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0
+  },
+  "standard_california": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "taion_wear": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "zuica": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "gelato_pique": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 2
+  }
+}
