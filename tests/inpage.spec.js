@@ -3,7 +3,6 @@ import { startVirtusizeEventWatcher } from "../utils/eventWatcher.js";
 import { startPDCWatcher } from "../utils/pdcWatcher.js";
 import { startRecommendationWatcher } from "../utils/recommendationWatcher.js";
 import { startBodyMeasurementWatcher } from "../utils/bodyMeasurementWatcher.js";
-import { startShoeRecommendationWatcher } from "../utils/shoeRecommendationWatcher.js";
 import { verifyEvents } from "../utils/verifyEvents.js";
 import { expectedEvents } from "../config/expectedEvents.js";
 import { completeOnboarding } from "../utils/completeOnboarding.js";
@@ -34,7 +33,7 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
   const pdc = startPDCWatcher(page);
   const recommendationAPI = startRecommendationWatcher(page);
   const bodyAPI = startBodyMeasurementWatcher(page);
-  const shoeAPI = startShoeRecommendationWatcher(page);
+
 
   await page.addInitScript(() => {
     window.getWidgetHost = () =>
@@ -377,7 +376,7 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
       );
     }
     if (flow === "footwear") {
-      isNewUser = await runFootwearFlow(page, shoeAPI);
+      isNewUser = await runFootwearFlow(page);
     }
     if (flow === "kids") {
       isNewUser = await runKidsFlow(page, pdc);
@@ -632,7 +631,7 @@ async function validateRefresh(page, eventWatcher, recommendationAPI, flow) {
     }
 
     if (flow === "footwear") {
-      await waitForEvent(eventWatcher, "user-opened-panel-rec", 10000);
+      await waitForEvent(eventWatcher, "user-selected-size::inpage", 10000);
     }
   }
 
@@ -852,7 +851,7 @@ async function runNoVisorFlow(page, bodyAPI) {
 // Footwear Flow
 // --------------------------------------------------
 
-async function runFootwearFlow(page, shoeAPI) {
+async function runFootwearFlow(page) {
   // Wait for modal to appear inside shadow root
   await page.waitForFunction(
     () => !!getWidgetHost()?.shadowRoot?.querySelector("#vs-aoyama-main-modal"),
@@ -894,10 +893,17 @@ async function runFootwearFlow(page, shoeAPI) {
     throw new Error(`shadowClick: "${selector}" not clickable`);
   };
 
-  const clickNext = () => shadowClick('[data-test-id="footwear-next-btn"]');
+  // Wraps any interaction with a 2s settle delay — the footwear UI updates
+  // asynchronously and becomes flaky if the next action fires too quickly.
+  const interact = async (action) => {
+    await action();
+    await page.waitForTimeout(2000);
+  };
+
+  const clickNext = () => interact(() => shadowClick('[data-test-id="footwear-next-btn"]'));
 
   // Step 1: Foot width – click first option
-  await shadowClick('[data-test-id="footWidth-select-item-btn"]');
+  await interact(() => shadowClick('[data-test-id="footWidth-select-item-btn"]'));
   await clickNext();
 
   // Step 2: Toe shape – click middle option
@@ -908,107 +914,42 @@ async function runFootwearFlow(page, shoeAPI) {
       )?.length ?? 0) > 0,
     { timeout: 15000 },
   );
-  await page.evaluate(() => {
+  await interact(() => page.evaluate(() => {
     const btns = getWidgetHost()?.shadowRoot?.querySelectorAll(
       '[data-test-id="toeShape-select-item-btn"]',
     );
     if (btns?.length) btns[Math.floor(btns.length / 2)].click();
-  });
+  }));
   await clickNext();
 
-  // Step 3: Gender (optional)
-  const hasGender = await page.evaluate(() => {
-    const modal = getWidgetHost()?.shadowRoot?.querySelector(
-      "#vs-aoyama-main-modal",
-    );
-    return !!modal?.querySelector(
-      '[data-test-id="gender-radio-buttons"] input[type="radio"]',
-    );
-  });
-
-  if (hasGender) {
-    await page.evaluate(() => {
-      const modal = getWidgetHost()?.shadowRoot?.querySelector(
-        "#vs-aoyama-main-modal",
-      );
-      const radios = modal?.querySelectorAll(
-        '[data-test-id="gender-radio-buttons"] input[type="radio"]',
-      );
-      const female = [...radios].find(
-        (el) => el.value.toLowerCase() === "female",
-      );
-      if (female) {
-        female.click();
-        female.dispatchEvent(new Event("change", { bubbles: true }));
-      }
-    });
-
-    await page.waitForTimeout(800);
-    await clickNext();
-  }
-
-  // Step 4: Footwear size – open picker
-  await shadowClick('[data-test-id="open-sizes-footwear-picker"]');
-
-  // Wait for picker radios
-  await page.waitForFunction(
-    () => {
-      const root = getWidgetHost()?.shadowRoot;
-      return root?.querySelector(
-        '[data-test-id="footwear-picker"] input[type="radio"]',
-      );
-    },
-    { timeout: 5000 },
-  );
-
-  // Select radio only if nothing is selected
-  await page.evaluate(() => {
+  // Step 3: Gender – select female
+  await interact(() => page.evaluate(() => {
     const modal = getWidgetHost()?.shadowRoot?.querySelector(
       "#vs-aoyama-main-modal",
     );
     const radios = modal?.querySelectorAll(
-      '[data-test-id="footwear-picker"] input[type="radio"]',
+      '[data-test-id="gender-radio-buttons"] input[type="radio"]',
     );
-
     if (!radios?.length) return;
-
-    const alreadyChecked = [...radios].find((r) => r.checked);
-
-    if (!alreadyChecked) {
-      const first = radios[0];
-      first.click();
-      first.dispatchEvent(new Event("change", { bubbles: true }));
+    const female = [...radios].find(
+      (el) => el.value.toLowerCase() === "female",
+    );
+    if (female) {
+      female.click();
+      female.dispatchEvent(new Event("change", { bubbles: true }));
     }
-  });
-
-  await page.waitForTimeout(500);
+  }));
   await clickNext();
 
-  // Step 5: Privacy policy
-  await page.evaluate(() => {
-    const modal = getWidgetHost()?.shadowRoot?.querySelector(
-      "#vs-aoyama-main-modal",
-    );
-    const checkbox = modal?.querySelector(
-      '[data-test-id="footwear-privacy-policy"]',
-    );
-    if (checkbox && !checkbox.checked) {
-      checkbox.click();
-      checkbox.dispatchEvent(new Event("change", { bubbles: true }));
-    }
-  });
-  await page.waitForTimeout(800);
-  await clickNext();
-
-  // Step 6: Brand – open picker, select first option, wait for picker to close
-  await page.evaluate(() => {
+  // Step 4: Brand – open picker, select first option, wait for picker to close
+  await interact(() => page.evaluate(() => {
     const modal = getWidgetHost()?.shadowRoot?.querySelector(
       "#vs-aoyama-main-modal",
     );
     modal
       ?.querySelector('[data-test-id="open-brands-footwear-picker"]')
       ?.click();
-  });
+  }));
   await page.waitForFunction(
     () =>
       !!getWidgetHost()?.shadowRoot?.querySelector(
@@ -1016,14 +957,14 @@ async function runFootwearFlow(page, shoeAPI) {
       ),
     { timeout: 5000 },
   );
-  await page.evaluate(() => {
+  await interact(() => page.evaluate(() => {
     const root = getWidgetHost()?.shadowRoot;
     root
       ?.querySelector(
-        '[data-test-id="footwear-picker"] label[for="radioButton-0"]',
+        '[data-test-id="footwear-picker"] label[for="radioButton-1"]',
       )
       ?.click();
-  });
+  }));
   await page.waitForFunction(
     () => {
       const picker = getWidgetHost()?.shadowRoot?.querySelector(
@@ -1039,11 +980,65 @@ async function runFootwearFlow(page, shoeAPI) {
     },
     { timeout: 5000 },
   );
-  await page.waitForTimeout(500);
   await clickNext();
 
-  const shoeStatus = await waitForStatus(() => shoeAPI.getStatus(), 8000);
-  expect(shoeStatus).toBe(200);
+  // Step 5: Footwear size – open picker, wait for it, select radio, wait for close
+  await interact(() => shadowClick('[data-test-id="open-sizes-footwear-picker"]'));
+  await page.waitForFunction(
+    () =>
+      !!getWidgetHost()?.shadowRoot?.querySelector(
+        '[data-test-id="footwear-picker"]',
+      ),
+    { timeout: 5000 },
+  );
+  await interact(() => page.evaluate(() => {
+    const root = getWidgetHost()?.shadowRoot;
+    root
+      ?.querySelector(
+        '[data-test-id="footwear-picker"] label[for="radioButton-17"]',
+      )
+      ?.click();
+  }));
+  await page.waitForFunction(
+    () => {
+      const picker = getWidgetHost()?.shadowRoot?.querySelector(
+        '[data-test-id="footwear-picker"]',
+      );
+      if (!picker) return true;
+      const style = window.getComputedStyle(picker);
+      return (
+        style.display === "none" ||
+        style.visibility === "hidden" ||
+        style.opacity === "0"
+      );
+    },
+    { timeout: 5000 },
+  );
+  await clickNext();
+
+  // Step 6: Privacy policy
+  await interact(() => page.evaluate(() => {
+    const modal = getWidgetHost()?.shadowRoot?.querySelector(
+      "#vs-aoyama-main-modal",
+    );
+    const checkbox = modal?.querySelector(
+      '[data-test-id="footwear-privacy-policy"]',
+    );
+    if (checkbox && !checkbox.checked) {
+      checkbox.click();
+      checkbox.dispatchEvent(new Event("change", { bubbles: true }));
+    }
+  }));
+  await clickNext();
+
+  const response = await page.waitForResponse(
+    r =>
+      r.url().includes("/shoe") &&
+      r.request().method() === "POST",
+    { timeout: 10000 }
+  );
+
+  expect(response.status()).toBe(200);
 
   return isNewUser;
 }
@@ -1077,8 +1072,8 @@ async function runKidsFlow(page, _pdc) {
     },
     "click girl gender radio",
   );
+  await page.waitForTimeout(2000);
   console.log("[kids] Gender selected: girl");
-  await page.waitForTimeout(1000);
 
   // Open age selector — try both known selector patterns
   await kidsRetry(
@@ -1097,8 +1092,8 @@ async function runKidsFlow(page, _pdc) {
     },
     "open age selector",
   );
+  await page.waitForTimeout(2000);
   console.log("[kids] Age selector opened");
-  await page.waitForTimeout(1000);
 
   // Wait for age picker radios — any radio that is NOT the gender radio
   await page.waitForFunction(
@@ -1130,6 +1125,7 @@ async function runKidsFlow(page, _pdc) {
     target.click();
     target.dispatchEvent(new Event("change", { bubbles: true }));
   });
+  await page.waitForTimeout(2000);
   console.log("[kids] Age selected");
   await page.waitForTimeout(1000);
 
@@ -1170,6 +1166,7 @@ async function runKidsFlow(page, _pdc) {
       { testId, value },
     );
   }
+  await page.waitForTimeout(2000);
   console.log("[kids] Height and weight filled");
   await page.waitForTimeout(1000);
 
@@ -1188,6 +1185,7 @@ async function runKidsFlow(page, _pdc) {
       checkbox.click();
     }
   });
+  await page.waitForTimeout(2000);
   console.log("[kids] Privacy policy accepted");
   await page.waitForTimeout(1000);
 
@@ -1274,6 +1272,7 @@ async function runGiftFlow(page, eventWatcher) {
     radio.click();
     radio.dispatchEvent(new Event("change", { bubbles: true }));
   });
+  await page.waitForTimeout(2000);
 
   console.log("Selected gender: female");
 
@@ -1299,11 +1298,12 @@ async function runGiftFlow(page, eventWatcher) {
     { timeout: 8000 },
   );
 
+  await page.waitForTimeout(2000);
   console.log("Selected age");
 
   // ── 4. Height ─────────────────────────────────────────────────────────────
 
-  await page.waitForTimeout(600);
+  await page.waitForTimeout(2000);
 
   await page.locator('[data-test-id="input-height-desktop"]').click();
 
@@ -1331,11 +1331,12 @@ async function runGiftFlow(page, eventWatcher) {
     { timeout: 8000 },
   );
 
+  await page.waitForTimeout(2000);
   console.log("Selected height");
 
   // ── 5. Body type ──────────────────────────────────────────────────────────
 
-  await page.waitForTimeout(600);
+  await page.waitForTimeout(2000);
 
   await page.locator('[data-test-id="input-body-type"]').click();
 
@@ -1345,6 +1346,7 @@ async function runGiftFlow(page, eventWatcher) {
   await bodySheet.locator('[data-test-id="gridItemTestId"]').nth(1).click();
 
   await expect(bodySheet).toBeHidden({ timeout: 8000 });
+  await page.waitForTimeout(2000);
 
   console.log("Selected body type");
 
@@ -1355,6 +1357,7 @@ async function runGiftFlow(page, eventWatcher) {
   );
   if (await privacyCheckbox.isVisible()) {
     await privacyCheckbox.click();
+    await page.waitForTimeout(2000);
     console.log("Accepted privacy policy");
   }
 
