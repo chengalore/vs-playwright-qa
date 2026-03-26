@@ -1342,7 +1342,7 @@ async function runGiftFlow(page, eventWatcher) {
     { timeout: 10000 },
   );
   await page.evaluate(() =>
-    findInShadow("#sheet")?.querySelector('span[role="radio"]')?.click(),
+    findInShadow("#sheet")?.querySelectorAll('span[role="radio"]')[3]?.click(),
   );
 
   // Wait for the age sheet to close
@@ -1366,7 +1366,7 @@ async function runGiftFlow(page, eventWatcher) {
     { timeout: 10000 },
   );
   await page.evaluate(() =>
-    findInShadow("#sheet")?.querySelector('span[role="radio"]')?.click(),
+    findInShadow("#sheet")?.querySelectorAll('span[role="radio"]')[3]?.click(),
   );
 
   // Wait for the height sheet to close
@@ -1422,20 +1422,9 @@ async function runGiftFlow(page, eventWatcher) {
 
   console.log("Clicked see ideal fit button");
 
-  // ── 8. Wait for result ────────────────────────────────────────────────────
+  // ── 8. Wait for rec event ─────────────────────────────────────────────────
 
-  const resultVisible = await page
-    .locator('[data-test-id="adjustYourSilhouette.header"], .rec-main')
-    .first()
-    .waitFor({ state: "visible", timeout: 20_000 })
-    .then(() => true)
-    .catch(() => false);
-
-  if (resultVisible) {
-    console.log("Gift recommendation result detected");
-  } else {
-    console.warn("Gift result screen not found — continuing (APIs returned 200)");
-  }
+  await waitForEvent(eventWatcher, "user-opened-panel-rec::gift", 20000);
 
   // ── 9. Validate gift events ───────────────────────────────────────────────
 
