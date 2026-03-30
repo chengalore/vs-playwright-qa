@@ -45,7 +45,7 @@
   },
   "brooks_brothers": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 10
+    "consecutiveWidgetMissing": 11
   },
   "paul_smith": {
     "consecutiveFailures": 0,
@@ -74,7 +74,7 @@
   },
   "hankyu_hanshin": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 0,
+    "consecutiveWidgetMissing": 1,
     "autoBlacklisted": false
   },
   "yohji_global": {
@@ -124,7 +124,7 @@
   },
   "hankyu_mens": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 2,
+    "consecutiveWidgetMissing": 0,
     "autoBlacklisted": false
   },
   "llbean": {
@@ -164,7 +164,7 @@
   },
   "reebok_korea": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 10
+    "consecutiveWidgetMissing": 11
   },
   "aoure": {
     "consecutiveFailures": 0,
@@ -330,7 +330,7 @@
   },
   "snidel": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 10
+    "consecutiveWidgetMissing": 11
   },
   "bottega_veneta": {
     "consecutiveFailures": 0,
@@ -411,6 +411,6 @@
   },
   "gelato_pique": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 10
+    "consecutiveWidgetMissing": 11
   }
 }
