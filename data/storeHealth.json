@@ -45,7 +45,7 @@
   },
   "brooks_brothers": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 6
+    "consecutiveWidgetMissing": 7
   },
   "paul_smith": {
     "consecutiveFailures": 0,
@@ -74,7 +74,7 @@
   },
   "hankyu_hanshin": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 0,
+    "consecutiveWidgetMissing": 1,
     "autoBlacklisted": false
   },
   "yohji_global": {
@@ -124,7 +124,7 @@
   },
   "hankyu_mens": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 3,
+    "consecutiveWidgetMissing": 4,
     "autoBlacklisted": false
   },
   "llbean": {
@@ -164,7 +164,7 @@
   },
   "reebok_korea": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 6
+    "consecutiveWidgetMissing": 7
   },
   "aoure": {
     "consecutiveFailures": 0,
@@ -305,7 +305,7 @@
   },
   "retouch": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 0,
+    "consecutiveWidgetMissing": 1,
     "autoBlacklisted": false
   },
   "natulan": {
@@ -315,7 +315,7 @@
   },
   "studio_nicholson": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 0,
+    "consecutiveWidgetMissing": 1,
     "autoBlacklisted": false
   },
   "yosoou": {
@@ -325,12 +325,12 @@
   },
   "unitedarrows_global": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 0,
+    "consecutiveWidgetMissing": 1,
     "autoBlacklisted": false
   },
   "snidel": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 6
+    "consecutiveWidgetMissing": 7
   },
   "bottega_veneta": {
     "consecutiveFailures": 0,
@@ -343,7 +343,7 @@
   },
   "classico_taiwan": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 0,
+    "consecutiveWidgetMissing": 1,
     "autoBlacklisted": false
   },
   "and_mall": {
@@ -401,7 +401,7 @@
   },
   "taion_wear": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 0,
+    "consecutiveWidgetMissing": 1,
     "autoBlacklisted": false
   },
   "zuica": {
@@ -411,6 +411,6 @@
   },
   "gelato_pique": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 6
+    "consecutiveWidgetMissing": 7
   }
 }
