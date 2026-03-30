@@ -193,6 +193,7 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
             ".vs-placeholder-inpage",
             "#inpage-placeholder-wrapper",
             "#virtusize-button",
+            "#router-view-wrapper",
           ];
           return selectors.some((sel) => !!document.querySelector(sel));
         });
@@ -269,6 +270,7 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
               "#vs-legacy-inpage",
               "#vs-kid",
               "#vs-smart-table",
+              "#router-view-wrapper",
             ];
             const hasWidget = containerSelectors.some((sel) => {
               const el = document.querySelector(sel);
