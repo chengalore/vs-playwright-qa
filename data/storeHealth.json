@@ -45,7 +45,7 @@
   },
   "brooks_brothers": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 8
+    "consecutiveWidgetMissing": 9
   },
   "paul_smith": {
     "consecutiveFailures": 0,
@@ -74,7 +74,7 @@
   },
   "hankyu_hanshin": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 2,
+    "consecutiveWidgetMissing": 3,
     "autoBlacklisted": false
   },
   "yohji_global": {
@@ -104,7 +104,7 @@
   },
   "camilla_and_marc": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 1,
+    "consecutiveWidgetMissing": 0,
     "autoBlacklisted": false
   },
   "estnation": {
@@ -124,7 +124,7 @@
   },
   "hankyu_mens": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 0,
+    "consecutiveWidgetMissing": 1,
     "autoBlacklisted": false
   },
   "llbean": {
@@ -139,7 +139,7 @@
   },
   "poppy": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 1,
+    "consecutiveWidgetMissing": 0,
     "autoBlacklisted": false
   },
   "strasburgo_outlet": {
@@ -164,7 +164,7 @@
   },
   "reebok_korea": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 8
+    "consecutiveWidgetMissing": 9
   },
   "aoure": {
     "consecutiveFailures": 0,
@@ -261,7 +261,7 @@
   },
   "classico_global": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 1,
+    "consecutiveWidgetMissing": 0,
     "autoBlacklisted": false
   },
   "dinos": {
@@ -305,7 +305,7 @@
   },
   "retouch": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 2,
+    "consecutiveWidgetMissing": 3,
     "autoBlacklisted": false
   },
   "natulan": {
@@ -315,22 +315,22 @@
   },
   "studio_nicholson": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 2,
+    "consecutiveWidgetMissing": 3,
     "autoBlacklisted": false
   },
   "yosoou": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 1,
+    "consecutiveWidgetMissing": 0,
     "autoBlacklisted": false
   },
   "unitedarrows_global": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 2,
+    "consecutiveWidgetMissing": 0,
     "autoBlacklisted": false
   },
   "snidel": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 8
+    "consecutiveWidgetMissing": 9
   },
   "bottega_veneta": {
     "consecutiveFailures": 0,
@@ -411,6 +411,6 @@
   },
   "gelato_pique": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 8
+    "consecutiveWidgetMissing": 9
   }
 }
