@@ -97,6 +97,13 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
   test(`[${storeAlias}] ${phase}`, async ({ page }, testInfo) => {
     const startTime = Date.now();
 
+    // Hide headless indicators — some stores (e.g. Brooks Brothers Japan) suppress
+    // third-party scripts like Virtusize when automation is detected.
+    await page.addInitScript(() => {
+      Object.defineProperty(navigator, "webdriver", { get: () => undefined });
+      document.hasFocus = () => true;
+    });
+
     try {
       try {
         let navErr;
@@ -259,33 +266,64 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
           return;
         }
 
-        // Step 3: If validProduct is true, widget must appear — verify DOM
-        // (If pdc.validProduct is still undefined, API never fired — still check DOM)
-        const widgetFound = await page.waitForFunction(
-          () => {
-            const containerSelectors = [
-              "#vs-inpage",
-              "#vs-inpage-mini",
-              "#vs-inpage-luxury",
-              "#vs-legacy-inpage",
-              "#vs-kid",
-              "#vs-smart-table",
-              "#router-view-wrapper",
-            ];
-            const hasWidget = containerSelectors.some((sel) => {
-              const el = document.querySelector(sel);
-              return el && el.shadowRoot;
-            });
-            const hasPlaceholder = !!(
-              document.querySelector("#vs-placeholder-cart") ||
-              document.querySelector(".vs-placeholder-inpage") ||
-              document.querySelector("#inpage-placeholder-wrapper")
-            );
-            const hasEntryButton = !!document.querySelector("#virtusize-button");
-            return hasWidget || hasPlaceholder || hasEntryButton;
-          },
-          { timeout: 20000 },
-        ).catch(() => null);
+        // Step 3: If validProduct is true, widget must appear — verify DOM.
+        // If PDC never fired (undefined), do a quick synchronous check only to avoid
+        // burning the full 20s timeout and racing against the test timeout ceiling.
+        const checkWidgetInDOM = () => page.evaluate(() => {
+          const containerSelectors = [
+            "#vs-inpage",
+            "#vs-inpage-mini",
+            "#vs-inpage-luxury",
+            "#vs-legacy-inpage",
+            "#vs-kid",
+            "#vs-smart-table",
+            "#router-view-wrapper",
+          ];
+          const hasWidget = containerSelectors.some((sel) => {
+            const el = document.querySelector(sel);
+            return el && el.shadowRoot;
+          });
+          const hasPlaceholder = !!(
+            document.querySelector("#vs-placeholder-cart") ||
+            document.querySelector(".vs-placeholder-inpage") ||
+            document.querySelector("#inpage-placeholder-wrapper")
+          );
+          const hasEntryButton = !!document.querySelector("#virtusize-button");
+          return hasWidget || hasPlaceholder || hasEntryButton;
+        });
+
+        let widgetFound;
+        if (pdc.validProduct === undefined) {
+          // PDC never fired — quick check only, don't wait
+          widgetFound = await checkWidgetInDOM().catch(() => false);
+        } else {
+          // PDC confirmed valid product — wait up to 20s for widget to mount
+          widgetFound = await page.waitForFunction(
+            () => {
+              const containerSelectors = [
+                "#vs-inpage",
+                "#vs-inpage-mini",
+                "#vs-inpage-luxury",
+                "#vs-legacy-inpage",
+                "#vs-kid",
+                "#vs-smart-table",
+                "#router-view-wrapper",
+              ];
+              const hasWidget = containerSelectors.some((sel) => {
+                const el = document.querySelector(sel);
+                return el && el.shadowRoot;
+              });
+              const hasPlaceholder = !!(
+                document.querySelector("#vs-placeholder-cart") ||
+                document.querySelector(".vs-placeholder-inpage") ||
+                document.querySelector("#inpage-placeholder-wrapper")
+              );
+              const hasEntryButton = !!document.querySelector("#virtusize-button");
+              return hasWidget || hasPlaceholder || hasEntryButton;
+            },
+            { timeout: 20000 },
+          ).then(() => true).catch(() => false);
+        }
 
         // Step 4: Widget did not appear — report as widget_missing
         if (!widgetFound) {
