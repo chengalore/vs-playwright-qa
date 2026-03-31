@@ -55,7 +55,7 @@
   },
   "re_edit": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 1,
+    "consecutiveWidgetMissing": 0,
     "autoBlacklisted": false
   },
   "seilin_online_shop": {
@@ -75,12 +75,12 @@
   },
   "hankyu_hanshin": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 3,
+    "consecutiveWidgetMissing": 0,
     "autoBlacklisted": false
   },
   "yohji_global": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 1,
+    "consecutiveWidgetMissing": 0,
     "autoBlacklisted": false
   },
   "agnes_b": {
@@ -125,7 +125,7 @@
   },
   "hankyu_mens": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 2,
+    "consecutiveWidgetMissing": 0,
     "autoBlacklisted": false
   },
   "llbean": {
@@ -140,7 +140,7 @@
   },
   "poppy": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 1,
+    "consecutiveWidgetMissing": 0,
     "autoBlacklisted": false
   },
   "strasburgo_outlet": {
@@ -165,7 +165,7 @@
   },
   "reebok_korea": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 13
+    "consecutiveWidgetMissing": 14
   },
   "aoure": {
     "consecutiveFailures": 0,
@@ -318,12 +318,12 @@
   },
   "studio_nicholson": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 1,
+    "consecutiveWidgetMissing": 0,
     "autoBlacklisted": false
   },
   "yosoou": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 1,
+    "consecutiveWidgetMissing": 0,
     "autoBlacklisted": false
   },
   "unitedarrows_global": {
@@ -333,7 +333,7 @@
   },
   "snidel": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 13
+    "consecutiveWidgetMissing": 14
   },
   "bottega_veneta": {
     "consecutiveFailures": 0,
@@ -415,6 +415,6 @@
   },
   "gelato_pique": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 13
+    "consecutiveWidgetMissing": 14
   }
 }
