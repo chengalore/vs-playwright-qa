@@ -176,10 +176,7 @@ export const STORES = {
   world: { id: 739, monitor: true },
 
   // ── Y ────────────────────────────────────────────────────────────────
-  yohji: { id: 306 }, // shorthand
-  yohji_global: { id: 876, monitor: true },
   yohji_wildside: { id: 826, monitor: true, luxury: true },
-  yohji_yamamoto: { id: 306, monitor: true, luxury: true },
   yosoou: { id: 898, monitor: true },
 
   // ── Z ────────────────────────────────────────────────────────────────

@@ -78,11 +78,6 @@
     "consecutiveWidgetMissing": 0,
     "autoBlacklisted": false
   },
-  "yohji_global": {
-    "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 0,
-    "autoBlacklisted": false
-  },
   "agnes_b": {
     "consecutiveFailures": 0,
     "consecutiveWidgetMissing": 0,
@@ -245,11 +240,6 @@
   "sixpad": {
     "consecutiveFailures": 0,
     "consecutiveWidgetMissing": 0,
-    "autoBlacklisted": false
-  },
-  "yohji_yamamoto": {
-    "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 1,
     "autoBlacklisted": false
   },
   "asics_japan": {
