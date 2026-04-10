@@ -12,7 +12,7 @@
  */
 
 import { test, expect } from "@playwright/test";
-import { readFileSync, existsSync } from "fs";
+import { readFileSync, existsSync, mkdirSync, writeFileSync } from "fs";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 import { startPDCWatcher } from "../utils/pdcWatcher.js";
@@ -56,6 +56,7 @@ const CDN_ERROR_PATTERNS = [
 ];
 
 const phase = process.env.TEST_PHASE || "widget";
+const RESULTS_DIR = join(__dirname, "../data/monitor-results");
 
 for (const { storeAlias, storeId, url, fromFallback } of stores) {
   if (BOT_PROTECTED_ALIASES.has(storeAlias)) {
@@ -200,7 +201,7 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
             ".vs-placeholder-inpage",
             "#inpage-placeholder-wrapper",
             "#virtusize-button",
-            "#router-view-wrapper",
+            "#router-view-wrapper",  // Brooks Brothers JP and similar stores
           ];
           return selectors.some((sel) => !!document.querySelector(sel));
         });
@@ -391,7 +392,58 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
 
 function logMonitorResult(result) {
   console.log("MONITOR_RESULT:", JSON.stringify(result));
+
+  // Write each result to its own file for local dashboard aggregation
+  mkdirSync(RESULTS_DIR, { recursive: true });
+  writeFileSync(
+    join(RESULTS_DIR, `${result.storeAlias}.json`),
+    JSON.stringify(result)
+  );
 }
+
+test.afterAll(async () => {
+  if (!existsSync(RESULTS_DIR)) return;
+
+  const healthFile = join(__dirname, "../data/storeHealth.json");
+  const health = existsSync(healthFile)
+    ? JSON.parse(readFileSync(healthFile, "utf8"))
+    : {};
+
+  // Aggregate per-store result files
+  const { readdirSync } = await import("fs");
+  const results = readdirSync(RESULTS_DIR)
+    .filter(f => f.endsWith(".json"))
+    .map(f => JSON.parse(readFileSync(join(RESULTS_DIR, f), "utf8")));
+
+  const summary = {
+    total: results.length,
+    passed: results.filter(r => r.status === "passed").length,
+    widgetMissing: results.filter(r => r.status === "widget_missing").length,
+    skipped: results.filter(r => r.status === "skipped" || r.status === "bot_protected").length,
+    failed: results.filter(r => r.status === "failed").length,
+    fallbackUsed: results.filter(r => r.fromFallback).length,
+  };
+
+  const ongoingMissing = Object.entries(health)
+    .filter(([, v]) => v.consecutiveWidgetMissing > 0)
+    .map(([store, v]) => ({ store, consecutiveRuns: v.consecutiveWidgetMissing }))
+    .sort((a, b) => b.consecutiveRuns - a.consecutiveRuns);
+
+  const report = {
+    timestamp: new Date().toISOString(),
+    summary,
+    newIssues: results.filter(r => r.status === "failed").map(r => ({ store: r.storeAlias, error: r.error || r.reason })),
+    ongoingMissing,
+    botProtected: results.filter(r => r.status === "bot_protected").map(r => r.storeAlias),
+    skippedStores: results.filter(r => r.status === "skipped").map(r => ({ store: r.storeAlias, reason: r.reason })),
+    githubRunUrl: process.env.GITHUB_RUN_URL || null,
+  };
+
+  const dataDir = join(__dirname, "../data");
+  mkdirSync(dataDir, { recursive: true });
+  writeFileSync(join(dataDir, "monitor-report.json"), JSON.stringify(report, null, 2));
+  console.log("\nMonitor report written to data/monitor-report.json");
+});
 
 async function triggerVirtusizeUI(page) {
   await page.evaluate(() => {

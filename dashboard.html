@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Virtusize QA Dashboard</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f0f2f5;
+      color: #1a1a1a;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ── Sidebar ── */
+    #sidebar {
+      width: 220px;
+      background: #1e1e2e;
+      color: #cdd6f4;
+      display: flex;
+      flex-direction: column;
+      padding: 20px 0;
+      flex-shrink: 0;
+    }
+    #sidebar h2 {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #6c7086;
+      padding: 0 18px 12px;
+    }
+    #sidebar button {
+      background: none;
+      border: none;
+      color: #cdd6f4;
+      text-align: left;
+      padding: 10px 18px;
+      font-size: 13px;
+      cursor: pointer;
+      border-left: 3px solid transparent;
+      transition: background 0.15s;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    #sidebar button:hover { background: #313244; }
+    #sidebar button.active {
+      background: #313244;
+      border-left-color: #89b4fa;
+      color: #fff;
+    }
+
+    /* ── Main ── */
+    #main {
+      flex: 1;
+      overflow-y: auto;
+      padding: 28px 32px;
+    }
+
+    h1 { font-size: 20px; font-weight: 600; margin-bottom: 24px; color: #1a1a1a; }
+
+    /* ── Stat cards ── */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+    .stat-card {
+      background: #fff;
+      border-radius: 10px;
+      padding: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      text-align: center;
+    }
+    .stat-card .num {
+      font-size: 32px;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .stat-card .label {
+      font-size: 11px;
+      color: #666;
+      margin-top: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .stat-card.passed .num { color: #40a02b; }
+    .stat-card.missing .num { color: #fe640b; }
+    .stat-card.skipped .num { color: #7287fd; }
+    .stat-card.failed .num { color: #d20f39; }
+    .stat-card.total .num { color: #1e1e2e; }
+    .stat-card.fallback .num { color: #df8e1d; }
+
+    /* ── Section ── */
+    .section {
+      background: #fff;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .section h2 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 14px;
+      color: #444;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section h2 .badge {
+      font-size: 11px;
+      background: #f0f2f5;
+      border-radius: 20px;
+      padding: 2px 8px;
+      color: #666;
+    }
+
+    /* ── Lists ── */
+    .store-list { list-style: none; }
+    .store-list li {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 7px 0;
+      border-bottom: 1px solid #f0f2f5;
+      font-size: 13px;
+    }
+    .store-list li:last-child { border-bottom: none; }
+    .store-list .store-name { font-weight: 500; }
+    .store-list .meta { color: #888; font-size: 12px; }
+    .pill {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-weight: 500;
+    }
+    .pill.red { background: #ffe0e6; color: #d20f39; }
+    .pill.orange { background: #ffebd3; color: #fe640b; }
+    .pill.blue { background: #e0e5ff; color: #5c6bc0; }
+    .pill.gray { background: #f0f2f5; color: #666; }
+
+    /* ── GitHub link ── */
+    .gh-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: #89b4fa;
+      text-decoration: none;
+      margin-bottom: 20px;
+    }
+    .gh-link:hover { text-decoration: underline; }
+
+    /* ── Timestamp ── */
+    .timestamp { font-size: 12px; color: #888; margin-bottom: 20px; }
+
+    /* ── Empty state ── */
+    .empty {
+      text-align: center;
+      padding: 48px 24px;
+      color: #888;
+      font-size: 14px;
+    }
+    .empty strong { display: block; font-size: 16px; color: #444; margin-bottom: 8px; }
+
+    /* ── Generic panel ── */
+    .generic-panel {
+      background: #fff;
+      border-radius: 10px;
+      padding: 32px;
+      text-align: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .generic-panel .icon { font-size: 40px; margin-bottom: 12px; }
+    .generic-panel p { color: #666; font-size: 14px; line-height: 1.6; }
+    .generic-panel a {
+      display: inline-block;
+      margin-top: 16px;
+      padding: 10px 20px;
+      background: #89b4fa;
+      color: #1e1e2e;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 13px;
+    }
+    .generic-panel a:hover { background: #74c7ec; }
+
+    .run-cmd {
+      display: inline-block;
+      background: #1e1e2e;
+      color: #a6e3a1;
+      font-family: monospace;
+      font-size: 13px;
+      padding: 8px 14px;
+      border-radius: 6px;
+      margin-top: 10px;
+    }
+
+  </style>
+</head>
+<body>
+
+<nav id="sidebar">
+  <h2>Test Specs</h2>
+  <button onclick="showPanel('monitor')" id="btn-monitor" class="active">📡 monitor.spec.js</button>
+  <button onclick="showPanel('inpage')" id="btn-inpage">🧪 inpage.spec.js</button>
+  <button onclick="showPanel('overlay')" id="btn-overlay">🖼 overlay-qa.spec.js</button>
+  <button onclick="showPanel('agent')" id="btn-agent">🤖 agent-qa.spec.js</button>
+  <button onclick="showPanel('cart')" id="btn-cart">🛒 addToCart.spec.js</button>
+</nav>
+
+<main id="main">
+  <div id="panel-monitor"></div>
+  <div id="panel-inpage" style="display:none"></div>
+  <div id="panel-overlay" style="display:none"></div>
+  <div id="panel-agent" style="display:none"></div>
+  <div id="panel-cart" style="display:none"></div>
+</main>
+
+<script>
+  const SPECS = ['monitor','inpage','overlay','agent','cart'];
+  let currentPanel = 'monitor';
+
+  function showPanel(name) {
+    SPECS.forEach(s => {
+      document.getElementById(`panel-${s}`).style.display = s === name ? '' : 'none';
+      document.getElementById(`btn-${s}`).classList.toggle('active', s === name);
+    });
+    currentPanel = name;
+  }
+
+  // ── Monitor panel ──────────────────────────────────────────────────────────
+  async function loadMonitor() {
+    const el = document.getElementById('panel-monitor');
+    let data;
+    try {
+      const res = await fetch('data/monitor-report.json');
+      if (!res.ok) throw new Error('not found');
+      data = await res.json();
+    } catch {
+      el.innerHTML = `
+        <div class="empty">
+          <strong>No monitor report found</strong>
+          Run the monitor workflow on GitHub Actions, or locally:<br>
+          <span class="run-cmd">npx playwright test tests/monitor.spec.js --project=chrome</span>
+        </div>`;
+      return;
+    }
+
+    const s = data.summary;
+    const ts = data.timestamp ? new Date(data.timestamp).toLocaleString() : '';
+
+    el.innerHTML = `
+      <h1>Monitor Results</h1>
+      ${ts ? `<div class="timestamp">Last run: ${ts}</div>` : ''}
+      ${data.githubRunUrl ? `<a class="gh-link" href="${data.githubRunUrl}" target="_blank">🔗 GitHub Actions Run</a>` : ''}
+
+      <div class="stats">
+        <div class="stat-card total"><div class="num">${s.total}</div><div class="label">Total</div></div>
+        <div class="stat-card passed"><div class="num">${s.passed}</div><div class="label">Passed</div></div>
+        <div class="stat-card missing"><div class="num">${s.widgetMissing}</div><div class="label">Widget Missing</div></div>
+        <div class="stat-card skipped"><div class="num">${s.skipped}</div><div class="label">Skipped</div></div>
+        <div class="stat-card failed"><div class="num">${s.failed}</div><div class="label">Failed</div></div>
+        <div class="stat-card fallback"><div class="num">${s.fallbackUsed}</div><div class="label">Fallback URL</div></div>
+      </div>
+
+      ${data.newIssues?.length ? `
+      <div class="section">
+        <h2>🆕 New Issues <span class="badge">${data.newIssues.length}</span></h2>
+        <ul class="store-list">
+          ${data.newIssues.map(i => `
+          <li>
+            <span class="store-name">${i.store}</span>
+            <span class="meta">${i.error || ''}</span>
+            <span class="pill red">failed</span>
+          </li>`).join('')}
+        </ul>
+      </div>` : ''}
+
+      ${data.ongoingMissing?.length ? `
+      <div class="section">
+        <h2>⚠️ Ongoing Widget Missing <span class="badge">${data.ongoingMissing.length}</span></h2>
+        <ul class="store-list">
+          ${data.ongoingMissing.map(i => `
+          <li>
+            <span class="store-name">${i.store}</span>
+            <span class="pill orange">${i.consecutiveRuns} consecutive</span>
+          </li>`).join('')}
+        </ul>
+      </div>` : ''}
+
+      ${data.botProtected?.length ? `
+      <div class="section">
+        <h2>🛡 Bot-Protected <span class="badge">${data.botProtected.length}</span></h2>
+        <ul class="store-list">
+          ${data.botProtected.map(s => `
+          <li><span class="store-name">${s}</span><span class="pill blue">skipped</span></li>`).join('')}
+        </ul>
+      </div>` : ''}
+
+      ${data.skippedStores?.length ? `
+      <div class="section">
+        <h2>⏭ Skipped Stores <span class="badge">${data.skippedStores.length}</span></h2>
+        <ul class="store-list">
+          ${data.skippedStores.map(s => `
+          <li>
+            <span class="store-name">${s.store}</span>
+            <span class="meta">${s.reason || ''}</span>
+            <span class="pill gray">skipped</span>
+          </li>`).join('')}
+        </ul>
+      </div>` : ''}
+    `;
+  }
+
+  // ── Overlay panel ──────────────────────────────────────────────────────────
+  async function loadOverlay() {
+    const el = document.getElementById('panel-overlay');
+    let galleryExists = false;
+    try {
+      const res = await fetch('test-results/overlay-qa-screenshots/index.html', { method: 'HEAD' });
+      galleryExists = res.ok;
+    } catch {}
+
+    if (galleryExists) {
+      el.innerHTML = `
+        <h1>Overlay QA</h1>
+        <div class="generic-panel">
+          <div class="icon">🖼</div>
+          <p>Screenshots are ready. Open the gallery to review all bag comparisons.</p>
+          <a href="test-results/overlay-qa-screenshots/index.html" target="_blank">Open Gallery →</a>
+        </div>`;
+    } else {
+      el.innerHTML = `
+        <h1>Overlay QA</h1>
+        <div class="empty">
+          <strong>No screenshots yet</strong>
+          Run the overlay-qa test first:<br>
+          <span class="run-cmd">npx playwright test tests/overlay-qa.spec.js --project=chrome</span>
+        </div>`;
+    }
+  }
+
+  // ── Generic panel ──────────────────────────────────────────────────────────
+  function loadGeneric(name, title, cmd) {
+    const el = document.getElementById(`panel-${name}`);
+    el.innerHTML = `
+      <h1>${title}</h1>
+      <div class="generic-panel">
+        <div class="icon">🧪</div>
+        <p>Run the test to see results in the Playwright HTML report.</p>
+        <span class="run-cmd">${cmd}</span>
+      </div>`;
+  }
+
+  // ── Init ───────────────────────────────────────────────────────────────────
+  loadMonitor();
+  loadOverlay();
+  loadGeneric('inpage', 'Inpage QA', 'npx playwright test tests/inpage.spec.js --project=chrome');
+  loadGeneric('agent', 'Agent QA', 'INSTRUCTION="..." npx playwright test tests/agent-qa.spec.js --project=chrome');
+  loadGeneric('cart', 'Add to Cart', 'npx playwright test tests/addToCart.spec.js --project=chrome');
+</script>
+</body>
+</html>

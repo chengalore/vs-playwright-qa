@@ -206,7 +206,62 @@ jobs:
       - name: Combine logs
         run: cat logs/monitor-output-*.log > monitor-output.log 2>/dev/null || echo "No logs found" > monitor-output.log
 
-      - name: Send Slack summary
+      - name: Write monitor report
+        if: always()
+        run: |
+          node --input-type=module <<'EOF'
+          import fs from 'fs';
+
+          if (!fs.existsSync('monitor-output.log')) process.exit(0);
+
+          const fullLog = fs.readFileSync('monitor-output.log', 'utf8');
+          const lines = fullLog.split('\n').filter(l => l.includes('MONITOR_RESULT:'));
+          if (lines.length === 0) process.exit(0);
+
+          const byStore = {};
+          for (const line of lines) {
+            try {
+              const json = JSON.parse(line.replace(/^.*MONITOR_RESULT:\s*/, ''));
+              byStore[json.storeAlias] = json;
+            } catch {}
+          }
+
+          const results = Object.values(byStore);
+          const HEALTH_FILE = 'data/storeHealth.json';
+          const health = fs.existsSync(HEALTH_FILE) ? JSON.parse(fs.readFileSync(HEALTH_FILE, 'utf8')) : {};
+
+          const summary = {
+            total: results.length,
+            passed: results.filter(r => r.status === 'passed').length,
+            widgetMissing: results.filter(r => r.status === 'widget_missing').length,
+            skipped: results.filter(r => r.status === 'skipped' || r.status === 'bot_protected').length,
+            failed: results.filter(r => r.status === 'failed').length,
+            fallbackUsed: results.filter(r => r.fromFallback).length,
+          };
+
+          const ongoingMissing = Object.entries(health)
+            .filter(([, v]) => v.consecutiveWidgetMissing > 0)
+            .map(([store, v]) => ({ store, consecutiveRuns: v.consecutiveWidgetMissing }))
+            .sort((a, b) => b.consecutiveRuns - a.consecutiveRuns);
+
+          const report = {
+            timestamp: new Date().toISOString(),
+            githubRunUrl: process.env.GITHUB_RUN_URL,
+            summary,
+            newIssues: results.filter(r => r.status === 'failed').map(r => ({ store: r.storeAlias, error: r.error || r.reason })),
+            ongoingMissing,
+            botProtected: results.filter(r => r.status === 'bot_protected').map(r => r.storeAlias),
+            skippedStores: results.filter(r => r.status === 'skipped').map(r => ({ store: r.storeAlias, reason: r.reason })),
+          };
+
+          fs.mkdirSync('data', { recursive: true });
+          fs.writeFileSync('data/monitor-report.json', JSON.stringify(report, null, 2));
+          console.log('Monitor report written to data/monitor-report.json');
+          EOF
+        env:
+          GITHUB_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+      - name: Send Slack notification
         if: always()
         run: |
           node --input-type=module <<'EOF'
@@ -214,129 +269,35 @@ jobs:
           import { execSync } from 'child_process';
 
           const webhook = process.env.SLACK_WEBHOOK_URL;
-          const runUrl = process.env.GITHUB_RUN_URL;
+          const dashboardUrl = process.env.DASHBOARD_URL;
           const phase = process.env.PHASE;
 
-          if (!fs.existsSync('monitor-output.log')) {
-            execSync(`curl -s -X POST -H "Content-type: application/json" --data '{"text":"❌ Monitor output not found"}' ${webhook}`);
+          if (!fs.existsSync('data/monitor-report.json')) {
+            execSync(`curl -s -X POST -H "Content-type: application/json" --data '{"text":"❌ VS Monitor failed — no report generated"}' "${webhook}"`);
             process.exit(0);
           }
 
-          const fullLog = fs.readFileSync('monitor-output.log', 'utf8');
-          const lines = fullLog.split('\n').filter(l => l.includes('MONITOR_RESULT:'));
+          const { summary } = JSON.parse(fs.readFileSync('data/monitor-report.json', 'utf8'));
+          const issues = summary.widgetMissing + summary.failed;
+          const icon = issues > 0 ? '⚠️' : '✅';
 
-          if (lines.length === 0) {
-            execSync(`curl -s -X POST -H "Content-type: application/json" --data '{"text":"❌ No MONITOR_RESULT lines found"}' ${webhook}`);
-            process.exit(0);
-          }
+          const parts = [
+            `${summary.passed} passed`,
+            summary.widgetMissing > 0 ? `${summary.widgetMissing} widget missing` : null,
+            summary.failed > 0 ? `${summary.failed} failed` : null,
+            summary.skipped > 0 ? `${summary.skipped} skipped` : null,
+          ].filter(Boolean).join(' · ');
 
-          const byStore = {};
-          for (const line of lines) {
-            const json = JSON.parse(line.replace(/^.*MONITOR_RESULT:\s*/, ''));
-            byStore[json.storeAlias] = json;
-          }
-
-          const results = Object.values(byStore);
-          const passed = results.filter(r => r.status === 'passed');
-          const widgetMissing = results.filter(r => r.status === 'widget_missing');
-          const failed = results.filter(r => r.status === 'failed');
-          const skipped = results.filter(r => r.status === 'skipped');
-          const botProtected = results.filter(r => r.status === 'bot_protected');
-          const fromFallback = results.filter(r => r.fromFallback);
-
-          const HEALTH_FILE = 'data/storeHealth.json';
-          const health = fs.existsSync(HEALTH_FILE) ? JSON.parse(fs.readFileSync(HEALTH_FILE, 'utf8')) : {};
-          const autoBlacklisted = Object.entries(health).filter(([, h]) => h.autoBlacklisted);
-          const newlyBlacklisted = skipped.filter(r =>
-            (r.reason === 'cdn_blocked' || r.reason === 'navigation_error') &&
-            health[r.storeAlias]?.autoBlacklisted
-          );
-
-          const tested = results.length - botProtected.length;
-          let message = `🏬 VS Inpage Monitor — ${phase}\n\n`;
-          message += `Stores checked: ${tested}\n`;
-
-          if (botProtected.length > 0) {
-            message += `🛡 ${botProtected.length} skipped — bot protection\n`;
-          }
-
-          message += `✅ ${passed.length} passed\n`;
-
-          if (widgetMissing.length > 0) {
-            message += `⚠️ ${widgetMissing.length} widget missing\n`;
-          }
-
-          if (failed.length > 0) {
-            message += `❌ ${failed.length} failed\n`;
-          }
-
-          if (skipped.length > 0) {
-            message += `⏭ ${skipped.length} skipped (cdn/nav error)\n`;
-          }
-
-          if (autoBlacklisted.length > 0) message += `🚫 ${autoBlacklisted.length} auto-blacklisted\n`;
-          if (fromFallback.length > 0) message += `\n📦 ${fromFallback.length} used fallback URL\n`;
-
-          const newWidgetMissing = widgetMissing.filter(r => (health[r.storeAlias]?.consecutiveWidgetMissing ?? 0) === 0);
-          const ongoingWidgetMissing = widgetMissing.filter(r => (health[r.storeAlias]?.consecutiveWidgetMissing ?? 0) > 0);
-
-          if (failed.length > 0 || newWidgetMissing.length > 0) {
-            message += '\n🆕 New issues:\n';
-            for (const r of failed) {
-              message += `❌ <${r.url}|${r.storeAlias}>`;
-              if (r.error) message += ` — ${r.error.slice(0, 100)}`;
-              message += '\n';
-            }
-            for (const r of newWidgetMissing) {
-              message += `⚠️ <${r.url}|${r.storeAlias}> — widget missing\n`;
-            }
-          }
-
-          if (ongoingWidgetMissing.length > 0) {
-            message += '\n🔁 Ongoing widget missing:\n';
-            for (const r of ongoingWidgetMissing) {
-              const runs = health[r.storeAlias]?.consecutiveWidgetMissing ?? 0;
-              message += `⚠️ <${r.url}|${r.storeAlias}> — ${runs} consecutive runs\n`;
-            }
-          }
-
-          if (botProtected.length > 0) {
-            message += '\nBot-protected stores:\n';
-            for (const r of botProtected) {
-              message += `🛡 <${r.url}|${r.storeAlias}>\n`;
-            }
-          }
-
-          if (skipped.length > 0) {
-            message += '\nSkipped stores (CDN / navigation errors):\n';
-            for (const r of skipped) {
-              message += `⏭ <${r.url}|${r.storeAlias}>\n`;
-            }
-          }
-
-          if (newlyBlacklisted.length > 0) {
-            message += '\nNewly auto-blacklisted (will be skipped next run):\n';
-            for (const r of newlyBlacklisted) {
-              const failures = health[r.storeAlias]?.consecutiveFailures ?? 0;
-              message += `🚫 ${r.storeAlias} (${failures} consecutive ${r.reason} failures)\n`;
-            }
-          }
-
-          if (autoBlacklisted.length > 0) {
-            const names = autoBlacklisted.map(([alias]) => alias).join(', ');
-            message += `\nAuto-blacklisted stores (skipped this run): ${names}\n`;
-          }
-
-          message += `\n🔗 ${runUrl}`;
+          const message = `${icon} VS Monitor (${phase}) — ${parts}\n<${dashboardUrl}|View dashboard →>`;
 
           execSync(`curl -s -X POST \
             -H "Content-type: application/json" \
             --data '${JSON.stringify({ text: message })}' \
-            ${webhook}`);
+            "${webhook}"`);
           EOF
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-          GITHUB_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          DASHBOARD_URL: ${{ secrets.DASHBOARD_URL }}
           PHASE: ${{ github.event.inputs.phase }}
 
       - name: Update store health
@@ -396,11 +357,11 @@ jobs:
           console.log(`Store health saved. Auto-blacklisted: ${blacklisted}`);
           SCRIPT
 
-      - name: Commit store health
+      - name: Commit store health and monitor report
         if: always()
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git add data/storeHealth.json
+          git add data/storeHealth.json data/monitor-report.json
           git diff --staged --quiet || git commit -m "chore: update store health [skip ci]"
           git push origin HEAD:${{ github.ref_name }}

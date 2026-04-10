@@ -9,6 +9,8 @@ node_modules/
 
 # Runtime data (generated during CI, not committed)
 data/monitor-urls.json
+data/monitor-chunks.json
+data/monitor-results/
 monitor-output.log
 
 # Test results
@@ -16,3 +18,7 @@ test-results.json
 
 # Claude Code local settings
 .claude/
+
+# Local environment variables (never commit)
+.env
+
