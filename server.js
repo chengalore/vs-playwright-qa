@@ -50,11 +50,17 @@ async function verifySlackSignature(req, rawBody) {
   try { return timingSafeEqual(computed, Buffer.from(signature)); } catch { return false; }
 }
 
-async function triggerAgentWorkflow(instruction, slackResponseUrl) {
+const MONITOR_KEYWORDS = /\b(monitor|all stores|all store|every store|check all)\b/i;
+
+function isMonitorRequest(instruction) {
+  return MONITOR_KEYWORDS.test(instruction);
+}
+
+async function dispatchWorkflow(workflow, inputs) {
   if (!GITHUB_REPO || !GH_PAT) throw new Error("GITHUB_REPO and GH_PAT must be set in .env");
   const [owner, repo] = GITHUB_REPO.split("/");
   const res = await fetch(
-    `https://api.github.com/repos/${owner}/${repo}/actions/workflows/agent-qa.yml/dispatches`,
+    `https://api.github.com/repos/${owner}/${repo}/actions/workflows/${workflow}/dispatches`,
     {
       method: "POST",
       headers: {
@@ -62,16 +68,30 @@ async function triggerAgentWorkflow(instruction, slackResponseUrl) {
         Accept: "application/vnd.github+json",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        ref: "main",
-        inputs: { instruction, slack_response_url: slackResponseUrl || "" },
-      }),
+      body: JSON.stringify({ ref: "main", inputs }),
     }
   );
   if (!res.ok) {
     const text = await res.text();
     throw new Error(`GitHub API ${res.status}: ${text}`);
   }
+}
+
+async function triggerAgentWorkflow(instruction, slackResponseUrl) {
+  await dispatchWorkflow("agent-qa.yml", {
+    instruction,
+    slack_response_url: slackResponseUrl || "",
+  });
+}
+
+async function triggerMonitorWorkflow() {
+  await dispatchWorkflow("inpage-monitor.yml", {
+    phase: "widget",
+    store_id: "",
+    product_type_id: "",
+    gender: "",
+    browser: "chrome",
+  });
 }
 
 // Track running processes
@@ -98,18 +118,29 @@ const server = http.createServer((req, res) => {
         return;
       }
 
+      // Route: monitor vs agent
+      const isMonitor = isMonitorRequest(instruction);
+
       // Acknowledge immediately (Slack requires response within 3 seconds)
       res.writeHead(200, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ text: `Starting agent test: _"${instruction}"_\nI'll report back when done.` }));
+      res.end(JSON.stringify({
+        text: isMonitor
+          ? `⏳ Starting monitor for all stores... Results will be posted when done.`
+          : `Starting agent test: _"${instruction}"_\nI'll report back when done.`,
+      }));
 
       // Trigger workflow asynchronously
-      triggerAgentWorkflow(instruction, responseUrl).catch(async err => {
+      const trigger = isMonitor
+        ? triggerMonitorWorkflow()
+        : triggerAgentWorkflow(instruction, responseUrl);
+
+      trigger.catch(async err => {
         console.error("[slack] workflow trigger failed:", err.message);
         if (responseUrl) {
           await fetch(responseUrl, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ text: `❌ Failed to start test: ${err.message}` }),
+            body: JSON.stringify({ text: `❌ Failed to start: ${err.message}` }),
           }).catch(() => {});
         }
       });
