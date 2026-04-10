@@ -92,15 +92,7 @@ export default async function handler(req, res) {
 
   const monitorOpts = parseMonitorRequest(instruction);
 
-  // Acknowledge immediately (Slack requires response within 3 seconds)
-  res.status(200).json({
-    response_type: "ephemeral",
-    text: monitorOpts
-      ? `⏳ Starting monitor for all stores (phase: ${monitorOpts.phase})...`
-      : `Starting agent test: _"${instruction}"_\nI'll report back when done.`,
-  });
-
-  // Trigger workflow asynchronously
+  // Trigger GitHub workflow first, then respond to Slack
   try {
     if (monitorOpts) {
       await dispatchWorkflow("inpage-monitor.yml", {
@@ -118,12 +110,17 @@ export default async function handler(req, res) {
     }
   } catch (err) {
     console.error("Workflow dispatch failed:", err.message);
-    if (responseUrl) {
-      await fetch(responseUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: `❌ Failed to start: ${err.message}` }),
-      }).catch(() => {});
-    }
+    res.status(200).json({
+      response_type: "ephemeral",
+      text: `❌ Failed to start: ${err.message}`,
+    });
+    return;
   }
+
+  res.status(200).json({
+    response_type: "ephemeral",
+    text: monitorOpts
+      ? `⏳ Starting monitor for all stores (phase: ${monitorOpts.phase})...`
+      : `Starting agent test: _"${instruction}"_\nI'll report back when done.`,
+  });
 }
