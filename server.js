@@ -50,10 +50,14 @@ async function verifySlackSignature(req, rawBody) {
   try { return timingSafeEqual(computed, Buffer.from(signature)); } catch { return false; }
 }
 
-const MONITOR_KEYWORDS = /\b(monitor|all stores|all store|every store|check all)\b/i;
+const MONITOR_PATTERN = /^(monitor|all)\b(.*)$/i;
 
-function isMonitorRequest(instruction) {
-  return MONITOR_KEYWORDS.test(instruction);
+function parseMonitorRequest(instruction) {
+  const match = instruction.trim().match(MONITOR_PATTERN);
+  if (!match) return null;
+  const rest = match[2].trim().toLowerCase();
+  const phase = rest.includes("api") ? "api" : "widget";
+  return { phase };
 }
 
 async function dispatchWorkflow(workflow, inputs) {
@@ -84,9 +88,9 @@ async function triggerAgentWorkflow(instruction, slackResponseUrl) {
   });
 }
 
-async function triggerMonitorWorkflow() {
+async function triggerMonitorWorkflow(phase = "widget") {
   await dispatchWorkflow("inpage-monitor.yml", {
-    phase: "widget",
+    phase,
     store_id: "",
     product_type_id: "",
     gender: "",
@@ -119,19 +123,19 @@ const server = http.createServer((req, res) => {
       }
 
       // Route: monitor vs agent
-      const isMonitor = isMonitorRequest(instruction);
+      const monitorOpts = parseMonitorRequest(instruction);
 
       // Acknowledge immediately (Slack requires response within 3 seconds)
       res.writeHead(200, { "Content-Type": "application/json" });
       res.end(JSON.stringify({
-        text: isMonitor
-          ? `⏳ Starting monitor for all stores... Results will be posted when done.`
+        text: monitorOpts
+          ? `⏳ Starting monitor for all stores (phase: ${monitorOpts.phase})... Results will be posted when done.`
           : `Starting agent test: _"${instruction}"_\nI'll report back when done.`,
       }));
 
       // Trigger workflow asynchronously
-      const trigger = isMonitor
-        ? triggerMonitorWorkflow()
+      const trigger = monitorOpts
+        ? triggerMonitorWorkflow(monitorOpts.phase)
         : triggerAgentWorkflow(instruction, responseUrl);
 
       trigger.catch(async err => {
