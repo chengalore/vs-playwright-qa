@@ -75,7 +75,7 @@
   },
   "hankyu_hanshin": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 9,
+    "consecutiveWidgetMissing": 10,
     "autoBlacklisted": false
   },
   "agnes_b": {
@@ -120,7 +120,7 @@
   },
   "hankyu_mens": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 1,
+    "consecutiveWidgetMissing": 0,
     "autoBlacklisted": false
   },
   "llbean": {
@@ -160,7 +160,7 @@
   },
   "reebok_korea": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 24
+    "consecutiveWidgetMissing": 25
   },
   "aoure": {
     "consecutiveFailures": 0,
@@ -323,7 +323,7 @@
   },
   "snidel": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 24
+    "consecutiveWidgetMissing": 25
   },
   "bottega_veneta": {
     "consecutiveFailures": 0,
@@ -351,7 +351,7 @@
   },
   "edwin": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 10,
+    "consecutiveWidgetMissing": 0,
     "autoBlacklisted": false
   },
   "levi_japan": {
@@ -405,6 +405,16 @@
   },
   "gelato_pique": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 24
+    "consecutiveWidgetMissing": 25
+  },
+  "bottega_veneta_japan": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
+  },
+  "bottega_veneta_korea": {
+    "consecutiveFailures": 0,
+    "consecutiveWidgetMissing": 0,
+    "autoBlacklisted": false
   }
 }

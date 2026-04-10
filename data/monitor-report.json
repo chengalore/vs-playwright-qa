@@ -1,0 +1,51 @@
+{
+  "timestamp": "2026-04-10T18:54:20.477Z",
+  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/24258386064",
+  "summary": {
+    "total": 85,
+    "passed": 76,
+    "widgetMissing": 4,
+    "skipped": 4,
+    "failed": 1,
+    "fallbackUsed": 77
+  },
+  "newIssues": [
+    {
+      "store": "callawaygolf",
+      "error": "page.evaluate: Execution context was destroyed, most likely because of a navigation"
+    }
+  ],
+  "ongoingMissing": [
+    {
+      "store": "reebok_korea",
+      "consecutiveRuns": 24
+    },
+    {
+      "store": "snidel",
+      "consecutiveRuns": 24
+    },
+    {
+      "store": "gelato_pique",
+      "consecutiveRuns": 24
+    },
+    {
+      "store": "edwin",
+      "consecutiveRuns": 10
+    },
+    {
+      "store": "hankyu_hanshin",
+      "consecutiveRuns": 9
+    },
+    {
+      "store": "hankyu_mens",
+      "consecutiveRuns": 1
+    }
+  ],
+  "botProtected": [
+    "adidas",
+    "ralph_lauren",
+    "asics_japan",
+    "bottega_veneta"
+  ],
+  "skippedStores": []
+}
