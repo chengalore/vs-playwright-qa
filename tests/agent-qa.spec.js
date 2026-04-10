@@ -141,7 +141,10 @@ You control a real browser (Playwright) through tool calls. Your job is to carry
 - Always call get_page_info after navigating to confirm the page loaded correctly.
 - If get_page_info shows validProduct is false or undefined after 30s, report as skipped.
 - If any tool returns an error, try once to recover (e.g. wait and retry), then report as failed.
-- Keep the test focused on what the instruction asks. Don't over-test.`;
+- Keep the test focused on what the instruction asks. Don't over-test.
+- ALWAYS call report_result as your final action — never end without it.
+- When the instruction asks about events, call check_events and include the full event list in the summary, one event per line.
+- When reporting events, list them clearly so they are easy to read in a Slack message.`;
 
 // ── Test ──────────────────────────────────────────────────────────────────────
 
@@ -314,8 +317,13 @@ test(`Agent QA: ${INSTRUCTION}`, async ({ page }, testInfo) => {
     messages.push({ role: "assistant", content: response.content });
 
     if (response.stop_reason === "end_turn") {
-      // Agent finished without calling report_result
-      finalResult = { status: "passed", summary: "Agent completed without explicit result." };
+      // Extract whatever Claude said as the summary
+      const lastText = response.content
+        .filter(b => b.type === "text")
+        .map(b => b.text)
+        .join("\n")
+        .trim();
+      finalResult = { status: "passed", summary: lastText || "Agent completed without explicit result." };
       break;
     }
 
