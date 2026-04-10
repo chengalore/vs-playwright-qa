@@ -18,12 +18,14 @@ import { dirname, join } from "path";
 import { startPDCWatcher } from "../utils/pdcWatcher.js";
 import { loadFallback } from "../utils/fallbackStore.js";
 import { BOT_PROTECTED_ALIASES, BOT_PROTECTED_REASON } from "../config/botProtectedStores.js";
+import { MONITOR_STORES } from "../config/monitorStores.js";
 
 test.setTimeout(90000);
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const URLS_FILE = join(__dirname, "../data/monitor-urls.json");
 const CHUNKS_FILE = join(__dirname, "../data/monitor-chunks.json");
+const FALLBACK_FILE = join(__dirname, "../data/fallbackProducts.json");
 
 const chunkIndex =
   process.env.CHUNK_INDEX !== undefined && process.env.CHUNK_INDEX !== ""
@@ -38,14 +40,24 @@ if (chunkIndex !== null && existsSync(CHUNKS_FILE)) {
 } else if (existsSync(URLS_FILE)) {
   stores = JSON.parse(readFileSync(URLS_FILE, "utf8"));
 } else {
-  stores = [];
+  // Local fallback — build store list from fallbackProducts.json + monitorStores config
+  const fallbacks = existsSync(FALLBACK_FILE)
+    ? JSON.parse(readFileSync(FALLBACK_FILE, "utf8"))
+    : {};
+  stores = Object.entries(MONITOR_STORES).map(([alias, storeId]) => ({
+    storeAlias: alias,
+    storeId,
+    url: fallbacks[alias] ?? null,
+    fromFallback: !!fallbacks[alias],
+  }));
+  console.log(`Local run: built ${stores.length} stores from fallbackProducts.json`);
 }
 
 if (stores.length === 0) {
   throw new Error(
     chunkIndex !== null
       ? `Chunk ${chunkIndex} is empty — check monitor-chunks.json`
-      : "monitor-urls.json is empty — URL resolver step failed"
+      : "No stores found — add entries to data/fallbackProducts.json"
   );
 }
 
