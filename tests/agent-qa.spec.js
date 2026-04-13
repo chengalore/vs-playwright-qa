@@ -24,6 +24,8 @@ import { startBodyMeasurementWatcher } from "../utils/bodyMeasurementWatcher.js"
 import { completeOnboarding } from "../utils/completeOnboarding.js";
 import { blockMarketingScripts } from "../utils/blockMarketingScripts.js";
 import { loadFallback } from "../utils/fallbackStore.js";
+import { BOT_PROTECTED_DOMAINS } from "../config/stores.js";
+import { runInpageFlow } from "../utils/inpageFlow.js";
 
 test.setTimeout(180000);
 
@@ -104,6 +106,28 @@ const TOOLS = [
     },
   },
   {
+    name: "run_inpage_test",
+    description:
+      "Run the complete inpage.spec.js test flow on the already-navigated page. " +
+      "Automatically detects the product type (apparel, kids, bag, footwear, noVisor), " +
+      "opens the widget, completes onboarding, validates analytics events, and runs a " +
+      "refresh validation. Always call navigate_to_store first. Use this whenever the " +
+      "instruction is to test a URL or verify the widget works end-to-end.",
+    input_schema: {
+      type: "object",
+      properties: {
+        phase: {
+          type: "string",
+          enum: ["widget", "onboarding", "full"],
+          description:
+            "'widget': open the widget only. " +
+            "'onboarding': open + complete the onboarding form. " +
+            "'full': complete flow including event validation and page refresh (default).",
+        },
+      },
+    },
+  },
+  {
     name: "report_result",
     description: "Report the final test result. Call this when you are done.",
     input_schema: {
@@ -129,21 +153,24 @@ You control a real browser (Playwright) through tool calls. Your job is to carry
 - The widget fires analytics events (e.g. user-saw-widget-button, user-opened-widget, user-completed-onboarding).
 
 ## How to run a test
-1. Call navigate_to_store to go to the product page.
-2. Call get_page_info to confirm the product is valid and the widget is present.
-3. If the task involves opening the widget, call open_widget.
-4. If the task involves onboarding, call complete_onboarding after the widget is open.
-5. Call check_events to verify expected analytics events fired.
-6. Take a screenshot of key moments.
-7. Call report_result when done.
+
+### Full inpage test (URL given, or "test the widget on X")
+1. Call navigate_to_store with the URL or store alias.
+2. Call run_inpage_test — it auto-detects apparel / kids / bag / footwear / noVisor, opens the widget, completes onboarding, validates events, and runs a refresh. It returns { status, flow, store, productType }.
+3. Call report_result with the outcome. Include flow type and store in the summary.
+
+### Quick or targeted checks (e.g. "check events", "just open the widget")
+1. Call navigate_to_store.
+2. Call get_page_info to confirm the widget is present.
+3. Use open_widget, complete_onboarding, check_events as needed.
+4. Call report_result when done.
 
 ## Guidelines
-- Always call get_page_info after navigating to confirm the page loaded correctly.
-- If get_page_info shows validProduct is false or undefined after 30s, report as skipped.
-- If any tool returns an error, try once to recover (e.g. wait and retry), then report as failed.
-- Keep the test focused on what the instruction asks. Don't over-test.
+- When the instruction is a URL or asks to "test"/"verify"/"check" a page end-to-end, ALWAYS use run_inpage_test — do not simulate the flow manually with individual tools.
+- run_inpage_test accepts a phase: 'widget' (open only), 'onboarding' (open + form), 'full' (complete flow + refresh, default).
+- If run_inpage_test returns status 'skipped', report as skipped with the reason.
+- If any tool returns an error, try once to recover (wait and retry), then report as failed.
 - ALWAYS call report_result as your final action — never end without it.
-- When the instruction asks about events, call check_events and include the full event list in the summary, one event per line.
 - When reporting events, list them clearly so they are easy to read in a Slack message.`;
 
 // ── Test ──────────────────────────────────────────────────────────────────────
@@ -188,10 +215,14 @@ test(`Agent QA: ${INSTRUCTION}`, async ({ page }, testInfo) => {
       case "navigate_to_store": {
         const url = input.url || loadFallback(input.store_alias);
         if (!url) return { error: `No URL found for store '${input.store_alias}'. Try providing a direct url.` };
-        await page.goto(url, { waitUntil: "domcontentloaded", timeout: 30000 });
-        await page.waitForTimeout(2000);
-        currentUrl = url;
-        return { navigated_to: url };
+        try {
+          await page.goto(url, { waitUntil: "domcontentloaded", timeout: 30000 });
+          await page.waitForTimeout(2000);
+          currentUrl = url;
+          return { navigated_to: url };
+        } catch (e) {
+          return { error: `Navigation failed: ${e.message}` };
+        }
       }
 
       case "get_page_info": {
@@ -280,6 +311,24 @@ test(`Agent QA: ${INSTRUCTION}`, async ({ page }, testInfo) => {
         const screenshot = await page.screenshot({ fullPage: false });
         await testInfo.attach(input.label, { body: screenshot, contentType: "image/png" });
         return { screenshot_attached: true, label: input.label };
+      }
+
+      case "run_inpage_test": {
+        try {
+          const result = await runInpageFlow(
+            page,
+            { pdc, eventWatcher, recommendationAPI, bodyAPI },
+            {
+              phase: input.phase || "full",
+              url: currentUrl,
+              BOT_PROTECTED_DOMAINS,
+            },
+          );
+          console.log(`[agent] run_inpage_test: ${JSON.stringify(result)}`);
+          return result;
+        } catch (e) {
+          return { status: "failed", error: e.message };
+        }
       }
 
       case "report_result": {

@@ -358,11 +358,17 @@ jobs:
           console.log(`Store health saved. Auto-blacklisted: ${blacklisted}`);
           SCRIPT
 
+      - name: Build dashboard
+        if: always()
+        run: node scripts/build-dashboard.js
+        env:
+          PHASE: ${{ github.event.inputs.phase }}
+
       - name: Commit store health and monitor report
         if: always()
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git add data/storeHealth.json data/monitor-report.json
+          git add data/storeHealth.json data/monitor-report.json data/monitor-history.json docs/index.html
           git diff --staged --quiet || git commit -m "chore: update store health [skip ci]"
           git push origin HEAD:${{ github.ref_name }}

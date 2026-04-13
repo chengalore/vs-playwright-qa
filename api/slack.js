@@ -18,6 +18,7 @@ const GH_PAT = process.env.GH_PAT || process.env.GITHUB_TOKEN;
 const SLACK_SIGNING_SECRET = process.env.SLACK_SIGNING_SECRET;
 
 const MONITOR_PATTERN = /^(monitor|all)\b(.*)$/i;
+const URL_ONLY_PATTERN = /^https?:\/\/\S+$/i;
 
 function parseMonitorRequest(instruction) {
   const match = instruction.trim().match(MONITOR_PATTERN);
@@ -92,6 +93,11 @@ export default async function handler(req, res) {
 
   const monitorOpts = parseMonitorRequest(instruction);
 
+  // If instruction is just a URL, run the full inpage test flow
+  const resolvedInstruction = URL_ONLY_PATTERN.test(instruction)
+    ? `Run the full inpage test on ${instruction}. Call navigate_to_store with that URL, then call run_inpage_test to automatically detect the flow (apparel/kids/bag/footwear) and run the complete widget + onboarding + refresh validation. Report the result including the detected flow type and store.`
+    : instruction;
+
   // Trigger GitHub workflow first, then respond to Slack
   try {
     if (monitorOpts) {
@@ -104,7 +110,7 @@ export default async function handler(req, res) {
       });
     } else {
       await dispatchWorkflow("agent-qa.yml", {
-        instruction,
+        instruction: resolvedInstruction,
         slack_response_url: responseUrl || "",
       });
     }
@@ -121,6 +127,6 @@ export default async function handler(req, res) {
     response_type: "ephemeral",
     text: monitorOpts
       ? `⏳ Starting monitor for all stores (phase: ${monitorOpts.phase})...`
-      : `Starting agent test: _"${instruction}"_\nI'll report back when done.`,
+      : `Starting agent test: _"${resolvedInstruction}"_\nI'll report back when done.`,
   });
 }
