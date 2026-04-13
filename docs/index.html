@@ -207,7 +207,7 @@
 </div>
 
 <script>
-const HISTORY = [{"timestamp":"2026-04-10T19:24:34.332Z","githubRunUrl":"https://github.com/chengalore/vs-playwright-qa/actions/runs/24259959472","summary":{"total":85,"passed":75,"widgetMissing":5,"skipped":4,"failed":1,"fallbackUsed":76},"newIssues":[{"store":"callawaygolf","error":"page.evaluate: Execution context was destroyed, most likely because of a navigation"}],"ongoingMissing":[{"store":"reebok_korea","consecutiveRuns":25},{"store":"snidel","consecutiveRuns":25},{"store":"gelato_pique","consecutiveRuns":25},{"store":"hankyu_hanshin","consecutiveRuns":10}],"botProtected":["adidas","ralph_lauren","asics_japan","bottega_veneta"],"skippedStores":[],"phase":"widget"}];
+const HISTORY = [{"timestamp":"2026-04-13T06:56:21.519Z","githubRunUrl":"https://github.com/chengalore/vs-playwright-qa/actions/runs/24329829955","summary":{"total":85,"passed":75,"widgetMissing":4,"skipped":5,"failed":1,"fallbackUsed":76},"newIssues":[{"store":"callawaygolf","error":"page.evaluate: Execution context was destroyed, most likely because of a navigation"}],"widgetMissingStores":["snidel","gelato_pique","hankyu_hanshin","reebok_korea"],"ongoingMissing":[{"store":"reebok_korea","consecutiveRuns":27},{"store":"snidel","consecutiveRuns":27},{"store":"gelato_pique","consecutiveRuns":27},{"store":"hankyu_hanshin","consecutiveRuns":12},{"store":"hankyu_mens","consecutiveRuns":1}],"botProtected":["adidas","ralph_lauren","asics_japan","bottega_veneta"],"skippedStores":[{"store":"hankyu_mens","reason":"invalid_product"}],"phase":"widget"},{"timestamp":"2026-04-10T19:24:34.332Z","githubRunUrl":"https://github.com/chengalore/vs-playwright-qa/actions/runs/24259959472","summary":{"total":85,"passed":75,"widgetMissing":5,"skipped":4,"failed":1,"fallbackUsed":76},"newIssues":[{"store":"callawaygolf","error":"page.evaluate: Execution context was destroyed, most likely because of a navigation"}],"ongoingMissing":[{"store":"reebok_korea","consecutiveRuns":25},{"store":"snidel","consecutiveRuns":25},{"store":"gelato_pique","consecutiveRuns":25},{"store":"hankyu_hanshin","consecutiveRuns":10}],"botProtected":["adidas","ralph_lauren","asics_japan","bottega_veneta"],"skippedStores":[],"phase":"widget"}];
 
 function fmt(iso) {
   if (!iso) return '—';
@@ -248,7 +248,8 @@ function countClass(n, type) {
 
 function renderDetail(run) {
   const issues = (run.newIssues || []);
-  const missing = (run.ongoingMissing || []);
+  const widgetMissingStores = (run.widgetMissingStores || []);
+  const ongoingMissing = (run.ongoingMissing || []);
   const bots = (run.botProtected || []);
   const skipped = (run.skippedStores || []);
 
@@ -256,9 +257,16 @@ function renderDetail(run) {
     ? '<span class="empty">None</span>'
     : issues.map(i => `<li><span class="store">${i.store}</span><span class="error-text">${i.error || ''}</span></li>`).join('');
 
-  const missingHtml = missing.length === 0
-    ? '<span class="empty">None</span>'
-    : missing.map(m => `<li><span class="store">${m.store}</span> <span class="meta">(${m.consecutiveRuns} runs)</span></li>`).join('');
+  // Split widget missing into new (first time) vs ongoing (consecutive runs)
+  const ongoingMap = Object.fromEntries(ongoingMissing.map(o => [o.store, o.consecutiveRuns]));
+  const newMissing = widgetMissingStores.filter(s => !ongoingMap[s]);
+  const recurringMissing = widgetMissingStores.filter(s => ongoingMap[s]).map(s => ({ store: s, runs: ongoingMap[s] + 1 }));
+
+  const newMissingHtml = newMissing.length === 0 ? '' :
+    `<div class="detail-section"><h4>⚠️ Widget missing (new)</h4><ul>${newMissing.map(s => `<li><span class="store">${s}</span></li>`).join('')}</ul></div>`;
+
+  const recurringMissingHtml = recurringMissing.length === 0 ? '' :
+    `<div class="detail-section"><h4>⚠️ Widget missing (ongoing)</h4><ul>${recurringMissing.map(m => `<li><span class="store">${m.store}</span> <span class="meta">×${m.runs} runs</span></li>`).join('')}</ul></div>`;
 
   const botHtml = bots.length === 0
     ? '<span class="empty">None</span>'
@@ -269,8 +277,9 @@ function renderDetail(run) {
     : skipped.map(s => `<li><span class="store">${s.store || s}</span>${s.reason ? ` <span class="meta">(${s.reason})</span>` : ''}</li>`).join('');
 
   return `<div class="detail-inner">
-    <div class="detail-section"><h4>❌ New failures</h4><ul>${issueHtml}</ul></div>
-    <div class="detail-section"><h4>⚠️ Ongoing missing</h4><ul>${missingHtml}</ul></div>
+    <div class="detail-section"><h4>❌ Failed</h4><ul>${issueHtml}</ul></div>
+    ${newMissingHtml}
+    ${recurringMissingHtml}
     <div class="detail-section"><h4>🤖 Bot protected</h4><ul>${botHtml}</ul></div>
     <div class="detail-section"><h4>⏭ Skipped</h4><ul>${skippedHtml}</ul></div>
   </div>`;

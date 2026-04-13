@@ -1,11 +1,11 @@
 {
-  "timestamp": "2026-04-13T01:11:47.595Z",
-  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/24321036279",
+  "timestamp": "2026-04-13T06:56:21.519Z",
+  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/24329829955",
   "summary": {
     "total": 85,
     "passed": 75,
-    "widgetMissing": 5,
-    "skipped": 4,
+    "widgetMissing": 4,
+    "skipped": 5,
     "failed": 1,
     "fallbackUsed": 76
   },
@@ -15,25 +15,31 @@
       "error": "page.evaluate: Execution context was destroyed, most likely because of a navigation"
     }
   ],
+  "widgetMissingStores": [
+    "snidel",
+    "gelato_pique",
+    "hankyu_hanshin",
+    "reebok_korea"
+  ],
   "ongoingMissing": [
     {
       "store": "reebok_korea",
-      "consecutiveRuns": 26
+      "consecutiveRuns": 27
     },
     {
       "store": "snidel",
-      "consecutiveRuns": 26
+      "consecutiveRuns": 27
     },
     {
       "store": "gelato_pique",
-      "consecutiveRuns": 26
+      "consecutiveRuns": 27
     },
     {
       "store": "hankyu_hanshin",
-      "consecutiveRuns": 11
+      "consecutiveRuns": 12
     },
     {
-      "store": "classico_global",
+      "store": "hankyu_mens",
       "consecutiveRuns": 1
     }
   ],
@@ -43,5 +49,10 @@
     "asics_japan",
     "bottega_veneta"
   ],
-  "skippedStores": []
+  "skippedStores": [
+    {
+      "store": "hankyu_mens",
+      "reason": "invalid_product"
+    }
+  ]
 }
