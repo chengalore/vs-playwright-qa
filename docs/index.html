@@ -345,9 +345,14 @@
   <div class="panel" id="panel-single">
     <h1>Single URL Tests</h1>
     <p class="panel-subtitle">Per-URL tests run across chrome, firefox, and webkit</p>
+    <div class="flag-bar">
+      <span id="single-flag-count">0 items flagged</span>
+      <button id="single-export-btn" onclick="exportSingleFlagged()" disabled>Export flagged URLs</button>
+    </div>
     <table>
       <thead>
         <tr>
+          <th style="width:32px"></th>
           <th>Date &amp; Time</th>
           <th>URL</th>
           <th>Store</th>
@@ -559,17 +564,43 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
 });
 
 // ── Single URL history ────────────────────────────────────────────────────────
+const singleFlagged = new Map(); // index → url
+
+function toggleSingleFlag(idx, url) {
+  if (singleFlagged.has(idx)) {
+    singleFlagged.delete(idx);
+  } else {
+    singleFlagged.set(idx, url);
+  }
+  const row = document.getElementById('single-row-' + idx);
+  const chk = document.getElementById('single-chk-' + idx);
+  const isFlagged = singleFlagged.has(idx);
+  row.style.background = isFlagged ? 'rgba(248,81,73,0.08)' : '';
+  chk.checked = isFlagged;
+  document.getElementById('single-flag-count').textContent = singleFlagged.size + ' item' + (singleFlagged.size !== 1 ? 's' : '') + ' flagged';
+  document.getElementById('single-export-btn').disabled = singleFlagged.size === 0;
+}
+
+function exportSingleFlagged() {
+  const lines = [...singleFlagged.values()];
+  const blob = new Blob([lines.join('\n')], { type: 'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'flagged-single-url.txt';
+  a.click();
+}
+
 function renderSingleUrl() {
   const tbody = document.getElementById('single-url-body');
   if (SINGLE_URL_HISTORY.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="8" class="empty-state">No single URL tests yet.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="9" class="empty-state">No single URL tests yet.</td></tr>';
     return;
   }
 
   const iconFor = s => s === 'passed' ? '✅' : s === 'skipped' ? '⏭' : s === 'no_result' ? '—' : '❌';
   const shortUrl = url => { try { const u = new URL(url); return u.hostname.replace(/^www\./, '') + u.pathname.slice(0, 30) + (u.pathname.length > 30 ? '…' : ''); } catch { return url; } };
 
-  tbody.innerHTML = SINGLE_URL_HISTORY.map(entry => {
+  tbody.innerHTML = SINGLE_URL_HISTORY.map((entry, idx) => {
     const byBrowser = Object.fromEntries((entry.browsers || []).map(b => [b.browser, b]));
     const chrome  = byBrowser['chrome']  || {};
     const firefox = byBrowser['firefox'] || {};
@@ -581,17 +612,20 @@ function renderSingleUrl() {
       return `<td style="text-align:center"${tip}>${icon}</td>`;
     };
 
-    return `<tr>
+    return `<tr id="single-row-${idx}" style="cursor:pointer" onclick="toggleSingleFlag(${idx}, ${JSON.stringify(entry.url || '')})">
+      <td style="text-align:center" onclick="event.stopPropagation(); toggleSingleFlag(${idx}, ${JSON.stringify(entry.url || '')})">
+        <input type="checkbox" id="single-chk-${idx}" style="accent-color:#f85149;cursor:pointer" onclick="event.stopPropagation(); toggleSingleFlag(${idx}, ${JSON.stringify(entry.url || '')})">
+      </td>
       <td class="ts">${fmt(entry.timestamp)}</td>
       <td style="font-size:12px;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
-        <a href="${entry.url}" target="_blank" rel="noopener" title="${entry.url}">${shortUrl(entry.url)}</a>
+        <a href="${entry.url}" target="_blank" rel="noopener" title="${entry.url}" onclick="event.stopPropagation()">${shortUrl(entry.url)}</a>
       </td>
       <td style="font-size:13px">${entry.store || '—'}</td>
       <td><span class="phase-badge phase-${entry.phase || 'full'}">${entry.phase || 'full'}</span></td>
       ${statusCell(chrome)}
       ${statusCell(firefox)}
       ${statusCell(webkit)}
-      <td class="run-link"><a href="${entry.githubRunUrl || '#'}" target="_blank" rel="noopener">View →</a></td>
+      <td class="run-link"><a href="${entry.githubRunUrl || '#'}" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></td>
     </tr>`;
   }).join('');
 }
