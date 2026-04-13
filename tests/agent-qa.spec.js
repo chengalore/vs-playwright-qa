@@ -27,7 +27,7 @@ import { loadFallback } from "../utils/fallbackStore.js";
 import { BOT_PROTECTED_DOMAINS } from "../config/stores.js";
 import { runInpageFlow } from "../utils/inpageFlow.js";
 
-test.setTimeout(180000);
+test.setTimeout(360000); // 6 min — full inpage flow can take ~200s + API overhead
 
 const INSTRUCTION = process.env.INSTRUCTION;
 if (!INSTRUCTION) throw new Error("INSTRUCTION env var is required.\n\nExample: INSTRUCTION=\"test onboarding for snidel\"");
@@ -351,49 +351,57 @@ test(`Agent QA: ${INSTRUCTION}`, async ({ page }, testInfo) => {
   let iterations = 0;
   const MAX_ITERATIONS = 20;
 
-  while (!finalResult && iterations < MAX_ITERATIONS) {
-    iterations++;
+  try {
+    while (!finalResult && iterations < MAX_ITERATIONS) {
+      iterations++;
 
-    const response = await client.messages.create({
-      model: "claude-sonnet-4-6",
-      max_tokens: 1024,
-      system: SYSTEM_PROMPT,
-      tools: TOOLS,
-      messages,
-    });
-
-    // Add assistant response to messages
-    messages.push({ role: "assistant", content: response.content });
-
-    if (response.stop_reason === "end_turn") {
-      // Extract whatever Claude said as the summary
-      const lastText = response.content
-        .filter(b => b.type === "text")
-        .map(b => b.text)
-        .join("\n")
-        .trim();
-      finalResult = { status: "passed", summary: lastText || "Agent completed without explicit result." };
-      break;
-    }
-
-    if (response.stop_reason !== "tool_use") break;
-
-    // Execute all tool calls in this response
-    const toolResults = [];
-    for (const block of response.content) {
-      if (block.type !== "tool_use") continue;
-      const result = await executeTool(block.name, block.input);
-      toolResults.push({
-        type: "tool_result",
-        tool_use_id: block.id,
-        content: JSON.stringify(result),
+      const response = await client.messages.create({
+        model: "claude-sonnet-4-6",
+        max_tokens: 1024,
+        system: SYSTEM_PROMPT,
+        tools: TOOLS,
+        messages,
       });
 
-      // Stop loop after report_result
-      if (block.name === "report_result") break;
-    }
+      // Add assistant response to messages
+      messages.push({ role: "assistant", content: response.content });
 
-    messages.push({ role: "user", content: toolResults });
+      if (response.stop_reason === "end_turn") {
+        // Extract whatever Claude said as the summary
+        const lastText = response.content
+          .filter(b => b.type === "text")
+          .map(b => b.text)
+          .join("\n")
+          .trim();
+        finalResult = { status: "passed", summary: lastText || "Agent completed without explicit result." };
+        break;
+      }
+
+      if (response.stop_reason !== "tool_use") break;
+
+      // Execute all tool calls in this response
+      const toolResults = [];
+      for (const block of response.content) {
+        if (block.type !== "tool_use") continue;
+        const result = await executeTool(block.name, block.input);
+        toolResults.push({
+          type: "tool_result",
+          tool_use_id: block.id,
+          content: JSON.stringify(result),
+        });
+
+        // Stop loop after report_result
+        if (block.name === "report_result") break;
+      }
+
+      messages.push({ role: "user", content: toolResults });
+    }
+  } catch (loopError) {
+    // Catch unhandled errors from the agent loop (e.g. Anthropic API failures,
+    // Playwright test timeouts propagating through) so AGENT_RESULT is always logged.
+    if (!finalResult) {
+      finalResult = { status: "failed", summary: `Agent loop crashed: ${loopError.message}` };
+    }
   }
 
   // ── Final assertion ───────────────────────────────────────────────────────
@@ -402,6 +410,7 @@ test(`Agent QA: ${INSTRUCTION}`, async ({ page }, testInfo) => {
     finalResult = { status: "failed", summary: "Agent hit iteration limit without reporting a result." };
   }
 
+  // Always log AGENT_RESULT so the Slack notification step can find it.
   console.log(`\nAGENT_RESULT: ${JSON.stringify({ ...finalResult, url: currentUrl, instruction: INSTRUCTION })}`);
 
   if (finalResult.status === "failed") {
