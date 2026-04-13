@@ -1,0 +1,92 @@
+name: Single URL Test
+
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: "Product page URL to test"
+        required: true
+        type: string
+      phase:
+        description: "Test phase (widget/onboarding/full)"
+        required: false
+        default: "full"
+        type: string
+      slack_response_url:
+        description: "Slack response_url for posting the result back"
+        required: false
+        type: string
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - run: npm ci
+
+      - run: npx playwright install --with-deps chrome
+
+      - name: Run inpage test
+        run: |
+          npx playwright test tests/inpage.spec.js --project=chrome --reporter=list 2>&1 | tee test-output.log
+        env:
+          TEST_URL: ${{ github.event.inputs.url }}
+          TEST_PHASE: ${{ github.event.inputs.phase }}
+          RANDOM_PRODUCT_API_URL: ${{ secrets.RANDOM_PRODUCT_API_URL }}
+
+      - name: Post result to Slack
+        if: always()
+        run: |
+          node --input-type=module <<'EOF'
+          import fs from 'fs';
+
+          const responseUrl = process.env.SLACK_RESPONSE_URL;
+          if (!responseUrl) { console.log('No response_url — skipping Slack post'); process.exit(0); }
+
+          const log = fs.existsSync('test-output.log') ? fs.readFileSync('test-output.log', 'utf8') : '';
+          const resultLine = log.split('\n').reverse().find(l => l.includes('QA_RESULT:'));
+
+          const runUrl = process.env.GITHUB_RUN_URL;
+          const url = process.env.TEST_URL;
+          const phase = process.env.PHASE;
+
+          let message;
+          if (resultLine) {
+            const result = JSON.parse(resultLine.replace(/^.*QA_RESULT:\s*/, ''));
+            const icon = result.status === 'passed' ? '✅' : result.status === 'skipped' ? '⏭️' : '❌';
+            const parts = [
+              `${icon} *${result.status.toUpperCase()}*`,
+              result.store ? `*Store:* ${result.store}` : null,
+              result.flow || result.productType ? `*Flow:* ${result.flow || result.productType}` : null,
+              result.phase ? `*Phase:* ${result.phase}` : null,
+              result.reason ? `*Reason:* ${result.reason}` : null,
+              result.error ? `*Error:* ${result.error}` : null,
+              `<${url}|Product page> · <${runUrl}|View run>`,
+            ].filter(Boolean).join('\n');
+            message = parts;
+          } else {
+            const passed = (log.match(/\d+ passed/)?.[0]) ?? null;
+            const failed = (log.match(/\d+ failed/)?.[0]) ?? null;
+            const icon = failed ? '❌' : passed ? '✅' : '⚠️';
+            message = `${icon} Test finished\n<${url}|Product page> · <${runUrl}|View run>`;
+          }
+
+          const res = await fetch(responseUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: message }),
+          });
+          console.log('Slack response:', res.status);
+          EOF
+        env:
+          SLACK_RESPONSE_URL: ${{ github.event.inputs.slack_response_url }}
+          TEST_URL: ${{ github.event.inputs.url }}
+          PHASE: ${{ github.event.inputs.phase }}
+          GITHUB_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}

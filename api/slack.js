@@ -93,10 +93,7 @@ export default async function handler(req, res) {
 
   const monitorOpts = parseMonitorRequest(instruction);
 
-  // If instruction is just a URL, run the full inpage test flow
-  const resolvedInstruction = URL_ONLY_PATTERN.test(instruction)
-    ? `Run the full inpage test on ${instruction}. Call navigate_to_store with that URL, then call run_inpage_test to automatically detect the flow (apparel/kids/bag/footwear) and run the complete widget + onboarding + refresh validation. Report the result including the detected flow type and store.`
-    : instruction;
+  const isUrlOnly = URL_ONLY_PATTERN.test(instruction);
 
   // Trigger GitHub workflow first, then respond to Slack
   try {
@@ -108,9 +105,15 @@ export default async function handler(req, res) {
         gender: "",
         browser: "chrome",
       });
+    } else if (isUrlOnly) {
+      await dispatchWorkflow("single-url-test.yml", {
+        url: instruction,
+        phase: "full",
+        slack_response_url: responseUrl || "",
+      });
     } else {
       await dispatchWorkflow("agent-qa.yml", {
-        instruction: resolvedInstruction,
+        instruction,
         slack_response_url: responseUrl || "",
       });
     }
@@ -127,6 +130,8 @@ export default async function handler(req, res) {
     response_type: "ephemeral",
     text: monitorOpts
       ? `⏳ Starting monitor for all stores (phase: ${monitorOpts.phase})...`
-      : `Starting agent test: _"${resolvedInstruction}"_\nI'll report back when done.`,
+      : isUrlOnly
+        ? `⏳ Running inpage test on ${instruction}\nI'll report back when done.`
+        : `Starting agent test: _"${instruction}"_\nI'll report back when done.`,
   });
 }
