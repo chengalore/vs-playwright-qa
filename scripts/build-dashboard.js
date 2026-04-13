@@ -382,7 +382,7 @@ function generateDashboard(history, compareScreenshots, singleUrlHistory) {
   <!-- Overlay QA -->
   <div class="panel" id="panel-compare">
     <h1>Compare View</h1>
-    <p class="panel-subtitle">Bag product screenshots for visual review</p>
+    <p class="panel-subtitle">Screenshots of the compare view after onboarding — bags, apparel, footwear</p>
     <div id="compare-content"></div>
   </div>
 
@@ -619,7 +619,7 @@ function renderCompareView() {
   if (COMPARE_SCREENSHOTS.length === 0) {
     el.innerHTML = \`<div class="info-panel">
       <div class="icon">🖼</div>
-      <p>No screenshots yet. Run the overlay QA test to generate them.</p>
+      <p>No screenshots yet. Run the compare view test to generate them.</p>
       <div class="run-cmd">npx playwright test tests/compare-view-screenshot.spec.js --project=chrome</div>
     </div>\`;
     return;
