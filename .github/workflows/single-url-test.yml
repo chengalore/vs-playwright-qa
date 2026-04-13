@@ -18,9 +18,14 @@ on:
         type: string
 
 jobs:
+  # ── Run the test in 3 browsers in parallel ────────────────────────────────
   test:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    strategy:
+      matrix:
+        browser: [chrome, firefox, webkit]
+      fail-fast: false
 
     steps:
       - uses: actions/checkout@v4
@@ -31,18 +36,64 @@ jobs:
 
       - run: npm ci
 
-      - run: npx playwright install --with-deps chrome
+      - run: npx playwright install --with-deps ${{ matrix.browser }}
 
       - name: Run inpage test
         run: |
-          npx playwright test tests/inpage.spec.js --project=chrome --reporter=list 2>&1 | tee test-output.log
+          npx playwright test tests/inpage.spec.js --project=${{ matrix.browser }} --reporter=list 2>&1 | tee test-output.log
         env:
           TEST_URL: ${{ github.event.inputs.url }}
           TEST_PHASE: ${{ github.event.inputs.phase }}
           RANDOM_PRODUCT_API_URL: ${{ secrets.RANDOM_PRODUCT_API_URL }}
 
-      - name: Post result to Slack
+      - name: Save result
         if: always()
+        run: |
+          node --input-type=module <<'SCRIPT'
+          import fs from 'fs';
+
+          const log = fs.existsSync('test-output.log') ? fs.readFileSync('test-output.log', 'utf8') : '';
+          const resultLine = log.split('\n').reverse().find(l => l.includes('QA_RESULT:'));
+          const browser = process.env.BROWSER;
+
+          let result;
+          if (resultLine) {
+            result = JSON.parse(resultLine.replace(/^.*QA_RESULT:\s*/, ''));
+          } else {
+            const failed = log.includes('failed') || log.includes('Error');
+            result = { status: failed ? 'failed' : 'unknown', error: 'No QA_RESULT in output' };
+          }
+          result.browser = browser;
+
+          fs.writeFileSync(`result-${browser}.json`, JSON.stringify(result));
+          console.log(`Saved result for ${browser}:`, result.status);
+          SCRIPT
+        env:
+          BROWSER: ${{ matrix.browser }}
+
+      - name: Upload result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: result-${{ matrix.browser }}
+          path: result-${{ matrix.browser }}.json
+          retention-days: 1
+
+  # ── Combine results and post a single Slack message ───────────────────────
+  notify:
+    needs: test
+    if: always()
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download all results
+        uses: actions/download-artifact@v4
+        with:
+          pattern: result-*
+          merge-multiple: true
+          path: results/
+
+      - name: Post combined result to Slack
         run: |
           node --input-type=module <<'EOF'
           import fs from 'fs';
@@ -50,43 +101,42 @@ jobs:
           const responseUrl = process.env.SLACK_RESPONSE_URL;
           if (!responseUrl) { console.log('No response_url — skipping Slack post'); process.exit(0); }
 
-          const log = fs.existsSync('test-output.log') ? fs.readFileSync('test-output.log', 'utf8') : '';
-          const resultLine = log.split('\n').reverse().find(l => l.includes('QA_RESULT:'));
+          const browsers = ['chrome', 'firefox', 'webkit'];
+          const results = browsers.map(b => {
+            const file = `results/result-${b}.json`;
+            if (!fs.existsSync(file)) return { browser: b, status: 'failed', error: 'No result file' };
+            return JSON.parse(fs.readFileSync(file, 'utf8'));
+          });
 
-          const runUrl = process.env.GITHUB_RUN_URL;
           const url = process.env.TEST_URL;
-          const phase = process.env.PHASE;
+          const runUrl = process.env.GITHUB_RUN_URL;
 
-          let message;
-          if (resultLine) {
-            const result = JSON.parse(resultLine.replace(/^.*QA_RESULT:\s*/, ''));
-            const icon = result.status === 'passed' ? '✅' : result.status === 'skipped' ? '⏭️' : '❌';
-            const parts = [
-              `${icon} *${result.status.toUpperCase()}*`,
-              result.store ? `*Store:* ${result.store}` : null,
-              result.flow || result.productType ? `*Flow:* ${result.flow || result.productType}` : null,
-              result.phase ? `*Phase:* ${result.phase}` : null,
-              result.reason ? `*Reason:* ${result.reason}` : null,
-              result.error ? `*Error:* ${result.error}` : null,
-              `<${url}|Product page> · <${runUrl}|View run>`,
-            ].filter(Boolean).join('\n');
-            message = parts;
-          } else {
-            const passed = (log.match(/\d+ passed/)?.[0]) ?? null;
-            const failed = (log.match(/\d+ failed/)?.[0]) ?? null;
-            const icon = failed ? '❌' : passed ? '✅' : '⚠️';
-            message = `${icon} Test finished\n<${url}|Product page> · <${runUrl}|View run>`;
-          }
+          const iconFor = s => s === 'passed' ? '✅' : s === 'skipped' ? '⏭️' : '❌';
+
+          // Browser summary line: ✅ chrome  ✅ firefox  ❌ webkit
+          const browserLine = results.map(r => `${iconFor(r.status)} ${r.browser}`).join('  ');
+
+          // Take store/flow from whichever browser has it
+          const first = results.find(r => r.store) || results[0];
+
+          const errors = results.filter(r => r.error && r.status !== 'skipped');
+
+          const parts = [
+            browserLine,
+            first.store ? `*Store:* ${first.store}` : null,
+            (first.flow || first.productType) ? `*Flow:* ${first.flow || first.productType}` : null,
+            ...errors.map(r => `*${r.browser}:* ${r.error}`),
+            `<${url}|Product page> · <${runUrl}|View run>`,
+          ].filter(Boolean).join('\n');
 
           const res = await fetch(responseUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ text: message }),
+            body: JSON.stringify({ text: parts }),
           });
           console.log('Slack response:', res.status);
           EOF
         env:
           SLACK_RESPONSE_URL: ${{ github.event.inputs.slack_response_url }}
           TEST_URL: ${{ github.event.inputs.url }}
-          PHASE: ${{ github.event.inputs.phase }}
           GITHUB_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
