@@ -1,4 +1,5 @@
 import fs from 'fs';
+import path from 'path';
 
 const HISTORY_FILE = 'data/monitor-history.json';
 const MAX_HISTORY = 50;
@@ -17,44 +18,98 @@ if (fs.existsSync('data/monitor-report.json')) {
   fs.writeFileSync(HISTORY_FILE, JSON.stringify(history, null, 2));
 }
 
+// Copy overlay screenshots to docs/ so they're served on GitHub Pages
+const screenshotsSrc = 'test-results/overlay-qa-screenshots';
+const screenshotsDst = 'docs/overlay-screenshots';
+let overlayScreenshots = [];
+if (fs.existsSync(screenshotsSrc)) {
+  fs.mkdirSync(screenshotsDst, { recursive: true });
+  const files = fs.readdirSync(screenshotsSrc);
+  for (const file of files) {
+    fs.copyFileSync(path.join(screenshotsSrc, file), path.join(screenshotsDst, file));
+  }
+  overlayScreenshots = files.filter(f => f.endsWith('.png'));
+  console.log(`Copied ${overlayScreenshots.length} overlay screenshots to docs/`);
+}
+
 // Generate dashboard HTML
 fs.mkdirSync('docs', { recursive: true });
-fs.writeFileSync('docs/index.html', generateDashboard(history));
+fs.writeFileSync('docs/index.html', generateDashboard(history, overlayScreenshots));
 console.log(`Dashboard written — ${history.length} runs in history`);
 
-function generateDashboard(history) {
+function generateDashboard(history, overlayScreenshots) {
   const dataJson = JSON.stringify(history).replace(/<\/script>/gi, '<\\/script>');
+  const overlayJson = JSON.stringify(overlayScreenshots).replace(/<\/script>/gi, '<\\/script>');
+
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VS Monitor Dashboard</title>
+  <title>Virtusize QA Dashboard</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       background: #0d1117;
       color: #c9d1d9;
-      min-height: 100vh;
-      padding: 24px 16px 48px;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
     }
     a { color: #58a6ff; text-decoration: none; }
     a:hover { text-decoration: underline; }
 
-    .container { max-width: 1100px; margin: 0 auto; }
-
-    header {
+    /* ── Sidebar ── */
+    #sidebar {
+      width: 210px;
+      background: #010409;
+      border-right: 1px solid #21262d;
       display: flex;
-      align-items: baseline;
-      gap: 12px;
-      margin-bottom: 28px;
-      padding-bottom: 16px;
-      border-bottom: 1px solid #21262d;
+      flex-direction: column;
+      padding: 20px 0;
+      flex-shrink: 0;
     }
-    header h1 { font-size: 22px; font-weight: 600; color: #f0f6fc; }
-    header .subtitle { font-size: 13px; color: #8b949e; }
+    #sidebar .sidebar-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #484f58;
+      padding: 0 16px 14px;
+    }
+    #sidebar button {
+      background: none;
+      border: none;
+      color: #8b949e;
+      text-align: left;
+      padding: 8px 16px;
+      font-size: 13px;
+      cursor: pointer;
+      border-left: 2px solid transparent;
+      transition: background 0.15s, color 0.15s;
+      width: 100%;
+    }
+    #sidebar button:hover { background: #161b22; color: #c9d1d9; }
+    #sidebar button.active {
+      background: #161b22;
+      border-left-color: #58a6ff;
+      color: #f0f6fc;
+    }
 
+    /* ── Main ── */
+    #main {
+      flex: 1;
+      overflow-y: auto;
+      padding: 28px 32px 48px;
+    }
+
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    h1 { font-size: 20px; font-weight: 600; color: #f0f6fc; margin-bottom: 6px; }
+    .panel-subtitle { font-size: 13px; color: #8b949e; margin-bottom: 24px; }
+
+    /* ── Summary card ── */
     .summary-card {
       background: #161b22;
       border: 1px solid #21262d;
@@ -75,6 +130,7 @@ function generateDashboard(history) {
     .stat.failed { color: #f85149; }
     .stat.skipped { color: #8b949e; }
 
+    /* ── Filters ── */
     .filters {
       display: flex;
       gap: 8px;
@@ -97,6 +153,7 @@ function generateDashboard(history) {
       border-color: #58a6ff;
     }
 
+    /* ── Table ── */
     table {
       width: 100%;
       border-collapse: collapse;
@@ -117,10 +174,7 @@ function generateDashboard(history) {
       transition: background 0.1s;
     }
     tbody tr.run-row:hover { background: #161b22; }
-    tbody td {
-      padding: 10px 12px;
-      vertical-align: middle;
-    }
+    tbody td { padding: 10px 12px; vertical-align: middle; }
     .ts { color: #8b949e; font-size: 13px; white-space: nowrap; }
     .phase-badge {
       display: inline-block;
@@ -133,24 +187,20 @@ function generateDashboard(history) {
     }
     .phase-widget { background: #1f3a5f; color: #58a6ff; }
     .phase-api    { background: #2d1f5e; color: #a78bfa; }
-
     .count { font-weight: 600; text-align: right; }
     .count.passed { color: #3fb950; }
     .count.missing { color: #d29922; }
     .count.failed { color: #f85149; }
     .count.skipped { color: #8b949e; }
     .count.zero { color: #30363d; font-weight: 400; }
-
     .run-link { font-size: 13px; }
     .chevron { color: #8b949e; font-size: 12px; transition: transform 0.2s; display: inline-block; }
     .chevron.open { transform: rotate(90deg); }
 
+    /* ── Detail row ── */
     .detail-row { display: none; }
     .detail-row.open { display: table-row; }
-    .detail-cell {
-      padding: 0 12px 16px 12px;
-      background: #0d1117;
-    }
+    .detail-cell { padding: 0 12px 16px 12px; background: #0d1117; }
     .detail-inner {
       background: #161b22;
       border: 1px solid #21262d;
@@ -170,6 +220,8 @@ function generateDashboard(history) {
     .detail-section ul { list-style: none; }
     .detail-section li { font-size: 13px; padding: 2px 0; }
     .detail-section li .store { color: #c9d1d9; }
+    .detail-section li a.store { color: #58a6ff; }
+    .detail-section li a.store:hover { text-decoration: underline; }
     .detail-section li .meta { color: #8b949e; font-size: 12px; }
     .detail-section li .error-text {
       color: #f85149;
@@ -180,65 +232,177 @@ function generateDashboard(history) {
       text-overflow: ellipsis;
       max-width: 300px;
     }
-    .empty { color: #3fb950; font-size: 13px; }
+    .none-label { color: #3fb950; font-size: 13px; }
 
+    /* ── Status dot ── */
     .status-dot {
       display: inline-block;
-      width: 8px;
-      height: 8px;
+      width: 8px; height: 8px;
       border-radius: 50%;
       margin-right: 6px;
     }
-    .dot-green { background: #3fb950; }
+    .dot-green  { background: #3fb950; }
     .dot-yellow { background: #d29922; }
-    .dot-red { background: #f85149; }
+    .dot-red    { background: #f85149; }
+
+    /* ── Overlay gallery ── */
+    .overlay-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+    .overlay-card {
+      background: #161b22;
+      border: 1px solid #21262d;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .overlay-card img { width: 100%; display: block; }
+    .overlay-card .card-label {
+      padding: 8px 12px;
+      font-size: 12px;
+      color: #8b949e;
+      word-break: break-all;
+    }
+    .overlay-card .card-sku {
+      padding: 4px 12px 10px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #f0f6fc;
+    }
+
+    /* ── Info panel ── */
+    .info-panel {
+      background: #161b22;
+      border: 1px solid #21262d;
+      border-radius: 8px;
+      padding: 32px;
+      text-align: center;
+      max-width: 480px;
+    }
+    .info-panel .icon { font-size: 36px; margin-bottom: 12px; }
+    .info-panel p { color: #8b949e; font-size: 14px; line-height: 1.6; }
+    .run-cmd {
+      display: inline-block;
+      background: #0d1117;
+      border: 1px solid #21262d;
+      color: #a5d6ff;
+      font-family: monospace;
+      font-size: 12px;
+      padding: 8px 14px;
+      border-radius: 6px;
+      margin-top: 14px;
+    }
+
+    .empty-state { color: #8b949e; font-size: 14px; padding: 48px 0; text-align: center; }
 
     @media (max-width: 640px) {
-      .summary-card { gap: 10px; }
+      #sidebar { display: none; }
+      #main { padding: 20px 16px; }
       .summary-card .divider { display: none; }
-      thead th:nth-child(6), tbody td:nth-child(6) { display: none; }
     }
   </style>
 </head>
 <body>
-<div class="container">
-  <header>
-    <h1>VS Monitor Dashboard</h1>
-    <span class="subtitle" id="last-updated"></span>
-  </header>
 
-  <div class="summary-card" id="summary-card"></div>
+<nav id="sidebar">
+  <div class="sidebar-title">Virtusize QA</div>
+  <button onclick="showPanel('monitor')" id="btn-monitor" class="active">📡 Monitor</button>
+  <button onclick="showPanel('overlay')" id="btn-overlay">🖼 Overlay QA</button>
+  <button onclick="showPanel('inpage')" id="btn-inpage">🧪 Inpage</button>
+  <button onclick="showPanel('agent')" id="btn-agent">🤖 Agent QA</button>
+  <button onclick="showPanel('cart')" id="btn-cart">🛒 Add to Cart</button>
+</nav>
 
-  <div class="filters">
-    <button class="filter-btn active" data-phase="all">All phases</button>
-    <button class="filter-btn" data-phase="widget">Widget</button>
-    <button class="filter-btn" data-phase="api">API</button>
+<main id="main">
+
+  <!-- Monitor -->
+  <div class="panel active" id="panel-monitor">
+    <h1>Monitor</h1>
+    <p class="panel-subtitle">Multi-store widget health — run automatically on a schedule</p>
+    <div class="summary-card" id="summary-card"></div>
+    <div class="filters">
+      <button class="filter-btn active" data-phase="all">All phases</button>
+      <button class="filter-btn" data-phase="widget">Widget</button>
+      <button class="filter-btn" data-phase="api">API</button>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th style="width:20px"></th>
+          <th>Date &amp; Time</th>
+          <th>Phase</th>
+          <th style="text-align:right">✅ Passed</th>
+          <th style="text-align:right">⚠️ Missing</th>
+          <th style="text-align:right">❌ Failed</th>
+          <th style="text-align:right">⏭ Skipped</th>
+          <th>Run</th>
+        </tr>
+      </thead>
+      <tbody id="runs-body"></tbody>
+    </table>
   </div>
 
-  <table>
-    <thead>
-      <tr>
-        <th style="width:20px"></th>
-        <th>Date &amp; Time</th>
-        <th>Phase</th>
-        <th style="text-align:right">✅ Passed</th>
-        <th style="text-align:right">⚠️ Missing</th>
-        <th style="text-align:right">❌ Failed</th>
-        <th style="text-align:right">⏭ Skipped</th>
-        <th>Run</th>
-      </tr>
-    </thead>
-    <tbody id="runs-body"></tbody>
-  </table>
-</div>
+  <!-- Overlay QA -->
+  <div class="panel" id="panel-overlay">
+    <h1>Overlay QA</h1>
+    <p class="panel-subtitle">Bag product screenshots for visual review</p>
+    <div id="overlay-content"></div>
+  </div>
+
+  <!-- Inpage -->
+  <div class="panel" id="panel-inpage">
+    <h1>Inpage QA</h1>
+    <p class="panel-subtitle">Full user journey through the inpage widget</p>
+    <div class="info-panel">
+      <div class="icon">🧪</div>
+      <p>Run locally against any store or URL. Results appear in the Playwright HTML report.</p>
+      <div class="run-cmd">npx playwright test tests/inpage.spec.js --project=chrome</div>
+    </div>
+  </div>
+
+  <!-- Agent QA -->
+  <div class="panel" id="panel-agent">
+    <h1>Agent QA</h1>
+    <p class="panel-subtitle">AI-driven testing via natural language instruction</p>
+    <div class="info-panel">
+      <div class="icon">🤖</div>
+      <p>Give Claude an instruction and it plans and runs the test using the existing Virtusize utilities.</p>
+      <div class="run-cmd">INSTRUCTION="test onboarding for snidel" npx playwright test tests/agent-qa.spec.js</div>
+    </div>
+  </div>
+
+  <!-- Add to Cart -->
+  <div class="panel" id="panel-cart">
+    <h1>Add to Cart</h1>
+    <p class="panel-subtitle">Validates the add-to-cart flow after size recommendation</p>
+    <div class="info-panel">
+      <div class="icon">🛒</div>
+      <p>Run locally. Results appear in the Playwright HTML report.</p>
+      <div class="run-cmd">npx playwright test tests/addToCart.spec.js --project=chrome</div>
+    </div>
+  </div>
+
+</main>
 
 <script>
 const HISTORY = ${dataJson};
+const OVERLAY_SCREENSHOTS = ${overlayJson};
 
+// ── Navigation ────────────────────────────────────────────────────────────────
+function showPanel(name) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('#sidebar button').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  document.getElementById('btn-' + name).classList.add('active');
+  if (name === 'overlay') renderOverlay();
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
 function fmt(iso) {
   if (!iso) return '—';
-  const d = new Date(iso);
-  return d.toLocaleString('en-GB', {
+  return new Date(iso).toLocaleString('en-GB', {
     day: '2-digit', month: 'short', year: 'numeric',
     hour: '2-digit', minute: '2-digit', timeZoneName: 'short'
   });
@@ -250,11 +414,14 @@ function statusDot(run) {
   return '<span class="status-dot dot-green"></span>';
 }
 
+function countClass(n, type) { return n === 0 ? 'zero' : type; }
+
+// ── Monitor: summary card ─────────────────────────────────────────────────────
 function renderSummary(run) {
-  if (!run) { document.getElementById('summary-card').textContent = 'No runs yet.'; return; }
+  const el = document.getElementById('summary-card');
+  if (!run) { el.textContent = 'No runs yet.'; return; }
   const s = run.summary;
-  document.getElementById('last-updated').textContent = 'Last run: ' + fmt(run.timestamp);
-  document.getElementById('summary-card').innerHTML = \`
+  el.innerHTML = \`
     <div class="stat-block"><div class="label">Passed</div><div class="stat passed">\${s.passed}</div></div>
     <div class="divider"></div>
     <div class="stat-block"><div class="label">Missing</div><div class="stat missing">\${s.widgetMissing}</div></div>
@@ -264,53 +431,65 @@ function renderSummary(run) {
     <div class="stat-block"><div class="label">Skipped</div><div class="stat skipped">\${s.skipped}</div></div>
     <div class="divider"></div>
     <div class="stat-block"><div class="label">Total</div><div class="stat" style="color:#f0f6fc">\${s.total}</div></div>
+    <div style="margin-left:auto;font-size:12px;color:#8b949e">Last run: \${fmt(run.timestamp)}</div>
   \`;
 }
 
-function countClass(n, type) {
-  if (n === 0) return 'zero';
-  return type;
-}
-
+// ── Monitor: expandable detail row ────────────────────────────────────────────
 function renderDetail(run) {
-  const issues = (run.newIssues || []);
-  const widgetMissingStores = (run.widgetMissingStores || []);
-  const ongoingMissing = (run.ongoingMissing || []);
-  const bots = (run.botProtected || []);
-  const skipped = (run.skippedStores || []);
+  const issues = run.newIssues || [];
+  const widgetMissingStores = run.widgetMissingStores || [];
+  const ongoingMissing = run.ongoingMissing || [];
+  const bots = run.botProtected || [];
+  const skipped = run.skippedStores || [];
+
+  const browserTag = (browsers) => browsers?.length
+    ? \`<span class="meta">\${browsers.join(', ')}</span>\`
+    : '';
 
   const issueHtml = issues.length === 0
-    ? '<span class="empty">None</span>'
-    : issues.map(i => \`<li><span class="store">\${i.store}</span><span class="error-text">\${i.error || ''}</span></li>\`).join('');
+    ? '<span class="none-label">None</span>'
+    : issues.map(i => \`<li>
+        \${i.url ? \`<a class="store" href="\${i.url}" target="_blank" rel="noopener">\${i.store}</a>\` : \`<span class="store">\${i.store}</span>\`}
+        \${browserTag(i.browsers)}
+        <span class="error-text">\${i.error || ''}</span>
+      </li>\`).join('');
 
-  // Split widget missing into new (first time) vs ongoing (consecutive runs)
   const ongoingMap = Object.fromEntries(ongoingMissing.map(o => [o.store, o.consecutiveRuns]));
-  const newMissing = widgetMissingStores.filter(s => !ongoingMap[s]);
-  const recurringMissing = widgetMissingStores.filter(s => ongoingMap[s]).map(s => ({ store: s, runs: ongoingMap[s] + 1 }));
+  const newMissing = widgetMissingStores.filter(s => !ongoingMap[s.store]);
+  const recurring = widgetMissingStores.filter(s => ongoingMap[s.store]).map(s => ({ ...s, runs: ongoingMap[s.store] + 1 }));
 
   const newMissingHtml = newMissing.length === 0 ? '' :
-    \`<div class="detail-section"><h4>⚠️ Widget missing (new)</h4><ul>\${newMissing.map(s => \`<li><span class="store">\${s}</span></li>\`).join('')}</ul></div>\`;
+    \`<div class="detail-section"><h4>⚠️ Widget missing (new)</h4><ul>\${newMissing.map(s => \`<li>
+        \${s.url ? \`<a class="store" href="\${s.url}" target="_blank" rel="noopener">\${s.store}</a>\` : \`<span class="store">\${s.store}</span>\`}
+        \${browserTag(s.browsers)}
+      </li>\`).join('')}</ul></div>\`;
 
-  const recurringMissingHtml = recurringMissing.length === 0 ? '' :
-    \`<div class="detail-section"><h4>⚠️ Widget missing (ongoing)</h4><ul>\${recurringMissing.map(m => \`<li><span class="store">\${m.store}</span> <span class="meta">×\${m.runs} runs</span></li>\`).join('')}</ul></div>\`;
+  const recurringHtml = recurring.length === 0 ? '' :
+    \`<div class="detail-section"><h4>⚠️ Widget missing (ongoing)</h4><ul>\${recurring.map(m => \`<li>
+        \${m.url ? \`<a class="store" href="\${m.url}" target="_blank" rel="noopener">\${m.store}</a>\` : \`<span class="store">\${m.store}</span>\`}
+        \${browserTag(m.browsers)}
+        <span class="meta">×\${m.runs} runs</span>
+      </li>\`).join('')}</ul></div>\`;
 
   const botHtml = bots.length === 0
-    ? '<span class="empty">None</span>'
+    ? '<span class="none-label">None</span>'
     : bots.map(b => \`<li><span class="store">\${b}</span></li>\`).join('');
 
   const skippedHtml = skipped.length === 0
-    ? '<span class="empty">None</span>'
+    ? '<span class="none-label">None</span>'
     : skipped.map(s => \`<li><span class="store">\${s.store || s}</span>\${s.reason ? \` <span class="meta">(\${s.reason})</span>\` : ''}</li>\`).join('');
 
   return \`<div class="detail-inner">
     <div class="detail-section"><h4>❌ Failed</h4><ul>\${issueHtml}</ul></div>
     \${newMissingHtml}
-    \${recurringMissingHtml}
+    \${recurringHtml}
     <div class="detail-section"><h4>🤖 Bot protected</h4><ul>\${botHtml}</ul></div>
     <div class="detail-section"><h4>⏭ Skipped</h4><ul>\${skippedHtml}</ul></div>
   </div>\`;
 }
 
+// ── Monitor: history table ────────────────────────────────────────────────────
 let activePhase = 'all';
 
 function renderTable() {
@@ -318,12 +497,15 @@ function renderTable() {
   const filtered = activePhase === 'all' ? HISTORY : HISTORY.filter(r => (r.phase || 'widget') === activePhase);
   tbody.innerHTML = '';
 
+  if (filtered.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="8" class="empty-state">No runs yet.</td></tr>';
+    return;
+  }
+
   filtered.forEach((run, i) => {
     const s = run.summary;
     const phase = run.phase || 'widget';
     const runUrl = run.githubRunUrl || '#';
-    const hasIssues = (run.newIssues && run.newIssues.length > 0) ||
-                      (run.ongoingMissing && run.ongoingMissing.length > 0);
 
     const row = document.createElement('tr');
     row.className = 'run-row';
@@ -340,7 +522,6 @@ function renderTable() {
 
     const detailRow = document.createElement('tr');
     detailRow.className = 'detail-row';
-    detailRow.id = 'detail-\${i}';
     const detailCell = document.createElement('td');
     detailCell.className = 'detail-cell';
     detailCell.colSpan = 8;
@@ -357,10 +538,6 @@ function renderTable() {
     tbody.appendChild(row);
     tbody.appendChild(detailRow);
   });
-
-  if (filtered.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="8" style="padding:24px;text-align:center;color:#8b949e">No runs yet.</td></tr>';
-  }
 }
 
 document.querySelectorAll('.filter-btn').forEach(btn => {
@@ -372,6 +549,33 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
   });
 });
 
+// ── Overlay gallery ───────────────────────────────────────────────────────────
+function renderOverlay() {
+  const el = document.getElementById('overlay-content');
+  if (OVERLAY_SCREENSHOTS.length === 0) {
+    el.innerHTML = \`<div class="info-panel">
+      <div class="icon">🖼</div>
+      <p>No screenshots yet. Run the overlay QA test to generate them.</p>
+      <div class="run-cmd">npx playwright test tests/overlay-qa.spec.js --project=chrome</div>
+    </div>\`;
+    return;
+  }
+
+  el.innerHTML = \`
+    <p style="font-size:13px;color:#8b949e;margin-bottom:4px">\${OVERLAY_SCREENSHOTS.length} products</p>
+    <div class="overlay-grid">
+      \${OVERLAY_SCREENSHOTS.map(file => {
+        const sku = file.replace('.png', '');
+        return \`<div class="overlay-card">
+          <img src="overlay-screenshots/\${file}" alt="\${sku}">
+          <div class="card-sku">\${sku}</div>
+        </div>\`;
+      }).join('')}
+    </div>
+  \`;
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
 renderSummary(HISTORY[0] || null);
 renderTable();
 </script>

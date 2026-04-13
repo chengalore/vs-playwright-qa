@@ -218,11 +218,22 @@ jobs:
           const lines = fullLog.split('\n').filter(l => l.includes('MONITOR_RESULT:'));
           if (lines.length === 0) process.exit(0);
 
+          // Merge multi-browser results: worst status wins, collect all browsers
+          const STATUS_RANK = { failed: 3, widget_missing: 2, passed: 1, skipped: 0, bot_protected: 0, cdn_blocked: 0, navigation_error: 0 };
           const byStore = {};
           for (const line of lines) {
             try {
               const json = JSON.parse(line.replace(/^.*MONITOR_RESULT:\s*/, ''));
-              byStore[json.storeAlias] = json;
+              if (!byStore[json.storeAlias]) {
+                byStore[json.storeAlias] = { ...json, browsers: [json.browser].filter(Boolean) };
+              } else {
+                const cur = byStore[json.storeAlias];
+                if (json.browser && !cur.browsers.includes(json.browser)) cur.browsers.push(json.browser);
+                if ((STATUS_RANK[json.status] || 0) > (STATUS_RANK[cur.status] || 0)) {
+                  cur.status = json.status;
+                  cur.error = json.error;
+                }
+              }
             } catch {}
           }
 
@@ -248,8 +259,8 @@ jobs:
             timestamp: new Date().toISOString(),
             githubRunUrl: process.env.GITHUB_RUN_URL,
             summary,
-            newIssues: results.filter(r => r.status === 'failed').map(r => ({ store: r.storeAlias, error: r.error || r.reason })),
-            widgetMissingStores: results.filter(r => r.status === 'widget_missing').map(r => r.storeAlias),
+            newIssues: results.filter(r => r.status === 'failed').map(r => ({ store: r.storeAlias, url: r.url, browsers: r.browsers, error: r.error || r.reason })),
+            widgetMissingStores: results.filter(r => r.status === 'widget_missing').map(r => ({ store: r.storeAlias, url: r.url, browsers: r.browsers })),
             ongoingMissing,
             botProtected: results.filter(r => r.status === 'bot_protected').map(r => r.storeAlias),
             skippedStores: results.filter(r => r.status === 'skipped').map(r => ({ store: r.storeAlias, reason: r.reason })),
@@ -292,11 +303,9 @@ jobs:
           const lines = [`${icon} VS Monitor (${phase}) — ${parts}`];
 
           if (widgetMissingStores?.length > 0) {
-            // ongoingMissing is built from the health file before this run,
-            // so consecutiveRuns + 1 = count after this run
             const ongoingMap = Object.fromEntries((ongoingMissing || []).map(o => [o.store, o.consecutiveRuns]));
-            const newMissing = widgetMissingStores.filter(s => !ongoingMap[s]);
-            const recurring = widgetMissingStores.filter(s => ongoingMap[s]).map(s => `${s} ×${ongoingMap[s] + 1}`);
+            const newMissing = widgetMissingStores.filter(s => !ongoingMap[s.store]).map(s => s.store);
+            const recurring = widgetMissingStores.filter(s => ongoingMap[s.store]).map(s => `${s.store} ×${ongoingMap[s.store] + 1}`);
 
             if (newMissing.length > 0) lines.push(`*Widget missing (new):* ${newMissing.join(', ')}`);
             if (recurring.length > 0) lines.push(`*Widget missing (ongoing):* ${recurring.join(', ')}`);
@@ -336,11 +345,20 @@ jobs:
           const log = readFileSync('monitor-output.log', 'utf8');
           const lines = log.split('\n').filter(l => l.includes('MONITOR_RESULT:'));
 
+          const STATUS_RANK = { failed: 3, widget_missing: 2, passed: 1, skipped: 0, bot_protected: 0, cdn_blocked: 0, navigation_error: 0 };
           const byStore = {};
           for (const line of lines) {
             try {
               const json = JSON.parse(line.replace(/^.*MONITOR_RESULT:\s*/, ''));
-              byStore[json.storeAlias] = json;
+              if (!byStore[json.storeAlias]) {
+                byStore[json.storeAlias] = { ...json };
+              } else {
+                const cur = byStore[json.storeAlias];
+                if ((STATUS_RANK[json.status] || 0) > (STATUS_RANK[cur.status] || 0)) {
+                  cur.status = json.status;
+                  cur.error = json.error;
+                }
+              }
             } catch {}
           }
 
@@ -388,6 +406,6 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git add data/storeHealth.json data/monitor-report.json data/monitor-history.json docs/index.html
+          git add data/storeHealth.json data/monitor-report.json data/monitor-history.json docs/
           git diff --staged --quiet || git commit -m "chore: update store health [skip ci]"
           git push origin HEAD:${{ github.ref_name }}
