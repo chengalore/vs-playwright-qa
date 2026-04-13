@@ -30,6 +30,9 @@ test.setTimeout(180000);
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
+// Run folder: COMPARE_RUN env var or today's date (YYYY-MM-DD)
+const runFolder = process.env.COMPARE_RUN || new Date().toISOString().slice(0, 10);
+
 const urlsFile = process.env.TEST_URLS_FILE
   ? join(__dirname, "..", process.env.TEST_URLS_FILE)
   : join(__dirname, "../data/compare-view-screenshot-urls.txt");
@@ -203,8 +206,8 @@ for (const url of urls) {
       return;
     }
 
-    // Save screenshot to disk
-    const screenshotsDir = join(__dirname, "../test-results/compare-view-screenshots");
+    // Save screenshot to disk under the run folder
+    const screenshotsDir = join(__dirname, "../test-results/compare-view-screenshots", runFolder);
     mkdirSync(screenshotsDir, { recursive: true });
     writeFileSync(join(screenshotsDir, `${sku}.png`), screenshot);
 
@@ -227,7 +230,7 @@ function logResult(result) {
 
 // Generate a simple HTML gallery after all tests
 test.afterAll(async () => {
-  const screenshotsDir = join(__dirname, "../test-results/compare-view-screenshots");
+  const screenshotsDir = join(__dirname, "../test-results/compare-view-screenshots", runFolder);
   if (!existsSync(screenshotsDir)) return;
 
   const manifestPath = join(screenshotsDir, "manifest.json");

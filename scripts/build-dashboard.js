@@ -27,48 +27,58 @@ const singleUrlHistory = fs.existsSync(SINGLE_URL_HISTORY_FILE)
   ? JSON.parse(fs.readFileSync(SINGLE_URL_HISTORY_FILE, 'utf8'))
   : [];
 
-// Copy compare view screenshots to docs/ so they're served on GitHub Pages
-// Sources: bag test + inpage compare phase both write to test-results/compare-view-screenshots
+// Copy compare view screenshots to docs/ — one subfolder per run
+// test-results/compare-view-screenshots/{run-folder}/ → docs/compare-view-screenshots/{run-folder}/
 const screenshotsSrc = 'test-results/compare-view-screenshots';
 const screenshotsDst = 'docs/compare-view-screenshots';
 fs.mkdirSync(screenshotsDst, { recursive: true });
-let compareScreenshots = [];
-if (fs.existsSync(screenshotsSrc)) {
-  const files = fs.readdirSync(screenshotsSrc);
-  for (const file of files) {
-    fs.copyFileSync(path.join(screenshotsSrc, file), path.join(screenshotsDst, file));
-  }
-  compareScreenshots = files.filter(f => f.endsWith('.png'));
-  console.log(`Copied ${compareScreenshots.length} compare view screenshots to docs/`);
-}
-// Also include any previously committed screenshots already in docs/
-const existingInDocs = fs.readdirSync(screenshotsDst).filter(f => f.endsWith('.png'));
-for (const f of existingInDocs) {
-  if (!compareScreenshots.includes(f)) compareScreenshots.push(f);
-}
-compareScreenshots.sort();
 
-// Build sku→url map from manifest (merged from both src and dst)
-const compareManifest = {};
-for (const manifestPath of [
-  path.join(screenshotsSrc, 'manifest.json'),
-  path.join(screenshotsDst, 'manifest.json'),
-]) {
-  if (fs.existsSync(manifestPath)) {
-    const entries = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
-    for (const { sku, url } of entries) compareManifest[sku] = url;
+// Copy any new run folders from test-results to docs
+if (fs.existsSync(screenshotsSrc)) {
+  const runFolders = fs.readdirSync(screenshotsSrc, { withFileTypes: true })
+    .filter(d => d.isDirectory())
+    .map(d => d.name);
+  for (const folder of runFolders) {
+    const src = path.join(screenshotsSrc, folder);
+    const dst = path.join(screenshotsDst, folder);
+    fs.mkdirSync(dst, { recursive: true });
+    for (const file of fs.readdirSync(src)) {
+      fs.copyFileSync(path.join(src, file), path.join(dst, file));
+    }
   }
+  if (runFolders.length) console.log(`Copied run folders: ${runFolders.join(', ')}`);
 }
+
+// Build compareRuns: array of { folder, images: [{sku, url}] } sorted newest first
+const compareRuns = fs.readdirSync(screenshotsDst, { withFileTypes: true })
+  .filter(d => d.isDirectory())
+  .map(d => d.name)
+  .sort()
+  .reverse()
+  .map(folder => {
+    const manifestPath = path.join(screenshotsDst, folder, 'manifest.json');
+    const manifest = fs.existsSync(manifestPath)
+      ? JSON.parse(fs.readFileSync(manifestPath, 'utf8'))
+      : [];
+    const pngs = fs.readdirSync(path.join(screenshotsDst, folder)).filter(f => f.endsWith('.png'));
+    // Merge: prefer manifest entries (have URLs), fall back to bare filenames
+    const skusInManifest = new Set(manifest.map(e => e.sku));
+    for (const f of pngs) {
+      const sku = f.replace('.png', '');
+      if (!skusInManifest.has(sku)) manifest.push({ sku, url: null });
+    }
+    return { folder, images: manifest.filter(e => pngs.includes(`${e.sku}.png`)) };
+  })
+  .filter(r => r.images.length > 0);
 
 // Generate dashboard HTML
 fs.mkdirSync('docs', { recursive: true });
-fs.writeFileSync('docs/index.html', generateDashboard(history, compareScreenshots, singleUrlHistory, compareManifest));
+fs.writeFileSync('docs/index.html', generateDashboard(history, compareRuns, singleUrlHistory));
 console.log(`Dashboard written — ${history.length} monitor runs, ${singleUrlHistory.length} single-url runs`);
 
-function generateDashboard(history, compareScreenshots, singleUrlHistory, compareManifest = {}) {
+function generateDashboard(history, compareRuns, singleUrlHistory) {
   const dataJson = JSON.stringify(history).replace(/<\/script>/gi, '<\\/script>');
-  const compareJson = JSON.stringify(compareScreenshots).replace(/<\/script>/gi, '<\\/script>');
-  const compareManifestJson = JSON.stringify(compareManifest).replace(/<\/script>/gi, '<\\/script>');
+  const compareJson = JSON.stringify(compareRuns).replace(/<\/script>/gi, '<\\/script>');
   const singleUrlJson = JSON.stringify(singleUrlHistory).replace(/<\/script>/gi, '<\\/script>');
 
   return `<!DOCTYPE html>
@@ -429,8 +439,7 @@ function generateDashboard(history, compareScreenshots, singleUrlHistory, compar
 <script>
 const HISTORY = ${dataJson};
 const SINGLE_URL_HISTORY = ${singleUrlJson};
-const COMPARE_SCREENSHOTS = ${compareJson};
-const COMPARE_MANIFEST = ${compareManifestJson};
+const COMPARE_RUNS = ${compareJson};
 
 // ── Navigation ────────────────────────────────────────────────────────────────
 function showPanel(name) {
@@ -630,10 +639,10 @@ function renderSingleUrl() {
   }).join('');
 }
 
-// ── Overlay gallery ───────────────────────────────────────────────────────────
+// ── Compare view gallery ──────────────────────────────────────────────────────
 function renderCompareView() {
   const el = document.getElementById('compare-content');
-  if (COMPARE_SCREENSHOTS.length === 0) {
+  if (COMPARE_RUNS.length === 0) {
     el.innerHTML = \`<div class="info-panel">
       <div class="icon">🖼</div>
       <p>No screenshots yet. Run the compare view test to generate them.</p>
@@ -642,19 +651,19 @@ function renderCompareView() {
     return;
   }
 
-  el.innerHTML = \`
-    <p style="font-size:13px;color:#8b949e;margin-bottom:4px">\${COMPARE_SCREENSHOTS.length} products</p>
-    <div class="overlay-grid">
-      \${COMPARE_SCREENSHOTS.map(file => {
-        const sku = file.replace('.png', '');
-        const url = COMPARE_MANIFEST[sku];
-        return \`<div class="overlay-card">
-          <img src="compare-view-screenshots/\${file}" alt="">
-          <div class="card-sku">\${url ? \`<a href="\${url}" target="_blank">\${sku}</a>\` : sku}</div>
-        </div>\`;
-      }).join('')}
+  el.innerHTML = COMPARE_RUNS.map(run => \`
+    <div style="margin-bottom:32px">
+      <h2 style="font-size:14px;font-weight:600;color:#c9d1d9;margin:0 0 12px">\${run.folder} — \${run.images.length} product\${run.images.length !== 1 ? 's' : ''}</h2>
+      <div class="overlay-grid">
+        \${run.images.map(({ sku, url }) => \`
+          <div class="overlay-card">
+            <img src="compare-view-screenshots/\${run.folder}/\${sku}.png" alt="">
+            <div class="card-sku">\${url ? \`<a href="\${url}" target="_blank">\${sku}</a>\` : sku}</div>
+          </div>
+        \`).join('')}
+      </div>
     </div>
-  \`;
+  \`).join('');
 }
 
 // ── Init ──────────────────────────────────────────────────────────────────────
