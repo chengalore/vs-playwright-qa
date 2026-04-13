@@ -1,18 +1,17 @@
 /**
  * Virtusize overlay QA test.
  *
- * For each bag product URL, opens the Virtusize aoyama widget and screenshots it,
- * then uses Claude Vision to detect whether the size comparison overlay correctly
- * fits within the bag's visible silhouette.
+ * For each bag product URL, opens the Virtusize aoyama widget, goes through
+ * the bag flow, and screenshots the result for manual visual review.
  *
- * Known issue: side-view product images appear shorter in height than front-view,
- * but the overlay uses front-view dimensions — causing it to extend outside the bag.
+ * Screenshots are saved to test-results/overlay-qa-screenshots/ and an HTML
+ * gallery (index.html) is generated there after all tests complete.
+ * Screenshots are also attached to the Playwright HTML report.
  *
  * Output: logs OVERLAY_QA_RESULT JSON lines per product.
- * Screenshots are attached to the Playwright HTML report.
  *
  * Usage:
- *   ANTHROPIC_API_KEY=your_key npx playwright test overlay-qa --reporter=list
+ *   npx playwright test overlay-qa --reporter=list
  *
  * Custom URLs file (optional):
  *   TEST_URLS_FILE=data/overlay-qa-urls.txt npx playwright test overlay-qa

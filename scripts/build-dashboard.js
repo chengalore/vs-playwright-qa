@@ -274,7 +274,8 @@ function countClass(n, type) {
 
 function renderDetail(run) {
   const issues = (run.newIssues || []);
-  const missing = (run.ongoingMissing || []);
+  const widgetMissingStores = (run.widgetMissingStores || []);
+  const ongoingMissing = (run.ongoingMissing || []);
   const bots = (run.botProtected || []);
   const skipped = (run.skippedStores || []);
 
@@ -282,9 +283,16 @@ function renderDetail(run) {
     ? '<span class="empty">None</span>'
     : issues.map(i => \`<li><span class="store">\${i.store}</span><span class="error-text">\${i.error || ''}</span></li>\`).join('');
 
-  const missingHtml = missing.length === 0
-    ? '<span class="empty">None</span>'
-    : missing.map(m => \`<li><span class="store">\${m.store}</span> <span class="meta">(\${m.consecutiveRuns} runs)</span></li>\`).join('');
+  // Split widget missing into new (first time) vs ongoing (consecutive runs)
+  const ongoingMap = Object.fromEntries(ongoingMissing.map(o => [o.store, o.consecutiveRuns]));
+  const newMissing = widgetMissingStores.filter(s => !ongoingMap[s]);
+  const recurringMissing = widgetMissingStores.filter(s => ongoingMap[s]).map(s => ({ store: s, runs: ongoingMap[s] + 1 }));
+
+  const newMissingHtml = newMissing.length === 0 ? '' :
+    \`<div class="detail-section"><h4>⚠️ Widget missing (new)</h4><ul>\${newMissing.map(s => \`<li><span class="store">\${s}</span></li>\`).join('')}</ul></div>\`;
+
+  const recurringMissingHtml = recurringMissing.length === 0 ? '' :
+    \`<div class="detail-section"><h4>⚠️ Widget missing (ongoing)</h4><ul>\${recurringMissing.map(m => \`<li><span class="store">\${m.store}</span> <span class="meta">×\${m.runs} runs</span></li>\`).join('')}</ul></div>\`;
 
   const botHtml = bots.length === 0
     ? '<span class="empty">None</span>'
@@ -295,8 +303,9 @@ function renderDetail(run) {
     : skipped.map(s => \`<li><span class="store">\${s.store || s}</span>\${s.reason ? \` <span class="meta">(\${s.reason})</span>\` : ''}</li>\`).join('');
 
   return \`<div class="detail-inner">
-    <div class="detail-section"><h4>❌ New failures</h4><ul>\${issueHtml}</ul></div>
-    <div class="detail-section"><h4>⚠️ Ongoing missing</h4><ul>\${missingHtml}</ul></div>
+    <div class="detail-section"><h4>❌ Failed</h4><ul>\${issueHtml}</ul></div>
+    \${newMissingHtml}
+    \${recurringMissingHtml}
     <div class="detail-section"><h4>🤖 Bot protected</h4><ul>\${botHtml}</ul></div>
     <div class="detail-section"><h4>⏭ Skipped</h4><ul>\${skippedHtml}</ul></div>
   </div>\`;

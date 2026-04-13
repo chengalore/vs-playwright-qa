@@ -249,6 +249,7 @@ jobs:
             githubRunUrl: process.env.GITHUB_RUN_URL,
             summary,
             newIssues: results.filter(r => r.status === 'failed').map(r => ({ store: r.storeAlias, error: r.error || r.reason })),
+            widgetMissingStores: results.filter(r => r.status === 'widget_missing').map(r => r.storeAlias),
             ongoingMissing,
             botProtected: results.filter(r => r.status === 'bot_protected').map(r => r.storeAlias),
             skippedStores: results.filter(r => r.status === 'skipped').map(r => ({ store: r.storeAlias, reason: r.reason })),
@@ -277,7 +278,7 @@ jobs:
             process.exit(0);
           }
 
-          const { summary } = JSON.parse(fs.readFileSync('data/monitor-report.json', 'utf8'));
+          const { summary, newIssues, widgetMissingStores, ongoingMissing } = JSON.parse(fs.readFileSync('data/monitor-report.json', 'utf8'));
           const issues = summary.widgetMissing + summary.failed;
           const icon = issues > 0 ? '⚠️' : '✅';
 
@@ -288,7 +289,25 @@ jobs:
             summary.skipped > 0 ? `${summary.skipped} skipped` : null,
           ].filter(Boolean).join(' · ');
 
-          const message = `${icon} VS Monitor (${phase}) — ${parts}\n<${dashboardUrl}|View dashboard →>`;
+          const lines = [`${icon} VS Monitor (${phase}) — ${parts}`];
+
+          if (widgetMissingStores?.length > 0) {
+            // ongoingMissing is built from the health file before this run,
+            // so consecutiveRuns + 1 = count after this run
+            const ongoingMap = Object.fromEntries((ongoingMissing || []).map(o => [o.store, o.consecutiveRuns]));
+            const newMissing = widgetMissingStores.filter(s => !ongoingMap[s]);
+            const recurring = widgetMissingStores.filter(s => ongoingMap[s]).map(s => `${s} ×${ongoingMap[s] + 1}`);
+
+            if (newMissing.length > 0) lines.push(`*Widget missing (new):* ${newMissing.join(', ')}`);
+            if (recurring.length > 0) lines.push(`*Widget missing (ongoing):* ${recurring.join(', ')}`);
+          }
+          if (newIssues?.length > 0) {
+            const failedList = newIssues.map(i => `${i.store} (${i.error})`).join(', ');
+            lines.push(`*Failed:* ${failedList}`);
+          }
+
+          lines.push(`<${dashboardUrl}|View dashboard →>`);
+          const message = lines.join('\n');
 
           execSync(`curl -s -X POST \
             -H "Content-type: application/json" \
