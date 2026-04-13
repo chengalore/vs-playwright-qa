@@ -117,20 +117,3 @@ docs/
   single-url-test.yml         # Single URL / inpage QA workflow
 ```
 
----
-
-## Setup (New Repo)
-
-1. Clone or transfer this repo to your GitHub org
-2. Add the following repository secrets (`Settings → Secrets → Actions`):
-
-| Secret | Purpose |
-|---|---|
-| `RANDOM_PRODUCT_API_URL` | Virtusize API for resolving random product URLs per store |
-| `SLACK_WEBHOOK_URL` | Slack incoming webhook for monitor summaries |
-| `DASHBOARD_URL` | GitHub Pages URL (e.g. `https://your-org.github.io/vs-playwright-qa/`) |
-| `ANTHROPIC_API_KEY` | Reserved — not currently used |
-
-3. Enable GitHub Pages: `Settings → Pages → Deploy from branch → main /docs`
-4. Deploy `api/slack.js` to Vercel and point your Slack slash command URL at it
-5. Update `DASHBOARD_URL` secret to match the GitHub Pages URL
