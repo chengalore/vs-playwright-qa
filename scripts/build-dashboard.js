@@ -297,19 +297,59 @@ function generateDashboard(history, compareRuns, singleUrlHistory) {
       border: 1px solid #21262d;
       border-radius: 8px;
       overflow: hidden;
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+    .overlay-card.flagged {
+      border-color: #f85149;
+      box-shadow: 0 0 0 1px #f85149;
     }
     .overlay-card img { width: 100%; display: block; }
-    .overlay-card .card-label {
-      padding: 8px 12px;
-      font-size: 12px;
-      color: #8b949e;
-      word-break: break-all;
+    .overlay-card .card-footer {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px 10px;
     }
     .overlay-card .card-sku {
-      padding: 4px 12px 10px;
+      flex: 1;
       font-size: 13px;
       font-weight: 600;
       color: #f0f6fc;
+    }
+    .overlay-card .flag-checkbox {
+      width: 16px;
+      height: 16px;
+      accent-color: #f85149;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .flag-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+      padding: 10px 14px;
+      background: #161b22;
+      border: 1px solid #21262d;
+      border-radius: 8px;
+      font-size: 13px;
+      color: #8b949e;
+    }
+    .flag-bar span { flex: 1; }
+    .flag-bar button {
+      padding: 5px 12px;
+      background: #238636;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .flag-bar button:disabled {
+      background: #21262d;
+      color: #484f58;
+      cursor: default;
     }
 
     /* ── Info panel ── */
@@ -651,19 +691,53 @@ function renderCompareView() {
     return;
   }
 
-  el.innerHTML = COMPARE_RUNS.map(run => \`
+  el.innerHTML = \`
+    <div class="flag-bar">
+      <span id="flag-count">0 items flagged</span>
+      <button id="export-btn" onclick="exportFlagged()" disabled>Export flagged URLs</button>
+    </div>
+    \` + COMPARE_RUNS.map(run => \`
     <div style="margin-bottom:32px">
       <h2 style="font-size:14px;font-weight:600;color:#c9d1d9;margin:0 0 12px">\${run.folder} — \${run.images.length} product\${run.images.length !== 1 ? 's' : ''}</h2>
       <div class="overlay-grid">
         \${run.images.map(({ sku, url }) => \`
-          <div class="overlay-card">
+          <div class="overlay-card" id="card-\${sku}" onclick="toggleFlag(event, '\${sku}', \${JSON.stringify(url)})">
             <img src="compare-view-screenshots/\${run.folder}/\${sku}.png" alt="">
-            <div class="card-sku">\${url ? \`<a href="\${url}" target="_blank">\${sku}</a>\` : sku}</div>
+            <div class="card-footer">
+              <div class="card-sku">\${url ? \`<a href="\${url}" target="_blank" onclick="event.stopPropagation()">\${sku}</a>\` : sku}</div>
+              <input class="flag-checkbox" type="checkbox" id="chk-\${sku}" onclick="event.stopPropagation(); toggleFlag(event, '\${sku}', \${JSON.stringify(url)}, true)">
+            </div>
           </div>
         \`).join('')}
       </div>
     </div>
   \`).join('');
+}
+
+const flagged = new Map(); // sku → url
+
+function toggleFlag(event, sku, url, fromCheckbox = false) {
+  if (flagged.has(sku)) {
+    flagged.delete(sku);
+  } else {
+    flagged.set(sku, url);
+  }
+  const card = document.getElementById('card-' + sku);
+  const chk = document.getElementById('chk-' + sku);
+  const isFlagged = flagged.has(sku);
+  card.classList.toggle('flagged', isFlagged);
+  chk.checked = isFlagged;
+  document.getElementById('flag-count').textContent = flagged.size + ' item' + (flagged.size !== 1 ? 's' : '') + ' flagged';
+  document.getElementById('export-btn').disabled = flagged.size === 0;
+}
+
+function exportFlagged() {
+  const lines = [...flagged.entries()].map(([sku, url]) => url || sku);
+  const blob = new Blob([lines.join('\\n')], { type: 'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'flagged-compare-view.txt';
+  a.click();
 }
 
 // ── Init ──────────────────────────────────────────────────────────────────────
