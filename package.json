@@ -4,7 +4,9 @@
   "description": "",
   "type": "module",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "publish-screenshots": "node scripts/build-dashboard.js && git add docs/ && git diff --staged --quiet || git commit -m 'chore: publish compare view screenshots [skip ci]' && git push"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",

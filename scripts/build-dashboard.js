@@ -634,7 +634,7 @@ function renderCompareView() {
       \${COMPARE_SCREENSHOTS.map(file => {
         const sku = file.replace('.png', '');
         return \`<div class="overlay-card">
-          <img src="compare-view-screenshots/\${file}" alt="\${sku}">
+          <img src="compare-view-screenshots/\${file}" alt="">
           <div class="card-sku">\${sku}</div>
         </div>\`;
       }).join('')}
