@@ -421,7 +421,7 @@ function showPanel(name) {
   document.querySelectorAll('#sidebar button').forEach(b => b.classList.remove('active'));
   document.getElementById('panel-' + name).classList.add('active');
   document.getElementById('btn-' + name).classList.add('active');
-  if (name === 'overlay') renderCompareView();
+  if (name === 'compare') renderCompareView();
   if (name === 'single') renderSingleUrl();
 }
 
