@@ -1,0 +1,27 @@
+[
+  {
+    "timestamp": "2026-04-13T10:05:34.453Z",
+    "url": "https://www.bottegaveneta.com/ja-jp/%E3%82%B9%E3%83%A2%E3%83%BC%E3%83%AB-%E3%83%B4%E3%82%A7%E3%83%8D%E3%82%BF-%E3%83%95%E3%82%A9%E3%83%B3%E3%83%87%E3%83%B3%E3%83%86-856736V66V02190.html",
+    "phase": "full",
+    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/24337571751",
+    "store": "bottega_veneta_japan",
+    "productType": "bag",
+    "browsers": [
+      {
+        "browser": "chrome",
+        "status": "passed",
+        "error": null
+      },
+      {
+        "browser": "firefox",
+        "status": "passed",
+        "error": null
+      },
+      {
+        "browser": "webkit",
+        "status": "passed",
+        "error": null
+      }
+    ]
+  }
+]
