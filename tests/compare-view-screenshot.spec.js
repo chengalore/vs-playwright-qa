@@ -30,8 +30,9 @@ test.setTimeout(180000);
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-// Run folder: COMPARE_RUN env var or today's date (YYYY-MM-DD)
-const runFolder = process.env.COMPARE_RUN || new Date().toISOString().slice(0, 10);
+// Run folder: COMPARE_RUN env var or timestamp (YYYY-MM-DD_HH-MM)
+const runFolder = process.env.COMPARE_RUN ||
+  new Date().toISOString().slice(0, 16).replace('T', '_').replace(':', '-');
 
 const urlsFile = process.env.TEST_URLS_FILE
   ? join(__dirname, "..", process.env.TEST_URLS_FILE)
