@@ -48,14 +48,27 @@ for (const f of existingInDocs) {
 }
 compareScreenshots.sort();
 
+// Build sku→url map from manifest (merged from both src and dst)
+const compareManifest = {};
+for (const manifestPath of [
+  path.join(screenshotsSrc, 'manifest.json'),
+  path.join(screenshotsDst, 'manifest.json'),
+]) {
+  if (fs.existsSync(manifestPath)) {
+    const entries = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    for (const { sku, url } of entries) compareManifest[sku] = url;
+  }
+}
+
 // Generate dashboard HTML
 fs.mkdirSync('docs', { recursive: true });
-fs.writeFileSync('docs/index.html', generateDashboard(history, compareScreenshots, singleUrlHistory));
+fs.writeFileSync('docs/index.html', generateDashboard(history, compareScreenshots, singleUrlHistory, compareManifest));
 console.log(`Dashboard written — ${history.length} monitor runs, ${singleUrlHistory.length} single-url runs`);
 
-function generateDashboard(history, compareScreenshots, singleUrlHistory) {
+function generateDashboard(history, compareScreenshots, singleUrlHistory, compareManifest = {}) {
   const dataJson = JSON.stringify(history).replace(/<\/script>/gi, '<\\/script>');
   const compareJson = JSON.stringify(compareScreenshots).replace(/<\/script>/gi, '<\\/script>');
+  const compareManifestJson = JSON.stringify(compareManifest).replace(/<\/script>/gi, '<\\/script>');
   const singleUrlJson = JSON.stringify(singleUrlHistory).replace(/<\/script>/gi, '<\\/script>');
 
   return `<!DOCTYPE html>
@@ -417,6 +430,7 @@ function generateDashboard(history, compareScreenshots, singleUrlHistory) {
 const HISTORY = ${dataJson};
 const SINGLE_URL_HISTORY = ${singleUrlJson};
 const COMPARE_SCREENSHOTS = ${compareJson};
+const COMPARE_MANIFEST = ${compareManifestJson};
 
 // ── Navigation ────────────────────────────────────────────────────────────────
 function showPanel(name) {
@@ -633,9 +647,10 @@ function renderCompareView() {
     <div class="overlay-grid">
       \${COMPARE_SCREENSHOTS.map(file => {
         const sku = file.replace('.png', '');
+        const url = COMPARE_MANIFEST[sku];
         return \`<div class="overlay-card">
           <img src="compare-view-screenshots/\${file}" alt="">
-          <div class="card-sku">\${sku}</div>
+          <div class="card-sku">\${url ? \`<a href="\${url}" target="_blank">\${sku}</a>\` : sku}</div>
         </div>\`;
       }).join('')}
     </div>
