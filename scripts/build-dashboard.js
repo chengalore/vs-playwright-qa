@@ -25,18 +25,25 @@ const singleUrlHistory = fs.existsSync(SINGLE_URL_HISTORY_FILE)
   : [];
 
 // Copy compare view screenshots to docs/ so they're served on GitHub Pages
+// Sources: bag test + inpage compare phase both write to test-results/compare-view-screenshots
 const screenshotsSrc = 'test-results/compare-view-screenshots';
 const screenshotsDst = 'docs/compare-view-screenshots';
+fs.mkdirSync(screenshotsDst, { recursive: true });
 let compareScreenshots = [];
 if (fs.existsSync(screenshotsSrc)) {
-  fs.mkdirSync(screenshotsDst, { recursive: true });
   const files = fs.readdirSync(screenshotsSrc);
   for (const file of files) {
     fs.copyFileSync(path.join(screenshotsSrc, file), path.join(screenshotsDst, file));
   }
   compareScreenshots = files.filter(f => f.endsWith('.png'));
-  console.log(`Copied ${compareScreenshots.length} overlay screenshots to docs/`);
+  console.log(`Copied ${compareScreenshots.length} compare view screenshots to docs/`);
 }
+// Also include any previously committed screenshots already in docs/
+const existingInDocs = fs.readdirSync(screenshotsDst).filter(f => f.endsWith('.png'));
+for (const f of existingInDocs) {
+  if (!compareScreenshots.includes(f)) compareScreenshots.push(f);
+}
+compareScreenshots.sort();
 
 // Generate dashboard HTML
 fs.mkdirSync('docs', { recursive: true });

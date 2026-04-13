@@ -6,6 +6,7 @@ export function startPDCWatcher(page) {
     noVisor: false,
     validProduct: undefined,
     isKid: false,
+    externalProductId: null,
   };
 
   // Resolves the instant validProduct becomes true — eliminates polling in waitForPDC.
@@ -23,6 +24,10 @@ export function startPDCWatcher(page) {
       pdcData.store = json.data.storeName || pdcData.store;
       pdcData.productType = json.data.productTypeName || pdcData.productType;
       pdcData.validProduct = json.data.validProduct;
+      pdcData.externalProductId =
+        json.productId ||
+        json.productData?.externalId ||
+        pdcData.externalProductId;
     }
 
     pdcData.gender =

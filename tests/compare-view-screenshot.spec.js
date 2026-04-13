@@ -22,6 +22,9 @@ import { readFileSync, existsSync, mkdirSync, writeFileSync } from "fs";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 import { startPDCWatcher } from "../utils/pdcWatcher.js";
+import { isBagProduct } from "../utils/inpageFlow.js";
+import { completeOnboarding } from "../utils/completeOnboarding.js";
+import { startVirtusizeEventWatcher } from "../utils/eventWatcher.js";
 
 test.setTimeout(180000);
 
@@ -46,9 +49,7 @@ if (urls.length === 0) {
 
 
 for (const url of urls) {
-  const sku = url.match(/-([A-Z0-9]{10,})\.html/)?.[1] ?? url;
-
-  test(`[${sku}]`, async ({ page }, testInfo) => {
+  test(url, async ({ page }, testInfo) => {
     const startTime = Date.now();
 
     await page.addInitScript(() => {
@@ -60,8 +61,9 @@ for (const url of urls) {
     });
 
     const pdc = startPDCWatcher(page);
+    const eventWatcher = startVirtusizeEventWatcher(page);
 
-    await page.goto(url, { waitUntil: "domcontentloaded", timeout: 30000 });
+    await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60000 });
     await page.waitForLoadState("load");
 
     // Accept cookie banner if present
@@ -86,7 +88,13 @@ for (const url of urls) {
     }
 
     if (pdc.validProduct !== true) {
-      logResult({ sku, url, status: "skipped", reason: `validProduct=${pdc.validProduct}`, durationMs: Date.now() - startTime });
+      logResult({ url, status: "skipped", reason: `validProduct=${pdc.validProduct}`, durationMs: Date.now() - startTime });
+      return;
+    }
+
+    const sku = pdc.externalProductId;
+    if (!sku) {
+      logResult({ url, status: "skipped", reason: "externalProductId missing from PDC", durationMs: Date.now() - startTime });
       return;
     }
 
@@ -128,20 +136,8 @@ for (const url of urls) {
     });
     await page.waitForTimeout(1500);
 
-    // ── Bag flow: privacy policy + budget selection ───────────────────────────
-    const hasBagFlow = await page
-      .waitForFunction(
-        () => {
-          const root = window.getWidgetHost()?.shadowRoot;
-          return !!root?.querySelector('[data-test-id="privacy-policy-checkbox"]');
-        },
-        { timeout: 5000 }
-      )
-      .then(() => true)
-      .catch(() => false);
-
-    if (hasBagFlow) {
-      // Accept privacy policy
+    if (isBagProduct(pdc)) {
+      // ── Bag flow: privacy policy + budget selection ─────────────────────────
       await page.evaluate(() => {
         const root = window.getWidgetHost()?.shadowRoot;
         const checkbox = root?.querySelector('[data-test-id="privacy-policy-checkbox"]');
@@ -157,7 +153,6 @@ for (const url of urls) {
       await nextBtn.click().catch(() => {});
       await page.waitForTimeout(2000);
 
-      // Click budget button
       await page
         .waitForFunction(
           () => !!window.getWidgetHost()?.shadowRoot?.querySelector('button.everyday-item-btns'),
@@ -169,7 +164,6 @@ for (const url of urls) {
       });
       await page.waitForTimeout(1500);
 
-      // Select a price option
       await page.evaluate(() => {
         const root = window.getWidgetHost()?.shadowRoot;
         const select = root?.querySelector(".hidden-select");
@@ -178,6 +172,23 @@ for (const url of urls) {
         select.dispatchEvent(new Event("change", { bubbles: true }));
       });
       await page.waitForTimeout(3000);
+
+    } else {
+      // ── Apparel/footwear flow: complete onboarding then wait for compare view
+      await completeOnboarding(page);
+
+      // Wait for the recommendation to appear (event-based, up to 30s)
+      const recStart = Date.now();
+      while (Date.now() - recStart < 30000) {
+        const events = eventWatcher.getEvents();
+        if (
+          events.some((e) => e.startsWith("user-got-size-recommendation")) ||
+          events.some((e) => e.startsWith("user-opened-panel-tryiton")) ||
+          events.some((e) => e.startsWith("user-saw-measurements-view"))
+        ) break;
+        await page.waitForTimeout(300);
+      }
+      await page.waitForTimeout(1500);
     }
 
     // Screenshot the widget host element, fall back to full page
@@ -195,14 +206,23 @@ for (const url of urls) {
     // Save screenshot to disk
     const screenshotsDir = join(__dirname, "../test-results/compare-view-screenshots");
     mkdirSync(screenshotsDir, { recursive: true });
-    const screenshotPath = join(screenshotsDir, `${sku}.png`);
-    writeFileSync(screenshotPath, screenshot);
+    writeFileSync(join(screenshotsDir, `${sku}.png`), screenshot);
+
+    // Append to manifest so afterAll can build the gallery without re-parsing URLs
+    const manifestPath = join(screenshotsDir, "manifest.json");
+    const manifest = existsSync(manifestPath) ? JSON.parse(readFileSync(manifestPath, "utf8")) : [];
+    if (!manifest.some((e) => e.sku === sku)) manifest.push({ sku, url });
+    writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
 
     // Also attach to Playwright HTML report
     await testInfo.attach(`${sku}.png`, { body: screenshot, contentType: "image/png" });
 
-    console.log(`COMPARE_VIEW_RESULT: ${JSON.stringify({ sku, url, status: "screenshot_taken", durationMs: Date.now() - startTime })}`);
+    logResult({ sku, url, status: "screenshot_taken", durationMs: Date.now() - startTime });
   });
+}
+
+function logResult(result) {
+  console.log(`COMPARE_VIEW_RESULT: ${JSON.stringify(result)}`);
 }
 
 // Generate a simple HTML gallery after all tests
@@ -210,13 +230,10 @@ test.afterAll(async () => {
   const screenshotsDir = join(__dirname, "../test-results/compare-view-screenshots");
   if (!existsSync(screenshotsDir)) return;
 
-  const images = readFileSync(join(__dirname, "../data/compare-view-screenshot-urls.txt"), "utf8")
-    .split("\n").map(l => l.trim()).filter(Boolean)
-    .map(url => {
-      const sku = url.match(/-([A-Z0-9]{10,})\.html/)?.[1] ?? url;
-      return { sku, url };
-    })
-    .filter(({ sku }) => existsSync(join(screenshotsDir, `${sku}.png`)));
+  const manifestPath = join(screenshotsDir, "manifest.json");
+  const images = existsSync(manifestPath)
+    ? JSON.parse(readFileSync(manifestPath, "utf8")).filter(({ sku }) => existsSync(join(screenshotsDir, `${sku}.png`)))
+    : [];
 
   const html = `<!DOCTYPE html>
 <html>

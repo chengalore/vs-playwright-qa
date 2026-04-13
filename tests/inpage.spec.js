@@ -467,6 +467,51 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
       await validateRecommendation(eventWatcher);
     }
 
+    if (flow === "footwear") {
+      await page.waitForFunction(() => {
+        const host =
+          document.querySelector("#router-view-wrapper") ||
+          document.querySelector("#vs-aoyama")?.nextElementSibling;
+        const root = host?.shadowRoot;
+        return root?.querySelector('[data-test-id="no-visor-recommended-size"]');
+      });
+    }
+
+    // compare phase: recommendation visible — screenshot and stop
+    if (phase === "compare") {
+      await page.waitForTimeout(1500);
+      const widgetHost = page.locator("#router-view-wrapper").first();
+      const widgetVisible = await widgetHost.isVisible().catch(() => false);
+      const screenshot = widgetVisible
+        ? await widgetHost.screenshot({ timeout: 10000 }).catch(() => null)
+        : await page.screenshot({ fullPage: false }).catch(() => null);
+
+      if (screenshot) {
+        const { mkdirSync, writeFileSync } = await import("fs");
+        const { join, dirname } = await import("path");
+        const { fileURLToPath } = await import("url");
+        const __dirname = dirname(fileURLToPath(import.meta.url));
+        const screenshotsDir = join(__dirname, "../test-results/compare-view-screenshots");
+        mkdirSync(screenshotsDir, { recursive: true });
+        const filename = `${pdc.store || "unknown"}-${testInfo.project.name}.png`;
+        writeFileSync(join(screenshotsDir, filename), screenshot);
+        await testInfo.attach(filename, { body: screenshot, contentType: "image/png" });
+        console.log(`COMPARE_VIEW_RESULT: ${JSON.stringify({ store: pdc.store, url, browser: testInfo.project.name, status: "screenshot_taken" })}`);
+      }
+
+      logResult({
+        url,
+        store: pdc.store,
+        productType: pdc.productType,
+        userType: isNewUser ? "NEW" : "RETURNING",
+        status: "passed",
+        browser: testInfo.project.name,
+        phase,
+        durationMs: Date.now() - startTime,
+      });
+      return;
+    }
+
     // -----------------------------
     // Size + Wardrobe (apparel only)
     // -----------------------------
