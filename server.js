@@ -29,7 +29,6 @@ const SPEC_COMMANDS = {
   monitor: ["npx", ["playwright", "test", "tests/monitor.spec.js", "--project=chrome", "--reporter=list"]],
   inpage:  ["npx", ["playwright", "test", "tests/inpage.spec.js",  "--project=chrome", "--reporter=list"]],
   overlay: ["npx", ["playwright", "test", "tests/overlay-qa.spec.js", "--project=chrome", "--reporter=list"]],
-  agent:   ["npx", ["playwright", "test", "tests/agent-qa.spec.js", "--project=chrome", "--reporter=list"]],
   cart:    ["npx", ["playwright", "test", "tests/addToCart.spec.js", "--project=chrome", "--reporter=list"]],
 };
 
@@ -81,13 +80,6 @@ async function dispatchWorkflow(workflow, inputs) {
   }
 }
 
-async function triggerAgentWorkflow(instruction, slackResponseUrl) {
-  await dispatchWorkflow("agent-qa.yml", {
-    instruction,
-    slack_response_url: slackResponseUrl || "",
-  });
-}
-
 async function triggerMonitorWorkflow(phase = "widget") {
   await dispatchWorkflow("inpage-monitor.yml", {
     phase,
@@ -125,18 +117,20 @@ const server = http.createServer((req, res) => {
       // Route: monitor vs agent
       const monitorOpts = parseMonitorRequest(instruction);
 
+      if (!monitorOpts) {
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ text: "❌ Unrecognized command. Supported:\n• `/qa monitor` — run all stores\n• `/qa <URL>` — test a specific product URL" }));
+        return;
+      }
+
       // Acknowledge immediately (Slack requires response within 3 seconds)
       res.writeHead(200, { "Content-Type": "application/json" });
       res.end(JSON.stringify({
-        text: monitorOpts
-          ? `⏳ Starting monitor for all stores (phase: ${monitorOpts.phase})... Results will be posted when done.`
-          : `Starting agent test: _"${instruction}"_\nI'll report back when done.`,
+        text: `⏳ Starting monitor for all stores (phase: ${monitorOpts.phase})... Results will be posted when done.`,
       }));
 
       // Trigger workflow asynchronously
-      const trigger = monitorOpts
-        ? triggerMonitorWorkflow(monitorOpts.phase)
-        : triggerAgentWorkflow(instruction, responseUrl);
+      const trigger = triggerMonitorWorkflow(monitorOpts.phase);
 
       trigger.catch(async err => {
         console.error("[slack] workflow trigger failed:", err.message);

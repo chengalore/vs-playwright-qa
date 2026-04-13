@@ -9,14 +9,20 @@ const history = fs.existsSync(HISTORY_FILE)
   ? JSON.parse(fs.readFileSync(HISTORY_FILE, 'utf8'))
   : [];
 
-// Prepend current run
-if (fs.existsSync('data/monitor-report.json')) {
+// Prepend current run (skip if called from single-url workflow)
+if (fs.existsSync('data/monitor-report.json') && process.env.PHASE !== 'skip') {
   const report = JSON.parse(fs.readFileSync('data/monitor-report.json', 'utf8'));
   report.phase = process.env.PHASE || 'widget';
   history.unshift(report);
   if (history.length > MAX_HISTORY) history.splice(MAX_HISTORY);
   fs.writeFileSync(HISTORY_FILE, JSON.stringify(history, null, 2));
 }
+
+// Load single-url history
+const SINGLE_URL_HISTORY_FILE = 'data/single-url-history.json';
+const singleUrlHistory = fs.existsSync(SINGLE_URL_HISTORY_FILE)
+  ? JSON.parse(fs.readFileSync(SINGLE_URL_HISTORY_FILE, 'utf8'))
+  : [];
 
 // Copy overlay screenshots to docs/ so they're served on GitHub Pages
 const screenshotsSrc = 'test-results/overlay-qa-screenshots';
@@ -34,12 +40,13 @@ if (fs.existsSync(screenshotsSrc)) {
 
 // Generate dashboard HTML
 fs.mkdirSync('docs', { recursive: true });
-fs.writeFileSync('docs/index.html', generateDashboard(history, overlayScreenshots));
-console.log(`Dashboard written — ${history.length} runs in history`);
+fs.writeFileSync('docs/index.html', generateDashboard(history, overlayScreenshots, singleUrlHistory));
+console.log(`Dashboard written — ${history.length} monitor runs, ${singleUrlHistory.length} single-url runs`);
 
-function generateDashboard(history, overlayScreenshots) {
+function generateDashboard(history, overlayScreenshots, singleUrlHistory) {
   const dataJson = JSON.stringify(history).replace(/<\/script>/gi, '<\\/script>');
   const overlayJson = JSON.stringify(overlayScreenshots).replace(/<\/script>/gi, '<\\/script>');
+  const singleUrlJson = JSON.stringify(singleUrlHistory).replace(/<\/script>/gi, '<\\/script>');
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -309,9 +316,9 @@ function generateDashboard(history, overlayScreenshots) {
 <nav id="sidebar">
   <div class="sidebar-title">Virtusize QA</div>
   <button onclick="showPanel('monitor')" id="btn-monitor" class="active">📡 Monitor</button>
+  <button onclick="showPanel('single')" id="btn-single">🔗 Single URL</button>
   <button onclick="showPanel('overlay')" id="btn-overlay">🖼 Overlay QA</button>
   <button onclick="showPanel('inpage')" id="btn-inpage">🧪 Inpage</button>
-  <button onclick="showPanel('agent')" id="btn-agent">🤖 Agent QA</button>
   <button onclick="showPanel('cart')" id="btn-cart">🛒 Add to Cart</button>
 </nav>
 
@@ -344,6 +351,27 @@ function generateDashboard(history, overlayScreenshots) {
     </table>
   </div>
 
+  <!-- Single URL -->
+  <div class="panel" id="panel-single">
+    <h1>Single URL Tests</h1>
+    <p class="panel-subtitle">Per-URL tests run across chrome, firefox, and webkit</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Date &amp; Time</th>
+          <th>URL</th>
+          <th>Store</th>
+          <th>Phase</th>
+          <th>Chrome</th>
+          <th>Firefox</th>
+          <th>WebKit</th>
+          <th>Run</th>
+        </tr>
+      </thead>
+      <tbody id="single-url-body"></tbody>
+    </table>
+  </div>
+
   <!-- Overlay QA -->
   <div class="panel" id="panel-overlay">
     <h1>Overlay QA</h1>
@@ -362,17 +390,6 @@ function generateDashboard(history, overlayScreenshots) {
     </div>
   </div>
 
-  <!-- Agent QA -->
-  <div class="panel" id="panel-agent">
-    <h1>Agent QA</h1>
-    <p class="panel-subtitle">AI-driven testing via natural language instruction</p>
-    <div class="info-panel">
-      <div class="icon">🤖</div>
-      <p>Give Claude an instruction and it plans and runs the test using the existing Virtusize utilities.</p>
-      <div class="run-cmd">INSTRUCTION="test onboarding for snidel" npx playwright test tests/agent-qa.spec.js</div>
-    </div>
-  </div>
-
   <!-- Add to Cart -->
   <div class="panel" id="panel-cart">
     <h1>Add to Cart</h1>
@@ -388,6 +405,7 @@ function generateDashboard(history, overlayScreenshots) {
 
 <script>
 const HISTORY = ${dataJson};
+const SINGLE_URL_HISTORY = ${singleUrlJson};
 const OVERLAY_SCREENSHOTS = ${overlayJson};
 
 // ── Navigation ────────────────────────────────────────────────────────────────
@@ -397,6 +415,7 @@ function showPanel(name) {
   document.getElementById('panel-' + name).classList.add('active');
   document.getElementById('btn-' + name).classList.add('active');
   if (name === 'overlay') renderOverlay();
+  if (name === 'single') renderSingleUrl();
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -549,6 +568,44 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
   });
 });
 
+// ── Single URL history ────────────────────────────────────────────────────────
+function renderSingleUrl() {
+  const tbody = document.getElementById('single-url-body');
+  if (SINGLE_URL_HISTORY.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="8" class="empty-state">No single URL tests yet.</td></tr>';
+    return;
+  }
+
+  const iconFor = s => s === 'passed' ? '✅' : s === 'skipped' ? '⏭' : s === 'no_result' ? '—' : '❌';
+  const shortUrl = url => { try { const u = new URL(url); return u.hostname.replace(/^www\\./, '') + u.pathname.slice(0, 30) + (u.pathname.length > 30 ? '…' : ''); } catch { return url; } };
+
+  tbody.innerHTML = SINGLE_URL_HISTORY.map(entry => {
+    const byBrowser = Object.fromEntries((entry.browsers || []).map(b => [b.browser, b]));
+    const chrome  = byBrowser['chrome']  || {};
+    const firefox = byBrowser['firefox'] || {};
+    const webkit  = byBrowser['webkit']  || {};
+
+    const statusCell = (b) => {
+      const icon = iconFor(b.status);
+      const tip = b.error ? \` title="\${b.error.replace(/"/g, '&quot;')}"\` : '';
+      return \`<td style="text-align:center"\${tip}>\${icon}</td>\`;
+    };
+
+    return \`<tr>
+      <td class="ts">\${fmt(entry.timestamp)}</td>
+      <td style="font-size:12px;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
+        <a href="\${entry.url}" target="_blank" rel="noopener" title="\${entry.url}">\${shortUrl(entry.url)}</a>
+      </td>
+      <td style="font-size:13px">\${entry.store || '—'}</td>
+      <td><span class="phase-badge phase-\${entry.phase || 'full'}">\${entry.phase || 'full'}</span></td>
+      \${statusCell(chrome)}
+      \${statusCell(firefox)}
+      \${statusCell(webkit)}
+      <td class="run-link"><a href="\${entry.githubRunUrl || '#'}" target="_blank" rel="noopener">View →</a></td>
+    </tr>\`;
+  }).join('');
+}
+
 // ── Overlay gallery ───────────────────────────────────────────────────────────
 function renderOverlay() {
   const el = document.getElementById('overlay-content');
@@ -578,6 +635,7 @@ function renderOverlay() {
 // ── Init ──────────────────────────────────────────────────────────────────────
 renderSummary(HISTORY[0] || null);
 renderTable();
+renderSingleUrl();
 </script>
 </body>
 </html>`;

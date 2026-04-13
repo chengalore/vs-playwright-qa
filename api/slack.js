@@ -112,10 +112,11 @@ export default async function handler(req, res) {
         slack_response_url: responseUrl || "",
       });
     } else {
-      await dispatchWorkflow("agent-qa.yml", {
-        instruction,
-        slack_response_url: responseUrl || "",
+      res.status(200).json({
+        response_type: "ephemeral",
+        text: "❌ Unrecognized command. Supported:\n• `/qa monitor` — run all stores\n• `/qa <URL>` — test a specific product URL",
       });
+      return;
     }
   } catch (err) {
     console.error("Workflow dispatch failed:", err.message);
@@ -130,8 +131,6 @@ export default async function handler(req, res) {
     response_type: "ephemeral",
     text: monitorOpts
       ? `⏳ Starting monitor for all stores (phase: ${monitorOpts.phase})...`
-      : isUrlOnly
-        ? `⏳ Running inpage test on ${instruction}\nI'll report back when done.`
-        : `Starting agent test: _"${instruction}"_\nI'll report back when done.`,
+      : `⏳ Running inpage test on ${instruction}\nI'll report back when done.`,
   });
 }

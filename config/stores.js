@@ -41,8 +41,8 @@ export const STORES = {
   barneys: { id: 731 }, // shorthand
   barneys_japan: { id: 731, monitor: true },
   beams: { id: 792, monitor: true },
-  bottega: { id: 914, botProtected: true },
-  bottega_veneta: { id: 914, monitor: true, botProtected: true },
+  bottega: { id: 914, monitor: true },
+  bottega_veneta: { id: 914, monitor: true },
   bottega_veneta_japan: { id: 914, monitor: true },
   bottega_veneta_korea: { id: 915, monitor: true },
   brooks_brothers: { id: 730, monitor: true },
@@ -216,7 +216,6 @@ export const BOT_PROTECTED_DOMAINS = [
   "adidas.com",
   "adidas.co.kr",
   "asics.com",
-  "bottegaveneta.com",
   "by-malene-birger.com",
   "ralphlauren.com",
   "ralphlauren.co.jp",
