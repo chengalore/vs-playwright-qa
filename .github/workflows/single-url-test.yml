@@ -40,7 +40,7 @@ jobs:
 
       - name: Run inpage test
         run: |
-          npx playwright test tests/inpage.spec.js --project=${{ matrix.browser }} --reporter=list 2>&1 | tee test-output.log
+          npx playwright test tests/inpage.spec.js --project=${{ matrix.browser }} --retries=0 --reporter=list 2>&1 | tee test-output.log
         env:
           TEST_URL: ${{ github.event.inputs.url }}
           TEST_PHASE: ${{ github.event.inputs.phase }}
