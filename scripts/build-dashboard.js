@@ -24,28 +24,28 @@ const singleUrlHistory = fs.existsSync(SINGLE_URL_HISTORY_FILE)
   ? JSON.parse(fs.readFileSync(SINGLE_URL_HISTORY_FILE, 'utf8'))
   : [];
 
-// Copy overlay screenshots to docs/ so they're served on GitHub Pages
-const screenshotsSrc = 'test-results/overlay-qa-screenshots';
-const screenshotsDst = 'docs/overlay-screenshots';
-let overlayScreenshots = [];
+// Copy compare view screenshots to docs/ so they're served on GitHub Pages
+const screenshotsSrc = 'test-results/compare-view-screenshots';
+const screenshotsDst = 'docs/compare-view-screenshots';
+let compareScreenshots = [];
 if (fs.existsSync(screenshotsSrc)) {
   fs.mkdirSync(screenshotsDst, { recursive: true });
   const files = fs.readdirSync(screenshotsSrc);
   for (const file of files) {
     fs.copyFileSync(path.join(screenshotsSrc, file), path.join(screenshotsDst, file));
   }
-  overlayScreenshots = files.filter(f => f.endsWith('.png'));
-  console.log(`Copied ${overlayScreenshots.length} overlay screenshots to docs/`);
+  compareScreenshots = files.filter(f => f.endsWith('.png'));
+  console.log(`Copied ${compareScreenshots.length} overlay screenshots to docs/`);
 }
 
 // Generate dashboard HTML
 fs.mkdirSync('docs', { recursive: true });
-fs.writeFileSync('docs/index.html', generateDashboard(history, overlayScreenshots, singleUrlHistory));
+fs.writeFileSync('docs/index.html', generateDashboard(history, compareScreenshots, singleUrlHistory));
 console.log(`Dashboard written — ${history.length} monitor runs, ${singleUrlHistory.length} single-url runs`);
 
-function generateDashboard(history, overlayScreenshots, singleUrlHistory) {
+function generateDashboard(history, compareScreenshots, singleUrlHistory) {
   const dataJson = JSON.stringify(history).replace(/<\/script>/gi, '<\\/script>');
-  const overlayJson = JSON.stringify(overlayScreenshots).replace(/<\/script>/gi, '<\\/script>');
+  const compareJson = JSON.stringify(compareScreenshots).replace(/<\/script>/gi, '<\\/script>');
   const singleUrlJson = JSON.stringify(singleUrlHistory).replace(/<\/script>/gi, '<\\/script>');
 
   return `<!DOCTYPE html>
@@ -317,7 +317,7 @@ function generateDashboard(history, overlayScreenshots, singleUrlHistory) {
   <div class="sidebar-title">Virtusize QA</div>
   <button onclick="showPanel('monitor')" id="btn-monitor" class="active">📡 Monitor</button>
   <button onclick="showPanel('single')" id="btn-single">🔗 Single URL</button>
-  <button onclick="showPanel('overlay')" id="btn-overlay">🖼 Overlay QA</button>
+  <button onclick="showPanel('compare')" id="btn-compare">🖼 Compare View</button>
   <button onclick="showPanel('inpage')" id="btn-inpage">🧪 Inpage</button>
   <button onclick="showPanel('cart')" id="btn-cart">🛒 Add to Cart</button>
 </nav>
@@ -373,10 +373,10 @@ function generateDashboard(history, overlayScreenshots, singleUrlHistory) {
   </div>
 
   <!-- Overlay QA -->
-  <div class="panel" id="panel-overlay">
-    <h1>Overlay QA</h1>
+  <div class="panel" id="panel-compare">
+    <h1>Compare View</h1>
     <p class="panel-subtitle">Bag product screenshots for visual review</p>
-    <div id="overlay-content"></div>
+    <div id="compare-content"></div>
   </div>
 
   <!-- Inpage -->
@@ -406,7 +406,7 @@ function generateDashboard(history, overlayScreenshots, singleUrlHistory) {
 <script>
 const HISTORY = ${dataJson};
 const SINGLE_URL_HISTORY = ${singleUrlJson};
-const OVERLAY_SCREENSHOTS = ${overlayJson};
+const COMPARE_SCREENSHOTS = ${compareJson};
 
 // ── Navigation ────────────────────────────────────────────────────────────────
 function showPanel(name) {
@@ -414,7 +414,7 @@ function showPanel(name) {
   document.querySelectorAll('#sidebar button').forEach(b => b.classList.remove('active'));
   document.getElementById('panel-' + name).classList.add('active');
   document.getElementById('btn-' + name).classList.add('active');
-  if (name === 'overlay') renderOverlay();
+  if (name === 'overlay') renderCompareView();
   if (name === 'single') renderSingleUrl();
 }
 
@@ -607,24 +607,24 @@ function renderSingleUrl() {
 }
 
 // ── Overlay gallery ───────────────────────────────────────────────────────────
-function renderOverlay() {
-  const el = document.getElementById('overlay-content');
-  if (OVERLAY_SCREENSHOTS.length === 0) {
+function renderCompareView() {
+  const el = document.getElementById('compare-content');
+  if (COMPARE_SCREENSHOTS.length === 0) {
     el.innerHTML = \`<div class="info-panel">
       <div class="icon">🖼</div>
       <p>No screenshots yet. Run the overlay QA test to generate them.</p>
-      <div class="run-cmd">npx playwright test tests/overlay-qa.spec.js --project=chrome</div>
+      <div class="run-cmd">npx playwright test tests/compare-view-screenshot.spec.js --project=chrome</div>
     </div>\`;
     return;
   }
 
   el.innerHTML = \`
-    <p style="font-size:13px;color:#8b949e;margin-bottom:4px">\${OVERLAY_SCREENSHOTS.length} products</p>
+    <p style="font-size:13px;color:#8b949e;margin-bottom:4px">\${COMPARE_SCREENSHOTS.length} products</p>
     <div class="overlay-grid">
-      \${OVERLAY_SCREENSHOTS.map(file => {
+      \${COMPARE_SCREENSHOTS.map(file => {
         const sku = file.replace('.png', '');
         return \`<div class="overlay-card">
-          <img src="overlay-screenshots/\${file}" alt="\${sku}">
+          <img src="compare-view-screenshots/\${file}" alt="\${sku}">
           <div class="card-sku">\${sku}</div>
         </div>\`;
       }).join('')}

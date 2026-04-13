@@ -1,20 +1,20 @@
 /**
- * Virtusize overlay QA test.
+ * Virtusize compare view screenshot test.
  *
  * For each bag product URL, opens the Virtusize aoyama widget, goes through
  * the bag flow, and screenshots the result for manual visual review.
  *
- * Screenshots are saved to test-results/overlay-qa-screenshots/ and an HTML
+ * Screenshots are saved to test-results/compare-view-screenshots/ and an HTML
  * gallery (index.html) is generated there after all tests complete.
  * Screenshots are also attached to the Playwright HTML report.
  *
- * Output: logs OVERLAY_QA_RESULT JSON lines per product.
+ * Output: logs COMPARE_VIEW_RESULT JSON lines per product.
  *
  * Usage:
- *   npx playwright test overlay-qa --reporter=list
+ *   npx playwright test compare-view-screenshot --reporter=list
  *
  * Custom URLs file (optional):
- *   TEST_URLS_FILE=data/overlay-qa-urls.txt npx playwright test overlay-qa
+ *   TEST_URLS_FILE=data/compare-view-screenshot-urls.txt npx playwright test compare-view-screenshot
  */
 
 import { test } from "@playwright/test";
@@ -29,7 +29,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const urlsFile = process.env.TEST_URLS_FILE
   ? join(__dirname, "..", process.env.TEST_URLS_FILE)
-  : join(__dirname, "../data/overlay-qa-urls.txt");
+  : join(__dirname, "../data/compare-view-screenshot-urls.txt");
 
 if (!existsSync(urlsFile)) {
   throw new Error(`URLs file not found: ${urlsFile}`);
@@ -193,7 +193,7 @@ for (const url of urls) {
     }
 
     // Save screenshot to disk
-    const screenshotsDir = join(__dirname, "../test-results/overlay-qa-screenshots");
+    const screenshotsDir = join(__dirname, "../test-results/compare-view-screenshots");
     mkdirSync(screenshotsDir, { recursive: true });
     const screenshotPath = join(screenshotsDir, `${sku}.png`);
     writeFileSync(screenshotPath, screenshot);
@@ -201,16 +201,16 @@ for (const url of urls) {
     // Also attach to Playwright HTML report
     await testInfo.attach(`${sku}.png`, { body: screenshot, contentType: "image/png" });
 
-    console.log(`OVERLAY_QA_RESULT: ${JSON.stringify({ sku, url, status: "screenshot_taken", durationMs: Date.now() - startTime })}`);
+    console.log(`COMPARE_VIEW_RESULT: ${JSON.stringify({ sku, url, status: "screenshot_taken", durationMs: Date.now() - startTime })}`);
   });
 }
 
 // Generate a simple HTML gallery after all tests
 test.afterAll(async () => {
-  const screenshotsDir = join(__dirname, "../test-results/overlay-qa-screenshots");
+  const screenshotsDir = join(__dirname, "../test-results/compare-view-screenshots");
   if (!existsSync(screenshotsDir)) return;
 
-  const images = readFileSync(join(__dirname, "../data/overlay-qa-urls.txt"), "utf8")
+  const images = readFileSync(join(__dirname, "../data/compare-view-screenshot-urls.txt"), "utf8")
     .split("\n").map(l => l.trim()).filter(Boolean)
     .map(url => {
       const sku = url.match(/-([A-Z0-9]{10,})\.html/)?.[1] ?? url;
@@ -222,7 +222,7 @@ test.afterAll(async () => {
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Overlay QA Gallery</title>
+  <title>Compare View Screenshot Gallery</title>
   <style>
     body { font-family: sans-serif; background: #f5f5f5; margin: 0; padding: 20px; }
     h1 { font-size: 18px; margin-bottom: 20px; }
@@ -234,7 +234,7 @@ test.afterAll(async () => {
   </style>
 </head>
 <body>
-  <h1>Overlay QA — ${images.length} products</h1>
+  <h1>Compare View — ${images.length} products</h1>
   <div class="grid">
     ${images.map(({ sku, url }) => `
     <div class="card">
@@ -248,5 +248,5 @@ test.afterAll(async () => {
 
   const galleryPath = join(screenshotsDir, "index.html");
   writeFileSync(galleryPath, html);
-  console.log(`\nGallery ready: open test-results/overlay-qa-screenshots/index.html`);
+  console.log(`\nGallery ready: open test-results/compare-view-screenshots/index.html`);
 });
