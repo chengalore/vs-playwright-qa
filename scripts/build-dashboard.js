@@ -9,13 +9,16 @@ const history = fs.existsSync(HISTORY_FILE)
   ? JSON.parse(fs.readFileSync(HISTORY_FILE, 'utf8'))
   : [];
 
-// Prepend current run (skip if called from single-url workflow)
+// Prepend current run (skip if called from single-url workflow or already in history)
 if (fs.existsSync('data/monitor-report.json') && process.env.PHASE !== 'skip') {
   const report = JSON.parse(fs.readFileSync('data/monitor-report.json', 'utf8'));
-  report.phase = process.env.PHASE || 'widget';
-  history.unshift(report);
-  if (history.length > MAX_HISTORY) history.splice(MAX_HISTORY);
-  fs.writeFileSync(HISTORY_FILE, JSON.stringify(history, null, 2));
+  const alreadyInHistory = history.some(e => e.timestamp === report.timestamp);
+  if (!alreadyInHistory) {
+    report.phase = process.env.PHASE || 'widget';
+    history.unshift(report);
+    if (history.length > MAX_HISTORY) history.splice(MAX_HISTORY);
+    fs.writeFileSync(HISTORY_FILE, JSON.stringify(history, null, 2));
+  }
 }
 
 // Load single-url history
