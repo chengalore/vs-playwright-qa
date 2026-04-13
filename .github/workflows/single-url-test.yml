@@ -1,24 +1,51 @@
-name: Single URL Test
+name: Inpage QA
 
 on:
   workflow_dispatch:
     inputs:
       url:
-        description: "Product page URL to test"
-        required: true
+        description: "Product page URL (optional — leave empty to resolve via store_alias/store_id)"
+        required: false
+        default: ""
+        type: string
+      store_alias:
+        description: "Store alias e.g. snidel — used for URL resolution and fallback tracking"
+        required: false
+        default: ""
+        type: string
+      store_id:
+        description: "Store ID filter"
+        required: false
+        default: ""
+        type: string
+      product_type_id:
+        description: "Product type ID filter"
+        required: false
+        default: ""
+        type: string
+      gender:
+        description: "Gender filter"
+        required: false
+        default: ""
+        type: string
+      exclude_kids:
+        description: "Exclude kids products"
+        required: false
+        default: ""
         type: string
       phase:
-        description: "Test phase (widget/onboarding/full)"
+        description: "Test phase (widget/events/api/onboarding/full)"
         required: false
         default: "full"
         type: string
       slack_response_url:
-        description: "Slack response_url for posting the result back"
+        description: "Slack response_url for posting result back to the user"
         required: false
+        default: ""
         type: string
 
 jobs:
-  # ── Run the test in 3 browsers in parallel ────────────────────────────────
+  # ── Run in 3 browsers in parallel ─────────────────────────────────────────
   test:
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -40,9 +67,16 @@ jobs:
 
       - name: Run inpage test
         run: |
-          npx playwright test tests/inpage.spec.js --project=${{ matrix.browser }} --retries=0 --reporter=list 2>&1 | tee test-output.log
+          npx playwright test tests/inpage.spec.js \
+            --project=${{ matrix.browser }} \
+            --retries=0 \
+            --reporter=list 2>&1 | tee test-output.log
         env:
           TEST_URL: ${{ github.event.inputs.url }}
+          STORE_ID: ${{ github.event.inputs.store_id }}
+          PRODUCT_TYPE_ID: ${{ github.event.inputs.product_type_id }}
+          GENDER: ${{ github.event.inputs.gender }}
+          EXCLUDE_KIDS: ${{ github.event.inputs.exclude_kids }}
           TEST_PHASE: ${{ github.event.inputs.phase }}
           RANDOM_PRODUCT_API_URL: ${{ secrets.RANDOM_PRODUCT_API_URL }}
 
@@ -79,7 +113,7 @@ jobs:
           path: result-${{ matrix.browser }}.json
           retention-days: 1
 
-  # ── Combine results and post a single Slack message ───────────────────────
+  # ── Post result to Slack ───────────────────────────────────────────────────
   notify:
     needs: test
     if: always()
@@ -93,13 +127,15 @@ jobs:
           merge-multiple: true
           path: results/
 
-      - name: Post combined result to Slack
+      - name: Post result to Slack
         run: |
           node --input-type=module <<'EOF'
           import fs from 'fs';
 
           const responseUrl = process.env.SLACK_RESPONSE_URL;
-          if (!responseUrl) { console.log('No response_url — skipping Slack post'); process.exit(0); }
+          const webhook = process.env.SLACK_WEBHOOK_URL;
+          const target = responseUrl || webhook;
+          if (!target) { console.log('No Slack target — skipping'); process.exit(0); }
 
           const browsers = ['chrome', 'firefox', 'webkit'];
           const results = browsers.map(b => {
@@ -108,28 +144,24 @@ jobs:
             return JSON.parse(fs.readFileSync(file, 'utf8'));
           });
 
-          const url = process.env.TEST_URL;
           const runUrl = process.env.GITHUB_RUN_URL;
-
           const iconFor = s => s === 'passed' ? '✅' : s === 'skipped' ? '⏭️' : '❌';
-
-          // Browser summary line: ✅ chrome  ✅ firefox  ❌ webkit
           const browserLine = results.map(r => `${iconFor(r.status)} ${r.browser}`).join('  ');
-
-          // Take store/flow from whichever browser has it
           const first = results.find(r => r.store) || results[0];
-
+          const testedUrl = first.url || process.env.TEST_URL;
           const errors = results.filter(r => r.error && r.status !== 'skipped');
 
           const parts = [
-            browserLine,
+            `🧪 Inpage QA — ${browserLine}`,
             first.store ? `*Store:* ${first.store}` : null,
-            (first.flow || first.productType) ? `*Flow:* ${first.flow || first.productType}` : null,
+            first.productType ? `*Type:* ${first.productType}` : null,
             ...errors.map(r => `*${r.browser}:* ${r.error}`),
-            `<${url}|Product page> · <${runUrl}|View run>`,
+            testedUrl
+              ? `<${testedUrl}|Product page> · <${runUrl}|View run>`
+              : `<${runUrl}|View run>`,
           ].filter(Boolean).join('\n');
 
-          const res = await fetch(responseUrl, {
+          const res = await fetch(target, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ text: parts }),
@@ -138,10 +170,11 @@ jobs:
           EOF
         env:
           SLACK_RESPONSE_URL: ${{ github.event.inputs.slack_response_url }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           TEST_URL: ${{ github.event.inputs.url }}
           GITHUB_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
-  # ── Publish result to GitHub Pages dashboard ──────────────────────────────
+  # ── Save fallback + publish to GitHub Pages ────────────────────────────────
   publish:
     needs: test
     if: always()
@@ -167,7 +200,7 @@ jobs:
           merge-multiple: true
           path: results/
 
-      - name: Append to single-url history and rebuild dashboard
+      - name: Save fallback and append to history
         run: |
           node --input-type=module <<'EOF'
           import fs from 'fs';
@@ -183,10 +216,25 @@ jobs:
           });
 
           const first = browserResults.find(r => r.store) || browserResults[0];
+          const resolvedUrl = first.url || process.env.TEST_URL || null;
 
+          // Save fallback if any browser passed and store_alias is provided
+          const alias = process.env.STORE_ALIAS;
+          const anyPassed = browserResults.some(r => r.status === 'passed');
+          if (alias && resolvedUrl && anyPassed) {
+            const FALLBACK_FILE = 'data/fallbackProducts.json';
+            const fallbacks = fs.existsSync(FALLBACK_FILE)
+              ? JSON.parse(fs.readFileSync(FALLBACK_FILE, 'utf8'))
+              : {};
+            fallbacks[alias] = resolvedUrl;
+            fs.writeFileSync(FALLBACK_FILE, JSON.stringify(fallbacks, null, 2));
+            console.log(`Saved fallback: ${alias} → ${resolvedUrl}`);
+          }
+
+          // Append to single-url history
           const entry = {
             timestamp: new Date().toISOString(),
-            url: process.env.TEST_URL,
+            url: resolvedUrl,
             phase: process.env.PHASE,
             githubRunUrl: process.env.GITHUB_RUN_URL,
             store: first.store || null,
@@ -195,13 +243,16 @@ jobs:
           };
 
           fs.mkdirSync('data', { recursive: true });
-          const history = fs.existsSync(HISTORY_FILE) ? JSON.parse(fs.readFileSync(HISTORY_FILE, 'utf8')) : [];
+          const history = fs.existsSync(HISTORY_FILE)
+            ? JSON.parse(fs.readFileSync(HISTORY_FILE, 'utf8'))
+            : [];
           history.unshift(entry);
           if (history.length > MAX_HISTORY) history.splice(MAX_HISTORY);
           fs.writeFileSync(HISTORY_FILE, JSON.stringify(history, null, 2));
           console.log(`single-url-history updated — ${history.length} entries`);
           EOF
         env:
+          STORE_ALIAS: ${{ github.event.inputs.store_alias }}
           TEST_URL: ${{ github.event.inputs.url }}
           PHASE: ${{ github.event.inputs.phase }}
           GITHUB_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
@@ -211,10 +262,10 @@ jobs:
         env:
           PHASE: skip
 
-      - name: Commit dashboard
+      - name: Commit
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git add data/single-url-history.json docs/index.html
-          git diff --staged --quiet || git commit -m "chore: update single-url test result [skip ci]"
+          git add data/single-url-history.json data/fallbackProducts.json docs/index.html
+          git diff --staged --quiet || git commit -m "chore: update inpage QA result [skip ci]"
           git push origin HEAD:${{ github.ref_name }}
