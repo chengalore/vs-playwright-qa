@@ -1,6 +1,8 @@
 name: Inpage Monitor
 
 on:
+  schedule:
+    - cron: '3 23 * * *'   # 8:03 AM JST (UTC+9) = 23:03 UTC previous day
   workflow_dispatch:
     inputs:
       phase:
