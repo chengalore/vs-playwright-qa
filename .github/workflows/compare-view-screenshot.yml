@@ -46,6 +46,7 @@ jobs:
         env:
           TEST_URLS_FILE: data/compare-view-urls-run.txt
           COMPARE_RUN: ${{ github.event.inputs.run_name != '' && github.event.inputs.run_name || '' }}
+          # Spaces in COMPARE_RUN are replaced in the spec via the runFolder variable
 
       - name: Publish to GitHub Pages
         run: |

@@ -764,7 +764,7 @@ function renderCompareView() {
       <div class="overlay-grid">
         \${run.images.map(({ sku, url }) => \`
           <div class="overlay-card" id="card-\${sku}" onclick="toggleFlag(event, '\${sku}', \${JSON.stringify(url)})">
-            <img src="compare-view-screenshots/\${run.folder}/\${sku}.png" alt="">
+            <img src="compare-view-screenshots/\${encodeURIComponent(run.folder)}/\${sku}.png" alt="">
             <div class="card-footer">
               <div class="card-sku">\${url ? \`<a href="\${url}" target="_blank" onclick="event.stopPropagation()">\${sku}</a>\` : sku}</div>
               <input class="flag-checkbox" type="checkbox" id="chk-\${sku}" onclick="event.stopPropagation(); toggleFlag(event, '\${sku}', \${JSON.stringify(url)}, true)">
