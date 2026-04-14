@@ -1030,32 +1030,32 @@ function renderSingleDetail(entry) {
         </li>\`;
       }).join('')}</ul>\`;
 
+  const ob  = entry.onboarding;
   const kb  = entry.kidsOnboarding;
   const fwb = entry.footwearOnboarding;
   let obHtml = null;
-  if (flow === 'apparel' || flow === 'noVisor') {
-    obHtml = ob ? \`<ul style="list-style:none;padding:0;margin:0">
-      <li style="font-size:12px;padding:2px 0"><span style="color:#8b949e">Gender</span> <span style="color:#c9d1d9">\${ob.gender}</span></li>
-      <li style="font-size:12px;padding:2px 0"><span style="color:#8b949e">Age</span> <span style="color:#c9d1d9">\${ob.age} yr</span></li>
-      <li style="font-size:12px;padding:2px 0"><span style="color:#8b949e">Height</span> <span style="color:#c9d1d9">\${ob.height} cm</span></li>
-      <li style="font-size:12px;padding:2px 0"><span style="color:#8b949e">Weight</span> <span style="color:#c9d1d9">\${ob.weight} kg</span></li>
-    </ul>\` : null;
-  } else if (flow === 'apparel' && entry.giftOnboarding) {
-    // Show both adult onboarding body AND gift body for apparel
+  if (flow === 'apparel') {
+    // Show adult onboarding body + gift recipient body
     const gb = entry.giftOnboarding;
     const adultRows = ob ? \`
       <li style="font-size:12px;padding:2px 0"><span style="color:#8b949e">Gender</span> <span style="color:#c9d1d9">\${ob.gender}</span></li>
       <li style="font-size:12px;padding:2px 0"><span style="color:#8b949e">Age</span> <span style="color:#c9d1d9">\${ob.age} yr</span></li>
       <li style="font-size:12px;padding:2px 0"><span style="color:#8b949e">Height</span> <span style="color:#c9d1d9">\${ob.height} cm</span></li>
       <li style="font-size:12px;padding:2px 0"><span style="color:#8b949e">Weight</span> <span style="color:#c9d1d9">\${ob.weight} kg</span></li>\` : '';
-    obHtml = \`<ul style="list-style:none;padding:0;margin:0">
-      \${adultRows}
+    const giftRows = gb ? \`
       <li style="font-size:11px;padding:4px 0 2px;color:#484f58;text-transform:uppercase;letter-spacing:0.5px">Gift recipient</li>
       <li style="font-size:12px;padding:2px 0"><span style="color:#8b949e">Gender</span> <span style="color:#c9d1d9">\${gb.gender}</span></li>
       <li style="font-size:12px;padding:2px 0"><span style="color:#8b949e">Age</span> <span style="color:#c9d1d9">\${gb.age}</span></li>
       <li style="font-size:12px;padding:2px 0"><span style="color:#8b949e">Height</span> <span style="color:#c9d1d9">\${gb.height} cm</span></li>
-      <li style="font-size:12px;padding:2px 0"><span style="color:#8b949e">Body type</span> <span style="color:#c9d1d9">\${gb.bodyType}</span></li>
-    </ul>\`;
+      <li style="font-size:12px;padding:2px 0"><span style="color:#8b949e">Body type</span> <span style="color:#c9d1d9">\${gb.bodyType}</span></li>\` : '';
+    obHtml = (adultRows || giftRows) ? \`<ul style="list-style:none;padding:0;margin:0">\${adultRows}\${giftRows}</ul>\` : null;
+  } else if (flow === 'noVisor') {
+    obHtml = ob ? \`<ul style="list-style:none;padding:0;margin:0">
+      <li style="font-size:12px;padding:2px 0"><span style="color:#8b949e">Gender</span> <span style="color:#c9d1d9">\${ob.gender}</span></li>
+      <li style="font-size:12px;padding:2px 0"><span style="color:#8b949e">Age</span> <span style="color:#c9d1d9">\${ob.age} yr</span></li>
+      <li style="font-size:12px;padding:2px 0"><span style="color:#8b949e">Height</span> <span style="color:#c9d1d9">\${ob.height} cm</span></li>
+      <li style="font-size:12px;padding:2px 0"><span style="color:#8b949e">Weight</span> <span style="color:#c9d1d9">\${ob.weight} kg</span></li>
+    </ul>\` : null;
   } else if (flow === 'footwear') {
     obHtml = fwb ? \`<ul style="list-style:none;padding:0;margin:0">
       <li style="font-size:12px;padding:2px 0"><span style="color:#8b949e">Gender</span> <span style="color:#c9d1d9">\${fwb.gender}</span></li>
