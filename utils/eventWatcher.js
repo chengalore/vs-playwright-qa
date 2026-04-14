@@ -57,6 +57,13 @@ export function startVirtusizeEventWatcher(page) {
       (phases[phase]?.events ?? []).map((e) => `${e.name}::${e.source}`),
     getPhaseCounts: (phase) => phases[phase]?.counts ?? {},
 
+    // All events across every phase (survives reset())
+    // Returns [{event: "name::source", phase: "onboarding"}, ...]
+    getAllEvents: () =>
+      Object.entries(phases).flatMap(([phase, p]) =>
+        p.events.map((e) => ({ event: `${e.name}::${e.source}`, phase }))
+      ),
+
     // no-op — summary removed
     logPhaseSummary() {},
 

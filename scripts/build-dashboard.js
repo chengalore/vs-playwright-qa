@@ -461,6 +461,34 @@ function generateDashboard(history, compareRuns, singleUrlHistory) {
         <input id="single-url-input" type="url" placeholder="https://example.com/product"
           style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:6px 10px;font-size:13px">
       </div>
+      <details style="margin-bottom:12px">
+        <summary style="font-size:12px;color:#8b949e;cursor:pointer;user-select:none">Onboarding body (apparel &amp; noVisor only)</summary>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-top:8px">
+          <div>
+            <label style="font-size:11px;color:#8b949e;display:block;margin-bottom:3px">Gender</label>
+            <select id="single-ob-gender"
+              style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:5px 8px;font-size:12px;cursor:pointer">
+              <option value="0">Female (0)</option>
+              <option value="1">Male (1)</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:11px;color:#8b949e;display:block;margin-bottom:3px">Age (years)</label>
+            <input id="single-ob-age" type="number" value="35" min="10" max="99"
+              style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:5px 8px;font-size:12px">
+          </div>
+          <div>
+            <label style="font-size:11px;color:#8b949e;display:block;margin-bottom:3px">Height (cm)</label>
+            <input id="single-ob-height" type="number" value="161" min="100" max="220"
+              style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:5px 8px;font-size:12px">
+          </div>
+          <div>
+            <label style="font-size:11px;color:#8b949e;display:block;margin-bottom:3px">Weight (kg)</label>
+            <input id="single-ob-weight" type="number" value="54" min="30" max="200"
+              style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:5px 8px;font-size:12px">
+          </div>
+        </div>
+      </details>
       <div style="display:flex;align-items:center;gap:12px">
         <button onclick="triggerSingleRun()"
           style="padding:7px 18px;background:#238636;color:#fff;border:none;border-radius:6px;font-size:13px;cursor:pointer;font-weight:500">
@@ -743,78 +771,135 @@ function exportSingleFlagged() {
 
 const CHECKLISTS = {
   apparel: [
-    { label: 'Widget present on page', event: 'user-saw-widget-button' },
-    { label: 'Widget opens', event: 'user-opened-widget' },
-    { label: 'Product seen', event: 'user-saw-product' },
-    { label: 'Onboarding complete', event: 'user-completed-onboarding' },
-    { label: 'Size recommendation shown', event: 'user-got-size-recommendation' },
-    { label: 'Try-it-on panel opened', event: 'user-opened-panel-tryiton' },
-    { label: 'Size selected', event: 'user-selected-size' },
+    // Widget
+    { label: 'Widget present on page',        event: 'user-saw-widget-button' },
+    { label: 'Widget opens',                  event: 'user-opened-widget' },
+    { label: 'Product seen',                  event: 'user-saw-product' },
+    // Onboarding
+    { label: 'Onboarding complete',           event: 'user-completed-onboarding' },
+    { label: 'Silhouette created',            event: 'user-created-silhouette' },
+    // Recommendation
+    { label: 'Recommendation API called',     event: 'user-got-size-recommendation' },
+    { label: 'Try-it-on panel opened',        event: 'user-opened-panel-tryiton' },
+    { label: 'Size selected',                 event: 'user-selected-size' },
+    // Refresh
+    { label: 'Refresh: widget re-mounts',     event: 'inpage-mounted::integration' },
+    { label: 'Refresh: recommendation re-fires', event: 'user-got-size-recommendation::integration' },
+    // Gift
+    { label: 'Gift flow: recommendation',     event: 'user-opened-panel-rec::gift' },
   ],
   footwear: [
-    { label: 'Widget present on page', event: 'user-saw-widget-button' },
-    { label: 'Widget opens', event: 'user-opened-widget' },
-    { label: 'Product seen', event: 'user-saw-product' },
-    { label: 'Footwear silhouette created', event: 'user-created-footwear-silhouette' },
-    { label: 'Recommendation panel opened', event: 'user-opened-panel-rec' },
-    { label: 'Size selected', event: 'user-selected-size' },
+    { label: 'Widget present on page',        event: 'user-saw-widget-button' },
+    { label: 'Widget opens',                  event: 'user-opened-widget' },
+    { label: 'Product seen',                  event: 'user-saw-product' },
+    { label: 'Footwear silhouette created',   event: 'user-created-footwear-silhouette' },
+    { label: 'Recommendation panel opened',   event: 'user-opened-panel-rec' },
+    { label: 'Size selected',                 event: 'user-selected-size' },
+    { label: 'Refresh: widget re-mounts',     event: 'inpage-mounted' },
+    { label: 'Refresh: recommendation re-fires', event: 'user-got-size-recommendation' },
   ],
   bag: [
-    { label: 'Widget present on page', event: 'user-saw-widget-button' },
-    { label: 'Widget opens', event: 'user-opened-widget' },
-    { label: 'Product seen', event: 'user-saw-product' },
+    { label: 'Widget present on page',        event: 'user-saw-widget-button' },
+    { label: 'Widget opens',                  event: 'user-opened-widget' },
+    { label: 'Product seen',                  event: 'user-saw-product' },
   ],
   kids: [
-    { label: 'Kids widget opens', event: 'user-opened-widget' },
-    { label: 'Onboarding screen shown', event: 'user-saw-onboarding-screen' },
-    { label: 'Gender selected', event: 'user-selected-gender' },
-    { label: 'Age selected', event: 'user-clicked-age' },
-    { label: 'Measurements updated', event: 'user-updated-body-measurements' },
-    { label: 'Onboarding complete', event: 'user-completed-onboarding' },
-    { label: 'Size recommendation shown', event: 'user-selected-size-kids-rec' },
+    { label: 'Kids widget opens',             event: 'user-opened-widget' },
+    { label: 'Onboarding screen shown',       event: 'user-saw-onboarding-screen' },
+    { label: 'Gender selected',               event: 'user-selected-gender' },
+    { label: 'Age selected',                  event: 'user-clicked-age' },
+    { label: 'Measurements updated',          event: 'user-updated-body-measurements' },
+    { label: 'Onboarding complete',           event: 'user-completed-onboarding' },
+    { label: 'Recommendation shown',          event: 'user-selected-size-kids-rec' },
+    { label: 'Refresh: recommendation re-fires', event: 'user-selected-size-kids-rec::kids' },
   ],
   noVisor: [
-    { label: 'Widget present on page', event: 'user-saw-widget-button' },
-    { label: 'Widget opens', event: 'user-opened-widget' },
-    { label: 'Product seen', event: 'user-saw-product' },
-    { label: 'Silhouette created', event: 'user-created-silhouette' },
+    { label: 'Widget present on page',        event: 'user-saw-widget-button' },
+    { label: 'Widget opens',                  event: 'user-opened-widget' },
+    { label: 'Product seen',                  event: 'user-saw-product' },
+    { label: 'Silhouette created',            event: 'user-created-silhouette' },
+    { label: 'Refresh: widget re-mounts',     event: 'inpage-mounted' },
   ],
 };
 
 function renderSingleDetail(entry) {
-  const events = entry.events || [];
-  // Normalise events: strip ::source suffix for matching
-  const firedNames = new Set(events.map(e => e.split('::')[0]));
+  const raw = entry.events || [];
   const flow = entry.flow;
   const checklist = CHECKLISTS[flow] || [];
 
-  const eventsHtml = events.length === 0
+  // Normalise: old entries are string[], new entries are {event, phase}[]
+  const normEvents = raw.map(e =>
+    typeof e === 'string' ? { event: e, phase: null } : e
+  );
+
+  // Checklist matching — name-only or exact name::source
+  const firedFull      = new Set(normEvents.map(e => e.event));
+  const firedNamesOnly = new Set(normEvents.map(e => e.event.split('::')[0]));
+  const eventMatches   = (pattern) =>
+    pattern.includes('::') ? firedFull.has(pattern) : firedNamesOnly.has(pattern);
+
+  // Group by phase, count within-phase duplicates
+  // byPhase: Map<phase, Map<event, count>>
+  const byPhase = new Map();
+  for (const { event, phase } of normEvents) {
+    const key = phase || '—';
+    if (!byPhase.has(key)) byPhase.set(key, new Map());
+    const m = byPhase.get(key);
+    m.set(event, (m.get(event) || 0) + 1);
+  }
+
+  const totalUnique = new Set(normEvents.map(e => e.event)).size;
+  const totalFired  = normEvents.length;
+
+  const eventsHtml = byPhase.size === 0
     ? '<span style="color:#8b949e;font-size:13px">No events recorded</span>'
-    : \`<ul style="list-style:none;padding:0;margin:0">\${events.map(e => {
-        const [name, src] = e.split('::');
-        return \`<li style="font-size:12px;padding:2px 0;color:#c9d1d9">
-          <span style="color:#58a6ff">\${name}</span>\${src ? \`<span style="color:#484f58"> :: \${src}</span>\` : ''}
-        </li>\`;
-      }).join('')}</ul>\`;
+    : [...byPhase.entries()].map(([phase, evMap]) => \`
+        <div style="margin-bottom:8px">
+          <div style="font-size:11px;color:#484f58;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px">\${phase}</div>
+          <ul style="list-style:none;padding:0;margin:0">
+            \${[...evMap.entries()].map(([e, count]) => {
+              const [name, src] = e.split('::');
+              return \`<li style="font-size:12px;padding:1px 0;color:#c9d1d9;display:flex;align-items:baseline;gap:4px">
+                <span style="color:#58a6ff">\${name}</span>
+                \${src ? \`<span style="color:#484f58">:: \${src}</span>\` : ''}
+                \${count > 1 ? \`<span style="color:#f85149;font-size:11px;font-weight:600">×\${count}</span>\` : ''}
+              </li>\`;
+            }).join('')}
+          </ul>
+        </div>\`).join('');
 
   const checklistHtml = checklist.length === 0
     ? '<span style="color:#8b949e;font-size:13px">No checklist for this flow</span>'
     : \`<ul style="list-style:none;padding:0;margin:0">\${checklist.map(item => {
-        const passed = firedNames.has(item.event);
+        const passed = eventMatches(item.event);
         return \`<li style="font-size:12px;padding:3px 0;display:flex;align-items:center;gap:6px">
           <span style="color:\${passed ? '#3fb950' : '#484f58'}">\${passed ? '✅' : '⬜'}</span>
           <span style="color:\${passed ? '#c9d1d9' : '#484f58'}">\${item.label}</span>
         </li>\`;
       }).join('')}</ul>\`;
 
-  return \`<div class="detail-inner" style="grid-template-columns:1fr 1fr">
+  const ob = entry.onboarding;
+  const obHtml = ob
+    ? \`<ul style="list-style:none;padding:0;margin:0">
+        <li style="font-size:12px;padding:2px 0"><span style="color:#8b949e">Gender</span> <span style="color:#c9d1d9">\${ob.gender}</span></li>
+        <li style="font-size:12px;padding:2px 0"><span style="color:#8b949e">Age</span> <span style="color:#c9d1d9">\${ob.age} yr</span></li>
+        <li style="font-size:12px;padding:2px 0"><span style="color:#8b949e">Height</span> <span style="color:#c9d1d9">\${ob.height} cm</span></li>
+        <li style="font-size:12px;padding:2px 0"><span style="color:#8b949e">Weight</span> <span style="color:#c9d1d9">\${ob.weight} kg</span></li>
+      </ul>\`
+    : '<span style="color:#484f58;font-size:13px">—</span>';
+
+  return \`<div class="detail-inner" style="grid-template-columns:1fr 1fr 160px">
     <div class="detail-section">
       <h4>Test checklist\${flow ? \` — \${flow}\` : ''}</h4>
       \${checklistHtml}
     </div>
     <div class="detail-section">
-      <h4>Events fired (\${events.length})</h4>
+      <h4>Events fired (\${totalUnique} unique\${totalFired !== totalUnique ? ', ' + totalFired + ' total' : ''})</h4>
       \${eventsHtml}
+    </div>
+    <div class="detail-section">
+      <h4>Onboarding body</h4>
+      \${obHtml}
     </div>
   </div>\`;
 }
@@ -987,10 +1072,14 @@ async function triggerCompareRun() {
 
 // ── Single URL trigger ────────────────────────────────────────────────────────
 async function triggerSingleRun() {
-  const pat = document.getElementById('single-pat').value.trim();
+  const pat     = document.getElementById('single-pat').value.trim();
   const testUrl = document.getElementById('single-url-input').value.trim();
-  const phase = document.getElementById('single-phase').value;
-  const status = document.getElementById('single-trigger-status');
+  const phase   = document.getElementById('single-phase').value;
+  const status  = document.getElementById('single-trigger-status');
+  const gender  = document.getElementById('single-ob-gender').value;
+  const age     = document.getElementById('single-ob-age').value;
+  const height  = document.getElementById('single-ob-height').value;
+  const weight  = document.getElementById('single-ob-weight').value;
 
   if (!pat) { status.textContent = '⚠️ Enter a GitHub PAT first'; status.style.color = '#d29922'; return; }
   if (!testUrl) { status.textContent = '⚠️ Enter a product URL'; status.style.color = '#d29922'; return; }
@@ -1000,7 +1089,13 @@ async function triggerSingleRun() {
   const res = await fetch('https://api.github.com/repos/chengalore/vs-playwright-qa/actions/workflows/single-url-test.yml/dispatches', {
     method: 'POST',
     headers: { Authorization: 'Bearer ' + pat, Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' },
-    body: JSON.stringify({ ref: 'main', inputs: { url: testUrl, phase } }),
+    body: JSON.stringify({ ref: 'main', inputs: {
+      url: testUrl, phase,
+      onboarding_gender: gender,
+      onboarding_age: age,
+      onboarding_height: height,
+      onboarding_weight: weight,
+    }}),
   });
 
   if (res.status === 204) {

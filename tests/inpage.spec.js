@@ -39,6 +39,14 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
   const startTime = Date.now();
   const phase = process.env.TEST_PHASE || "full";
 
+  // Onboarding body params — configurable via env vars (apparel / noVisor flows only)
+  const onboardingOpts = {
+    genderIndex: parseInt(process.env.ONBOARDING_GENDER ?? "0", 10), // 0=female, 1=male
+    age:    process.env.ONBOARDING_AGE    || "35",
+    height: process.env.ONBOARDING_HEIGHT || "161",
+    weight: process.env.ONBOARDING_WEIGHT || "54",
+  };
+
   const url = await resolveTestUrl(
     "https://www.underarmour.co.jp/f/dsg-1072366",
   );
@@ -302,7 +310,7 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
         flow: "bag",
         status: "passed",
         browser: testInfo.project.name,
-        events: eventWatcher.getEvents(),
+        events: eventWatcher.getAllEvents(),
         durationMs: Date.now() - startTime,
       });
       return;
@@ -409,7 +417,7 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
     if (phase === "events") {
       const missing = await verifyEvents(
         page,
-        () => eventWatcher.getEvents(),
+        () => eventWatcher.getAllEvents(),
         expectedEvents.strict.baseline,
       );
       if (missing.length > 0) {
@@ -431,12 +439,7 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
 
     let isNewUser;
     if (flow === "apparel") {
-      isNewUser = await runApparelFlow(
-        page,
-        bodyAPI,
-        eventWatcher,
-        recommendationAPI,
-      );
+      isNewUser = await runApparelFlow(page, bodyAPI, eventWatcher, recommendationAPI, onboardingOpts);
     }
     if (flow === "footwear") {
       isNewUser = await runFootwearFlow(page);
@@ -445,7 +448,7 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
       isNewUser = await runKidsFlow(page, pdc);
     }
     if (flow === "noVisor") {
-      isNewUser = await runNoVisorFlow(page, bodyAPI);
+      isNewUser = await runNoVisorFlow(page, bodyAPI, onboardingOpts);
     }
 
     // onboarding phase: onboarding complete — skip full validation
@@ -524,7 +527,7 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
       await selectSizeIfMultiple(page, eventWatcher);
       await page.waitForTimeout(4000);
       await Promise.race([
-        addItemToWardrobe(page, eventWatcher.getEvents()),
+        addItemToWardrobe(page, eventWatcher.getAllEvents()),
         page.waitForTimeout(8000),
       ]);
     }
@@ -598,7 +601,7 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
       userType: isNewUser ? "NEW" : "RETURNING",
       status: testInfo.status === "timedOut" ? "passed" : testInfo.status,
       browser: testInfo.project.name,
-      events: eventWatcher.getEvents(),
+      events: eventWatcher.getAllEvents(),
       durationMs: Date.now() - startTime,
       ...(inpageMountCount > 1 && { doubleMount: inpageMountCount }),
     });
@@ -610,7 +613,7 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
       browser: testInfo.project.name,
       error: error.message,
       missingEvents: error.missingEvents || [],
-      events: eventWatcher.getEvents(),
+      events: eventWatcher.getAllEvents(),
       durationMs: Date.now() - startTime,
     });
 

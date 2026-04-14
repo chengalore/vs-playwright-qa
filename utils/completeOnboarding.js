@@ -1,4 +1,20 @@
-export async function completeOnboarding(page) {
+/**
+ * Complete the Virtusize apparel onboarding flow.
+ *
+ * @param {import('@playwright/test').Page} page
+ * @param {object} [opts]
+ * @param {number} [opts.genderIndex=0]  0 = female, 1 = male
+ * @param {string} [opts.age="35"]
+ * @param {string} [opts.height="161"]
+ * @param {string} [opts.weight="54"]
+ */
+export async function completeOnboarding(page, opts = {}) {
+  const {
+    genderIndex = 0,
+    age    = "35",
+    height = "161",
+    weight = "54",
+  } = opts;
 
   // Wait until the shadow root is available
   await page.waitForFunction(
@@ -33,12 +49,23 @@ export async function completeOnboarding(page) {
     await handle.dispose();
   };
 
+  // Gender selection — click the radio button at genderIndex (0=female, 1=male)
+  // Safe: silently skips if no radio buttons are present (returning user, no onboarding screen)
+  await shadowRoot.evaluate((root, idx) => {
+    const radios = root.querySelectorAll('input[type="radio"]');
+    if (radios[idx]) {
+      radios[idx].click();
+      radios[idx].dispatchEvent(new Event("change", { bubbles: true }));
+    }
+  }, genderIndex);
+  await page.waitForTimeout(500);
+
   // Basic body data
-  await fillInput("input-age", "35");
+  await fillInput("input-age", String(age));
   await page.waitForTimeout(2000);
-  await fillInput("input-height", "161");
+  await fillInput("input-height", String(height));
   await page.waitForTimeout(2000);
-  await fillInput("input-weight", "54");
+  await fillInput("input-weight", String(weight));
   await page.waitForTimeout(2000);
 
   // Accept privacy policy if required
