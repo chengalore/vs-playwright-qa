@@ -247,6 +247,8 @@ jobs:
             githubRunUrl: process.env.GITHUB_RUN_URL,
             store: first.store || null,
             productType: first.productType || null,
+            flow: first.flow || null,
+            events: first.events || [],
             browsers: browserResults.map(r => ({ browser: r.browser, status: r.status, error: r.error || null })),
           };
 

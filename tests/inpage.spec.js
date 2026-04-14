@@ -143,6 +143,8 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
 
   await blockMarketingScripts(page);
 
+  let flow = null;
+
   try {
     console.log("Navigating to:", url);
     await page.goto(url);
@@ -297,8 +299,10 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
         url,
         store: pdc.store,
         productType: pdc.productType,
+        flow: "bag",
         status: "passed",
         browser: testInfo.project.name,
+        events: eventWatcher.getEvents(),
         durationMs: Date.now() - startTime,
       });
       return;
@@ -375,7 +379,7 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
       { timeout: 30000 },
     );
 
-    const flow = detectFlow(pdc);
+    flow = detectFlow(pdc);
     console.log("Flow:", flow);
 
     if (flow === "kids") {
@@ -590,9 +594,11 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
       url,
       store: pdc.store,
       productType: pdc.productType,
+      flow,
       userType: isNewUser ? "NEW" : "RETURNING",
       status: testInfo.status === "timedOut" ? "passed" : testInfo.status,
       browser: testInfo.project.name,
+      events: eventWatcher.getEvents(),
       durationMs: Date.now() - startTime,
       ...(inpageMountCount > 1 && { doubleMount: inpageMountCount }),
     });
@@ -600,9 +606,11 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
     logResult({
       url,
       status: "failed",
+      flow,
       browser: testInfo.project.name,
       error: error.message,
       missingEvents: error.missingEvents || [],
+      events: eventWatcher.getEvents(),
       durationMs: Date.now() - startTime,
     });
 

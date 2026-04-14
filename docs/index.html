@@ -144,6 +144,11 @@
     }
     .phase-widget { background: #1f3a5f; color: #58a6ff; }
     .phase-api    { background: #2d1f5e; color: #a78bfa; }
+    .flow-apparel  { background: #1a3a2a; color: #3fb950; }
+    .flow-footwear { background: #1f3a5f; color: #58a6ff; }
+    .flow-bag      { background: #3a2a1a; color: #d29922; }
+    .flow-kids     { background: #3a1a2a; color: #f778ba; }
+    .flow-noVisor  { background: #21262d; color: #8b949e; }
     .count { font-weight: 600; text-align: right; }
     .count.passed { color: #3fb950; }
     .count.missing { color: #d29922; }
@@ -345,6 +350,43 @@
   <div class="panel" id="panel-single">
     <h1>Single URL Tests</h1>
     <p class="panel-subtitle">Per-URL tests run across chrome, firefox, and webkit</p>
+
+    <div style="background:#161b22;border:1px solid #21262d;border-radius:8px;padding:16px;margin-bottom:24px">
+      <div style="font-size:13px;font-weight:600;color:#c9d1d9;margin-bottom:12px">Run a new test</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+        <div>
+          <label style="font-size:12px;color:#8b949e;display:block;margin-bottom:4px">GitHub PAT (workflow scope) — saved in browser only</label>
+          <input id="single-pat" type="password" placeholder="ghp_xxxxxxxxxxxx"
+            style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:6px 10px;font-size:13px"
+            oninput="localStorage.setItem('gh_pat', this.value); document.getElementById('gh-pat').value = this.value">
+        </div>
+        <div>
+          <label style="font-size:12px;color:#8b949e;display:block;margin-bottom:4px">Phase</label>
+          <select id="single-phase"
+            style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:6px 10px;font-size:13px;cursor:pointer">
+            <option value="full">full — complete flow</option>
+            <option value="widget">widget — widget present &amp; opens</option>
+            <option value="api">api — PDC integration check</option>
+            <option value="onboarding">onboarding — onboarding flow only</option>
+            <option value="compare">compare — compare view screenshot</option>
+            <option value="events">events — events fired check</option>
+          </select>
+        </div>
+      </div>
+      <div style="margin-bottom:12px">
+        <label style="font-size:12px;color:#8b949e;display:block;margin-bottom:4px">Product page URL</label>
+        <input id="single-url-input" type="url" placeholder="https://example.com/product"
+          style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:6px 10px;font-size:13px">
+      </div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <button onclick="triggerSingleRun()"
+          style="padding:7px 18px;background:#238636;color:#fff;border:none;border-radius:6px;font-size:13px;cursor:pointer;font-weight:500">
+          Run on GitHub Actions ▶
+        </button>
+        <span id="single-trigger-status" style="font-size:12px;color:#8b949e"></span>
+      </div>
+    </div>
+
     <div class="flag-bar">
       <span id="single-flag-count">0 items flagged</span>
       <button id="single-export-btn" onclick="exportSingleFlagged()" disabled>Export flagged URLs</button>
@@ -352,10 +394,12 @@
     <table>
       <thead>
         <tr>
+          <th style="width:20px"></th>
           <th style="width:32px"></th>
           <th>Date &amp; Time</th>
           <th>URL</th>
           <th>Store</th>
+          <th>Flow</th>
           <th>Phase</th>
           <th>Chrome</th>
           <th>Firefox</th>
@@ -378,7 +422,7 @@
         <label style="font-size:12px;color:#8b949e;display:block;margin-bottom:4px">GitHub PAT (workflow scope) — saved in browser only</label>
         <input id="gh-pat" type="password" placeholder="ghp_xxxxxxxxxxxx"
           style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:6px 10px;font-size:13px"
-          oninput="localStorage.setItem('gh_pat', this.value)">
+          oninput="localStorage.setItem('gh_pat', this.value); document.getElementById('single-pat').value = this.value">
       </div>
       <div style="margin-bottom:10px">
         <label style="font-size:12px;color:#8b949e;display:block;margin-bottom:4px">Run label (optional)</label>
@@ -614,17 +658,97 @@ function exportSingleFlagged() {
   downloadTxt(lines.join('\n'), 'flagged-single-url.txt');
 }
 
+const CHECKLISTS = {
+  apparel: [
+    { label: 'Widget present on page', event: 'user-saw-widget-button' },
+    { label: 'Widget opens', event: 'user-opened-widget' },
+    { label: 'Product seen', event: 'user-saw-product' },
+    { label: 'Onboarding complete', event: 'user-completed-onboarding' },
+    { label: 'Size recommendation shown', event: 'user-got-size-recommendation' },
+    { label: 'Try-it-on panel opened', event: 'user-opened-panel-tryiton' },
+    { label: 'Size selected', event: 'user-selected-size' },
+  ],
+  footwear: [
+    { label: 'Widget present on page', event: 'user-saw-widget-button' },
+    { label: 'Widget opens', event: 'user-opened-widget' },
+    { label: 'Product seen', event: 'user-saw-product' },
+    { label: 'Footwear silhouette created', event: 'user-created-footwear-silhouette' },
+    { label: 'Recommendation panel opened', event: 'user-opened-panel-rec' },
+    { label: 'Size selected', event: 'user-selected-size' },
+  ],
+  bag: [
+    { label: 'Widget present on page', event: 'user-saw-widget-button' },
+    { label: 'Widget opens', event: 'user-opened-widget' },
+    { label: 'Product seen', event: 'user-saw-product' },
+  ],
+  kids: [
+    { label: 'Kids widget opens', event: 'user-opened-widget' },
+    { label: 'Onboarding screen shown', event: 'user-saw-onboarding-screen' },
+    { label: 'Gender selected', event: 'user-selected-gender' },
+    { label: 'Age selected', event: 'user-clicked-age' },
+    { label: 'Measurements updated', event: 'user-updated-body-measurements' },
+    { label: 'Onboarding complete', event: 'user-completed-onboarding' },
+    { label: 'Size recommendation shown', event: 'user-selected-size-kids-rec' },
+  ],
+  noVisor: [
+    { label: 'Widget present on page', event: 'user-saw-widget-button' },
+    { label: 'Widget opens', event: 'user-opened-widget' },
+    { label: 'Product seen', event: 'user-saw-product' },
+    { label: 'Silhouette created', event: 'user-created-silhouette' },
+  ],
+};
+
+function renderSingleDetail(entry) {
+  const events = entry.events || [];
+  // Normalise events: strip ::source suffix for matching
+  const firedNames = new Set(events.map(e => e.split('::')[0]));
+  const flow = entry.flow;
+  const checklist = CHECKLISTS[flow] || [];
+
+  const eventsHtml = events.length === 0
+    ? '<span style="color:#8b949e;font-size:13px">No events recorded</span>'
+    : `<ul style="list-style:none;padding:0;margin:0">${events.map(e => {
+        const [name, src] = e.split('::');
+        return `<li style="font-size:12px;padding:2px 0;color:#c9d1d9">
+          <span style="color:#58a6ff">${name}</span>${src ? `<span style="color:#484f58"> :: ${src}</span>` : ''}
+        </li>`;
+      }).join('')}</ul>`;
+
+  const checklistHtml = checklist.length === 0
+    ? '<span style="color:#8b949e;font-size:13px">No checklist for this flow</span>'
+    : `<ul style="list-style:none;padding:0;margin:0">${checklist.map(item => {
+        const passed = firedNames.has(item.event);
+        return `<li style="font-size:12px;padding:3px 0;display:flex;align-items:center;gap:6px">
+          <span style="color:${passed ? '#3fb950' : '#484f58'}">${passed ? '✅' : '⬜'}</span>
+          <span style="color:${passed ? '#c9d1d9' : '#484f58'}">${item.label}</span>
+        </li>`;
+      }).join('')}</ul>`;
+
+  return `<div class="detail-inner" style="grid-template-columns:1fr 1fr">
+    <div class="detail-section">
+      <h4>Test checklist${flow ? ` — ${flow}` : ''}</h4>
+      ${checklistHtml}
+    </div>
+    <div class="detail-section">
+      <h4>Events fired (${events.length})</h4>
+      ${eventsHtml}
+    </div>
+  </div>`;
+}
+
 function renderSingleUrl() {
   const tbody = document.getElementById('single-url-body');
   if (SINGLE_URL_HISTORY.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="9" class="empty-state">No single URL tests yet.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="11" class="empty-state">No single URL tests yet.</td></tr>';
     return;
   }
 
   const iconFor = s => s === 'passed' ? '✅' : s === 'skipped' ? '⏭' : s === 'no_result' ? '—' : '❌';
   const shortUrl = url => { try { const u = new URL(url); return u.hostname.replace(/^www\./, '') + u.pathname.slice(0, 30) + (u.pathname.length > 30 ? '…' : ''); } catch { return url; } };
 
-  tbody.innerHTML = SINGLE_URL_HISTORY.map((entry, idx) => {
+  tbody.innerHTML = '';
+
+  SINGLE_URL_HISTORY.forEach((entry, idx) => {
     const byBrowser = Object.fromEntries((entry.browsers || []).map(b => [b.browser, b]));
     const chrome  = byBrowser['chrome']  || {};
     const firefox = byBrowser['firefox'] || {};
@@ -636,22 +760,50 @@ function renderSingleUrl() {
       return `<td style="text-align:center"${tip}>${icon}</td>`;
     };
 
-    return `<tr id="single-row-${idx}" style="cursor:pointer" onclick="toggleSingleFlag(${idx}, ${JSON.stringify(entry.url || '')})">
+    const flow = entry.flow;
+    const flowBadge = flow
+      ? `<span class="phase-badge flow-${flow}">${flow}</span>`
+      : '<span style="color:#484f58">—</span>';
+
+    const row = document.createElement('tr');
+    row.id = 'single-row-' + idx;
+    row.className = 'run-row';
+    row.innerHTML = `
+      <td><span class="chevron" id="single-chev-${idx}">›</span></td>
       <td style="text-align:center" onclick="event.stopPropagation(); toggleSingleFlag(${idx}, ${JSON.stringify(entry.url || '')})">
         <input type="checkbox" id="single-chk-${idx}" style="accent-color:#f85149;cursor:pointer" onclick="event.stopPropagation(); toggleSingleFlag(${idx}, ${JSON.stringify(entry.url || '')})">
       </td>
       <td class="ts">${fmt(entry.timestamp)}</td>
-      <td style="font-size:12px;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
+      <td style="font-size:12px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
         <a href="${entry.url}" target="_blank" rel="noopener" title="${entry.url}" onclick="event.stopPropagation()">${shortUrl(entry.url)}</a>
       </td>
       <td style="font-size:13px">${entry.store || '—'}</td>
+      <td>${flowBadge}</td>
       <td><span class="phase-badge phase-${entry.phase || 'full'}">${entry.phase || 'full'}</span></td>
       ${statusCell(chrome)}
       ${statusCell(firefox)}
       ${statusCell(webkit)}
       <td class="run-link"><a href="${entry.githubRunUrl || '#'}" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></td>
-    </tr>`;
-  }).join('');
+    `;
+
+    const detailRow = document.createElement('tr');
+    detailRow.className = 'detail-row';
+    const detailCell = document.createElement('td');
+    detailCell.className = 'detail-cell';
+    detailCell.colSpan = 11;
+    detailCell.innerHTML = renderSingleDetail(entry);
+    detailRow.appendChild(detailCell);
+
+    row.addEventListener('click', (e) => {
+      if (e.target.tagName === 'A' || e.target.tagName === 'INPUT') return;
+      const isOpen = detailRow.classList.contains('open');
+      detailRow.classList.toggle('open', !isOpen);
+      document.getElementById(`single-chev-${idx}`).classList.toggle('open', !isOpen);
+    });
+
+    tbody.appendChild(row);
+    tbody.appendChild(detailRow);
+  });
 }
 
 // ── Compare view gallery ──────────────────────────────────────────────────────
@@ -750,13 +902,45 @@ async function triggerCompareRun() {
   }
 }
 
+// ── Single URL trigger ────────────────────────────────────────────────────────
+async function triggerSingleRun() {
+  const pat = document.getElementById('single-pat').value.trim();
+  const testUrl = document.getElementById('single-url-input').value.trim();
+  const phase = document.getElementById('single-phase').value;
+  const status = document.getElementById('single-trigger-status');
+
+  if (!pat) { status.textContent = '⚠️ Enter a GitHub PAT first'; status.style.color = '#d29922'; return; }
+  if (!testUrl) { status.textContent = '⚠️ Enter a product URL'; status.style.color = '#d29922'; return; }
+
+  status.textContent = 'Triggering…'; status.style.color = '#8b949e';
+
+  const res = await fetch('https://api.github.com/repos/chengalore/vs-playwright-qa/actions/workflows/single-url-test.yml/dispatches', {
+    method: 'POST',
+    headers: { Authorization: 'Bearer ' + pat, Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' },
+    body: JSON.stringify({ ref: 'main', inputs: { url: testUrl, phase } }),
+  });
+
+  if (res.status === 204) {
+    status.textContent = '✅ Workflow triggered — results will appear here in ~5 min';
+    status.style.color = '#3fb950';
+    document.getElementById('single-url-input').value = '';
+  } else {
+    const body = await res.json().catch(() => ({}));
+    status.textContent = '❌ ' + (body.message || 'Failed (' + res.status + ')');
+    status.style.color = '#f85149';
+  }
+}
+
 // ── Init ──────────────────────────────────────────────────────────────────────
 renderSummary(HISTORY[0] || null);
 renderTable();
 renderSingleUrl();
-// Restore saved PAT
+// Restore saved PAT into both PAT fields
 const savedPat = localStorage.getItem('gh_pat');
-if (savedPat) document.getElementById('gh-pat').value = savedPat;
+if (savedPat) {
+  document.getElementById('gh-pat').value = savedPat;
+  document.getElementById('single-pat').value = savedPat;
+}
 </script>
 </body>
 </html>
