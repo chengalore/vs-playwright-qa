@@ -1,5 +1,226 @@
 [
   {
+    "timestamp": "2026-04-14T10:04:21.902Z",
+    "url": "https://www.gap.co.jp/gap/canvas-chore-jacket/871086016.html?dwvar_871086016_color=871086016&cid=11900",
+    "phase": "full",
+    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/24392963267",
+    "store": "gap_japan",
+    "productType": "jacket",
+    "flow": "apparel",
+    "onboarding": {
+      "gender": "female",
+      "age": "35",
+      "height": "161",
+      "weight": "54"
+    },
+    "giftOnboarding": {
+      "gender": "female",
+      "age": "30-39",
+      "height": "160-164",
+      "bodyType": "52 - 63 kg"
+    },
+    "footwearOnboarding": {
+      "gender": "female",
+      "brand": "Adidas",
+      "size": "25.5 cm"
+    },
+    "kidsOnboarding": {
+      "gender": "girl",
+      "age": 8,
+      "height": "120",
+      "weight": "25"
+    },
+    "events": [
+      {
+        "event": "user-saw-product::integration",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-saw-widget-button::integration",
+        "phase": "onboarding"
+      },
+      {
+        "event": "inpage-mounted::integration",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-opened-widget::inpage",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-saw-onboarding-screen::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-selected-gender::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-selected-age::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-selected-height::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-selected-weight::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-completed-onboarding::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-created-silhouette::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-got-size-recommendation::integration",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-opened-panel-tryiton::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-selected-size::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-opened-panel-details::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-opened-panel-compare::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-added-product::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-saw-product::integration",
+        "phase": "refresh"
+      },
+      {
+        "event": "user-saw-widget-button::integration",
+        "phase": "refresh"
+      },
+      {
+        "event": "inpage-mounted::integration",
+        "phase": "refresh"
+      },
+      {
+        "event": "user-opened-widget::inpage",
+        "phase": "refresh"
+      },
+      {
+        "event": "user-opened-panel-tryiton::fit-illustrator",
+        "phase": "refresh"
+      },
+      {
+        "event": "user-selected-size::fit-illustrator",
+        "phase": "refresh"
+      },
+      {
+        "event": "user-got-size-recommendation::integration",
+        "phase": "refresh"
+      },
+      {
+        "event": "user-selected-size::inpage",
+        "phase": "refresh"
+      },
+      {
+        "event": "user-opened-widget::gift",
+        "phase": "gift"
+      },
+      {
+        "event": "user-saw-onboarding-screen::gift",
+        "phase": "gift"
+      },
+      {
+        "event": "user-selected-gender::gift",
+        "phase": "gift"
+      },
+      {
+        "event": "user-clicked-age::gift",
+        "phase": "gift"
+      },
+      {
+        "event": "user-selected-age-30_39::gift",
+        "phase": "gift"
+      },
+      {
+        "event": "user-clicked-height::gift",
+        "phase": "gift"
+      },
+      {
+        "event": "user-selected-height-160_164::gift",
+        "phase": "gift"
+      },
+      {
+        "event": "user-clicked-bodyType::gift",
+        "phase": "gift"
+      },
+      {
+        "event": "user-selected-bodyType-1::gift",
+        "phase": "gift"
+      },
+      {
+        "event": "user-completed-onboarding::gift",
+        "phase": "gift"
+      },
+      {
+        "event": "user-opened-panel-rec::gift",
+        "phase": "gift"
+      },
+      {
+        "event": "user-saw-product::integration",
+        "phase": "gift-refresh"
+      },
+      {
+        "event": "user-saw-widget-button::integration",
+        "phase": "gift-refresh"
+      },
+      {
+        "event": "inpage-mounted::integration",
+        "phase": "gift-refresh"
+      },
+      {
+        "event": "user-got-size-recommendation::integration",
+        "phase": "gift-refresh"
+      },
+      {
+        "event": "user-selected-size::inpage",
+        "phase": "gift-refresh"
+      },
+      {
+        "event": "user-opened-widget::inpage",
+        "phase": "gift-refresh"
+      },
+      {
+        "event": "user-opened-panel-tryiton::fit-illustrator",
+        "phase": "gift-refresh"
+      },
+      {
+        "event": "user-opened-widget::gift",
+        "phase": "gift-refresh"
+      },
+      {
+        "event": "user-opened-panel-rec::gift",
+        "phase": "gift-refresh"
+      }
+    ],
+    "browsers": [
+      {
+        "browser": "chrome",
+        "status": "passed",
+        "error": null
+      }
+    ]
+  },
+  {
     "timestamp": "2026-04-14T10:00:31.706Z",
     "url": "https://www.gap.co.jp/gap/canvas-chore-jacket/871086016.html?dwvar_871086016_color=871086016&cid=11900",
     "phase": "full",
