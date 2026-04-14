@@ -1,5 +1,42 @@
 [
   {
+    "timestamp": "2026-04-14T06:29:53.923Z",
+    "url": "https://www.underarmour.co.jp/f/dsg-1094029",
+    "phase": "full",
+    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/24384416115",
+    "store": "under_armour",
+    "productType": "tShirt",
+    "flow": "apparel",
+    "events": [
+      "user-saw-product::integration",
+      "user-saw-widget-button::integration",
+      "inpage-mounted::integration",
+      "user-got-size-recommendation::integration",
+      "user-selected-size::inpage",
+      "user-opened-widget::inpage",
+      "user-opened-panel-tryiton::fit-illustrator",
+      "user-opened-widget::gift",
+      "user-opened-panel-rec::gift"
+    ],
+    "browsers": [
+      {
+        "browser": "chrome",
+        "status": "passed",
+        "error": null
+      },
+      {
+        "browser": "firefox",
+        "status": "passed",
+        "error": null
+      },
+      {
+        "browser": "webkit",
+        "status": "passed",
+        "error": null
+      }
+    ]
+  },
+  {
     "timestamp": "2026-04-14T05:43:17.347Z",
     "url": "https://yosoou-shop.com/collections/shop-all/products/%E3%82%AB%E3%83%A9%E3%83%BC%E3%82%B3%E3%83%B3%E3%83%93%E3%83%8D%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E3%83%88%E3%83%AC%E3%83%B3%E3%83%81%E3%82%B3%E3%83%BC%E3%83%88",
     "phase": "full",
