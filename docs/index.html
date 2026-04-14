@@ -367,10 +367,38 @@
     </table>
   </div>
 
-  <!-- Overlay QA -->
+  <!-- Compare View -->
   <div class="panel" id="panel-compare">
     <h1>Compare View</h1>
     <p class="panel-subtitle">Screenshots of the compare view after onboarding — bags, apparel, footwear</p>
+
+    <div style="background:#161b22;border:1px solid #21262d;border-radius:8px;padding:16px;margin-bottom:24px">
+      <div style="font-size:13px;font-weight:600;color:#c9d1d9;margin-bottom:12px">Run new screenshot test</div>
+      <div style="margin-bottom:10px">
+        <label style="font-size:12px;color:#8b949e;display:block;margin-bottom:4px">GitHub PAT (workflow scope) — saved in browser only</label>
+        <input id="gh-pat" type="password" placeholder="ghp_xxxxxxxxxxxx"
+          style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:6px 10px;font-size:13px"
+          oninput="localStorage.setItem('gh_pat', this.value)">
+      </div>
+      <div style="margin-bottom:10px">
+        <label style="font-size:12px;color:#8b949e;display:block;margin-bottom:4px">Run label (optional)</label>
+        <input id="compare-run-name" type="text" placeholder="e.g. bottega-spring"
+          style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:6px 10px;font-size:13px">
+      </div>
+      <div style="margin-bottom:12px">
+        <label style="font-size:12px;color:#8b949e;display:block;margin-bottom:4px">URLs — one per line</label>
+        <textarea id="compare-urls" rows="6" placeholder="https://example.com/product-1&#10;https://example.com/product-2"
+          style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:8px 10px;font-size:12px;font-family:monospace;resize:vertical"></textarea>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <button onclick="triggerCompareRun()"
+          style="padding:7px 18px;background:#238636;color:#fff;border:none;border-radius:6px;font-size:13px;cursor:pointer;font-weight:500">
+          Run on GitHub Actions ▶
+        </button>
+        <span id="compare-trigger-status" style="font-size:12px;color:#8b949e"></span>
+      </div>
+    </div>
+
     <div id="compare-content"></div>
   </div>
 
@@ -691,10 +719,43 @@ function exportFlagged() {
   a.click();
 }
 
+// ── Compare view trigger ──────────────────────────────────────────────────────
+async function triggerCompareRun() {
+  const pat = document.getElementById('gh-pat').value.trim();
+  const urls = document.getElementById('compare-urls').value.trim();
+  const runName = document.getElementById('compare-run-name').value.trim();
+  const status = document.getElementById('compare-trigger-status');
+
+  if (!pat) { status.textContent = '⚠️ Enter a GitHub PAT first'; status.style.color = '#d29922'; return; }
+  if (!urls) { status.textContent = '⚠️ Enter at least one URL'; status.style.color = '#d29922'; return; }
+
+  status.textContent = 'Triggering…'; status.style.color = '#8b949e';
+
+  const res = await fetch('https://api.github.com/repos/chengalore/vs-playwright-qa/actions/workflows/compare-view-screenshot.yml/dispatches', {
+    method: 'POST',
+    headers: { Authorization: 'Bearer ' + pat, Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' },
+    body: JSON.stringify({ ref: 'main', inputs: { urls, run_name: runName } }),
+  });
+
+  if (res.status === 204) {
+    status.textContent = '✅ Workflow triggered — results will appear here in ~5 min';
+    status.style.color = '#3fb950';
+    document.getElementById('compare-urls').value = '';
+    document.getElementById('compare-run-name').value = '';
+  } else {
+    const body = await res.json().catch(() => ({}));
+    status.textContent = '❌ ' + (body.message || 'Failed (' + res.status + ')');
+    status.style.color = '#f85149';
+  }
+}
+
 // ── Init ──────────────────────────────────────────────────────────────────────
 renderSummary(HISTORY[0] || null);
 renderTable();
 renderSingleUrl();
+// Restore saved PAT
+const savedPat = localStorage.getItem('gh_pat');
+if (savedPat) document.getElementById('gh-pat').value = savedPat;
 </script>
 </body>
 </html>

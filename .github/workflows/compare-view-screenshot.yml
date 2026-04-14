@@ -1,0 +1,67 @@
+name: Compare View Screenshot
+
+on:
+  workflow_dispatch:
+    inputs:
+      urls:
+        description: "Product page URLs (one per line)"
+        required: true
+        type: string
+      run_name:
+        description: "Run label (optional, defaults to timestamp)"
+        required: false
+        default: ""
+        type: string
+
+jobs:
+  screenshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - run: npm ci
+
+      - run: npx playwright install --with-deps chrome
+
+      - name: Write URLs file
+        run: |
+          echo "${{ github.event.inputs.urls }}" > /tmp/compare-urls.txt
+          echo "URLs to test:"
+          cat /tmp/compare-urls.txt
+
+      - name: Run compare view screenshot test
+        run: |
+          npx playwright test tests/compare-view-screenshot.spec.js \
+            --project=chrome \
+            --retries=0 \
+            --reporter=list 2>&1 | tee test-output.log
+        env:
+          TEST_URLS_FILE: /tmp/compare-urls.txt
+          COMPARE_RUN: ${{ github.event.inputs.run_name != '' && github.event.inputs.run_name || '' }}
+
+      - name: Publish to GitHub Pages
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          for i in 1 2 3; do
+            git pull --rebase origin ${{ github.ref_name }} && break
+            sleep 5
+          done
+          node scripts/build-dashboard.js
+          git add docs/
+          git diff --staged --quiet || git commit -m "chore: publish compare view screenshots [skip ci]"
+          for i in 1 2 3; do
+            git pull --rebase origin ${{ github.ref_name }} && git push origin HEAD:${{ github.ref_name }} && break
+            echo "Push attempt $i failed, retrying..."
+            sleep 5
+          done
+        env:
+          PHASE: skip
