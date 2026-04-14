@@ -24,7 +24,25 @@ import { dirname, join } from "path";
 import { startPDCWatcher } from "../utils/pdcWatcher.js";
 import { isBagProduct } from "../utils/inpageFlow.js";
 import { completeOnboarding } from "../utils/completeOnboarding.js";
-import { startVirtusizeEventWatcher } from "../utils/eventWatcher.js";
+
+const RECOMMENDATION_EVENTS = [
+  "user-got-size-recommendation",
+  "user-opened-panel-tryiton",
+  "user-saw-measurements-view",
+];
+
+function startRecommendationDetector(page) {
+  let ready = false;
+  page.on("request", (req) => {
+    if (req.method() !== "POST") return;
+    if (!req.url().match(/events\..*virtusize\.(jp|com|kr)/)) return;
+    try {
+      const name = req.postDataJSON()?.name;
+      if (RECOMMENDATION_EVENTS.includes(name)) ready = true;
+    } catch {}
+  });
+  return { isReady: () => ready };
+}
 
 test.setTimeout(180000);
 
@@ -65,7 +83,7 @@ for (const url of urls) {
     });
 
     const pdc = startPDCWatcher(page);
-    const eventWatcher = startVirtusizeEventWatcher(page);
+    const eventWatcher = startRecommendationDetector(page);
 
     await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60000 });
     await page.waitForLoadState("load");
@@ -184,12 +202,7 @@ for (const url of urls) {
       // Wait for the recommendation to appear (event-based, up to 30s)
       const recStart = Date.now();
       while (Date.now() - recStart < 30000) {
-        const events = eventWatcher.getEvents();
-        if (
-          events.some((e) => e.startsWith("user-got-size-recommendation")) ||
-          events.some((e) => e.startsWith("user-opened-panel-tryiton")) ||
-          events.some((e) => e.startsWith("user-saw-measurements-view"))
-        ) break;
+        if (eventWatcher.isReady()) break;
         await page.waitForTimeout(300);
       }
       await page.waitForTimeout(1500);
