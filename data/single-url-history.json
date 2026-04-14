@@ -1,5 +1,91 @@
 [
   {
+    "timestamp": "2026-04-14T06:58:56.303Z",
+    "url": "https://www.underarmour.co.jp/f/dsg-1007794",
+    "phase": "full",
+    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/24385335799",
+    "store": null,
+    "productType": null,
+    "flow": "kids",
+    "onboarding": {
+      "gender": "female",
+      "age": "35",
+      "height": "161",
+      "weight": "54"
+    },
+    "events": [
+      {
+        "event": "user-saw-product::integration",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-saw-widget-button::integration",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-saw-widget-kids::integration",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-opened-widget::kids",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-saw-onboarding-screen::kids",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-selected-gender::kids",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-clicked-age::kids",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-updated-body-measurements::kids",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-updated-body-measurements::kids",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-updated-body-measurements::kids",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-completed-onboarding::kids",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-created-silhouette::kids",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-selected-size-kids-rec::kids",
+        "phase": "onboarding"
+      }
+    ],
+    "browsers": [
+      {
+        "browser": "chrome",
+        "status": "failed",
+        "error": "page.waitForFunction: Test timeout of 180000ms exceeded."
+      },
+      {
+        "browser": "firefox",
+        "status": "failed",
+        "error": "page.waitForFunction: Test timeout of 180000ms exceeded."
+      },
+      {
+        "browser": "webkit",
+        "status": "failed",
+        "error": "page.waitForFunction: Test timeout of 180000ms exceeded."
+      }
+    ]
+  },
+  {
     "timestamp": "2026-04-14T06:29:53.923Z",
     "url": "https://www.underarmour.co.jp/f/dsg-1094029",
     "phase": "full",
