@@ -535,10 +535,10 @@ function generateDashboard(history, compareRuns, singleUrlHistory) {
             <select id="single-gift-bodytype"
               style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:5px 8px;font-size:12px;cursor:pointer">
               <option value="0">&lt;52 kg</option>
-              <option value="1" selected>52-63 kg</option>
-              <option value="2">63-74 kg</option>
-              <option value="3">74-84 kg</option>
-              <option value="4">85-98 kg</option>
+              <option value="1" selected>52 - 63 kg</option>
+              <option value="2">63 - 74 kg</option>
+              <option value="3">74 - 84 kg</option>
+              <option value="4">85 - 98 kg</option>
               <option value="5">&gt;98 kg</option>
             </select>
           </div>
