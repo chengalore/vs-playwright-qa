@@ -867,7 +867,7 @@ export async function runGiftFlow(page, eventWatcher, giftOpts = {}) {
     { timeout: 10000 },
   );
   await page.evaluate((idx) =>
-    findInShadow("#sheet")?.querySelectorAll('span[role="radio"]')[idx]?.click(),
+    findInShadow("#sheet")?.querySelectorAll('span[role="radio"]')[idx]?.click()
   , heightIndex);
   await page.waitForFunction(
     () => !findInShadow("#sheet")?.querySelector('span[role="radio"]'),

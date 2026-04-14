@@ -613,6 +613,26 @@ function generateDashboard(history, compareRuns, singleUrlHistory) {
           </div>
         </div>
       </details>
+      <div style="margin-bottom:12px">
+        <label style="font-size:12px;color:#8b949e;display:block;margin-bottom:6px">Browsers</label>
+        <div style="display:flex;gap:16px;align-items:center">
+          <label style="display:flex;align-items:center;gap:5px;font-size:13px;color:#c9d1d9;cursor:default">
+            <input type="checkbox" id="browser-chrome" checked disabled
+              style="accent-color:#3fb950;width:14px;height:14px">
+            Chrome
+          </label>
+          <label style="display:flex;align-items:center;gap:5px;font-size:13px;color:#c9d1d9;cursor:pointer">
+            <input type="checkbox" id="browser-firefox"
+              style="accent-color:#3fb950;width:14px;height:14px">
+            Firefox
+          </label>
+          <label style="display:flex;align-items:center;gap:5px;font-size:13px;color:#c9d1d9;cursor:pointer">
+            <input type="checkbox" id="browser-webkit"
+              style="accent-color:#3fb950;width:14px;height:14px">
+            WebKit
+          </label>
+        </div>
+      </div>
       <div style="display:flex;align-items:center;gap:12px">
         <button onclick="triggerSingleRun()"
           style="padding:7px 18px;background:#238636;color:#fff;border:none;border-radius:6px;font-size:13px;cursor:pointer;font-weight:500">
@@ -1251,6 +1271,10 @@ async function triggerSingleRun() {
   const kidsAge     = document.getElementById('single-kids-age').value;
   const kidsHeight  = document.getElementById('single-kids-height').value;
   const kidsWeight  = document.getElementById('single-kids-weight').value;
+  const browsers = ['chrome', 'firefox', 'webkit'].filter(b => {
+    const el = document.getElementById('browser-' + b);
+    return el && (el.checked || el.disabled); // chrome is disabled+checked
+  });
 
   if (!pat) { status.textContent = '⚠️ Enter a GitHub PAT first'; status.style.color = '#d29922'; return; }
   if (!testUrl) { status.textContent = '⚠️ Enter a product URL'; status.style.color = '#d29922'; return; }
@@ -1262,6 +1286,7 @@ async function triggerSingleRun() {
     headers: { Authorization: 'Bearer ' + pat, Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' },
     body: JSON.stringify({ ref: 'main', inputs: {
       url: testUrl, phase,
+      browsers: JSON.stringify(browsers),
       gift_gender: giftGender,
       gift_age: giftAge,
       gift_height: giftHeight,

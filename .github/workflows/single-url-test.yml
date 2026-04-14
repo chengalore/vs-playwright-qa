@@ -118,15 +118,20 @@ on:
         required: false
         default: ""
         type: string
+      browsers:
+        description: 'JSON array of browsers to run — e.g. ["chrome"] or ["chrome","firefox","webkit"]'
+        required: false
+        default: '["chrome"]'
+        type: string
 
 jobs:
-  # ── Run in 3 browsers in parallel ─────────────────────────────────────────
+  # ── Run in selected browsers in parallel ──────────────────────────────────
   test:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
       matrix:
-        browser: [chrome, firefox, webkit]
+        browser: ${{ fromJson(github.event.inputs.browsers || '["chrome"]') }}
       fail-fast: false
 
     steps:
@@ -235,7 +240,9 @@ jobs:
           const target = responseUrl || webhook;
           if (!target) { console.log('No Slack target — skipping'); process.exit(0); }
 
-          const browsers = ['chrome', 'firefox', 'webkit'];
+          const allBrowsers = ['chrome', 'firefox', 'webkit'];
+          const requestedBrowsers = JSON.parse(process.env.BROWSERS_INPUT || '["chrome"]');
+          const browsers = allBrowsers.filter(b => requestedBrowsers.includes(b));
           const results = browsers.map(b => {
             const file = `results/result-${b}.json`;
             if (!fs.existsSync(file)) return { browser: b, status: 'failed', error: 'No result file' };
@@ -271,6 +278,7 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           TEST_URL: ${{ github.event.inputs.url }}
           GITHUB_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          BROWSERS_INPUT: ${{ github.event.inputs.browsers }}
 
   # ── Save fallback + publish to GitHub Pages ────────────────────────────────
   publish:
@@ -306,7 +314,9 @@ jobs:
           const HISTORY_FILE = 'data/single-url-history.json';
           const MAX_HISTORY = 100;
 
-          const browsers = ['chrome', 'firefox', 'webkit'];
+          const allBrowsers = ['chrome', 'firefox', 'webkit'];
+          const requestedBrowsers = JSON.parse(process.env.BROWSERS_INPUT || '["chrome"]');
+          const browsers = allBrowsers.filter(b => requestedBrowsers.includes(b));
           const browserResults = browsers.map(b => {
             const file = `results/result-${b}.json`;
             if (!fs.existsSync(file)) return { browser: b, status: 'no_result' };
@@ -408,6 +418,7 @@ jobs:
           KIDS_AGE: ${{ github.event.inputs.kids_age }}
           KIDS_HEIGHT: ${{ github.event.inputs.kids_height }}
           KIDS_WEIGHT: ${{ github.event.inputs.kids_weight }}
+          BROWSERS_INPUT: ${{ github.event.inputs.browsers }}
 
       - name: Download compare view screenshots
         if: ${{ github.event.inputs.phase == 'compare' }}
