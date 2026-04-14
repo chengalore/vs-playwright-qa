@@ -5,7 +5,7 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "publish-screenshots": "node scripts/build-dashboard.js && git add docs/ && git diff --staged --quiet || git commit -m 'chore: publish compare view screenshots [skip ci]' && git push"
+    "publish-screenshots": "node scripts/build-dashboard.js && git add docs/ && git diff --staged --quiet || git commit -m 'chore: publish compare view screenshots [skip ci]' && git pull --rebase && git push"
   },
   "keywords": [],
   "author": "",
