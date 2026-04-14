@@ -33,9 +33,9 @@ jobs:
 
       - name: Write URLs file
         run: |
-          echo "${{ github.event.inputs.urls }}" > /tmp/compare-urls.txt
+          echo "${{ github.event.inputs.urls }}" > data/compare-view-urls-run.txt
           echo "URLs to test:"
-          cat /tmp/compare-urls.txt
+          cat data/compare-view-urls-run.txt
 
       - name: Run compare view screenshot test
         run: |
@@ -44,7 +44,7 @@ jobs:
             --retries=0 \
             --reporter=list 2>&1 | tee test-output.log
         env:
-          TEST_URLS_FILE: /tmp/compare-urls.txt
+          TEST_URLS_FILE: data/compare-view-urls-run.txt
           COMPARE_RUN: ${{ github.event.inputs.run_name != '' && github.event.inputs.run_name || '' }}
 
       - name: Publish to GitHub Pages
