@@ -1012,11 +1012,10 @@ function renderSingleUrl() {
 
   SINGLE_URL_HISTORY.forEach((entry, idx) => {
     const byBrowser = Object.fromEntries((entry.browsers || []).map(b => [b.browser, b]));
-    const chrome  = byBrowser['chrome']  || {};
-    const firefox = byBrowser['firefox'] || {};
-    const webkit  = byBrowser['webkit']  || {};
 
-    const statusCell = (b) => {
+    const statusCell = (browserKey) => {
+      const b = byBrowser[browserKey];
+      if (!b) return `<td style="text-align:center;color:#484f58">—</td>`;
       const icon = iconFor(b.status);
       const tip = b.error ? ` title="${b.error.replace(/"/g, '&quot;')}"` : '';
       return `<td style="text-align:center"${tip}>${icon}</td>`;
@@ -1042,9 +1041,9 @@ function renderSingleUrl() {
       <td style="font-size:13px">${entry.store || '—'}</td>
       <td>${flowBadge}</td>
       <td><span class="phase-badge phase-${entry.phase || 'full'}">${entry.phase || 'full'}</span></td>
-      ${statusCell(chrome)}
-      ${statusCell(firefox)}
-      ${statusCell(webkit)}
+      ${statusCell('chrome')}
+      ${statusCell('firefox')}
+      ${statusCell('webkit')}
       <td class="run-link"><a href="${entry.githubRunUrl || '#'}" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></td>
     `;
 
