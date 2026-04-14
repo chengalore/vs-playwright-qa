@@ -1,5 +1,45 @@
 [
   {
+    "timestamp": "2026-04-14T13:46:05.093Z",
+    "url": "https://andar-jp.com/products/be-free-all-day-crop-top?pr_prod_strat=jac&pr_rec_id=204739624&pr_rec_pid=9103815573750&pr_ref_pid=9156827480310&pr_seq=uniform",
+    "phase": "widget",
+    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/24402482998",
+    "store": "andar_japan",
+    "productType": "top",
+    "flow": null,
+    "onboarding": {
+      "gender": "female",
+      "age": "35",
+      "height": "161",
+      "weight": "54"
+    },
+    "giftOnboarding": {
+      "gender": "female",
+      "age": "30-39",
+      "height": "160-164",
+      "bodyType": "52 - 63 kg"
+    },
+    "footwearOnboarding": {
+      "gender": "female",
+      "brand": "Adidas",
+      "size": "25.5 cm"
+    },
+    "kidsOnboarding": {
+      "gender": "girl",
+      "age": 8,
+      "height": "120",
+      "weight": "25"
+    },
+    "events": [],
+    "browsers": [
+      {
+        "browser": "chrome",
+        "status": "passed",
+        "error": null
+      }
+    ]
+  },
+  {
     "timestamp": "2026-04-14T13:41:48.474Z",
     "url": "https://www.gap.co.jp/gap/canvas-chore-jacket/871086016.html?dwvar_871086016_color=871086016&cid=11900",
     "phase": "full",
