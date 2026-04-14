@@ -1,5 +1,30 @@
 [
   {
+    "timestamp": "2026-04-14T04:57:42.639Z",
+    "url": "https://yosoou-shop.com/products/two-piece-collar-coat",
+    "phase": "full",
+    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/24381620129",
+    "store": null,
+    "productType": null,
+    "browsers": [
+      {
+        "browser": "chrome",
+        "status": "failed",
+        "error": "page.waitForFunction: Test timeout of 180000ms exceeded."
+      },
+      {
+        "browser": "firefox",
+        "status": "failed",
+        "error": "page.waitForFunction: Test timeout of 180000ms exceeded."
+      },
+      {
+        "browser": "webkit",
+        "status": "failed",
+        "error": "page.waitForFunction: Test timeout of 180000ms exceeded."
+      }
+    ]
+  },
+  {
     "timestamp": "2026-04-14T01:49:40.042Z",
     "url": "https://www.gap.co.jp/gap/kids-uniform-polo-shirt/763889016.html?dwvar_763889016_color=763889016",
     "phase": "full",
