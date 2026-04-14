@@ -1,5 +1,30 @@
 [
   {
+    "timestamp": "2026-04-14T01:42:59.990Z",
+    "url": "https://www.underarmour.co.jp/f/dsg-1091946",
+    "phase": "full",
+    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/24376331696",
+    "store": "under_armour",
+    "productType": "bag",
+    "browsers": [
+      {
+        "browser": "chrome",
+        "status": "passed",
+        "error": null
+      },
+      {
+        "browser": "firefox",
+        "status": "passed",
+        "error": null
+      },
+      {
+        "browser": "webkit",
+        "status": "passed",
+        "error": null
+      }
+    ]
+  },
+  {
     "timestamp": "2026-04-13T11:38:18.786Z",
     "url": "https://www.japan.barbour.com/Form/Product/ProductDetail.aspx?shop=0&pid=261LSH1728&vid=261LSH1728&bid=BAB01&cid=&_type=&cat=B03101&swrd=%e3%83%ac%e3%83%87%e3%82%a3%e3%83%bc%e3%82%b9",
     "phase": "full",
