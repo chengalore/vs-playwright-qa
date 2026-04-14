@@ -1,5 +1,55 @@
 [
   {
+    "timestamp": "2026-04-14T08:30:25.679Z",
+    "url": "https://www.gap.co.jp/gap/canvas-chore-jacket/871086016.html?dwvar_871086016_color=871086016&cid=11900",
+    "phase": "widget",
+    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/24389007841",
+    "store": null,
+    "productType": null,
+    "flow": null,
+    "onboarding": {
+      "gender": "female",
+      "age": "35",
+      "height": "161",
+      "weight": "54"
+    },
+    "giftOnboarding": {
+      "gender": "female",
+      "age": "30-39",
+      "height": "160-164",
+      "bodyType": "52 - 63 kg"
+    },
+    "footwearOnboarding": {
+      "gender": "female",
+      "brand": "Adidas",
+      "size": "25.5 cm"
+    },
+    "kidsOnboarding": {
+      "gender": "girl",
+      "age": 8,
+      "height": "120",
+      "weight": "25"
+    },
+    "events": [],
+    "browsers": [
+      {
+        "browser": "chrome",
+        "status": "failed",
+        "error": "No QA_RESULT in output"
+      },
+      {
+        "browser": "firefox",
+        "status": "failed",
+        "error": "No QA_RESULT in output"
+      },
+      {
+        "browser": "webkit",
+        "status": "failed",
+        "error": "No QA_RESULT in output"
+      }
+    ]
+  },
+  {
     "timestamp": "2026-04-14T08:27:39.115Z",
     "url": "https://www.gap.co.jp/gap/canvas-chore-jacket/871086016.html?dwvar_871086016_color=871086016&cid=11900",
     "phase": "widget",
