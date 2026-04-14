@@ -1,5 +1,30 @@
 [
   {
+    "timestamp": "2026-04-14T01:49:40.042Z",
+    "url": "https://www.gap.co.jp/gap/kids-uniform-polo-shirt/763889016.html?dwvar_763889016_color=763889016",
+    "phase": "full",
+    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/24376460010",
+    "store": "gap_japan",
+    "productType": "tShirt",
+    "browsers": [
+      {
+        "browser": "chrome",
+        "status": "passed",
+        "error": null
+      },
+      {
+        "browser": "firefox",
+        "status": "passed",
+        "error": null
+      },
+      {
+        "browser": "webkit",
+        "status": "failed",
+        "error": "page.waitForFunction: Test timeout of 180000ms exceeded."
+      }
+    ]
+  },
+  {
     "timestamp": "2026-04-14T01:42:59.990Z",
     "url": "https://www.underarmour.co.jp/f/dsg-1091946",
     "phase": "full",
