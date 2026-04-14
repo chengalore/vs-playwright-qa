@@ -378,7 +378,7 @@
         <input id="single-url-input" type="url" placeholder="https://example.com/product"
           style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:6px 10px;font-size:13px">
       </div>
-      <details style="margin-bottom:12px">
+      <details style="margin-bottom:8px">
         <summary style="font-size:12px;color:#8b949e;cursor:pointer;user-select:none">Onboarding body (apparel &amp; noVisor only)</summary>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-top:8px">
           <div>
@@ -402,6 +402,127 @@
           <div>
             <label style="font-size:11px;color:#8b949e;display:block;margin-bottom:3px">Weight (kg)</label>
             <input id="single-ob-weight" type="number" value="54" min="30" max="200"
+              style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:5px 8px;font-size:12px">
+          </div>
+        </div>
+      </details>
+      <details style="margin-bottom:8px">
+        <summary style="font-size:12px;color:#8b949e;cursor:pointer;user-select:none">Gift flow body (apparel only)</summary>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-top:8px">
+          <div>
+            <label style="font-size:11px;color:#8b949e;display:block;margin-bottom:3px">Gender</label>
+            <select id="single-gift-gender"
+              style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:5px 8px;font-size:12px;cursor:pointer">
+              <option value="0">Female (0)</option>
+              <option value="1">Male (1)</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:11px;color:#8b949e;display:block;margin-bottom:3px">Age range</label>
+            <select id="single-gift-age"
+              style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:5px 8px;font-size:12px;cursor:pointer">
+              <option value="0">16-19</option>
+              <option value="1">20-25</option>
+              <option value="2">26-29</option>
+              <option value="3" selected>30-39</option>
+              <option value="4">40-49</option>
+              <option value="5">50-59</option>
+              <option value="6">&gt;60</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:11px;color:#8b949e;display:block;margin-bottom:3px">Height (cm)</label>
+            <select id="single-gift-height"
+              style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:5px 8px;font-size:12px;cursor:pointer">
+              <option value="0">145-149</option>
+              <option value="1">150-154</option>
+              <option value="2">155-159</option>
+              <option value="3" selected>160-164</option>
+              <option value="4">165-169</option>
+              <option value="5">170-174</option>
+              <option value="6">175-179</option>
+              <option value="7">180-184</option>
+              <option value="8">185-189</option>
+              <option value="9">190-194</option>
+              <option value="10">195+</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:11px;color:#8b949e;display:block;margin-bottom:3px">Body type (weight)</label>
+            <select id="single-gift-bodytype"
+              style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:5px 8px;font-size:12px;cursor:pointer">
+              <option value="0">&lt;52 kg</option>
+              <option value="1" selected>52-63 kg</option>
+              <option value="2">63-74 kg</option>
+              <option value="3">74-84 kg</option>
+              <option value="4">85-98 kg</option>
+              <option value="5">&gt;98 kg</option>
+            </select>
+          </div>
+        </div>
+      </details>
+      <details style="margin-bottom:8px">
+        <summary style="font-size:12px;color:#8b949e;cursor:pointer;user-select:none">Footwear onboarding (footwear flow only)</summary>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px">
+          <div>
+            <label style="font-size:11px;color:#8b949e;display:block;margin-bottom:3px">Gender</label>
+            <select id="single-fw-gender"
+              style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:5px 8px;font-size:12px;cursor:pointer">
+              <option value="0">Female (0)</option>
+              <option value="1">Male (1)</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:11px;color:#8b949e;display:block;margin-bottom:3px">Brand</label>
+            <select id="single-fw-brand"
+              style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:5px 8px;font-size:12px;cursor:pointer">
+              <option value="0">Under Armour</option>
+              <option value="1" selected>Adidas</option>
+              <option value="2">Asics</option>
+              <option value="3">Converse</option>
+              <option value="4">New Balance</option>
+              <option value="5">Nike</option>
+              <option value="6">Puma</option>
+              <option value="7">Reebok</option>
+              <option value="8">Vans</option>
+              <option value="9">I don't know</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:11px;color:#8b949e;display:block;margin-bottom:3px">Shoe size</label>
+            <select id="single-fw-size"
+              style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:5px 8px;font-size:12px;cursor:pointer">
+              <option value="0">17 cm</option><option value="1">17.5 cm</option><option value="2">18 cm</option><option value="3">18.5 cm</option><option value="4">19 cm</option><option value="5">19.5 cm</option><option value="6">20 cm</option><option value="7">20.5 cm</option><option value="8">21 cm</option><option value="9">21.5 cm</option><option value="10">22 cm</option><option value="11">22.5 cm</option><option value="12">23 cm</option><option value="13">23.5 cm</option><option value="14">24 cm</option><option value="15">24.5 cm</option><option value="16">25 cm</option><option value="17" selected>25.5 cm</option><option value="18">26 cm</option><option value="19">26.5 cm</option><option value="20">27 cm</option><option value="21">27.5 cm</option><option value="22">28 cm</option><option value="23">28.5 cm</option><option value="24">29 cm</option><option value="25">29.5 cm</option><option value="26">30 cm</option><option value="27">30.5 cm</option><option value="28">31 cm</option><option value="29">31.5 cm</option><option value="30">32 cm</option><option value="31">32.5 cm</option><option value="32">33 cm</option><option value="33">33.5 cm</option><option value="34">34 cm</option><option value="35">34.5 cm</option><option value="36">35 cm</option>
+            </select>
+          </div>
+        </div>
+      </details>
+      <details style="margin-bottom:12px">
+        <summary style="font-size:12px;color:#8b949e;cursor:pointer;user-select:none">Kids onboarding (kids flow only)</summary>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-top:8px">
+          <div>
+            <label style="font-size:11px;color:#8b949e;display:block;margin-bottom:3px">Gender</label>
+            <select id="single-kids-gender"
+              style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:5px 8px;font-size:12px;cursor:pointer">
+              <option value="0">Girl (0)</option>
+              <option value="1">Boy (1)</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:11px;color:#8b949e;display:block;margin-bottom:3px">Age</label>
+            <select id="single-kids-age"
+              style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:5px 8px;font-size:12px;cursor:pointer">
+              <option value="0">3 yr</option><option value="1">4 yr</option><option value="2">5 yr</option><option value="3">6 yr</option><option value="4">7 yr</option><option value="5" selected>8 yr</option><option value="6">9 yr</option><option value="7">10 yr</option><option value="8">11 yr</option><option value="9">12 yr</option><option value="10">13 yr</option><option value="11">14 yr</option><option value="12">15 yr</option><option value="13">16 yr</option><option value="14">17 yr</option><option value="15">18 yr</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:11px;color:#8b949e;display:block;margin-bottom:3px">Height (cm)</label>
+            <input id="single-kids-height" type="number" value="120" min="60" max="180"
+              style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:5px 8px;font-size:12px">
+          </div>
+          <div>
+            <label style="font-size:11px;color:#8b949e;display:block;margin-bottom:3px">Weight (kg)</label>
+            <input id="single-kids-weight" type="number" value="25" min="10" max="100"
               style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:5px 8px;font-size:12px">
           </div>
         </div>
@@ -686,6 +807,11 @@ function exportSingleFlagged() {
   downloadTxt(lines.join('\n'), 'flagged-single-url.txt');
 }
 
+// Events that are expected to fire multiple times within a phase — suppress ×N badge
+const EXPECTED_MULTIPLES = {
+  kids: new Set(['user-updated-body-measurements::kids']),
+};
+
 const CHECKLISTS = {
   apparel: [
     // Widget
@@ -768,6 +894,8 @@ function renderSingleDetail(entry) {
   const totalUnique = new Set(normEvents.map(e => e.event)).size;
   const totalFired  = normEvents.length;
 
+  const expectedMultiples = EXPECTED_MULTIPLES[flow] || new Set();
+
   const eventsHtml = byPhase.size === 0
     ? '<span style="color:#8b949e;font-size:13px">No events recorded</span>'
     : [...byPhase.entries()].map(([phase, evMap]) => `
@@ -776,10 +904,11 @@ function renderSingleDetail(entry) {
           <ul style="list-style:none;padding:0;margin:0">
             ${[...evMap.entries()].map(([e, count]) => {
               const [name, src] = e.split('::');
+              const isDuplicate = count > 1 && !expectedMultiples.has(e);
               return `<li style="font-size:12px;padding:1px 0;color:#c9d1d9;display:flex;align-items:baseline;gap:4px">
                 <span style="color:#58a6ff">${name}</span>
                 ${src ? `<span style="color:#484f58">:: ${src}</span>` : ''}
-                ${count > 1 ? `<span style="color:#f85149;font-size:11px;font-weight:600">×${count}</span>` : ''}
+                ${isDuplicate ? `<span style="color:#f85149;font-size:11px;font-weight:600">×${count}</span>` : ''}
               </li>`;
             }).join('')}
           </ul>
@@ -795,17 +924,48 @@ function renderSingleDetail(entry) {
         </li>`;
       }).join('')}</ul>`;
 
-  const ob = entry.onboarding;
-  const obHtml = ob
-    ? `<ul style="list-style:none;padding:0;margin:0">
-        <li style="font-size:12px;padding:2px 0"><span style="color:#8b949e">Gender</span> <span style="color:#c9d1d9">${ob.gender}</span></li>
-        <li style="font-size:12px;padding:2px 0"><span style="color:#8b949e">Age</span> <span style="color:#c9d1d9">${ob.age} yr</span></li>
-        <li style="font-size:12px;padding:2px 0"><span style="color:#8b949e">Height</span> <span style="color:#c9d1d9">${ob.height} cm</span></li>
-        <li style="font-size:12px;padding:2px 0"><span style="color:#8b949e">Weight</span> <span style="color:#c9d1d9">${ob.weight} kg</span></li>
-      </ul>`
-    : '<span style="color:#484f58;font-size:13px">—</span>';
+  const kb  = entry.kidsOnboarding;
+  const fwb = entry.footwearOnboarding;
+  let obHtml = null;
+  if (flow === 'apparel' || flow === 'noVisor') {
+    obHtml = ob ? `<ul style="list-style:none;padding:0;margin:0">
+      <li style="font-size:12px;padding:2px 0"><span style="color:#8b949e">Gender</span> <span style="color:#c9d1d9">${ob.gender}</span></li>
+      <li style="font-size:12px;padding:2px 0"><span style="color:#8b949e">Age</span> <span style="color:#c9d1d9">${ob.age} yr</span></li>
+      <li style="font-size:12px;padding:2px 0"><span style="color:#8b949e">Height</span> <span style="color:#c9d1d9">${ob.height} cm</span></li>
+      <li style="font-size:12px;padding:2px 0"><span style="color:#8b949e">Weight</span> <span style="color:#c9d1d9">${ob.weight} kg</span></li>
+    </ul>` : null;
+  } else if (flow === 'apparel' && entry.giftOnboarding) {
+    // Show both adult onboarding body AND gift body for apparel
+    const gb = entry.giftOnboarding;
+    const adultRows = ob ? `
+      <li style="font-size:12px;padding:2px 0"><span style="color:#8b949e">Gender</span> <span style="color:#c9d1d9">${ob.gender}</span></li>
+      <li style="font-size:12px;padding:2px 0"><span style="color:#8b949e">Age</span> <span style="color:#c9d1d9">${ob.age} yr</span></li>
+      <li style="font-size:12px;padding:2px 0"><span style="color:#8b949e">Height</span> <span style="color:#c9d1d9">${ob.height} cm</span></li>
+      <li style="font-size:12px;padding:2px 0"><span style="color:#8b949e">Weight</span> <span style="color:#c9d1d9">${ob.weight} kg</span></li>` : '';
+    obHtml = `<ul style="list-style:none;padding:0;margin:0">
+      ${adultRows}
+      <li style="font-size:11px;padding:4px 0 2px;color:#484f58;text-transform:uppercase;letter-spacing:0.5px">Gift recipient</li>
+      <li style="font-size:12px;padding:2px 0"><span style="color:#8b949e">Gender</span> <span style="color:#c9d1d9">${gb.gender}</span></li>
+      <li style="font-size:12px;padding:2px 0"><span style="color:#8b949e">Age</span> <span style="color:#c9d1d9">${gb.age}</span></li>
+      <li style="font-size:12px;padding:2px 0"><span style="color:#8b949e">Height</span> <span style="color:#c9d1d9">${gb.height} cm</span></li>
+      <li style="font-size:12px;padding:2px 0"><span style="color:#8b949e">Body type</span> <span style="color:#c9d1d9">${gb.bodyType}</span></li>
+    </ul>`;
+  } else if (flow === 'footwear') {
+    obHtml = fwb ? `<ul style="list-style:none;padding:0;margin:0">
+      <li style="font-size:12px;padding:2px 0"><span style="color:#8b949e">Gender</span> <span style="color:#c9d1d9">${fwb.gender}</span></li>
+      <li style="font-size:12px;padding:2px 0"><span style="color:#8b949e">Brand</span> <span style="color:#c9d1d9">${fwb.brand}</span></li>
+      <li style="font-size:12px;padding:2px 0"><span style="color:#8b949e">Size</span> <span style="color:#c9d1d9">${fwb.size}</span></li>
+    </ul>` : null;
+  } else if (flow === 'kids') {
+    obHtml = kb ? `<ul style="list-style:none;padding:0;margin:0">
+      <li style="font-size:12px;padding:2px 0"><span style="color:#8b949e">Gender</span> <span style="color:#c9d1d9">${kb.gender}</span></li>
+      <li style="font-size:12px;padding:2px 0"><span style="color:#8b949e">Age</span> <span style="color:#c9d1d9">${kb.age} yr</span></li>
+      <li style="font-size:12px;padding:2px 0"><span style="color:#8b949e">Height</span> <span style="color:#c9d1d9">${kb.height} cm</span></li>
+      <li style="font-size:12px;padding:2px 0"><span style="color:#8b949e">Weight</span> <span style="color:#c9d1d9">${kb.weight} kg</span></li>
+    </ul>` : null;
+  }
 
-  return `<div class="detail-inner" style="grid-template-columns:1fr 1fr 160px">
+  return `<div class="detail-inner" style="grid-template-columns:1fr 1fr${obHtml ? ' 160px' : ''}">
     <div class="detail-section">
       <h4>Test checklist${flow ? ` — ${flow}` : ''}</h4>
       ${checklistHtml}
@@ -814,10 +974,7 @@ function renderSingleDetail(entry) {
       <h4>Events fired (${totalUnique} unique${totalFired !== totalUnique ? ', ' + totalFired + ' total' : ''})</h4>
       ${eventsHtml}
     </div>
-    <div class="detail-section">
-      <h4>Onboarding body</h4>
-      ${obHtml}
-    </div>
+    ${obHtml ? `<div class="detail-section"><h4>Onboarding body</h4>${obHtml}</div>` : ''}
   </div>`;
 }
 
@@ -993,10 +1150,21 @@ async function triggerSingleRun() {
   const testUrl = document.getElementById('single-url-input').value.trim();
   const phase   = document.getElementById('single-phase').value;
   const status  = document.getElementById('single-trigger-status');
-  const gender  = document.getElementById('single-ob-gender').value;
-  const age     = document.getElementById('single-ob-age').value;
-  const height  = document.getElementById('single-ob-height').value;
-  const weight  = document.getElementById('single-ob-weight').value;
+  const gender      = document.getElementById('single-ob-gender').value;
+  const age         = document.getElementById('single-ob-age').value;
+  const height      = document.getElementById('single-ob-height').value;
+  const weight      = document.getElementById('single-ob-weight').value;
+  const giftGender   = document.getElementById('single-gift-gender').value;
+  const giftAge      = document.getElementById('single-gift-age').value;
+  const giftHeight   = document.getElementById('single-gift-height').value;
+  const giftBodyType = document.getElementById('single-gift-bodytype').value;
+  const fwGender    = document.getElementById('single-fw-gender').value;
+  const fwBrand     = document.getElementById('single-fw-brand').value;
+  const fwSize      = document.getElementById('single-fw-size').value;
+  const kidsGender  = document.getElementById('single-kids-gender').value;
+  const kidsAge     = document.getElementById('single-kids-age').value;
+  const kidsHeight  = document.getElementById('single-kids-height').value;
+  const kidsWeight  = document.getElementById('single-kids-weight').value;
 
   if (!pat) { status.textContent = '⚠️ Enter a GitHub PAT first'; status.style.color = '#d29922'; return; }
   if (!testUrl) { status.textContent = '⚠️ Enter a product URL'; status.style.color = '#d29922'; return; }
@@ -1008,10 +1176,21 @@ async function triggerSingleRun() {
     headers: { Authorization: 'Bearer ' + pat, Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' },
     body: JSON.stringify({ ref: 'main', inputs: {
       url: testUrl, phase,
+      gift_gender: giftGender,
+      gift_age: giftAge,
+      gift_height: giftHeight,
+      gift_body_type: giftBodyType,
       onboarding_gender: gender,
       onboarding_age: age,
       onboarding_height: height,
       onboarding_weight: weight,
+      footwear_gender: fwGender,
+      footwear_brand:  fwBrand,
+      footwear_size:   fwSize,
+      kids_gender: kidsGender,
+      kids_age: kidsAge,
+      kids_height: kidsHeight,
+      kids_weight: kidsWeight,
     }}),
   });
 

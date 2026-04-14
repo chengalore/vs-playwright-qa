@@ -58,6 +58,61 @@ on:
         required: false
         default: "54"
         type: string
+      gift_gender:
+        description: "Gift gender — 0=female, 1=male (apparel only)"
+        required: false
+        default: "0"
+        type: string
+      gift_age:
+        description: "Gift age index — 0=16-19, 1=20-25, 2=26-29, 3=30-39, 4=40-49, 5=50-59, 6=>60"
+        required: false
+        default: "3"
+        type: string
+      gift_height:
+        description: "Gift height index — 0=145-149cm, 1=150-154cm … 10=195+cm"
+        required: false
+        default: "3"
+        type: string
+      gift_body_type:
+        description: "Gift body type index — 0=<52kg, 1=52-63, 2=63-74, 3=74-84, 4=85-98, 5=>98kg"
+        required: false
+        default: "1"
+        type: string
+      footwear_gender:
+        description: "Footwear gender — 0=female, 1=male"
+        required: false
+        default: "0"
+        type: string
+      footwear_brand:
+        description: "Footwear brand index — 0=UA,1=Adidas,2=Asics,3=Converse,4=NB,5=Nike,6=Puma,7=Reebok,8=Vans,9=I don't know"
+        required: false
+        default: "1"
+        type: string
+      footwear_size:
+        description: "Footwear size index — 0=17cm,1=17.5cm … 36=35cm (default 17→25.5cm)"
+        required: false
+        default: "17"
+        type: string
+      kids_gender:
+        description: "Kids gender — 0=girl, 1=boy"
+        required: false
+        default: "0"
+        type: string
+      kids_age:
+        description: "Kids age radio index — 0=3yr, 1=4yr … 15=18yr (default 5 → 8yr)"
+        required: false
+        default: "5"
+        type: string
+      kids_height:
+        description: "Kids height in cm"
+        required: false
+        default: "120"
+        type: string
+      kids_weight:
+        description: "Kids weight in kg"
+        required: false
+        default: "25"
+        type: string
       slack_response_url:
         description: "Slack response_url for posting result back to the user"
         required: false
@@ -102,6 +157,17 @@ jobs:
           ONBOARDING_AGE: ${{ github.event.inputs.onboarding_age }}
           ONBOARDING_HEIGHT: ${{ github.event.inputs.onboarding_height }}
           ONBOARDING_WEIGHT: ${{ github.event.inputs.onboarding_weight }}
+          GIFT_GENDER: ${{ github.event.inputs.gift_gender }}
+          GIFT_AGE: ${{ github.event.inputs.gift_age }}
+          GIFT_HEIGHT: ${{ github.event.inputs.gift_height }}
+          GIFT_BODY_TYPE: ${{ github.event.inputs.gift_body_type }}
+          FOOTWEAR_GENDER: ${{ github.event.inputs.footwear_gender }}
+          FOOTWEAR_BRAND: ${{ github.event.inputs.footwear_brand }}
+          FOOTWEAR_SIZE: ${{ github.event.inputs.footwear_size }}
+          KIDS_GENDER: ${{ github.event.inputs.kids_gender }}
+          KIDS_AGE: ${{ github.event.inputs.kids_age }}
+          KIDS_HEIGHT: ${{ github.event.inputs.kids_height }}
+          KIDS_WEIGHT: ${{ github.event.inputs.kids_weight }}
           RANDOM_PRODUCT_API_URL: ${{ secrets.RANDOM_PRODUCT_API_URL }}
 
       - name: Save result
@@ -271,6 +337,32 @@ jobs:
             weight: process.env.ONBOARDING_WEIGHT || '54',
           };
 
+          const GIFT_AGES        = ['16-19','20-25','26-29','30-39','40-49','50-59','>60'];
+          const GIFT_HEIGHTS     = ['145-149','150-154','155-159','160-164','165-169','170-174','175-179','180-184','185-189','190-194','195+'];
+          const GIFT_BODY_TYPES  = ['<52 kg','52-63 kg','63-74 kg','74-84 kg','85-98 kg','>98 kg'];
+          const giftOnboarding = {
+            gender:   process.env.GIFT_GENDER === '1' ? 'male' : 'female',
+            age:      GIFT_AGES[parseInt(process.env.GIFT_AGE || '3', 10)]        || GIFT_AGES[3],
+            height:   GIFT_HEIGHTS[parseInt(process.env.GIFT_HEIGHT || '3', 10)]  || GIFT_HEIGHTS[3],
+            bodyType: GIFT_BODY_TYPES[parseInt(process.env.GIFT_BODY_TYPE || '1', 10)] || GIFT_BODY_TYPES[1],
+          };
+
+          const BRANDS = ['Under Armour','Adidas','Asics','Converse','New Balance','Nike','Puma','Reebok','Vans',"I don't know"];
+          const footwearSizeIdx = parseInt(process.env.FOOTWEAR_SIZE || '17', 10);
+          const footwearOnboarding = {
+            gender: process.env.FOOTWEAR_GENDER === '1' ? 'male' : 'female',
+            brand:  BRANDS[parseInt(process.env.FOOTWEAR_BRAND || '1', 10)] || BRANDS[1],
+            size:   (17 + footwearSizeIdx * 0.5).toFixed(1).replace('.0', '') + ' cm',
+          };
+
+          const kidsAgeIdx = parseInt(process.env.KIDS_AGE || '5', 10);
+          const kidsOnboarding = {
+            gender: process.env.KIDS_GENDER === '1' ? 'boy' : 'girl',
+            age:    kidsAgeIdx + 3,  // index → actual year (0→3yr, 5→8yr …)
+            height: process.env.KIDS_HEIGHT || '120',
+            weight: process.env.KIDS_WEIGHT || '25',
+          };
+
           const entry = {
             timestamp: new Date().toISOString(),
             url: resolvedUrl,
@@ -280,6 +372,9 @@ jobs:
             productType: first.productType || null,
             flow: first.flow || null,
             onboarding,
+            giftOnboarding,
+            footwearOnboarding,
+            kidsOnboarding,
             events: first.events || [],
             browsers: browserResults.map(r => ({ browser: r.browser, status: r.status, error: r.error || null })),
           };
@@ -302,6 +397,17 @@ jobs:
           ONBOARDING_AGE: ${{ github.event.inputs.onboarding_age }}
           ONBOARDING_HEIGHT: ${{ github.event.inputs.onboarding_height }}
           ONBOARDING_WEIGHT: ${{ github.event.inputs.onboarding_weight }}
+          GIFT_GENDER: ${{ github.event.inputs.gift_gender }}
+          GIFT_AGE: ${{ github.event.inputs.gift_age }}
+          GIFT_HEIGHT: ${{ github.event.inputs.gift_height }}
+          GIFT_BODY_TYPE: ${{ github.event.inputs.gift_body_type }}
+          FOOTWEAR_GENDER: ${{ github.event.inputs.footwear_gender }}
+          FOOTWEAR_BRAND: ${{ github.event.inputs.footwear_brand }}
+          FOOTWEAR_SIZE: ${{ github.event.inputs.footwear_size }}
+          KIDS_GENDER: ${{ github.event.inputs.kids_gender }}
+          KIDS_AGE: ${{ github.event.inputs.kids_age }}
+          KIDS_HEIGHT: ${{ github.event.inputs.kids_height }}
+          KIDS_WEIGHT: ${{ github.event.inputs.kids_weight }}
 
       - name: Download compare view screenshots
         if: ${{ github.event.inputs.phase == 'compare' }}

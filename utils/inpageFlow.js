@@ -408,7 +408,21 @@ export async function runNoVisorFlow(page, bodyAPI, onboardingOpts = {}) {
   return isNewUser;
 }
 
-export async function runFootwearFlow(page) {
+/**
+ * @param {import('@playwright/test').Page} page
+ * @param {object} [footwearOpts]
+ * @param {number} [footwearOpts.genderIndex=0]  0=female, 1=male
+ * @param {number} [footwearOpts.brandIndex=1]   0=UA,1=Adidas,2=Asics,3=Converse,4=NB,5=Nike,6=Puma,7=Reebok,8=Vans,9=I don't know
+ * @param {number} [footwearOpts.sizeIndex=17]   0=17cm, 1=17.5cm … 36=35cm (default 17→25.5cm)
+ */
+export async function runFootwearFlow(page, footwearOpts = {}) {
+  const {
+    genderIndex = 0,
+    brandIndex  = 1,
+    sizeIndex   = 17,
+  } = footwearOpts;
+
+  const genderValue = genderIndex === 1 ? 'male' : 'female';
   await page.waitForFunction(
     () =>
       !!getWidgetHost()?.shadowRoot?.querySelector("#vs-aoyama-main-modal"),
@@ -475,7 +489,7 @@ export async function runFootwearFlow(page) {
   await clickNext();
 
   await interact(() =>
-    page.evaluate(() => {
+    page.evaluate((gv) => {
       const modal = getWidgetHost()?.shadowRoot?.querySelector(
         "#vs-aoyama-main-modal",
       );
@@ -483,14 +497,14 @@ export async function runFootwearFlow(page) {
         '[data-test-id="gender-radio-buttons"] input[type="radio"]',
       );
       if (!radios?.length) return;
-      const female = [...radios].find(
-        (el) => el.value.toLowerCase() === "female",
+      const target = [...radios].find(
+        (el) => el.value.toLowerCase() === gv,
       );
-      if (female) {
-        female.click();
-        female.dispatchEvent(new Event("change", { bubbles: true }));
+      if (target) {
+        target.click();
+        target.dispatchEvent(new Event("change", { bubbles: true }));
       }
-    }),
+    }, genderValue),
   );
   await clickNext();
 
@@ -512,14 +526,14 @@ export async function runFootwearFlow(page) {
     { timeout: 5000 },
   );
   await interact(() =>
-    page.evaluate(() => {
+    page.evaluate((idx) => {
       const root = getWidgetHost()?.shadowRoot;
       root
         ?.querySelector(
-          '[data-test-id="footwear-picker"] label[for="radioButton-1"]',
+          `[data-test-id="footwear-picker"] label[for="radioButton-${idx}"]`,
         )
         ?.click();
-    }),
+    }, brandIndex),
   );
   await page.waitForFunction(
     () => {
@@ -549,14 +563,14 @@ export async function runFootwearFlow(page) {
     { timeout: 5000 },
   );
   await interact(() =>
-    page.evaluate(() => {
+    page.evaluate((idx) => {
       const root = getWidgetHost()?.shadowRoot;
       root
         ?.querySelector(
-          '[data-test-id="footwear-picker"] label[for="radioButton-17"]',
+          `[data-test-id="footwear-picker"] label[for="radioButton-${idx}"]`,
         )
         ?.click();
-    }),
+    }, sizeIndex),
   );
   await page.waitForFunction(
     () => {
@@ -600,7 +614,24 @@ export async function runFootwearFlow(page) {
   return isNewUser;
 }
 
-export async function runKidsFlow(page, _pdc) {
+/**
+ * @param {import('@playwright/test').Page} page
+ * @param {object} [_pdc]
+ * @param {object} [kidsOpts]
+ * @param {number} [kidsOpts.genderIndex=0]  0=girl, 1=boy
+ * @param {number} [kidsOpts.ageIndex=5]     0=3yr … 15=18yr  (index 5 → 8yr)
+ * @param {string} [kidsOpts.height="120"]   cm
+ * @param {string} [kidsOpts.weight="25"]    kg
+ */
+export async function runKidsFlow(page, _pdc, kidsOpts = {}) {
+  const {
+    genderIndex = 0,
+    ageIndex    = 5,
+    height      = "120",
+    weight      = "25",
+  } = kidsOpts;
+
+  const genderValue = genderIndex === 1 ? "boy" : "girl";
   console.log("[kids] Starting Kids flow");
 
   await page.waitForFunction(
@@ -612,19 +643,19 @@ export async function runKidsFlow(page, _pdc) {
   await kidsRetry(
     page,
     async () => {
-      await page.evaluate(() => {
+      await page.evaluate((gv) => {
         const radio = findInShadow(
-          'input[name="selectKidGender"][value="girl"]',
+          `input[name="selectKidGender"][value="${gv}"]`,
         );
-        if (!radio) throw new Error("Girl gender radio not found");
+        if (!radio) throw new Error(`${gv} gender radio not found`);
         radio.click();
         radio.dispatchEvent(new Event("change", { bubbles: true }));
-      });
+      }, genderValue);
     },
-    "click girl gender radio",
+    `click ${genderValue} gender radio`,
   );
   await page.waitForTimeout(2000);
-  console.log("[kids] Gender selected: girl");
+  console.log(`[kids] Gender selected: ${genderValue}`);
 
   await kidsRetry(
     page,
@@ -658,7 +689,7 @@ export async function runKidsFlow(page, _pdc) {
     { timeout: 10000 },
   );
 
-  await page.evaluate(() => {
+  await page.evaluate((idx) => {
     const root =
       document.querySelector("#vs-kid-app")?.nextElementSibling?.shadowRoot;
     if (!root) throw new Error("[kids] Shadow root not found for age selection");
@@ -666,12 +697,12 @@ export async function runKidsFlow(page, _pdc) {
       (r) => r.name !== "selectKidGender",
     );
     if (!ageRadios.length) throw new Error("[kids] No age radio buttons found");
-    const target = ageRadios[5] ?? ageRadios[0];
+    const target = ageRadios[idx] ?? ageRadios[0];
     target.click();
     target.dispatchEvent(new Event("change", { bubbles: true }));
-  });
+  }, ageIndex);
   await page.waitForTimeout(2000);
-  console.log("[kids] Age selected");
+  console.log(`[kids] Age selected (index ${ageIndex} → ${ageIndex + 3} yr)`);
   await page.waitForTimeout(1000);
 
   await page.waitForFunction(
@@ -689,8 +720,8 @@ export async function runKidsFlow(page, _pdc) {
   );
 
   for (const [testId, value] of [
-    ["kids-height-input-desktop", "120"],
-    ["kids-weight-input-desktop", "25"],
+    ["kids-height-input-desktop", String(height)],
+    ["kids-weight-input-desktop", String(weight)],
   ]) {
     await page.evaluate(
       ({ testId, value }) => {
@@ -756,7 +787,24 @@ export async function runKidsFlow(page, _pdc) {
   return true;
 }
 
-export async function runGiftFlow(page, eventWatcher) {
+/**
+ * @param {import('@playwright/test').Page} page
+ * @param eventWatcher
+ * @param {object} [giftOpts]
+ * @param {number} [giftOpts.genderIndex=0]    0=female, 1=male
+ * @param {number} [giftOpts.ageIndex=3]       0=16-19, 1=20-25, 2=26-29, 3=30-39, 4=40-49, 5=50-59, 6=>60
+ * @param {number} [giftOpts.heightIndex=3]    0=145-149cm … 10=195+cm
+ * @param {number} [giftOpts.bodyTypeIndex=1]  0=<52kg, 1=52-63, 2=63-74, 3=74-84, 4=85-98, 5=>98kg
+ */
+export async function runGiftFlow(page, eventWatcher, giftOpts = {}) {
+  const {
+    genderIndex   = 0,
+    ageIndex      = 3,
+    heightIndex   = 3,
+    bodyTypeIndex = 1,
+  } = giftOpts;
+
+  const genderValue = genderIndex === 1 ? 'male' : 'female';
   console.log("Running VS Gift flow");
 
   const hasGift = await page
@@ -786,29 +834,29 @@ export async function runGiftFlow(page, eventWatcher) {
   console.log("Gift onboarding detected");
   await page.waitForTimeout(5000);
 
-  await page.evaluate(() => {
-    const radio = findInShadow('input[name="selectGender"][value="female"]');
-    if (!radio) throw new Error("Female gender radio not found");
+  await page.evaluate((gv) => {
+    const radio = findInShadow(`input[name="selectGender"][value="${gv}"]`);
+    if (!radio) throw new Error(`${gv} gender radio not found`);
     radio.click();
     radio.dispatchEvent(new Event("change", { bubbles: true }));
-  });
+  }, genderValue);
   await page.waitForTimeout(2000);
-  console.log("Selected gender: female");
+  console.log(`Selected gender: ${genderValue}`);
 
   await page.locator('[data-test-id="input-age-desktop"]').click();
   await page.waitForFunction(
     () => !!findInShadow("#sheet")?.querySelector('span[role="radio"]'),
     { timeout: 10000 },
   );
-  await page.evaluate(() =>
-    findInShadow("#sheet")?.querySelectorAll('span[role="radio"]')[3]?.click(),
-  );
+  await page.evaluate((idx) =>
+    findInShadow("#sheet")?.querySelectorAll('span[role="radio"]')[idx]?.click(),
+  , ageIndex);
   await page.waitForFunction(
     () => !findInShadow("#sheet")?.querySelector('span[role="radio"]'),
     { timeout: 8000 },
   );
   await page.waitForTimeout(2000);
-  console.log("Selected age");
+  console.log(`Selected age (index ${ageIndex})`);
 
   await page.waitForTimeout(2000);
   await page.locator('[data-test-id="input-height-desktop"]').click();
@@ -816,9 +864,9 @@ export async function runGiftFlow(page, eventWatcher) {
     () => !!findInShadow("#sheet")?.querySelector('span[role="radio"]'),
     { timeout: 10000 },
   );
-  await page.evaluate(() =>
-    findInShadow("#sheet")?.querySelectorAll('span[role="radio"]')[3]?.click(),
-  );
+  await page.evaluate((idx) =>
+    findInShadow("#sheet")?.querySelectorAll('span[role="radio"]')[idx]?.click(),
+  , heightIndex);
   await page.waitForFunction(
     () => !findInShadow("#sheet")?.querySelector('span[role="radio"]'),
     { timeout: 8000 },
@@ -831,16 +879,16 @@ export async function runGiftFlow(page, eventWatcher) {
     { timeout: 8000 },
   );
   await page.waitForTimeout(2000);
-  console.log("Selected height");
+  console.log(`Selected height (index ${heightIndex})`);
 
   await page.waitForTimeout(2000);
   await page.locator('[data-test-id="input-body-type"]').click();
   const bodySheet = page.locator('[data-test-id="sheetTestId"]');
   await expect(bodySheet).toBeVisible({ timeout: 10000 });
-  await bodySheet.locator('[data-test-id="gridItemTestId"]').nth(1).click();
+  await bodySheet.locator('[data-test-id="gridItemTestId"]').nth(bodyTypeIndex).click();
   await expect(bodySheet).toBeHidden({ timeout: 8000 });
   await page.waitForTimeout(2000);
-  console.log("Selected body type");
+  console.log(`Selected body type (index ${bodyTypeIndex})`);
 
   const privacyCheckbox = page.locator(
     '[data-test-id="privacy-policy-checkbox"]',
@@ -1088,7 +1136,7 @@ export function validateStrictDuplicates(eventWatcher) {
 export async function runInpageFlow(
   page,
   { pdc, eventWatcher, recommendationAPI, bodyAPI },
-  { phase = "full", url = null, BOT_PROTECTED_DOMAINS: botDomains = [] } = {},
+  { phase = "full", url = null, BOT_PROTECTED_DOMAINS: botDomains = [], giftOpts = {} } = {},
 ) {
   // 1. Wait for PDC
   await waitForPDC(pdc);
@@ -1261,7 +1309,7 @@ export async function runInpageFlow(
     await page.waitForTimeout(10000);
     eventWatcher.setPhase("gift");
     eventWatcher.reset();
-    await runGiftFlow(page, eventWatcher);
+    await runGiftFlow(page, eventWatcher, giftOpts);
   }
 
   return {

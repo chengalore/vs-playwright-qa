@@ -47,6 +47,29 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
     weight: process.env.ONBOARDING_WEIGHT || "54",
   };
 
+  // Gift flow onboarding params — configurable via env vars (apparel only)
+  const giftOpts = {
+    genderIndex:   parseInt(process.env.GIFT_GENDER    ?? "0", 10), // 0=female, 1=male
+    ageIndex:      parseInt(process.env.GIFT_AGE       ?? "3", 10), // 0=16-19 … 6=>60
+    heightIndex:   parseInt(process.env.GIFT_HEIGHT    ?? "3", 10), // 0=145-149cm … 10=195+cm
+    bodyTypeIndex: parseInt(process.env.GIFT_BODY_TYPE ?? "1", 10), // 0=<52kg … 5=>98kg
+  };
+
+  // Footwear onboarding params — configurable via env vars
+  const footwearOpts = {
+    genderIndex: parseInt(process.env.FOOTWEAR_GENDER ?? "0", 10), // 0=female, 1=male
+    brandIndex:  parseInt(process.env.FOOTWEAR_BRAND  ?? "1", 10), // 0=UA…9=I don't know
+    sizeIndex:   parseInt(process.env.FOOTWEAR_SIZE   ?? "17", 10), // 0=17cm…36=35cm
+  };
+
+  // Kids onboarding params — configurable via env vars
+  const kidsOpts = {
+    genderIndex: parseInt(process.env.KIDS_GENDER  ?? "0", 10), // 0=girl, 1=boy
+    ageIndex:    parseInt(process.env.KIDS_AGE     ?? "5", 10), // 0=3yr…15=18yr (default idx 5 → 8yr)
+    height:      process.env.KIDS_HEIGHT || "120",
+    weight:      process.env.KIDS_WEIGHT || "25",
+  };
+
   const url = await resolveTestUrl(
     "https://www.underarmour.co.jp/f/dsg-1072366",
   );
@@ -442,10 +465,10 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
       isNewUser = await runApparelFlow(page, bodyAPI, eventWatcher, recommendationAPI, onboardingOpts);
     }
     if (flow === "footwear") {
-      isNewUser = await runFootwearFlow(page);
+      isNewUser = await runFootwearFlow(page, footwearOpts);
     }
     if (flow === "kids") {
-      isNewUser = await runKidsFlow(page, pdc);
+      isNewUser = await runKidsFlow(page, pdc, kidsOpts);
     }
     if (flow === "noVisor") {
       isNewUser = await runNoVisorFlow(page, bodyAPI, onboardingOpts);
@@ -574,7 +597,7 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
       await page.waitForTimeout(10000);
       eventWatcher.setPhase("gift");
       eventWatcher.reset();
-      await runGiftFlow(page, eventWatcher);
+      await runGiftFlow(page, eventWatcher, giftOpts);
     }
 
     eventWatcher.logPhaseSummary();
