@@ -408,4 +408,8 @@ jobs:
           git config user.email "github-actions@github.com"
           git add data/storeHealth.json data/monitor-report.json data/monitor-history.json docs/
           git diff --staged --quiet || git commit -m "chore: update store health [skip ci]"
-          git push origin HEAD:${{ github.ref_name }}
+          for i in 1 2 3; do
+            git pull --rebase origin ${{ github.ref_name }} && git push origin HEAD:${{ github.ref_name }} && break
+            echo "Push attempt $i failed, retrying..."
+            sleep 5
+          done
