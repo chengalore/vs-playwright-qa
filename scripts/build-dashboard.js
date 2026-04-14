@@ -694,11 +694,7 @@ function toggleSingleFlag(idx, url) {
 
 function exportSingleFlagged() {
   const lines = [...singleFlagged.values()];
-  const blob = new Blob([lines.join('\\n')], { type: 'text/plain' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'flagged-single-url.txt';
-  a.click();
+  downloadTxt(lines.join('\\n'), 'flagged-single-url.txt');
 }
 
 function renderSingleUrl() {
@@ -793,13 +789,18 @@ function toggleFlag(event, sku, url, fromCheckbox = false) {
   document.getElementById('export-btn').disabled = flagged.size === 0;
 }
 
+function downloadTxt(content, filename) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([content], { type: 'text/plain' }));
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
 function exportFlagged() {
   const lines = [...flagged.entries()].map(([sku, url]) => url || sku);
-  const blob = new Blob([lines.join('\\n')], { type: 'text/plain' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'flagged-compare-view.txt';
-  a.click();
+  downloadTxt(lines.join('\\n'), 'flagged-compare-view.txt');
 }
 
 // ── Compare view trigger ──────────────────────────────────────────────────────
