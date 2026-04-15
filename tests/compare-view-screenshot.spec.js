@@ -212,9 +212,9 @@ for (const url of urls) {
     // Screenshot the widget host element (matching getWidgetHost logic), fall back to full page
     const widgetHandle = await page.evaluateHandle(() => window.getWidgetHost()).catch(() => null);
     const widgetElement = widgetHandle?.asElement() ?? null;
-    const screenshot = widgetElement
-      ? await widgetElement.screenshot({ timeout: 10000 }).catch(() => null)
-      : await page.screenshot({ fullPage: false }).catch(() => null);
+    const screenshot =
+      (widgetElement ? await widgetElement.screenshot({ timeout: 10000 }).catch(() => null) : null)
+      ?? await page.screenshot({ fullPage: false }).catch(() => null);
 
     if (!screenshot) {
       logResult({ sku, url, status: "error", reason: "screenshot failed", durationMs: Date.now() - startTime });
