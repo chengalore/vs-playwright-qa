@@ -209,11 +209,11 @@ for (const url of urls) {
       await page.waitForTimeout(1500);
     }
 
-    // Screenshot the widget host element, fall back to full page
-    const widgetHost = page.locator("#router-view-wrapper").first();
-    const widgetVisible = await widgetHost.isVisible().catch(() => false);
-    const screenshot = widgetVisible
-      ? await widgetHost.screenshot({ timeout: 10000 }).catch(() => null)
+    // Screenshot the widget host element (matching getWidgetHost logic), fall back to full page
+    const widgetHandle = await page.evaluateHandle(() => window.getWidgetHost()).catch(() => null);
+    const widgetElement = widgetHandle?.asElement() ?? null;
+    const screenshot = widgetElement
+      ? await widgetElement.screenshot({ timeout: 10000 }).catch(() => null)
       : await page.screenshot({ fullPage: false }).catch(() => null);
 
     if (!screenshot) {
