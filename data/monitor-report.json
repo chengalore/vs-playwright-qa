@@ -1,35 +1,19 @@
 {
-  "timestamp": "2026-04-14T23:43:48.270Z",
-  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/24428424530",
+  "timestamp": "2026-04-15T23:42:39.559Z",
+  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/24483966666",
   "summary": {
     "total": 86,
-    "passed": 75,
-    "widgetMissing": 6,
-    "skipped": 4,
-    "failed": 1,
-    "fallbackUsed": 76
+    "passed": 78,
+    "widgetMissing": 5,
+    "skipped": 3,
+    "failed": 0,
+    "fallbackUsed": 78
   },
-  "newIssues": [
-    {
-      "store": "callawaygolf",
-      "url": "https://www.callawaygolf.jp/mens/bottoms/pants/C26126101_.html?pid=C26126101_1120_L",
-      "browsers": [
-        "chrome"
-      ],
-      "error": "page.evaluate: Execution context was destroyed, most likely because of a navigation"
-    }
-  ],
+  "newIssues": [],
   "widgetMissingStores": [
     {
       "store": "snidel",
       "url": "https://snidel.com/Form/Product/ProductDetail.aspx?shop=0&pid=SHFT261075&vid=&bid=SNH01&cid=&_type=&cat=&swrd=",
-      "browsers": [
-        "chrome"
-      ]
-    },
-    {
-      "store": "classico_taiwan",
-      "url": "https://classicolabcoat.tw/products/r57",
       "browsers": [
         "chrome"
       ]
@@ -57,7 +41,7 @@
     },
     {
       "store": "hankyu_mens",
-      "url": "https://web.hh-online.jp/hankyu-mens/goods/index.html?ggcd=505273279",
+      "url": "https://web.hh-online.jp/hankyu-mens/goods/index.html?ggcd=506692016",
       "browsers": [
         "chrome"
       ]
@@ -66,18 +50,26 @@
   "ongoingMissing": [
     {
       "store": "hankyu_hanshin",
-      "consecutiveRuns": 1
+      "consecutiveRuns": 2
     },
     {
       "store": "reebok_korea",
-      "consecutiveRuns": 1
+      "consecutiveRuns": 2
     },
     {
       "store": "snidel",
-      "consecutiveRuns": 1
+      "consecutiveRuns": 2
     },
     {
       "store": "gelato_pique",
+      "consecutiveRuns": 2
+    },
+    {
+      "store": "hankyu_mens",
+      "consecutiveRuns": 1
+    },
+    {
+      "store": "classico_taiwan",
       "consecutiveRuns": 1
     }
   ],
@@ -86,10 +78,5 @@
     "ralph_lauren",
     "asics_japan"
   ],
-  "skippedStores": [
-    {
-      "store": "bottega_veneta_japan",
-      "reason": "navigation_error"
-    }
-  ]
+  "skippedStores": []
 }
