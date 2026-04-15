@@ -7,11 +7,6 @@ on:
         description: "Product page URLs (one per line)"
         required: true
         type: string
-      run_name:
-        description: "Run label (optional, defaults to timestamp)"
-        required: false
-        default: ""
-        type: string
 
 jobs:
   screenshot:
@@ -45,8 +40,6 @@ jobs:
             --reporter=list 2>&1 | tee test-output.log
         env:
           TEST_URLS_FILE: data/compare-view-urls-run.txt
-          COMPARE_RUN: ${{ github.event.inputs.run_name != '' && github.event.inputs.run_name || '' }}
-          # Spaces in COMPARE_RUN are replaced in the spec via the runFolder variable
 
       - name: Publish to GitHub Pages
         run: |

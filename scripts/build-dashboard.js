@@ -27,58 +27,57 @@ const singleUrlHistory = fs.existsSync(SINGLE_URL_HISTORY_FILE)
   ? JSON.parse(fs.readFileSync(SINGLE_URL_HISTORY_FILE, 'utf8'))
   : [];
 
-// Copy compare view screenshots to docs/ — one subfolder per run
-// test-results/compare-view-screenshots/{run-folder}/ → docs/compare-view-screenshots/{run-folder}/
+// Copy compare view screenshots to docs/ — flat directory, no per-run subfolders
 const screenshotsSrc = 'test-results/compare-view-screenshots';
 const screenshotsDst = 'docs/compare-view-screenshots';
 fs.mkdirSync(screenshotsDst, { recursive: true });
 
-// Copy any new run folders from test-results to docs
+// Copy new screenshots and merge manifest
 if (fs.existsSync(screenshotsSrc)) {
-  const runFolders = fs.readdirSync(screenshotsSrc, { withFileTypes: true })
-    .filter(d => d.isDirectory())
-    .map(d => d.name);
-  for (const folder of runFolders) {
-    const src = path.join(screenshotsSrc, folder);
-    const dst = path.join(screenshotsDst, folder);
-    fs.mkdirSync(dst, { recursive: true });
-    for (const file of fs.readdirSync(src)) {
-      fs.copyFileSync(path.join(src, file), path.join(dst, file));
+  // Merge manifest: load existing, apply new entries (update by SKU)
+  const dstManifestPath = path.join(screenshotsDst, 'manifest.json');
+  const srcManifestPath = path.join(screenshotsSrc, 'manifest.json');
+  const dstManifest = fs.existsSync(dstManifestPath)
+    ? JSON.parse(fs.readFileSync(dstManifestPath, 'utf8'))
+    : [];
+  if (fs.existsSync(srcManifestPath)) {
+    const srcManifest = JSON.parse(fs.readFileSync(srcManifestPath, 'utf8'));
+    for (const entry of srcManifest) {
+      const idx = dstManifest.findIndex(e => e.sku === entry.sku);
+      if (idx >= 0) dstManifest[idx] = entry;
+      else dstManifest.push(entry);
     }
+    fs.writeFileSync(dstManifestPath, JSON.stringify(dstManifest, null, 2));
   }
-  if (runFolders.length) console.log(`Copied run folders: ${runFolders.join(', ')}`);
+  // Copy PNGs (overwrites existing file for same SKU)
+  const pngs = fs.readdirSync(screenshotsSrc).filter(f => f.endsWith('.png'));
+  for (const f of pngs) {
+    fs.copyFileSync(path.join(screenshotsSrc, f), path.join(screenshotsDst, f));
+  }
+  if (pngs.length) console.log(`Copied ${pngs.length} screenshot(s) to ${screenshotsDst}`);
 }
 
-// Build compareRuns: array of { folder, images: [{sku, url}] } sorted newest first
-const compareRuns = fs.readdirSync(screenshotsDst, { withFileTypes: true })
-  .filter(d => d.isDirectory())
-  .map(d => d.name)
-  .sort()
-  .reverse()
-  .map(folder => {
-    const manifestPath = path.join(screenshotsDst, folder, 'manifest.json');
-    const manifest = fs.existsSync(manifestPath)
-      ? JSON.parse(fs.readFileSync(manifestPath, 'utf8'))
-      : [];
-    const pngs = fs.readdirSync(path.join(screenshotsDst, folder)).filter(f => f.endsWith('.png'));
-    // Merge: prefer manifest entries (have URLs), fall back to bare filenames
-    const skusInManifest = new Set(manifest.map(e => e.sku));
-    for (const f of pngs) {
-      const sku = f.replace('.png', '');
-      if (!skusInManifest.has(sku)) manifest.push({ sku, url: null });
-    }
-    return { folder, images: manifest.filter(e => pngs.includes(`${e.sku}.png`)) };
-  })
-  .filter(r => r.images.length > 0);
+// Build compareImages: flat array of { sku, url } from the manifest
+const dstManifestPath = path.join(screenshotsDst, 'manifest.json');
+const dstManifest = fs.existsSync(dstManifestPath)
+  ? JSON.parse(fs.readFileSync(dstManifestPath, 'utf8'))
+  : [];
+const dstPngs = new Set(fs.readdirSync(screenshotsDst).filter(f => f.endsWith('.png')));
+// Add any PNGs not yet in manifest
+for (const f of dstPngs) {
+  const sku = f.replace('.png', '');
+  if (!dstManifest.some(e => e.sku === sku)) dstManifest.push({ sku, url: null });
+}
+const compareImages = dstManifest.filter(e => dstPngs.has(`${e.sku}.png`));
 
 // Generate dashboard HTML
 fs.mkdirSync('docs', { recursive: true });
-fs.writeFileSync('docs/index.html', generateDashboard(history, compareRuns, singleUrlHistory));
+fs.writeFileSync('docs/index.html', generateDashboard(history, compareImages, singleUrlHistory));
 console.log(`Dashboard written — ${history.length} monitor runs, ${singleUrlHistory.length} single-url runs`);
 
-function generateDashboard(history, compareRuns, singleUrlHistory) {
+function generateDashboard(history, compareImages, singleUrlHistory) {
   const dataJson = JSON.stringify(history).replace(/<\/script>/gi, '<\\/script>');
-  const compareJson = JSON.stringify(compareRuns).replace(/<\/script>/gi, '<\\/script>');
+  const compareJson = JSON.stringify(compareImages).replace(/<\/script>/gi, '<\\/script>');
   const singleUrlJson = JSON.stringify(singleUrlHistory).replace(/<\/script>/gi, '<\\/script>');
 
   return `<!DOCTYPE html>
@@ -679,11 +678,6 @@ function generateDashboard(history, compareRuns, singleUrlHistory) {
           style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:6px 10px;font-size:13px"
           oninput="localStorage.setItem('gh_pat', this.value); document.getElementById('single-pat').value = this.value">
       </div>
-      <div style="margin-bottom:10px">
-        <label style="font-size:12px;color:#8b949e;display:block;margin-bottom:4px">Run label (optional)</label>
-        <input id="compare-run-name" type="text" placeholder="e.g. bottega-spring"
-          style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:6px 10px;font-size:13px">
-      </div>
       <div style="margin-bottom:12px">
         <label style="font-size:12px;color:#8b949e;display:block;margin-bottom:4px">URLs — one per line</label>
         <textarea id="compare-urls" rows="6" placeholder="https://example.com/product-1&#10;https://example.com/product-2"
@@ -728,7 +722,7 @@ function generateDashboard(history, compareRuns, singleUrlHistory) {
 <script>
 const HISTORY = ${dataJson};
 const SINGLE_URL_HISTORY = ${singleUrlJson};
-const COMPARE_RUNS = ${compareJson};
+const COMPARE_IMAGES = ${compareJson};
 
 // ── Navigation ────────────────────────────────────────────────────────────────
 function showPanel(name) {
@@ -1156,7 +1150,7 @@ function renderSingleUrl() {
 // ── Compare view gallery ──────────────────────────────────────────────────────
 function renderCompareView() {
   const el = document.getElementById('compare-content');
-  if (COMPARE_RUNS.length === 0) {
+  if (COMPARE_IMAGES.length === 0) {
     el.innerHTML = \`<div class="info-panel">
       <div class="icon">🖼</div>
       <p>No screenshots yet. Run the compare view test to generate them.</p>
@@ -1170,22 +1164,18 @@ function renderCompareView() {
       <span id="flag-count">0 items flagged</span>
       <button id="export-btn" onclick="exportFlagged()" disabled>Export flagged URLs</button>
     </div>
-    \` + COMPARE_RUNS.map(run => \`
-    <div style="margin-bottom:32px">
-      <h2 style="font-size:14px;font-weight:600;color:#c9d1d9;margin:0 0 12px">\${run.folder} — \${run.images.length} product\${run.images.length !== 1 ? 's' : ''}</h2>
-      <div class="overlay-grid">
-        \${run.images.map(({ sku, url }) => \`
-          <div class="overlay-card" id="card-\${sku}" onclick="toggleFlag(event, '\${sku}', \${JSON.stringify(url)})">
-            <img src="compare-view-screenshots/\${encodeURIComponent(run.folder)}/\${sku}.png" alt="">
-            <div class="card-footer">
-              <div class="card-sku">\${url ? \`<a href="\${url}" target="_blank" onclick="event.stopPropagation()">\${sku}</a>\` : sku}</div>
-              <input class="flag-checkbox" type="checkbox" id="chk-\${sku}" onclick="event.stopPropagation(); toggleFlag(event, '\${sku}', \${JSON.stringify(url)}, true)">
-            </div>
+    <div class="overlay-grid">
+      \${COMPARE_IMAGES.map(({ sku, url }) => \`
+        <div class="overlay-card" id="card-\${sku}" onclick="toggleFlag(event, '\${sku}', \${JSON.stringify(url)})">
+          <img src="compare-view-screenshots/\${sku}.png" alt="">
+          <div class="card-footer">
+            <div class="card-sku">\${url ? \`<a href="\${url}" target="_blank" onclick="event.stopPropagation()">\${sku}</a>\` : sku}</div>
+            <input class="flag-checkbox" type="checkbox" id="chk-\${sku}" onclick="event.stopPropagation(); toggleFlag(event, '\${sku}', \${JSON.stringify(url)}, true)">
           </div>
-        \`).join('')}
-      </div>
+        </div>
+      \`).join('')}
     </div>
-  \`).join('');
+  \`;
 }
 
 const flagged = new Map(); // sku → url
@@ -1223,7 +1213,6 @@ function exportFlagged() {
 async function triggerCompareRun() {
   const pat = document.getElementById('gh-pat').value.trim();
   const urls = document.getElementById('compare-urls').value.trim();
-  const runName = document.getElementById('compare-run-name').value.trim();
   const status = document.getElementById('compare-trigger-status');
 
   if (!pat) { status.textContent = '⚠️ Enter a GitHub PAT first'; status.style.color = '#d29922'; return; }
@@ -1234,14 +1223,13 @@ async function triggerCompareRun() {
   const res = await fetch('https://api.github.com/repos/chengalore/vs-playwright-qa/actions/workflows/compare-view-screenshot.yml/dispatches', {
     method: 'POST',
     headers: { Authorization: 'Bearer ' + pat, Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' },
-    body: JSON.stringify({ ref: 'main', inputs: { urls, run_name: runName } }),
+    body: JSON.stringify({ ref: 'main', inputs: { urls } }),
   });
 
   if (res.status === 204) {
     status.textContent = '✅ Workflow triggered — results will appear here in ~5 min';
     status.style.color = '#3fb950';
     document.getElementById('compare-urls').value = '';
-    document.getElementById('compare-run-name').value = '';
   } else {
     const body = await res.json().catch(() => ({}));
     status.textContent = '❌ ' + (body.message || 'Failed (' + res.status + ')');

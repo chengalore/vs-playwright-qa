@@ -48,11 +48,6 @@ test.setTimeout(180000);
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-// Run folder: COMPARE_RUN env var or timestamp (YYYY-MM-DD_HH-MM). Spaces → hyphens.
-const runFolder = (process.env.COMPARE_RUN ||
-  new Date().toISOString().slice(0, 16).replace('T', '_').replace(':', '-'))
-  .replace(/\s+/g, '-');
-
 const urlsFile = process.env.TEST_URLS_FILE
   ? join(__dirname, "..", process.env.TEST_URLS_FILE)
   : join(__dirname, "../data/compare-view-screenshot-urls.txt");
@@ -221,15 +216,17 @@ for (const url of urls) {
       return;
     }
 
-    // Save screenshot to disk under the run folder
-    const screenshotsDir = join(__dirname, "../test-results/compare-view-screenshots", runFolder);
+    // Save screenshot to disk (flat directory, no per-run subfolders)
+    const screenshotsDir = join(__dirname, "../test-results/compare-view-screenshots");
     mkdirSync(screenshotsDir, { recursive: true });
     writeFileSync(join(screenshotsDir, `${sku}.png`), screenshot);
 
-    // Append to manifest so afterAll can build the gallery without re-parsing URLs
+    // Update manifest — replace existing entry for this SKU or append
     const manifestPath = join(screenshotsDir, "manifest.json");
     const manifest = existsSync(manifestPath) ? JSON.parse(readFileSync(manifestPath, "utf8")) : [];
-    if (!manifest.some((e) => e.sku === sku)) manifest.push({ sku, url });
+    const existingIdx = manifest.findIndex((e) => e.sku === sku);
+    if (existingIdx >= 0) manifest[existingIdx] = { sku, url };
+    else manifest.push({ sku, url });
     writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
 
     // Also attach to Playwright HTML report
@@ -245,7 +242,7 @@ function logResult(result) {
 
 // Generate a simple HTML gallery after all tests
 test.afterAll(async () => {
-  const screenshotsDir = join(__dirname, "../test-results/compare-view-screenshots", runFolder);
+  const screenshotsDir = join(__dirname, "../test-results/compare-view-screenshots");
   if (!existsSync(screenshotsDir)) return;
 
   const manifestPath = join(screenshotsDir, "manifest.json");
@@ -284,4 +281,5 @@ test.afterAll(async () => {
   const galleryPath = join(screenshotsDir, "index.html");
   writeFileSync(galleryPath, html);
   console.log(`\nGallery ready: open test-results/compare-view-screenshots/index.html`);
+
 });
