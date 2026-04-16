@@ -76,6 +76,7 @@ test("compare view screenshots", async ({ context }, testInfo) => {
     // Each URL opens in a new tab within the same browser context (shared cookies/storage)
     const page = await context.newPage();
     const startTime = Date.now();
+    try {
 
     await page.addInitScript(() => {
       Object.defineProperty(navigator, "webdriver", { get: () => undefined });
@@ -88,8 +89,12 @@ test("compare view screenshots", async ({ context }, testInfo) => {
     const pdc = startPDCWatcher(page);
     const eventWatcher = startRecommendationDetector(page);
 
-    await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60000 });
-    await page.waitForLoadState("load");
+    const navOk = await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60000 }).catch(() => null);
+    if (!navOk) {
+      logResult({ url, status: "skipped", reason: "navigation failed", durationMs: Date.now() - startTime });
+      continue;
+    }
+    await page.waitForLoadState("load").catch(() => {});
 
     // Accept cookie banner if present
     await page.locator("#onetrust-accept-btn-handler").click({ timeout: 5000 }).catch(() => {});
@@ -248,6 +253,9 @@ test("compare view screenshots", async ({ context }, testInfo) => {
     logResult({ sku, url, status: "screenshot_taken", durationMs: Date.now() - startTime });
 
     // Leave page open — browser retains cookies/storage for the returning-user path
+    } catch (err) {
+      logResult({ url, status: "error", reason: `unexpected: ${err.message || err}`, durationMs: Date.now() - startTime });
+    }
   }
 });
 
