@@ -1,15 +1,24 @@
 {
-  "timestamp": "2026-04-15T23:42:39.559Z",
-  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/24483966666",
+  "timestamp": "2026-04-16T23:41:15.289Z",
+  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/24539636142",
   "summary": {
     "total": 86,
-    "passed": 78,
+    "passed": 77,
     "widgetMissing": 5,
     "skipped": 3,
-    "failed": 0,
+    "failed": 1,
     "fallbackUsed": 78
   },
-  "newIssues": [],
+  "newIssues": [
+    {
+      "store": "callawaygolf",
+      "url": "https://www.callawaygolf.jp/mens/bottoms/pants/C26126101_.html?pid=C26126101_1120_L",
+      "browsers": [
+        "chrome"
+      ],
+      "error": "page.evaluate: Execution context was destroyed, most likely because of a navigation"
+    }
+  ],
   "widgetMissingStores": [
     {
       "store": "snidel",
@@ -50,27 +59,23 @@
   "ongoingMissing": [
     {
       "store": "hankyu_hanshin",
-      "consecutiveRuns": 2
+      "consecutiveRuns": 3
     },
     {
       "store": "reebok_korea",
-      "consecutiveRuns": 2
+      "consecutiveRuns": 3
     },
     {
       "store": "snidel",
-      "consecutiveRuns": 2
+      "consecutiveRuns": 3
     },
     {
       "store": "gelato_pique",
-      "consecutiveRuns": 2
+      "consecutiveRuns": 3
     },
     {
       "store": "hankyu_mens",
-      "consecutiveRuns": 1
-    },
-    {
-      "store": "classico_taiwan",
-      "consecutiveRuns": 1
+      "consecutiveRuns": 2
     }
   ],
   "botProtected": [
