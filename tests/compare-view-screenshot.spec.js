@@ -1,8 +1,8 @@
 /**
  * Virtusize compare view screenshot test.
  *
- * For each bag product URL, opens the Virtusize aoyama widget, goes through
- * the bag flow, and screenshots the result for manual visual review.
+ * For each product URL, opens the Virtusize aoyama widget, goes through
+ * the onboarding flow, and screenshots the result for manual visual review.
  *
  * Screenshots are saved to test-results/compare-view-screenshots/ and an HTML
  * gallery (index.html) is generated there after all tests complete.
@@ -63,20 +63,11 @@ if (urls.length === 0) {
   throw new Error(`No URLs found in ${urlsFile}`);
 }
 
-// All URLs run in a single test sharing one browser context.
-// This means bag onboarding only happens on the first bag product —
-// subsequent bag pages see the user as returning and go straight to the compare view.
-test.setTimeout(urls.length * 90000); // 90 s per URL
+test.setTimeout(180000); // 3 minutes per URL
 
-test("compare view screenshots", async ({ context }, testInfo) => {
-  // Shared across all pages in this run
-  let bagOnboardingDone = false;
-
-  for (const url of urls) {
-    // Each URL opens in a new tab within the same browser context (shared cookies/storage)
-    const page = await context.newPage();
+for (const url of urls) {
+  test(url, async ({ page }, testInfo) => {
     const startTime = Date.now();
-    try {
 
     await page.addInitScript(() => {
       Object.defineProperty(navigator, "webdriver", { get: () => undefined });
@@ -92,7 +83,7 @@ test("compare view screenshots", async ({ context }, testInfo) => {
     const navOk = await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60000 }).catch(() => null);
     if (!navOk) {
       logResult({ url, status: "skipped", reason: "navigation failed", durationMs: Date.now() - startTime });
-      continue;
+      return;
     }
     await page.waitForLoadState("load").catch(() => {});
 
@@ -119,13 +110,13 @@ test("compare view screenshots", async ({ context }, testInfo) => {
 
     if (pdc.validProduct !== true) {
       logResult({ url, status: "skipped", reason: `validProduct=${pdc.validProduct}`, durationMs: Date.now() - startTime });
-      continue;
+      return;
     }
 
     const sku = pdc.externalProductId;
     if (!sku) {
       logResult({ url, status: "skipped", reason: "externalProductId missing from PDC", durationMs: Date.now() - startTime });
-      continue;
+      return;
     }
 
     // Wait for inpage open button in shadow root
@@ -146,7 +137,7 @@ test("compare view screenshots", async ({ context }, testInfo) => {
 
     if (!btnFound) {
       logResult({ sku, url, status: "skipped", reason: "inpage button not found", durationMs: Date.now() - startTime });
-      continue;
+      return;
     }
 
     // Click the inpage open button
@@ -167,48 +158,41 @@ test("compare view screenshots", async ({ context }, testInfo) => {
     await page.waitForTimeout(1500);
 
     if (isBagProduct(pdc)) {
-      if (!bagOnboardingDone) {
-        // ── First bag: full onboarding (privacy policy + budget selection) ──────
-        await page.evaluate(() => {
-          const root = window.getWidgetHost()?.shadowRoot;
-          const checkbox = root?.querySelector('[data-test-id="privacy-policy-checkbox"]');
-          if (!checkbox) return;
-          const linkButton = root.querySelector?.("#linkText");
-          if (linkButton) linkButton.removeAttribute("id");
-          checkbox.click();
-        });
-        await page.waitForTimeout(1000);
+      // ── Bag flow: full onboarding (privacy policy + budget selection) ──────
+      await page.evaluate(() => {
+        const root = window.getWidgetHost()?.shadowRoot;
+        const checkbox = root?.querySelector('[data-test-id="privacy-policy-checkbox"]');
+        if (!checkbox) return;
+        const linkButton = root.querySelector?.("#linkText");
+        if (linkButton) linkButton.removeAttribute("id");
+        checkbox.click();
+      });
+      await page.waitForTimeout(1000);
 
-        const nextBtn = page.locator('[data-test-id="accept-privacy-policy-btn"]');
-        await nextBtn.waitFor({ state: "visible", timeout: 5000 }).catch(() => {});
-        await nextBtn.click().catch(() => {});
-        await page.waitForTimeout(2000);
+      const nextBtn = page.locator('[data-test-id="accept-privacy-policy-btn"]');
+      await nextBtn.waitFor({ state: "visible", timeout: 5000 }).catch(() => {});
+      await nextBtn.click().catch(() => {});
+      await page.waitForTimeout(2000);
 
-        await page
-          .waitForFunction(
-            () => !!window.getWidgetHost()?.shadowRoot?.querySelector('button.everyday-item-btns'),
-            { timeout: 10000 }
-          )
-          .catch(() => {});
-        await page.evaluate(() => {
-          window.getWidgetHost()?.shadowRoot?.querySelector('button.everyday-item-btns')?.click();
-        });
-        await page.waitForTimeout(1500);
+      await page
+        .waitForFunction(
+          () => !!window.getWidgetHost()?.shadowRoot?.querySelector('button.everyday-item-btns'),
+          { timeout: 10000 }
+        )
+        .catch(() => {});
+      await page.evaluate(() => {
+        window.getWidgetHost()?.shadowRoot?.querySelector('button.everyday-item-btns')?.click();
+      });
+      await page.waitForTimeout(1500);
 
-        await page.evaluate(() => {
-          const root = window.getWidgetHost()?.shadowRoot;
-          const select = root?.querySelector(".hidden-select");
-          if (!select) return;
-          select.value = select.options[1]?.value ?? select.options[0]?.value;
-          select.dispatchEvent(new Event("change", { bubbles: true }));
-        });
-        await page.waitForTimeout(3000);
-
-        bagOnboardingDone = true;
-      } else {
-        // ── Returning bag user: compare view loads without onboarding ────────────
-        await page.waitForTimeout(4000);
-      }
+      await page.evaluate(() => {
+        const root = window.getWidgetHost()?.shadowRoot;
+        const select = root?.querySelector(".hidden-select");
+        if (!select) return;
+        select.value = select.options[1]?.value ?? select.options[0]?.value;
+        select.dispatchEvent(new Event("change", { bubbles: true }));
+      });
+      await page.waitForTimeout(3000);
     } else {
       // ── Apparel/footwear flow: complete onboarding then wait for compare view ─
       await completeOnboarding(page);
@@ -231,7 +215,7 @@ test("compare view screenshots", async ({ context }, testInfo) => {
 
     if (!screenshot) {
       logResult({ sku, url, status: "error", reason: "screenshot failed", durationMs: Date.now() - startTime });
-      continue;
+      return;
     }
 
     // Save screenshot to disk (flat directory, no per-run subfolders)
@@ -251,13 +235,8 @@ test("compare view screenshots", async ({ context }, testInfo) => {
     await testInfo.attach(`${sku}.png`, { body: screenshot, contentType: "image/png" });
 
     logResult({ sku, url, status: "screenshot_taken", durationMs: Date.now() - startTime });
-
-    // Leave page open — browser retains cookies/storage for the returning-user path
-    } catch (err) {
-      logResult({ url, status: "error", reason: `unexpected: ${err.message || err}`, durationMs: Date.now() - startTime });
-    }
-  }
-});
+  });
+}
 
 function logResult(result) {
   console.log(`COMPARE_VIEW_RESULT: ${JSON.stringify(result)}`);
