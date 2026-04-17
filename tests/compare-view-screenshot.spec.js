@@ -65,14 +65,14 @@ if (urls.length === 0) {
   throw new Error(`No URLs found in ${urlsFile}`);
 }
 
-// Serial mode required — tests share one browser context, so they must run
-// sequentially in the same worker.
-test.describe.configure({ mode: "serial" });
+// Default (non-serial) mode — a failed test does NOT cancel subsequent tests.
+// Run with --workers=1 to keep all tests in the same worker so the shared
+// browser context is visible to all of them.
 
 // Date folder for this run — screenshots go into test-results/compare-view-screenshots/YYYY-MM-DD/
 const runDate = new Date().toISOString().slice(0, 10);
 
-test.setTimeout(180000); // 3 minutes per URL
+test.setTimeout(120000); // 2 minutes per URL — well under the bounded max below
 
 // Shared browser context — created once, closed in afterAll.
 let sharedContext = null;
@@ -153,7 +153,7 @@ for (const url of urls) {
 
       // ── Navigate ────────────────────────────────────────────────────────────
       const navOk = await page
-        .goto(url, { waitUntil: "domcontentloaded", timeout: 60000 })
+        .goto(url, { waitUntil: "domcontentloaded", timeout: 30000 })
         .catch(() => null);
       if (!navOk) {
         logResult({ url, status: "skipped", reason: "navigation failed", durationMs: Date.now() - startTime });
@@ -257,7 +257,7 @@ for (const url of urls) {
 
           const nextBtn = page.locator('[data-test-id="accept-privacy-policy-btn"]');
           await nextBtn.waitFor({ state: "visible", timeout: 5000 }).catch(() => {});
-          await nextBtn.click().catch(() => {});
+          await nextBtn.click({ timeout: 5000 }).catch(() => {});
           await page.waitForTimeout(2000);
 
           await page

@@ -36,6 +36,7 @@ jobs:
         run: |
           npx playwright test tests/compare-view-screenshot.spec.js \
             --project=chrome \
+            --workers=1 \
             --retries=0 \
             --reporter=list 2>&1 | tee test-output.log
         env:
