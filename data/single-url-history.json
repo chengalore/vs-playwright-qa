@@ -1,5 +1,62 @@
 [
   {
+    "timestamp": "2026-04-17T07:06:51.188Z",
+    "url": "https://www.bottegaveneta.com/ja-jp/%E3%83%80%E3%83%96%E3%83%AB%E3%83%8E%E3%83%83%E3%83%88-%E3%83%9D%E3%83%AC%E3%83%B3-717151V2FZ07341.html?vs-dev=true&vs-env=staging",
+    "phase": "full",
+    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/24552440218",
+    "store": null,
+    "productType": null,
+    "flow": null,
+    "onboarding": {
+      "gender": "female",
+      "age": "35",
+      "height": "161",
+      "weight": "54"
+    },
+    "giftOnboarding": {
+      "gender": "female",
+      "age": "30-39",
+      "height": "160-164",
+      "bodyType": "52 - 63 kg"
+    },
+    "footwearOnboarding": {
+      "gender": "female",
+      "brand": "Adidas",
+      "size": "25.5 cm"
+    },
+    "kidsOnboarding": {
+      "gender": "girl",
+      "age": 8,
+      "height": "120",
+      "weight": "25"
+    },
+    "events": [
+      {
+        "event": "user-saw-product::integration",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-saw-widget-button::integration",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-saw-measurements-view::smart-table",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-will-not-see-widget-button::inpage",
+        "phase": "onboarding"
+      }
+    ],
+    "browsers": [
+      {
+        "browser": "chrome",
+        "status": "failed",
+        "error": "page.waitForFunction: Test timeout of 180000ms exceeded."
+      }
+    ]
+  },
+  {
     "timestamp": "2026-04-17T05:41:47.644Z",
     "url": "https://japan.studionicholson.com/products/rond-top-in-black",
     "phase": "full",
