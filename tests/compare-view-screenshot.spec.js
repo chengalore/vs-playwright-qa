@@ -31,6 +31,7 @@ const RECOMMENDATION_EVENTS = [
   "user-got-size-recommendation",
   "user-opened-panel-tryiton",
   "user-saw-measurements-view",
+  "user-opened-panel-compare",
 ];
 
 function startRecommendationDetector(page) {
@@ -72,7 +73,7 @@ if (urls.length === 0) {
 // Date folder for this run — screenshots go into test-results/compare-view-screenshots/YYYY-MM-DD/
 const runDate = new Date().toISOString().slice(0, 10);
 
-test.setTimeout(120000); // 2 minutes per URL — well under the bounded max below
+test.setTimeout(150000); // 2.5 min per URL — bounded max ~115s without waitForLoadState
 
 // Shared browser context — created once, closed in afterAll.
 let sharedContext = null;
@@ -136,6 +137,9 @@ test.afterAll(async () => {
 for (const url of urls) {
   test(url, async ({}, testInfo) => {
     const page = await sharedContext.newPage();
+    // Explicitly cap page timeouts — shared-context pages don't inherit test-runner timeout management
+    page.setDefaultTimeout(30000);
+    page.setDefaultNavigationTimeout(30000);
     const startTime = Date.now();
 
     try {
@@ -159,8 +163,6 @@ for (const url of urls) {
         logResult({ url, status: "skipped", reason: "navigation failed", durationMs: Date.now() - startTime });
         return;
       }
-      await page.waitForLoadState("load", { timeout: 15000 }).catch(() => {});
-
       // Accept cookie banner if present
       await page.locator("#onetrust-accept-btn-handler").click({ timeout: 5000 }).catch(() => {});
 
@@ -263,7 +265,7 @@ for (const url of urls) {
           await page
             .waitForFunction(
               () => !!window.getWidgetHost()?.shadowRoot?.querySelector("button.everyday-item-btns"),
-              { timeout: 10000 }
+              { timeout: 20000 }
             )
             .catch(() => {});
           await page.evaluate(() => {
@@ -271,6 +273,12 @@ for (const url of urls) {
           }).catch(() => {});
           await page.waitForTimeout(1500);
 
+          await page
+            .waitForFunction(
+              () => !!window.getWidgetHost()?.shadowRoot?.querySelector(".hidden-select"),
+              { timeout: 10000 }
+            )
+            .catch(() => {});
           await page.evaluate(() => {
             const root = window.getWidgetHost()?.shadowRoot;
             const select = root?.querySelector(".hidden-select");
@@ -303,7 +311,13 @@ for (const url of urls) {
           return;
         }
 
-        await page.waitForTimeout(1000); // let compare view fully paint
+        // Wait for user-opened-panel-compare event (up to 15s), then 3s to let the compare view fully paint
+        const compareEventStart = Date.now();
+        while (Date.now() - compareEventStart < 15000) {
+          if (eventWatcher.isReady()) break;
+          await page.waitForTimeout(300);
+        }
+        await page.waitForTimeout(3000);
       } else {
         // ── Apparel / footwear flow ─────────────────────────────────────────
         await completeOnboarding(page);
