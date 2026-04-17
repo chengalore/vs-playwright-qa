@@ -85,7 +85,7 @@ for (const url of urls) {
       logResult({ url, status: "skipped", reason: "navigation failed", durationMs: Date.now() - startTime });
       return;
     }
-    await page.waitForLoadState("load").catch(() => {});
+    await page.waitForLoadState("load", { timeout: 15000 }).catch(() => {});
 
     // Accept cookie banner if present
     await page.locator("#onetrust-accept-btn-handler").click({ timeout: 5000 }).catch(() => {});
@@ -101,9 +101,9 @@ for (const url of urls) {
     });
     await page.waitForTimeout(2000);
 
-    // Wait for PDC (up to 40s)
+    // Wait for PDC (up to 20s — resolves quickly on valid products)
     const pdcStart = Date.now();
-    while (Date.now() - pdcStart < 40000) {
+    while (Date.now() - pdcStart < 20000) {
       if (pdc.validProduct !== undefined) break;
       await page.waitForTimeout(200);
     }

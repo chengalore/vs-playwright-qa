@@ -431,7 +431,7 @@ test.afterAll(async () => {
     total: results.length,
     passed: results.filter(r => r.status === "passed").length,
     widgetMissing: results.filter(r => r.status === "widget_missing").length,
-    skipped: results.filter(r => r.status === "skipped" || r.status === "bot_protected").length,
+    skipped: results.filter(r => r.status === "skipped").length,
     failed: results.filter(r => r.status === "failed").length,
     fallbackUsed: results.filter(r => r.fromFallback).length,
   };
