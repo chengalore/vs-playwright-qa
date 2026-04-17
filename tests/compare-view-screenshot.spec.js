@@ -1,8 +1,10 @@
 /**
  * Virtusize compare view screenshot test.
  *
- * For each product URL, opens the Virtusize aoyama widget, goes through
- * the onboarding flow, and screenshots the result for manual visual review.
+ * All URLs run in a single shared browser context so bag onboarding state
+ * (cookies / localStorage) persists across tabs. The first bag product that
+ * needs onboarding runs it; every subsequent bag product detects the existing
+ * session and goes straight to the compare view.
  *
  * Screenshots are saved to test-results/compare-view-screenshots/ and an HTML
  * gallery (index.html) is generated there after all tests complete.
@@ -63,193 +65,31 @@ if (urls.length === 0) {
   throw new Error(`No URLs found in ${urlsFile}`);
 }
 
+// Serial mode required — tests share one browser context, so they must run
+// sequentially in the same worker.
+test.describe.configure({ mode: "serial" });
+
 test.setTimeout(180000); // 3 minutes per URL
 
-for (const url of urls) {
-  test(url, async ({ page }, testInfo) => {
-    const startTime = Date.now();
+// Shared browser context — created once, closed in afterAll.
+let sharedContext = null;
 
-    await page.addInitScript(() => {
-      Object.defineProperty(navigator, "webdriver", { get: () => undefined });
-      document.hasFocus = () => true;
-      window.getWidgetHost = () =>
-        document.querySelector("#router-view-wrapper") ||
-        document.querySelector("#vs-aoyama")?.nextElementSibling;
-    });
+test.beforeAll(async ({ browser }) => {
+  sharedContext = await browser.newContext();
+});
 
-    const pdc = startPDCWatcher(page);
-    const eventWatcher = startRecommendationDetector(page);
-
-    const navOk = await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60000 }).catch(() => null);
-    if (!navOk) {
-      logResult({ url, status: "skipped", reason: "navigation failed", durationMs: Date.now() - startTime });
-      return;
-    }
-    await page.waitForLoadState("load", { timeout: 15000 }).catch(() => {});
-
-    // Accept cookie banner if present
-    await page.locator("#onetrust-accept-btn-handler").click({ timeout: 5000 }).catch(() => {});
-
-    // Scroll to trigger lazy-mounted widgets
-    await page.evaluate(() => {
-      const el = document.querySelector(
-        "#vs-inpage, #vs-inpage-luxury, .vs-placeholder-inpage"
-      );
-      el
-        ? el.scrollIntoView({ block: "center", behavior: "instant" })
-        : window.scrollTo(0, 1000);
-    });
-    await page.waitForTimeout(2000);
-
-    // Wait for PDC (up to 20s — resolves quickly on valid products)
-    const pdcStart = Date.now();
-    while (Date.now() - pdcStart < 20000) {
-      if (pdc.validProduct !== undefined) break;
-      await page.waitForTimeout(200);
-    }
-
-    if (pdc.validProduct !== true) {
-      logResult({ url, status: "skipped", reason: `validProduct=${pdc.validProduct}`, durationMs: Date.now() - startTime });
-      return;
-    }
-
-    const sku = pdc.externalProductId;
-    if (!sku) {
-      logResult({ url, status: "skipped", reason: "externalProductId missing from PDC", durationMs: Date.now() - startTime });
-      return;
-    }
-
-    // Wait for inpage open button in shadow root
-    const btnFound = await page
-      .waitForFunction(
-        () => {
-          const root =
-            document.querySelector("#vs-inpage")?.shadowRoot ||
-            document.querySelector("#vs-inpage-luxury")?.shadowRoot;
-          return (
-            !!root?.querySelector('[data-test-id="inpage-open-aoyama-btn"]') ||
-            !!root?.querySelector('[data-test-id="inpage-luxury-open-aoyama"]')
-          );
-        },
-        { timeout: 15000 }
-      )
-      .catch(() => null);
-
-    if (!btnFound) {
-      logResult({ sku, url, status: "skipped", reason: "inpage button not found", durationMs: Date.now() - startTime });
-      return;
-    }
-
-    // Click the inpage open button
-    await page.evaluate(() => {
-      const root =
-        document.querySelector("#vs-inpage")?.shadowRoot ||
-        document.querySelector("#vs-inpage-luxury")?.shadowRoot;
-      const btn =
-        root?.querySelector('[data-test-id="inpage-open-aoyama-btn"]') ||
-        root?.querySelector('[data-test-id="inpage-luxury-open-aoyama"]');
-      btn?.click();
-    });
-
-    // Wait for aoyama widget shadow root to be ready
-    await page.waitForFunction(() => !!window.getWidgetHost()?.shadowRoot, {
-      timeout: 15000,
-    });
-    await page.waitForTimeout(1500);
-
-    if (isBagProduct(pdc)) {
-      // ── Bag flow: full onboarding (privacy policy + budget selection) ──────
-      await page.evaluate(() => {
-        const root = window.getWidgetHost()?.shadowRoot;
-        const checkbox = root?.querySelector('[data-test-id="privacy-policy-checkbox"]');
-        if (!checkbox) return;
-        const linkButton = root.querySelector?.("#linkText");
-        if (linkButton) linkButton.removeAttribute("id");
-        checkbox.click();
-      });
-      await page.waitForTimeout(1000);
-
-      const nextBtn = page.locator('[data-test-id="accept-privacy-policy-btn"]');
-      await nextBtn.waitFor({ state: "visible", timeout: 5000 }).catch(() => {});
-      await nextBtn.click().catch(() => {});
-      await page.waitForTimeout(2000);
-
-      await page
-        .waitForFunction(
-          () => !!window.getWidgetHost()?.shadowRoot?.querySelector('button.everyday-item-btns'),
-          { timeout: 10000 }
-        )
-        .catch(() => {});
-      await page.evaluate(() => {
-        window.getWidgetHost()?.shadowRoot?.querySelector('button.everyday-item-btns')?.click();
-      });
-      await page.waitForTimeout(1500);
-
-      await page.evaluate(() => {
-        const root = window.getWidgetHost()?.shadowRoot;
-        const select = root?.querySelector(".hidden-select");
-        if (!select) return;
-        select.value = select.options[1]?.value ?? select.options[0]?.value;
-        select.dispatchEvent(new Event("change", { bubbles: true }));
-      });
-      await page.waitForTimeout(3000);
-    } else {
-      // ── Apparel/footwear flow: complete onboarding then wait for compare view ─
-      await completeOnboarding(page);
-
-      // Wait for the recommendation to appear (event-based, up to 30s)
-      const recStart = Date.now();
-      while (Date.now() - recStart < 30000) {
-        if (eventWatcher.isReady()) break;
-        await page.waitForTimeout(300);
-      }
-      await page.waitForTimeout(1500);
-    }
-
-    // Screenshot the widget host element (matching getWidgetHost logic), fall back to full page
-    const widgetHandle = await page.evaluateHandle(() => window.getWidgetHost()).catch(() => null);
-    const widgetElement = widgetHandle?.asElement() ?? null;
-    const screenshot =
-      (widgetElement ? await widgetElement.screenshot({ timeout: 10000 }).catch(() => null) : null)
-      ?? await page.screenshot({ fullPage: false }).catch(() => null);
-
-    if (!screenshot) {
-      logResult({ sku, url, status: "error", reason: "screenshot failed", durationMs: Date.now() - startTime });
-      return;
-    }
-
-    // Save screenshot to disk (flat directory, no per-run subfolders)
-    const screenshotsDir = join(__dirname, "../test-results/compare-view-screenshots");
-    mkdirSync(screenshotsDir, { recursive: true });
-    writeFileSync(join(screenshotsDir, `${sku}.png`), screenshot);
-
-    // Update manifest — replace existing entry for this SKU or append
-    const manifestPath = join(screenshotsDir, "manifest.json");
-    const manifest = existsSync(manifestPath) ? JSON.parse(readFileSync(manifestPath, "utf8")) : [];
-    const existingIdx = manifest.findIndex((e) => e.sku === sku);
-    if (existingIdx >= 0) manifest[existingIdx] = { sku, url };
-    else manifest.push({ sku, url });
-    writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
-
-    // Also attach to Playwright HTML report
-    await testInfo.attach(`${sku}.png`, { body: screenshot, contentType: "image/png" });
-
-    logResult({ sku, url, status: "screenshot_taken", durationMs: Date.now() - startTime });
-  });
-}
-
-function logResult(result) {
-  console.log(`COMPARE_VIEW_RESULT: ${JSON.stringify(result)}`);
-}
-
-// Generate a simple HTML gallery after all tests
 test.afterAll(async () => {
+  await sharedContext?.close().catch(() => {});
+
+  // Generate local HTML gallery
   const screenshotsDir = join(__dirname, "../test-results/compare-view-screenshots");
   if (!existsSync(screenshotsDir)) return;
 
   const manifestPath = join(screenshotsDir, "manifest.json");
   const images = existsSync(manifestPath)
-    ? JSON.parse(readFileSync(manifestPath, "utf8")).filter(({ sku }) => existsSync(join(screenshotsDir, `${sku}.png`)))
+    ? JSON.parse(readFileSync(manifestPath, "utf8")).filter(({ sku }) =>
+        existsSync(join(screenshotsDir, `${sku}.png`))
+      )
     : [];
 
   const html = `<!DOCTYPE html>
@@ -270,18 +110,246 @@ test.afterAll(async () => {
 <body>
   <h1>Compare View — ${images.length} products</h1>
   <div class="grid">
-    ${images.map(({ sku, url }) => `
+    ${images
+      .map(
+        ({ sku, url }) => `
     <div class="card">
       <img src="${sku}.png" alt="${sku}">
       <div class="sku">${sku}</div>
       <div class="label"><a href="${url}" target="_blank">${url}</a></div>
-    </div>`).join("")}
+    </div>`
+      )
+      .join("")}
   </div>
 </body>
 </html>`;
 
-  const galleryPath = join(screenshotsDir, "index.html");
-  writeFileSync(galleryPath, html);
+  writeFileSync(join(screenshotsDir, "index.html"), html);
   console.log(`\nGallery ready: open test-results/compare-view-screenshots/index.html`);
-
 });
+
+// ── One test per URL ──────────────────────────────────────────────────────────
+
+for (const url of urls) {
+  test(url, async ({}, testInfo) => {
+    const page = await sharedContext.newPage();
+    const startTime = Date.now();
+
+    try {
+      // Hide headless indicators and expose getWidgetHost helper
+      await page.addInitScript(() => {
+        Object.defineProperty(navigator, "webdriver", { get: () => undefined });
+        document.hasFocus = () => true;
+        window.getWidgetHost = () =>
+          document.querySelector("#router-view-wrapper") ||
+          document.querySelector("#vs-aoyama")?.nextElementSibling;
+      });
+
+      const pdc = startPDCWatcher(page);
+      const eventWatcher = startRecommendationDetector(page);
+
+      // ── Navigate ────────────────────────────────────────────────────────────
+      const navOk = await page
+        .goto(url, { waitUntil: "domcontentloaded", timeout: 60000 })
+        .catch(() => null);
+      if (!navOk) {
+        logResult({ url, status: "skipped", reason: "navigation failed", durationMs: Date.now() - startTime });
+        return;
+      }
+      await page.waitForLoadState("load", { timeout: 15000 }).catch(() => {});
+
+      // Accept cookie banner if present
+      await page.locator("#onetrust-accept-btn-handler").click({ timeout: 5000 }).catch(() => {});
+
+      // Scroll to trigger lazy-mounted widgets
+      await page.evaluate(() => {
+        const el = document.querySelector(
+          "#vs-inpage, #vs-inpage-luxury, .vs-placeholder-inpage"
+        );
+        el
+          ? el.scrollIntoView({ block: "center", behavior: "instant" })
+          : window.scrollTo(0, 1000);
+      }).catch(() => {});
+      await page.waitForTimeout(2000);
+
+      // ── Wait for PDC (up to 20s) ────────────────────────────────────────────
+      const pdcStart = Date.now();
+      while (Date.now() - pdcStart < 20000) {
+        if (pdc.validProduct !== undefined) break;
+        await page.waitForTimeout(200);
+      }
+
+      if (pdc.validProduct !== true) {
+        logResult({ url, status: "skipped", reason: `validProduct=${pdc.validProduct}`, durationMs: Date.now() - startTime });
+        return;
+      }
+
+      const sku = pdc.externalProductId;
+      if (!sku) {
+        logResult({ url, status: "skipped", reason: "externalProductId missing from PDC", durationMs: Date.now() - startTime });
+        return;
+      }
+
+      // ── Find and click the inpage open button ───────────────────────────────
+      const btnFound = await page
+        .waitForFunction(
+          () => {
+            const root =
+              document.querySelector("#vs-inpage")?.shadowRoot ||
+              document.querySelector("#vs-inpage-luxury")?.shadowRoot;
+            return (
+              !!root?.querySelector('[data-test-id="inpage-open-aoyama-btn"]') ||
+              !!root?.querySelector('[data-test-id="inpage-luxury-open-aoyama"]')
+            );
+          },
+          { timeout: 15000 }
+        )
+        .catch(() => null);
+
+      if (!btnFound) {
+        logResult({ sku, url, status: "skipped", reason: "inpage button not found", durationMs: Date.now() - startTime });
+        return;
+      }
+
+      await page.evaluate(() => {
+        const root =
+          document.querySelector("#vs-inpage")?.shadowRoot ||
+          document.querySelector("#vs-inpage-luxury")?.shadowRoot;
+        const btn =
+          root?.querySelector('[data-test-id="inpage-open-aoyama-btn"]') ||
+          root?.querySelector('[data-test-id="inpage-luxury-open-aoyama"]');
+        btn?.click();
+      }).catch(() => {});
+
+      // Wait for widget shadow root
+      await page
+        .waitForFunction(() => !!window.getWidgetHost()?.shadowRoot, { timeout: 15000 })
+        .catch(() => {});
+      await page.waitForTimeout(1500);
+
+      // ── Bag flow ────────────────────────────────────────────────────────────
+      if (isBagProduct(pdc)) {
+        // Detect whether onboarding is needed by checking for the privacy policy checkbox.
+        // If the shared context already has a session, the checkbox won't appear and the
+        // compare view loads immediately.
+        const needsOnboarding = await page
+          .evaluate(() => {
+            const root = window.getWidgetHost()?.shadowRoot;
+            return !!root?.querySelector('[data-test-id="privacy-policy-checkbox"]');
+          })
+          .catch(() => false);
+
+        if (needsOnboarding) {
+          // ── Case A: new session — run full bag onboarding ───────────────────
+          await page.evaluate(() => {
+            const root = window.getWidgetHost()?.shadowRoot;
+            const checkbox = root?.querySelector('[data-test-id="privacy-policy-checkbox"]');
+            if (!checkbox) return;
+            // Prevent the privacy policy link from intercepting the click
+            const linkButton = root.querySelector?.("#linkText");
+            if (linkButton) linkButton.removeAttribute("id");
+            checkbox.click();
+          }).catch(() => {});
+          await page.waitForTimeout(1000);
+
+          const nextBtn = page.locator('[data-test-id="accept-privacy-policy-btn"]');
+          await nextBtn.waitFor({ state: "visible", timeout: 5000 }).catch(() => {});
+          await nextBtn.click().catch(() => {});
+          await page.waitForTimeout(2000);
+
+          await page
+            .waitForFunction(
+              () => !!window.getWidgetHost()?.shadowRoot?.querySelector("button.everyday-item-btns"),
+              { timeout: 10000 }
+            )
+            .catch(() => {});
+          await page.evaluate(() => {
+            window.getWidgetHost()?.shadowRoot?.querySelector("button.everyday-item-btns")?.click();
+          }).catch(() => {});
+          await page.waitForTimeout(1500);
+
+          await page.evaluate(() => {
+            const root = window.getWidgetHost()?.shadowRoot;
+            const select = root?.querySelector(".hidden-select");
+            if (!select) return;
+            select.value = select.options[1]?.value ?? select.options[0]?.value;
+            select.dispatchEvent(new Event("change", { bubbles: true }));
+          }).catch(() => {});
+          await page.waitForTimeout(2000);
+        }
+        // Case B: existing session — compare view loads automatically, no action needed.
+
+        // ── Compare view guard ──────────────────────────────────────────────
+        // Verify the compare view has rendered (onboarding elements are gone).
+        // If still showing onboarding/loading after 10 s, skip rather than capture a bad shot.
+        const compareViewReady = await page
+          .waitForFunction(
+            () => {
+              const root = window.getWidgetHost()?.shadowRoot;
+              if (!root) return false;
+              const hasPrivacyPolicy = !!root.querySelector('[data-test-id="privacy-policy-checkbox"]');
+              const hasBudgetScreen = !!root.querySelector("button.everyday-item-btns");
+              return !hasPrivacyPolicy && !hasBudgetScreen;
+            },
+            { timeout: 10000 }
+          )
+          .catch(() => null);
+
+        if (!compareViewReady) {
+          logResult({ sku, url, status: "error", reason: "compare view never rendered", durationMs: Date.now() - startTime });
+          return;
+        }
+
+        await page.waitForTimeout(1000); // let compare view fully paint
+      } else {
+        // ── Apparel / footwear flow ─────────────────────────────────────────
+        await completeOnboarding(page);
+
+        const recStart = Date.now();
+        while (Date.now() - recStart < 30000) {
+          if (eventWatcher.isReady()) break;
+          await page.waitForTimeout(300);
+        }
+        await page.waitForTimeout(1500);
+      }
+
+      // ── Screenshot ─────────────────────────────────────────────────────────
+      const widgetHandle = await page.evaluateHandle(() => window.getWidgetHost()).catch(() => null);
+      const widgetElement = widgetHandle?.asElement() ?? null;
+      const screenshot =
+        (widgetElement
+          ? await widgetElement.screenshot({ timeout: 10000 }).catch(() => null)
+          : null) ?? (await page.screenshot({ fullPage: false }).catch(() => null));
+
+      if (!screenshot) {
+        logResult({ sku, url, status: "error", reason: "screenshot failed", durationMs: Date.now() - startTime });
+        return;
+      }
+
+      // ── Save to disk ────────────────────────────────────────────────────────
+      const screenshotsDir = join(__dirname, "../test-results/compare-view-screenshots");
+      mkdirSync(screenshotsDir, { recursive: true });
+      writeFileSync(join(screenshotsDir, `${sku}.png`), screenshot);
+
+      const manifestPath = join(screenshotsDir, "manifest.json");
+      const manifest = existsSync(manifestPath)
+        ? JSON.parse(readFileSync(manifestPath, "utf8"))
+        : [];
+      const existingIdx = manifest.findIndex((e) => e.sku === sku);
+      if (existingIdx >= 0) manifest[existingIdx] = { sku, url };
+      else manifest.push({ sku, url });
+      writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
+
+      await testInfo.attach(`${sku}.png`, { body: screenshot, contentType: "image/png" });
+
+      logResult({ sku, url, status: "screenshot_taken", durationMs: Date.now() - startTime });
+    } finally {
+      // Close tab — context stays open so cookies/storage persist for next URL
+      await page.close().catch(() => {});
+    }
+  });
+}
+
+function logResult(result) {
+  console.log(`COMPARE_VIEW_RESULT: ${JSON.stringify(result)}`);
+}
