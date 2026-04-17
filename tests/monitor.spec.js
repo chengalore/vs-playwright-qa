@@ -181,7 +181,7 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
             2000;
           window.scrollTo(0, height);
         }
-      });
+      }).catch(() => {});
       await page.waitForTimeout(2000);
 
       // Extra scroll — some stores (Snidel-style) don't inject until scrolled twice
@@ -191,7 +191,7 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
           document?.documentElement?.scrollHeight ||
           2000;
         window.scrollTo(0, height);
-      });
+      }).catch(() => {});
       await page.waitForTimeout(1000);
 
       if (phase === "widget" || phase === "events") {
@@ -216,7 +216,7 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
             "#router-view-wrapper",  // Brooks Brothers JP and similar stores
           ];
           return selectors.some((sel) => !!document.querySelector(sel));
-        });
+        }).catch(() => false);
 
         if (earlyWidget) {
           logMonitorResult({
@@ -253,7 +253,7 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
               document.querySelector(".vs-placeholder-inpage") ||
               document.querySelector("#inpage-placeholder-wrapper")
             )
-          );
+          ).catch(() => false);
 
           if (vsContainerExists) {
             const extStart = Date.now();
@@ -474,7 +474,7 @@ async function triggerVirtusizeUI(page) {
       vsButton.scrollIntoView({ block: "center" });
       vsButton.click();
     }
-  });
+  }).catch(() => {});
 
   await page.waitForTimeout(1000);
 }
