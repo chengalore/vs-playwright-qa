@@ -235,6 +235,13 @@ jobs:
           node --input-type=module <<'EOF'
           import fs from 'fs';
 
+          function readJSON(file, fallback) {
+            try {
+              const raw = fs.readFileSync(file, 'utf8').trim();
+              return raw ? JSON.parse(raw) : fallback;
+            } catch { return fallback; }
+          }
+
           const responseUrl = process.env.SLACK_RESPONSE_URL;
           const webhook = process.env.SLACK_WEBHOOK_URL;
           const target = responseUrl || webhook;
@@ -246,7 +253,7 @@ jobs:
           const results = browsers.map(b => {
             const file = `results/result-${b}.json`;
             if (!fs.existsSync(file)) return { browser: b, status: 'failed', error: 'No result file' };
-            return JSON.parse(fs.readFileSync(file, 'utf8'));
+            return readJSON(file, { browser: b, status: 'failed', error: 'Invalid result file' });
           });
 
           const runUrl = process.env.GITHUB_RUN_URL;
@@ -314,13 +321,20 @@ jobs:
           const HISTORY_FILE = 'data/single-url-history.json';
           const MAX_HISTORY = 100;
 
+          function readJSON(file, fallback) {
+            try {
+              const raw = fs.readFileSync(file, 'utf8').trim();
+              return raw ? JSON.parse(raw) : fallback;
+            } catch { return fallback; }
+          }
+
           const allBrowsers = ['chrome', 'firefox', 'webkit'];
           const requestedBrowsers = JSON.parse(process.env.BROWSERS_INPUT || '["chrome"]');
           const browsers = allBrowsers.filter(b => requestedBrowsers.includes(b));
           const browserResults = browsers.map(b => {
             const file = `results/result-${b}.json`;
             if (!fs.existsSync(file)) return { browser: b, status: 'no_result' };
-            return JSON.parse(fs.readFileSync(file, 'utf8'));
+            return readJSON(file, { browser: b, status: 'no_result' });
           });
 
           const first = browserResults.find(r => r.store) || browserResults[0];
@@ -332,7 +346,7 @@ jobs:
           if (alias && resolvedUrl && anyPassed) {
             const FALLBACK_FILE = 'data/fallbackProducts.json';
             const fallbacks = fs.existsSync(FALLBACK_FILE)
-              ? JSON.parse(fs.readFileSync(FALLBACK_FILE, 'utf8'))
+              ? readJSON(FALLBACK_FILE, {})
               : {};
             fallbacks[alias] = resolvedUrl;
             fs.writeFileSync(FALLBACK_FILE, JSON.stringify(fallbacks, null, 2));
@@ -390,9 +404,7 @@ jobs:
           };
 
           fs.mkdirSync('data', { recursive: true });
-          const history = fs.existsSync(HISTORY_FILE)
-            ? JSON.parse(fs.readFileSync(HISTORY_FILE, 'utf8'))
-            : [];
+          const history = fs.existsSync(HISTORY_FILE) ? readJSON(HISTORY_FILE, []) : [];
           history.unshift(entry);
           if (history.length > MAX_HISTORY) history.splice(MAX_HISTORY);
           fs.writeFileSync(HISTORY_FILE, JSON.stringify(history, null, 2));

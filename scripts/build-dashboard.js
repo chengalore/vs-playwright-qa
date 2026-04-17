@@ -4,27 +4,36 @@ import path from 'path';
 const HISTORY_FILE = 'data/monitor-history.json';
 const MAX_HISTORY = 50;
 
+function readJSON(filePath, fallback = []) {
+  try {
+    const raw = fs.readFileSync(filePath, 'utf8').trim();
+    return raw ? JSON.parse(raw) : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
 // Load existing history
-const history = fs.existsSync(HISTORY_FILE)
-  ? JSON.parse(fs.readFileSync(HISTORY_FILE, 'utf8'))
-  : [];
+const history = fs.existsSync(HISTORY_FILE) ? readJSON(HISTORY_FILE) : [];
 
 // Prepend current run (skip if called from single-url workflow or already in history)
 if (fs.existsSync('data/monitor-report.json') && process.env.PHASE !== 'skip') {
-  const report = JSON.parse(fs.readFileSync('data/monitor-report.json', 'utf8'));
-  const alreadyInHistory = history.some(e => e.timestamp === report.timestamp);
-  if (!alreadyInHistory) {
-    report.phase = process.env.PHASE || 'widget';
-    history.unshift(report);
-    if (history.length > MAX_HISTORY) history.splice(MAX_HISTORY);
-    fs.writeFileSync(HISTORY_FILE, JSON.stringify(history, null, 2));
+  const report = readJSON('data/monitor-report.json', null);
+  if (report) {
+    const alreadyInHistory = history.some(e => e.timestamp === report.timestamp);
+    if (!alreadyInHistory) {
+      report.phase = process.env.PHASE || 'widget';
+      history.unshift(report);
+      if (history.length > MAX_HISTORY) history.splice(MAX_HISTORY);
+      fs.writeFileSync(HISTORY_FILE, JSON.stringify(history, null, 2));
+    }
   }
 }
 
 // Load single-url history
 const SINGLE_URL_HISTORY_FILE = 'data/single-url-history.json';
 const singleUrlHistory = fs.existsSync(SINGLE_URL_HISTORY_FILE)
-  ? JSON.parse(fs.readFileSync(SINGLE_URL_HISTORY_FILE, 'utf8'))
+  ? readJSON(SINGLE_URL_HISTORY_FILE)
   : [];
 
 // Copy compare view screenshots to docs/ — flat directory, no per-run subfolders
@@ -37,11 +46,9 @@ if (fs.existsSync(screenshotsSrc)) {
   // Merge manifest: load existing, apply new entries (update by SKU)
   const dstManifestPath = path.join(screenshotsDst, 'manifest.json');
   const srcManifestPath = path.join(screenshotsSrc, 'manifest.json');
-  const dstManifest = fs.existsSync(dstManifestPath)
-    ? JSON.parse(fs.readFileSync(dstManifestPath, 'utf8'))
-    : [];
+  const dstManifest = fs.existsSync(dstManifestPath) ? readJSON(dstManifestPath) : [];
   if (fs.existsSync(srcManifestPath)) {
-    const srcManifest = JSON.parse(fs.readFileSync(srcManifestPath, 'utf8'));
+    const srcManifest = readJSON(srcManifestPath);
     for (const entry of srcManifest) {
       const idx = dstManifest.findIndex(e => e.sku === entry.sku);
       if (idx >= 0) dstManifest[idx] = entry;
@@ -59,9 +66,7 @@ if (fs.existsSync(screenshotsSrc)) {
 
 // Build compareImages: flat array of { sku, url } from the manifest
 const dstManifestPath = path.join(screenshotsDst, 'manifest.json');
-const dstManifest = fs.existsSync(dstManifestPath)
-  ? JSON.parse(fs.readFileSync(dstManifestPath, 'utf8'))
-  : [];
+const dstManifest = fs.existsSync(dstManifestPath) ? readJSON(dstManifestPath) : [];
 const dstPngs = new Set(fs.readdirSync(screenshotsDst).filter(f => f.endsWith('.png')));
 // Add any PNGs not yet in manifest
 for (const f of dstPngs) {
