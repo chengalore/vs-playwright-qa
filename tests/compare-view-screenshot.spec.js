@@ -69,6 +69,9 @@ if (urls.length === 0) {
 // sequentially in the same worker.
 test.describe.configure({ mode: "serial" });
 
+// Date folder for this run — screenshots go into test-results/compare-view-screenshots/YYYY-MM-DD/
+const runDate = new Date().toISOString().slice(0, 10);
+
 test.setTimeout(180000); // 3 minutes per URL
 
 // Shared browser context — created once, closed in afterAll.
@@ -81,8 +84,8 @@ test.beforeAll(async ({ browser }) => {
 test.afterAll(async () => {
   await sharedContext?.close().catch(() => {});
 
-  // Generate local HTML gallery
-  const screenshotsDir = join(__dirname, "../test-results/compare-view-screenshots");
+  // Generate local HTML gallery for this run's date folder
+  const screenshotsDir = join(__dirname, "../test-results/compare-view-screenshots", runDate);
   if (!existsSync(screenshotsDir)) return;
 
   const manifestPath = join(screenshotsDir, "manifest.json");
@@ -327,7 +330,7 @@ for (const url of urls) {
       }
 
       // ── Save to disk ────────────────────────────────────────────────────────
-      const screenshotsDir = join(__dirname, "../test-results/compare-view-screenshots");
+      const screenshotsDir = join(__dirname, "../test-results/compare-view-screenshots", runDate);
       mkdirSync(screenshotsDir, { recursive: true });
       writeFileSync(join(screenshotsDir, `${sku}.png`), screenshot);
 

@@ -41,27 +41,44 @@ const screenshotsSrc = 'test-results/compare-view-screenshots';
 const screenshotsDst = 'docs/compare-view-screenshots';
 fs.mkdirSync(screenshotsDst, { recursive: true });
 
-// Copy new screenshots and merge manifest
+// Copy new screenshots and merge manifest.
+// Screenshots are organised into date subfolders (YYYY-MM-DD/) inside screenshotsSrc.
+// All date folders are scanned and merged into the flat docs/ destination.
 if (fs.existsSync(screenshotsSrc)) {
-  // Merge manifest: load existing, apply new entries (update by SKU)
   const dstManifestPath = path.join(screenshotsDst, 'manifest.json');
-  const srcManifestPath = path.join(screenshotsSrc, 'manifest.json');
   const dstManifest = fs.existsSync(dstManifestPath) ? readJSON(dstManifestPath) : [];
-  if (fs.existsSync(srcManifestPath)) {
-    const srcManifest = readJSON(srcManifestPath);
-    for (const entry of srcManifest) {
-      const idx = dstManifest.findIndex(e => e.sku === entry.sku);
-      if (idx >= 0) dstManifest[idx] = entry;
-      else dstManifest.push(entry);
+
+  // Find all YYYY-MM-DD subfolders
+  const dateFolders = fs.readdirSync(screenshotsSrc)
+    .filter(f => /^\d{4}-\d{2}-\d{2}$/.test(f))
+    .filter(f => fs.statSync(path.join(screenshotsSrc, f)).isDirectory())
+    .sort(); // oldest first so newer runs overwrite older ones
+
+  let totalCopied = 0;
+  for (const dateFolder of dateFolders) {
+    const srcDir = path.join(screenshotsSrc, dateFolder);
+    const srcManifestPath = path.join(srcDir, 'manifest.json');
+
+    if (fs.existsSync(srcManifestPath)) {
+      const srcManifest = readJSON(srcManifestPath);
+      for (const entry of srcManifest) {
+        const idx = dstManifest.findIndex(e => e.sku === entry.sku);
+        if (idx >= 0) dstManifest[idx] = entry;
+        else dstManifest.push(entry);
+      }
     }
+
+    const pngs = fs.readdirSync(srcDir).filter(f => f.endsWith('.png'));
+    for (const f of pngs) {
+      fs.copyFileSync(path.join(srcDir, f), path.join(screenshotsDst, f));
+    }
+    totalCopied += pngs.length;
+  }
+
+  if (dateFolders.length) {
     fs.writeFileSync(dstManifestPath, JSON.stringify(dstManifest, null, 2));
+    console.log(`Merged ${dateFolders.length} date folder(s), copied ${totalCopied} screenshot(s) to ${screenshotsDst}`);
   }
-  // Copy PNGs (overwrites existing file for same SKU)
-  const pngs = fs.readdirSync(screenshotsSrc).filter(f => f.endsWith('.png'));
-  for (const f of pngs) {
-    fs.copyFileSync(path.join(screenshotsSrc, f), path.join(screenshotsDst, f));
-  }
-  if (pngs.length) console.log(`Copied ${pngs.length} screenshot(s) to ${screenshotsDst}`);
 }
 
 // Build compareImages: flat array of { sku, url } from the manifest
