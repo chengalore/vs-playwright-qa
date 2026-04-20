@@ -1,13 +1,13 @@
 {
-  "timestamp": "2026-04-19T23:36:10.561Z",
-  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/24641824432",
+  "timestamp": "2026-04-20T23:43:25.822Z",
+  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/24695994289",
   "summary": {
     "total": 86,
-    "passed": 78,
-    "widgetMissing": 5,
+    "passed": 77,
+    "widgetMissing": 6,
     "skipped": 3,
     "failed": 0,
-    "fallbackUsed": 78
+    "fallbackUsed": 77
   },
   "newIssues": [],
   "widgetMissingStores": [
@@ -45,24 +45,35 @@
       "browsers": [
         "chrome"
       ]
+    },
+    {
+      "store": "strasburgo_outlet",
+      "url": "https://outlet.strasburgo.co.jp/item/STB0125F1404?via=recommend",
+      "browsers": [
+        "chrome"
+      ]
     }
   ],
   "ongoingMissing": [
     {
       "store": "hankyu_hanshin",
-      "consecutiveRuns": 7
+      "consecutiveRuns": 8
     },
     {
       "store": "reebok_korea",
-      "consecutiveRuns": 7
+      "consecutiveRuns": 8
     },
     {
       "store": "snidel",
-      "consecutiveRuns": 7
+      "consecutiveRuns": 8
     },
     {
       "store": "gelato_pique",
-      "consecutiveRuns": 7
+      "consecutiveRuns": 8
+    },
+    {
+      "store": "hankyu_mens",
+      "consecutiveRuns": 1
     }
   ],
   "botProtected": [
