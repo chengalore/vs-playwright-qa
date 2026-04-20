@@ -254,37 +254,46 @@ for (const url of urls) {
         //   • user-opened-panel-compare fires → returning session, compare view already open
         //   • privacy-policy-checkbox appears in shadow root → new session, onboarding needed
         // A synchronous one-shot check races against widget mount and misses the checkbox.
+        // Detect onboarding state: poll for privacy policy checkbox OR budget screen
         let needsOnboarding = false;
         const bagSettleStart = Date.now();
         while (Date.now() - bagSettleStart < 15000) {
-          // Check checkbox first — event may fire early (page init) before button click
-          const hasCheckbox = await page.evaluate(() => {
-            return !!window.findInAnyShadow('[data-test-id="privacy-policy-checkbox"]');
-          }).catch(() => false);
-          if (hasCheckbox) { needsOnboarding = true; break; }
-          // Only treat event as "returning user" signal after checkbox has had time to appear
+          // Check onboarding elements first — event may fire early (page init)
+          const [hasCheckbox, hasBudget] = await page.evaluate(() => [
+            !!window.findInAnyShadow('[data-test-id="privacy-policy-checkbox"]'),
+            !!window.findInAnyShadow("button.everyday-item-btns"),
+          ]).catch(() => [false, false]);
+          if (hasCheckbox || hasBudget) { needsOnboarding = true; break; }
+          // Only treat fired event as "returning user" after giving elements time to appear
           if (eventWatcher.isReady()) { needsOnboarding = false; break; }
           await page.waitForTimeout(300);
         }
 
         if (needsOnboarding) {
-          // ── Case A: new session — run full bag onboarding ───────────────────
-          await page.evaluate(() => {
-            const checkbox = window.findInAnyShadow('[data-test-id="privacy-policy-checkbox"]');
-            if (!checkbox) return;
-            // Prevent the privacy policy link from intercepting the click
-            const root = checkbox.getRootNode();
-            const linkButton = root.querySelector?.("#linkText");
-            if (linkButton) linkButton.removeAttribute("id");
-            checkbox.click();
-          }).catch(() => {});
-          await page.waitForTimeout(1000);
+          // ── Privacy policy step (only if checkbox is visible) ───────────────
+          const hasCheckbox = await page.evaluate(() =>
+            !!window.findInAnyShadow('[data-test-id="privacy-policy-checkbox"]')
+          ).catch(() => false);
 
-          const nextBtn = page.locator('[data-test-id="accept-privacy-policy-btn"]');
-          await nextBtn.waitFor({ state: "visible", timeout: 5000 }).catch(() => {});
-          await nextBtn.click({ timeout: 5000 }).catch(() => {});
-          await page.waitForTimeout(2000);
+          if (hasCheckbox) {
+            await page.evaluate(() => {
+              const checkbox = window.findInAnyShadow('[data-test-id="privacy-policy-checkbox"]');
+              if (!checkbox) return;
+              // Prevent the privacy policy link from intercepting the click
+              const root = checkbox.getRootNode();
+              const linkButton = root.querySelector?.("#linkText");
+              if (linkButton) linkButton.removeAttribute("id");
+              checkbox.click();
+            }).catch(() => {});
+            await page.waitForTimeout(1000);
 
+            const nextBtn = page.locator('[data-test-id="accept-privacy-policy-btn"]');
+            await nextBtn.waitFor({ state: "visible", timeout: 5000 }).catch(() => {});
+            await nextBtn.click({ timeout: 5000 }).catch(() => {});
+            await page.waitForTimeout(2000);
+          }
+
+          // ── Budget / size step ──────────────────────────────────────────────
           await page
             .waitForFunction(
               () => !!window.findInAnyShadow("button.everyday-item-btns"),
