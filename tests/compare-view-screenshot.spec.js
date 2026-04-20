@@ -104,7 +104,7 @@ test.afterAll(async () => {
   <style>
     body { font-family: sans-serif; background: #f5f5f5; margin: 0; padding: 20px; }
     h1 { font-size: 18px; margin-bottom: 20px; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
+    .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
     .card { background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
     .card img { width: 100%; display: block; }
     .card .label { padding: 8px 12px; font-size: 12px; color: #555; word-break: break-all; }
