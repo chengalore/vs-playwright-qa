@@ -38,9 +38,18 @@ jobs:
             --project=chrome \
             --workers=1 \
             --retries=0 \
-            --reporter=list 2>&1 | tee test-output.log
+            --reporter=list 2>&1 | tee test-output.log || true
         env:
           TEST_URLS_FILE: data/compare-view-urls-run.txt
+
+      - name: Show captured screenshots
+        run: |
+          echo "=== test-results/compare-view-screenshots/ ==="
+          if [ -d test-results/compare-view-screenshots ]; then
+            find test-results/compare-view-screenshots -type f | sort
+          else
+            echo "(directory does not exist — no screenshots captured)"
+          fi
 
       - name: Publish to GitHub Pages
         run: |

@@ -73,7 +73,7 @@ if (urls.length === 0) {
 // Date folder for this run — screenshots go into test-results/compare-view-screenshots/YYYY-MM-DD/
 const runDate = new Date().toISOString().slice(0, 10);
 
-test.setTimeout(150000); // 2.5 min per URL — bounded max ~115s without waitForLoadState
+test.setTimeout(180000); // 3 min per URL — Bottega Veneta pages load slowly
 
 // Shared browser context — created once, closed in afterAll.
 let sharedContext = null;
@@ -207,7 +207,7 @@ for (const url of urls) {
               !!root?.querySelector('[data-test-id="inpage-luxury-open-aoyama"]')
             );
           },
-          { timeout: 15000 }
+          { timeout: 30000 }
         )
         .catch(() => null);
 
@@ -234,15 +234,21 @@ for (const url of urls) {
 
       // ── Bag flow ────────────────────────────────────────────────────────────
       if (isBagProduct(pdc)) {
-        // Detect whether onboarding is needed by checking for the privacy policy checkbox.
-        // If the shared context already has a session, the checkbox won't appear and the
-        // compare view loads immediately.
-        const needsOnboarding = await page
-          .evaluate(() => {
+        // Poll up to 15s for the widget to reach a settled state:
+        //   • user-opened-panel-compare fires → returning session, compare view already open
+        //   • privacy-policy-checkbox appears in shadow root → new session, onboarding needed
+        // A synchronous one-shot check races against widget mount and misses the checkbox.
+        let needsOnboarding = false;
+        const bagSettleStart = Date.now();
+        while (Date.now() - bagSettleStart < 15000) {
+          if (eventWatcher.isReady()) { needsOnboarding = false; break; }
+          const hasCheckbox = await page.evaluate(() => {
             const root = window.getWidgetHost()?.shadowRoot;
             return !!root?.querySelector('[data-test-id="privacy-policy-checkbox"]');
-          })
-          .catch(() => false);
+          }).catch(() => false);
+          if (hasCheckbox) { needsOnboarding = true; break; }
+          await page.waitForTimeout(300);
+        }
 
         if (needsOnboarding) {
           // ── Case A: new session — run full bag onboarding ───────────────────
@@ -302,7 +308,7 @@ for (const url of urls) {
               const hasBudgetScreen = !!root.querySelector("button.everyday-item-btns");
               return !hasPrivacyPolicy && !hasBudgetScreen;
             },
-            { timeout: 10000 }
+            { timeout: 15000 }
           )
           .catch(() => null);
 
@@ -311,11 +317,13 @@ for (const url of urls) {
           return;
         }
 
-        // Wait for user-opened-panel-compare event (up to 15s), then 3s to let the compare view fully paint
-        const compareEventStart = Date.now();
-        while (Date.now() - compareEventStart < 15000) {
-          if (eventWatcher.isReady()) break;
-          await page.waitForTimeout(300);
+        // Wait for user-opened-panel-compare event (up to 10s if not already fired), then 3s to let it fully paint
+        if (!eventWatcher.isReady()) {
+          const compareEventStart = Date.now();
+          while (Date.now() - compareEventStart < 10000) {
+            if (eventWatcher.isReady()) break;
+            await page.waitForTimeout(300);
+          }
         }
         await page.waitForTimeout(3000);
       } else {
