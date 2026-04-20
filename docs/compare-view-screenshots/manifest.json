@@ -2,5 +2,21 @@
   {
     "sku": "CG0244370201",
     "url": "https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails?wrt=5&mcd=CG024&cpg=437&pno=02&ino=01&vs-branch=fit-vis-bag-item-view&vs-env=staging"
+  },
+  {
+    "sku": "CG0244379801",
+    "url": "https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails?wrt=5&mcd=CG024&cpg=437&pno=98&ino=01&vs-branch=fit-vis-bag-item-view&vs-env=staging"
+  },
+  {
+    "sku": "CG0244370901",
+    "url": "https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails?wrt=5&mcd=CG024&cpg=437&pno=09&ino=01&vs-branch=fit-vis-bag-item-view&vs-env=staging"
+  },
+  {
+    "sku": "CG0244371701",
+    "url": "https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails?wrt=5&mcd=CG024&cpg=437&pno=17&ino=01&vs-branch=fit-vis-bag-item-view&vs-env=staging"
+  },
+  {
+    "sku": "CG0244308301",
+    "url": "https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails?wrt=5&mcd=CG024&cpg=430&pno=83&ino=01&vs-branch=fit-vis-bag-item-view&vs-env=staging"
   }
 ]
