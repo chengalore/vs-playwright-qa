@@ -143,13 +143,29 @@ for (const url of urls) {
     const startTime = Date.now();
 
     try {
-      // Hide headless indicators and expose getWidgetHost helper
+      // Hide headless indicators and expose helpers
       await page.addInitScript(() => {
         Object.defineProperty(navigator, "webdriver", { get: () => undefined });
         document.hasFocus = () => true;
         window.getWidgetHost = () =>
           document.querySelector("#router-view-wrapper") ||
           document.querySelector("#vs-aoyama")?.nextElementSibling;
+        // Traverse all shadow roots in the document to find an element by selector.
+        // Used for bag products where the widget may mount inside #vs-inpage's shadow root.
+        window.findInAnyShadow = (selector) => {
+          function search(root) {
+            const el = root.querySelector(selector);
+            if (el) return el;
+            for (const child of root.querySelectorAll("*")) {
+              if (child.shadowRoot) {
+                const found = search(child.shadowRoot);
+                if (found) return found;
+              }
+            }
+            return null;
+          }
+          return search(document);
+        };
       });
 
       const pdc = startPDCWatcher(page);
@@ -243,8 +259,7 @@ for (const url of urls) {
         while (Date.now() - bagSettleStart < 15000) {
           if (eventWatcher.isReady()) { needsOnboarding = false; break; }
           const hasCheckbox = await page.evaluate(() => {
-            const root = window.getWidgetHost()?.shadowRoot;
-            return !!root?.querySelector('[data-test-id="privacy-policy-checkbox"]');
+            return !!window.findInAnyShadow('[data-test-id="privacy-policy-checkbox"]');
           }).catch(() => false);
           if (hasCheckbox) { needsOnboarding = true; break; }
           await page.waitForTimeout(300);
@@ -253,10 +268,10 @@ for (const url of urls) {
         if (needsOnboarding) {
           // ── Case A: new session — run full bag onboarding ───────────────────
           await page.evaluate(() => {
-            const root = window.getWidgetHost()?.shadowRoot;
-            const checkbox = root?.querySelector('[data-test-id="privacy-policy-checkbox"]');
+            const checkbox = window.findInAnyShadow('[data-test-id="privacy-policy-checkbox"]');
             if (!checkbox) return;
             // Prevent the privacy policy link from intercepting the click
+            const root = checkbox.getRootNode();
             const linkButton = root.querySelector?.("#linkText");
             if (linkButton) linkButton.removeAttribute("id");
             checkbox.click();
@@ -270,24 +285,23 @@ for (const url of urls) {
 
           await page
             .waitForFunction(
-              () => !!window.getWidgetHost()?.shadowRoot?.querySelector("button.everyday-item-btns"),
+              () => !!window.findInAnyShadow("button.everyday-item-btns"),
               { timeout: 20000 }
             )
             .catch(() => {});
           await page.evaluate(() => {
-            window.getWidgetHost()?.shadowRoot?.querySelector("button.everyday-item-btns")?.click();
+            window.findInAnyShadow("button.everyday-item-btns")?.click();
           }).catch(() => {});
           await page.waitForTimeout(1500);
 
           await page
             .waitForFunction(
-              () => !!window.getWidgetHost()?.shadowRoot?.querySelector(".hidden-select"),
+              () => !!window.findInAnyShadow(".hidden-select"),
               { timeout: 10000 }
             )
             .catch(() => {});
           await page.evaluate(() => {
-            const root = window.getWidgetHost()?.shadowRoot;
-            const select = root?.querySelector(".hidden-select");
+            const select = window.findInAnyShadow(".hidden-select");
             if (!select) return;
             select.value = select.options[1]?.value ?? select.options[0]?.value;
             select.dispatchEvent(new Event("change", { bubbles: true }));
@@ -302,11 +316,11 @@ for (const url of urls) {
         const compareViewReady = await page
           .waitForFunction(
             () => {
-              const root = window.getWidgetHost()?.shadowRoot;
-              if (!root) return false;
-              const hasPrivacyPolicy = !!root.querySelector('[data-test-id="privacy-policy-checkbox"]');
-              const hasBudgetScreen = !!root.querySelector("button.everyday-item-btns");
-              return !hasPrivacyPolicy && !hasBudgetScreen;
+              const hasPrivacyPolicy = !!window.findInAnyShadow('[data-test-id="privacy-policy-checkbox"]');
+              const hasBudgetScreen = !!window.findInAnyShadow("button.everyday-item-btns");
+              // Also require something to be visible in the widget area
+              const hasHost = !!(window.getWidgetHost()?.shadowRoot || window.findInAnyShadow("#vs-aoyama-main-modal"));
+              return hasHost && !hasPrivacyPolicy && !hasBudgetScreen;
             },
             { timeout: 15000 }
           )
