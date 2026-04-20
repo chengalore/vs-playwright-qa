@@ -250,65 +250,44 @@ for (const url of urls) {
 
       // ── Bag flow ────────────────────────────────────────────────────────────
       if (isBagProduct(pdc)) {
-        // Poll up to 15s for the widget to reach a settled state:
-        //   • user-opened-panel-compare fires → returning session, compare view already open
-        //   • privacy-policy-checkbox appears in shadow root → new session, onboarding needed
-        // A synchronous one-shot check races against widget mount and misses the checkbox.
-        // Detect onboarding state: poll for privacy policy checkbox OR budget screen
-        let needsOnboarding = false;
-        const bagSettleStart = Date.now();
-        while (Date.now() - bagSettleStart < 15000) {
-          // Check onboarding elements first — event may fire early (page init)
-          const [hasCheckbox, hasBudget] = await page.evaluate(() => [
-            !!window.findInAnyShadow('[data-test-id="privacy-policy-checkbox"]'),
-            !!window.findInAnyShadow("button.everyday-item-btns"),
-          ]).catch(() => [false, false]);
-          if (hasCheckbox || hasBudget) { needsOnboarding = true; break; }
-          // Only treat fired event as "returning user" after giving elements time to appear
-          if (eventWatcher.isReady()) { needsOnboarding = false; break; }
-          await page.waitForTimeout(300);
+        // ── Privacy policy (new session only) ────────────────────────────────
+        const hasPP = await page.evaluate(() =>
+          !!window.findInAnyShadow('[data-test-id="privacy-policy-checkbox"]')
+        ).catch(() => false);
+        if (hasPP) {
+          await page.evaluate(() => {
+            const checkbox = window.findInAnyShadow('[data-test-id="privacy-policy-checkbox"]');
+            if (!checkbox) return;
+            // Prevent the privacy policy link from intercepting the click
+            const root = checkbox.getRootNode();
+            const linkButton = root.querySelector?.("#linkText");
+            if (linkButton) linkButton.removeAttribute("id");
+            checkbox.click();
+          }).catch(() => {});
+          await page.waitForTimeout(1000);
+          const nextBtn = page.locator('[data-test-id="accept-privacy-policy-btn"]');
+          await nextBtn.waitFor({ state: "visible", timeout: 5000 }).catch(() => {});
+          await nextBtn.click({ timeout: 5000 }).catch(() => {});
+          await page.waitForTimeout(2000);
         }
 
-        if (needsOnboarding) {
-          // ── Privacy policy step (only if checkbox is visible) ───────────────
-          const hasCheckbox = await page.evaluate(() =>
-            !!window.findInAnyShadow('[data-test-id="privacy-policy-checkbox"]')
-          ).catch(() => false);
-
-          if (hasCheckbox) {
-            await page.evaluate(() => {
-              const checkbox = window.findInAnyShadow('[data-test-id="privacy-policy-checkbox"]');
-              if (!checkbox) return;
-              // Prevent the privacy policy link from intercepting the click
-              const root = checkbox.getRootNode();
-              const linkButton = root.querySelector?.("#linkText");
-              if (linkButton) linkButton.removeAttribute("id");
-              checkbox.click();
-            }).catch(() => {});
-            await page.waitForTimeout(1000);
-
-            const nextBtn = page.locator('[data-test-id="accept-privacy-policy-btn"]');
-            await nextBtn.waitFor({ state: "visible", timeout: 5000 }).catch(() => {});
-            await nextBtn.click({ timeout: 5000 }).catch(() => {});
-            await page.waitForTimeout(2000);
-          }
-
-          // ── Budget / size step ──────────────────────────────────────────────
-          await page
-            .waitForFunction(
-              () => !!window.findInAnyShadow("button.everyday-item-btns"),
-              { timeout: 20000 }
-            )
-            .catch(() => {});
+        // ── Budget / size (per-product) — wait briefly, skip if not shown ────
+        const hasBudget = await page
+          .waitForFunction(
+            () => !!window.findInAnyShadow("button.everyday-item-btns"),
+            { timeout: 5000 }
+          )
+          .then(() => true)
+          .catch(() => false);
+        if (hasBudget) {
           await page.evaluate(() => {
             window.findInAnyShadow("button.everyday-item-btns")?.click();
           }).catch(() => {});
           await page.waitForTimeout(1500);
-
           await page
             .waitForFunction(
               () => !!window.findInAnyShadow(".hidden-select"),
-              { timeout: 10000 }
+              { timeout: 8000 }
             )
             .catch(() => {});
           await page.evaluate(() => {
@@ -319,31 +298,11 @@ for (const url of urls) {
           }).catch(() => {});
           await page.waitForTimeout(2000);
         }
-        // Case B: existing session — compare view loads automatically, no action needed.
 
-        // ── Compare view guard ──────────────────────────────────────────────
-        // Verify the compare view has rendered (onboarding elements are gone).
-        // If still showing onboarding/loading after 10 s, skip rather than capture a bad shot.
-        const compareViewReady = await page
-          .waitForFunction(
-            () => {
-              const hasPrivacyPolicy = !!window.findInAnyShadow('[data-test-id="privacy-policy-checkbox"]');
-              const hasBudgetScreen = !!window.findInAnyShadow("button.everyday-item-btns");
-              return !hasPrivacyPolicy && !hasBudgetScreen;
-            },
-            { timeout: 15000 }
-          )
-          .catch(() => null);
-
-        if (!compareViewReady) {
-          logResult({ sku, url, status: "error", reason: "compare view never rendered", durationMs: Date.now() - startTime });
-          return;
-        }
-
-        // Wait for user-opened-panel-compare event (up to 10s if not already fired), then 3s to let it fully paint
+        // ── Wait for compare view event then let it fully paint ───────────────
         if (!eventWatcher.isReady()) {
-          const compareEventStart = Date.now();
-          while (Date.now() - compareEventStart < 10000) {
+          const evtStart = Date.now();
+          while (Date.now() - evtStart < 10000) {
             if (eventWatcher.isReady()) break;
             await page.waitForTimeout(300);
           }
