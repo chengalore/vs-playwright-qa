@@ -1115,7 +1115,7 @@ function saveTags() {
   localStorage.setItem(TAGS_STORAGE_KEY, JSON.stringify(Object.fromEntries(tags)));
 }
 
-function setTag(sku, url, key) {
+function setTag(sku, key) {
   // Clicking the active tag again clears it
   if (tags.get(sku) === key) {
     tags.delete(sku);
@@ -1192,7 +1192,7 @@ function renderCompareView() {
           <div class="tag-pills">
             ${TAG_DEFS.map(({ key, label, color }) => `
               <button class="tag-btn" id="tag-${sku}-${key}" style="--tag-color:${color}"
-                onclick="setTag('${sku}', ${JSON.stringify(url)}, '${key}')">${label}</button>
+                onclick="setTag('${sku}', '${key}')">${label}</button>
             `).join('')}
           </div>
         </div>
@@ -1206,10 +1206,11 @@ function renderCompareView() {
 }
 
 function exportTagged() {
+  const urlMap = Object.fromEntries(COMPARE_IMAGES.map(({ sku, url }) => [sku, url || '']));
   const rows = [['SKU', 'URL', 'Tag']];
   TAG_DEFS.forEach(({ key, label }) => {
-    COMPARE_IMAGES.forEach(({ sku, url }) => {
-      if (tags.get(sku) === key) rows.push([sku, url || '', label]);
+    COMPARE_IMAGES.forEach(({ sku }) => {
+      if (tags.get(sku) === key) rows.push([sku, urlMap[sku], label]);
     });
   });
   const csv = rows.map(r => r.map(c => `"${c}"`).join(',')).join('\n');
