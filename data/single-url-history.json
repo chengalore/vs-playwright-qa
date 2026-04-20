@@ -1,5 +1,86 @@
 [
   {
+    "timestamp": "2026-04-20T06:35:07.580Z",
+    "url": "https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails?wrt=5&mcd=CG024&cpg=437&pno=02&ino=01&vs-branch=fit-vis-bag-item-view&vs-env=staging",
+    "phase": "full",
+    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/24652016307",
+    "store": "marui",
+    "productType": "bag",
+    "flow": "bag",
+    "onboarding": {
+      "gender": "female",
+      "age": "35",
+      "height": "161",
+      "weight": "54"
+    },
+    "giftOnboarding": {
+      "gender": "female",
+      "age": "30-39",
+      "height": "160-164",
+      "bodyType": "52 - 63 kg"
+    },
+    "footwearOnboarding": {
+      "gender": "female",
+      "brand": "Adidas",
+      "size": "25.5 cm"
+    },
+    "kidsOnboarding": {
+      "gender": "girl",
+      "age": 8,
+      "height": "120",
+      "weight": "25"
+    },
+    "events": [
+      {
+        "event": "user-saw-product::integration",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-saw-widget-button::integration",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-saw-bag-disclaimer::smart-table",
+        "phase": "onboarding"
+      },
+      {
+        "event": "inpage-mounted::integration",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-opened-widget::inpage",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-opened-panel-compare::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-saw-bag-disclaimer::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-clicked-start::integration",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-saw-product::integration",
+        "phase": "refresh"
+      },
+      {
+        "event": "user-saw-widget-button::integration",
+        "phase": "refresh"
+      }
+    ],
+    "browsers": [
+      {
+        "browser": "chrome",
+        "status": "passed",
+        "error": null
+      }
+    ]
+  },
+  {
     "timestamp": "2026-04-17T07:06:51.188Z",
     "url": "https://www.bottegaveneta.com/ja-jp/%E3%83%80%E3%83%96%E3%83%AB%E3%83%8E%E3%83%83%E3%83%88-%E3%83%9D%E3%83%AC%E3%83%B3-717151V2FZ07341.html?vs-dev=true&vs-env=staging",
     "phase": "full",
