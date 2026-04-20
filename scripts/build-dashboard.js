@@ -326,16 +326,12 @@ function generateDashboard(history, compareImages, singleUrlHistory) {
       cursor: pointer;
       transition: border-color 0.15s;
     }
-    .overlay-card.flagged {
-      border-color: #f85149;
-      box-shadow: 0 0 0 1px #f85149;
-    }
     .overlay-card img { width: 100%; display: block; }
     .overlay-card .card-footer {
       display: flex;
       align-items: center;
       gap: 8px;
-      padding: 8px 12px 10px;
+      padding: 8px 12px 6px;
     }
     .overlay-card .card-sku {
       flex: 1;
@@ -343,16 +339,36 @@ function generateDashboard(history, compareImages, singleUrlHistory) {
       font-weight: 600;
       color: #f0f6fc;
     }
-    .overlay-card .flag-checkbox {
-      width: 16px;
-      height: 16px;
-      accent-color: #f85149;
-      cursor: pointer;
-      flex-shrink: 0;
+    /* ── Tag pills ── */
+    .tag-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 4px 12px 12px;
     }
-    .flag-bar {
+    .tag-btn {
+      padding: 3px 10px;
+      border: 1px solid var(--tag-color);
+      border-radius: 20px;
+      background: transparent;
+      color: var(--tag-color);
+      font-size: 11px;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    .tag-btn.active {
+      background: var(--tag-color);
+      color: #0d1117;
+      font-weight: 600;
+    }
+    .tag-btn:hover:not(.active) {
+      background: color-mix(in srgb, var(--tag-color) 18%, transparent);
+    }
+    /* ── Tag summary bar ── */
+    .tag-bar {
       display: flex;
       align-items: center;
+      flex-wrap: wrap;
       gap: 12px;
       margin-bottom: 16px;
       padding: 10px 14px;
@@ -362,8 +378,26 @@ function generateDashboard(history, compareImages, singleUrlHistory) {
       font-size: 13px;
       color: #8b949e;
     }
-    .flag-bar span { flex: 1; }
-    .flag-bar button {
+    .tag-bar-counts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      flex: 1;
+    }
+    .tag-bar-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    .tag-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .tag-bar button {
       padding: 5px 12px;
       background: #238636;
       color: #fff;
@@ -372,7 +406,7 @@ function generateDashboard(history, compareImages, singleUrlHistory) {
       font-size: 12px;
       cursor: pointer;
     }
-    .flag-bar button:disabled {
+    .tag-bar button:disabled {
       background: #21262d;
       color: #484f58;
       cursor: default;
@@ -1170,6 +1204,67 @@ function renderSingleUrl() {
 }
 
 // ── Compare view gallery ──────────────────────────────────────────────────────
+const TAG_DEFS = [
+  { key: 'passed',           label: 'Passed',           color: '#3fb950' },
+  { key: 'bigger',           label: 'Bigger',           color: '#58a6ff' },
+  { key: 'smaller',          label: 'Smaller',          color: '#d29922' },
+  { key: 'no_cleaned_image', label: 'No cleaned image', color: '#bc8cff' },
+  { key: 'others',           label: 'Others',           color: '#8b949e' },
+];
+const TAG_MAP = Object.fromEntries(TAG_DEFS.map(t => [t.key, t]));
+const TAGS_STORAGE_KEY = 'vs-compare-tags';
+
+const tags = new Map(
+  Object.entries(JSON.parse(localStorage.getItem(TAGS_STORAGE_KEY) || '{}'))
+);
+
+function saveTags() {
+  localStorage.setItem(TAGS_STORAGE_KEY, JSON.stringify(Object.fromEntries(tags)));
+}
+
+function setTag(sku, url, key) {
+  // Clicking the active tag again clears it
+  if (tags.get(sku) === key) {
+    tags.delete(sku);
+  } else {
+    tags.set(sku, key);
+  }
+  saveTags();
+  updateCard(sku);
+  updateTagSummary();
+}
+
+function updateCard(sku) {
+  const card = document.getElementById('card-' + sku);
+  if (!card) return;
+  const activeKey = tags.get(sku);
+  const def = activeKey ? TAG_MAP[activeKey] : null;
+  card.style.borderColor = def ? def.color : '';
+  card.style.boxShadow = def ? \`0 0 0 1px \${def.color}\` : '';
+  TAG_DEFS.forEach(({ key }) => {
+    const btn = document.getElementById(\`tag-\${sku}-\${key}\`);
+    if (btn) btn.classList.toggle('active', activeKey === key);
+  });
+}
+
+function updateTagSummary() {
+  const counts = Object.fromEntries(TAG_DEFS.map(({ key }) => [key, 0]));
+  tags.forEach(tag => { if (counts[tag] !== undefined) counts[tag]++; });
+  const total = tags.size;
+
+  const totalEl = document.getElementById('tag-total');
+  if (totalEl) totalEl.textContent = total + ' tagged';
+  TAG_DEFS.forEach(({ key, color }) => {
+    const el = document.getElementById('tag-count-' + key);
+    if (el) {
+      el.textContent = counts[key];
+      el.style.color = counts[key] > 0 ? color : '#484f58';
+    }
+  });
+  const exportBtn = document.getElementById('export-btn');
+  if (exportBtn) exportBtn.disabled = total === 0;
+}
+
 function renderCompareView() {
   const el = document.getElementById('compare-content');
   if (COMPARE_IMAGES.length === 0) {
@@ -1182,53 +1277,55 @@ function renderCompareView() {
   }
 
   el.innerHTML = \`
-    <div class="flag-bar">
-      <span id="flag-count">0 items flagged</span>
-      <button id="export-btn" onclick="exportFlagged()" disabled>Export flagged URLs</button>
+    <div class="tag-bar">
+      <span id="tag-total">0 tagged</span>
+      <span class="tag-bar-counts">
+        \${TAG_DEFS.map(({ key, label, color }) => \`
+          <span class="tag-bar-item">
+            <span class="tag-dot" style="background:\${color}"></span>
+            \${label}: <strong id="tag-count-\${key}" style="color:#484f58">0</strong>
+          </span>
+        \`).join('')}
+      </span>
+      <button id="export-btn" onclick="exportTagged()" disabled>Export CSV</button>
     </div>
     <div class="overlay-grid">
       \${COMPARE_IMAGES.map(({ sku, url }) => \`
-        <div class="overlay-card" id="card-\${sku}" onclick="toggleFlag(event, '\${sku}', \${JSON.stringify(url)})">
+        <div class="overlay-card" id="card-\${sku}">
           <img src="compare-view-screenshots/\${sku}.png" alt="">
           <div class="card-footer">
-            <div class="card-sku">\${url ? \`<a href="\${url}" target="_blank" onclick="event.stopPropagation()">\${sku}</a>\` : sku}</div>
-            <input class="flag-checkbox" type="checkbox" id="chk-\${sku}" onclick="event.stopPropagation(); toggleFlag(event, '\${sku}', \${JSON.stringify(url)}, true)">
+            <div class="card-sku">\${url ? \`<a href="\${url}" target="_blank">\${sku}</a>\` : sku}</div>
+          </div>
+          <div class="tag-pills">
+            \${TAG_DEFS.map(({ key, label, color }) => \`
+              <button class="tag-btn" id="tag-\${sku}-\${key}" style="--tag-color:\${color}"
+                onclick="setTag('\${sku}', \${JSON.stringify(url)}, '\${key}')">\${label}</button>
+            \`).join('')}
           </div>
         </div>
       \`).join('')}
     </div>
   \`;
+
+  // Restore saved tags from localStorage
+  COMPARE_IMAGES.forEach(({ sku }) => updateCard(sku));
+  updateTagSummary();
 }
 
-const flagged = new Map(); // sku → url
-
-function toggleFlag(event, sku, url, fromCheckbox = false) {
-  if (flagged.has(sku)) {
-    flagged.delete(sku);
-  } else {
-    flagged.set(sku, url);
-  }
-  const card = document.getElementById('card-' + sku);
-  const chk = document.getElementById('chk-' + sku);
-  const isFlagged = flagged.has(sku);
-  card.classList.toggle('flagged', isFlagged);
-  chk.checked = isFlagged;
-  document.getElementById('flag-count').textContent = flagged.size + ' item' + (flagged.size !== 1 ? 's' : '') + ' flagged';
-  document.getElementById('export-btn').disabled = flagged.size === 0;
-}
-
-function downloadTxt(content, filename) {
+function exportTagged() {
+  const rows = [['SKU', 'URL', 'Tag']];
+  TAG_DEFS.forEach(({ key, label }) => {
+    COMPARE_IMAGES.forEach(({ sku, url }) => {
+      if (tags.get(sku) === key) rows.push([sku, url || '', label]);
+    });
+  });
+  const csv = rows.map(r => r.map(c => \`"\${c}"\`).join(',')).join('\\n');
   const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([content], { type: 'text/plain' }));
-  a.download = filename;
+  a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+  a.download = 'compare-view-tags.csv';
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
-}
-
-function exportFlagged() {
-  const lines = [...flagged.entries()].map(([sku, url]) => url || sku);
-  downloadTxt(lines.join('\\n'), 'flagged-compare-view.txt');
 }
 
 // ── Compare view trigger ──────────────────────────────────────────────────────
