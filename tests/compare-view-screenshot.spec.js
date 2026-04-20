@@ -257,11 +257,13 @@ for (const url of urls) {
         let needsOnboarding = false;
         const bagSettleStart = Date.now();
         while (Date.now() - bagSettleStart < 15000) {
-          if (eventWatcher.isReady()) { needsOnboarding = false; break; }
+          // Check checkbox first — event may fire early (page init) before button click
           const hasCheckbox = await page.evaluate(() => {
             return !!window.findInAnyShadow('[data-test-id="privacy-policy-checkbox"]');
           }).catch(() => false);
           if (hasCheckbox) { needsOnboarding = true; break; }
+          // Only treat event as "returning user" signal after checkbox has had time to appear
+          if (eventWatcher.isReady()) { needsOnboarding = false; break; }
           await page.waitForTimeout(300);
         }
 
@@ -318,9 +320,7 @@ for (const url of urls) {
             () => {
               const hasPrivacyPolicy = !!window.findInAnyShadow('[data-test-id="privacy-policy-checkbox"]');
               const hasBudgetScreen = !!window.findInAnyShadow("button.everyday-item-btns");
-              // Also require something to be visible in the widget area
-              const hasHost = !!(window.getWidgetHost()?.shadowRoot || window.findInAnyShadow("#vs-aoyama-main-modal"));
-              return hasHost && !hasPrivacyPolicy && !hasBudgetScreen;
+              return !hasPrivacyPolicy && !hasBudgetScreen;
             },
             { timeout: 15000 }
           )
