@@ -1,16 +1,23 @@
 {
-  "timestamp": "2026-04-20T23:43:25.822Z",
-  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/24695994289",
+  "timestamp": "2026-04-21T03:29:02.387Z",
+  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/24702363027",
   "summary": {
     "total": 86,
-    "passed": 77,
-    "widgetMissing": 6,
+    "passed": 76,
+    "widgetMissing": 7,
     "skipped": 3,
     "failed": 0,
-    "fallbackUsed": 77
+    "fallbackUsed": 76
   },
   "newIssues": [],
   "widgetMissingStores": [
+    {
+      "store": "retouch",
+      "url": "https://re-touch.tokyo/products/easy-slacks",
+      "browsers": [
+        "chrome"
+      ]
+    },
     {
       "store": "snidel",
       "url": "https://snidel.com/Form/Product/ProductDetail.aspx?shop=0&pid=SHFT261075&vid=&bid=SNH01&cid=&_type=&cat=&swrd=",
@@ -40,8 +47,8 @@
       ]
     },
     {
-      "store": "hankyu_mens",
-      "url": "https://web.hh-online.jp/hankyu-mens/goods/index.html?ggcd=506692016",
+      "store": "camilla_and_marc",
+      "url": "https://www.camillaandmarc.com/products/nestor-blazer-choc-marle",
       "browsers": [
         "chrome"
       ]
@@ -57,22 +64,26 @@
   "ongoingMissing": [
     {
       "store": "hankyu_hanshin",
-      "consecutiveRuns": 8
+      "consecutiveRuns": 9
     },
     {
       "store": "reebok_korea",
-      "consecutiveRuns": 8
+      "consecutiveRuns": 9
     },
     {
       "store": "snidel",
-      "consecutiveRuns": 8
+      "consecutiveRuns": 9
     },
     {
       "store": "gelato_pique",
-      "consecutiveRuns": 8
+      "consecutiveRuns": 9
     },
     {
       "store": "hankyu_mens",
+      "consecutiveRuns": 2
+    },
+    {
+      "store": "strasburgo_outlet",
       "consecutiveRuns": 1
     }
   ],
