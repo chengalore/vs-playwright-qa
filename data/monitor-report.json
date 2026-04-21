@@ -1,26 +1,26 @@
 {
-  "timestamp": "2026-04-21T03:29:02.387Z",
-  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/24702363027",
+  "timestamp": "2026-04-21T23:36:49.611Z",
+  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/24751924509",
   "summary": {
     "total": 86,
     "passed": 76,
     "widgetMissing": 7,
     "skipped": 3,
     "failed": 0,
-    "fallbackUsed": 76
+    "fallbackUsed": 77
   },
   "newIssues": [],
   "widgetMissingStores": [
     {
-      "store": "retouch",
-      "url": "https://re-touch.tokyo/products/easy-slacks",
+      "store": "snidel",
+      "url": "https://snidel.com/Form/Product/ProductDetail.aspx?shop=0&pid=SHFT261075&vid=&bid=SNH01&cid=&_type=&cat=&swrd=",
       "browsers": [
         "chrome"
       ]
     },
     {
-      "store": "snidel",
-      "url": "https://snidel.com/Form/Product/ProductDetail.aspx?shop=0&pid=SHFT261075&vid=&bid=SNH01&cid=&_type=&cat=&swrd=",
+      "store": "flandre",
+      "url": "https://store.flandre.ne.jp/7-id/others/942_52182069/",
       "browsers": [
         "chrome"
       ]
@@ -47,8 +47,8 @@
       ]
     },
     {
-      "store": "camilla_and_marc",
-      "url": "https://www.camillaandmarc.com/products/nestor-blazer-choc-marle",
+      "store": "hankyu_mens",
+      "url": "https://web.hh-online.jp/hankyu-mens/goods/index.html?ggcd=506692016",
       "browsers": [
         "chrome"
       ]
@@ -64,26 +64,30 @@
   "ongoingMissing": [
     {
       "store": "hankyu_hanshin",
-      "consecutiveRuns": 9
+      "consecutiveRuns": 10
     },
     {
       "store": "reebok_korea",
-      "consecutiveRuns": 9
+      "consecutiveRuns": 10
     },
     {
       "store": "snidel",
-      "consecutiveRuns": 9
+      "consecutiveRuns": 10
     },
     {
       "store": "gelato_pique",
-      "consecutiveRuns": 9
-    },
-    {
-      "store": "hankyu_mens",
-      "consecutiveRuns": 2
+      "consecutiveRuns": 10
     },
     {
       "store": "strasburgo_outlet",
+      "consecutiveRuns": 2
+    },
+    {
+      "store": "camilla_and_marc",
+      "consecutiveRuns": 1
+    },
+    {
+      "store": "retouch",
       "consecutiveRuns": 1
     }
   ],
