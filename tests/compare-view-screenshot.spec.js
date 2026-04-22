@@ -70,8 +70,9 @@ if (urls.length === 0) {
 // Run with --workers=1 to keep all tests in the same worker so the shared
 // browser context is visible to all of them.
 
-// Date folder for this run — screenshots go into test-results/compare-view-screenshots/YYYY-MM-DD/
-const runDate = new Date().toISOString().slice(0, 10);
+// Batch folder for this run — screenshots go into test-results/compare-view-screenshots/<batch>/
+// BATCH_NAME is set by the workflow (e.g. "bottega-0421"); falls back to today's date.
+const runDate = process.env.BATCH_NAME?.trim() || new Date().toISOString().slice(0, 10);
 
 test.setTimeout(180000); // 3 min per URL — Bottega Veneta pages load slowly
 

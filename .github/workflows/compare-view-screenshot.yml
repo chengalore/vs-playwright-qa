@@ -7,6 +7,11 @@ on:
         description: "Product page URLs (one per line)"
         required: true
         type: string
+      batch_name:
+        description: "Batch label for grouping screenshots (e.g. bottega-0421, marui-0421)"
+        required: false
+        default: ""
+        type: string
 
 jobs:
   screenshot:
@@ -41,6 +46,7 @@ jobs:
             --reporter=list 2>&1 | tee test-output.log || true
         env:
           TEST_URLS_FILE: data/compare-view-urls-run.txt
+          BATCH_NAME: ${{ github.event.inputs.batch_name }}
 
       - name: Show captured screenshots
         run: |

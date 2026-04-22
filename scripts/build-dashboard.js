@@ -42,29 +42,30 @@ const screenshotsDst = 'docs/compare-view-screenshots';
 fs.mkdirSync(screenshotsDst, { recursive: true });
 
 // Copy new screenshots and merge manifest.
-// Screenshots are organised into date subfolders (YYYY-MM-DD/) inside screenshotsSrc.
-// All date folders are scanned and merged into the flat docs/ destination.
+// Screenshots are organised into named batch subfolders (e.g. "bottega-0421", "marui-0421",
+// or legacy "YYYY-MM-DD") inside screenshotsSrc.
 if (fs.existsSync(screenshotsSrc)) {
   const dstManifestPath = path.join(screenshotsDst, 'manifest.json');
   const dstManifest = fs.existsSync(dstManifestPath) ? readJSON(dstManifestPath) : [];
 
-  // Find all YYYY-MM-DD subfolders
-  const dateFolders = fs.readdirSync(screenshotsSrc)
-    .filter(f => /^\d{4}-\d{2}-\d{2}$/.test(f))
+  // All subfolders treated as batch names, sorted oldest-first so newer batches overwrite PNGs
+  const batchFolders = fs.readdirSync(screenshotsSrc)
     .filter(f => fs.statSync(path.join(screenshotsSrc, f)).isDirectory())
-    .sort(); // oldest first so newer runs overwrite older ones
+    .sort();
 
   let totalCopied = 0;
-  for (const dateFolder of dateFolders) {
-    const srcDir = path.join(screenshotsSrc, dateFolder);
+  for (const batch of batchFolders) {
+    const srcDir = path.join(screenshotsSrc, batch);
     const srcManifestPath = path.join(srcDir, 'manifest.json');
 
     if (fs.existsSync(srcManifestPath)) {
       const srcManifest = readJSON(srcManifestPath);
       for (const entry of srcManifest) {
-        const idx = dstManifest.findIndex(e => e.sku === entry.sku);
-        if (idx >= 0) dstManifest[idx] = entry;
-        else dstManifest.push(entry);
+        const enriched = { ...entry, batch };
+        // Key by sku+batch so same SKU in different batches stays separate
+        const idx = dstManifest.findIndex(e => e.sku === entry.sku && e.batch === batch);
+        if (idx >= 0) dstManifest[idx] = enriched;
+        else dstManifest.push(enriched);
       }
     }
 
@@ -75,20 +76,22 @@ if (fs.existsSync(screenshotsSrc)) {
     totalCopied += pngs.length;
   }
 
-  if (dateFolders.length) {
+  if (batchFolders.length) {
     fs.writeFileSync(dstManifestPath, JSON.stringify(dstManifest, null, 2));
-    console.log(`Merged ${dateFolders.length} date folder(s), copied ${totalCopied} screenshot(s) to ${screenshotsDst}`);
+    console.log(`Merged ${batchFolders.length} batch folder(s), copied ${totalCopied} screenshot(s) to ${screenshotsDst}`);
   }
 }
 
-// Build compareImages: flat array of { sku, url } from the manifest
+// Build compareImages: array of { sku, url, batch } from the manifest
 const dstManifestPath = path.join(screenshotsDst, 'manifest.json');
 const dstManifest = fs.existsSync(dstManifestPath) ? readJSON(dstManifestPath) : [];
 const dstPngs = new Set(fs.readdirSync(screenshotsDst).filter(f => f.endsWith('.png')));
+// Migrate old entries (no batch field) to 'older'
+for (const e of dstManifest) { if (!e.batch) e.batch = 'older'; }
 // Add any PNGs not yet in manifest
 for (const f of dstPngs) {
   const sku = f.replace('.png', '');
-  if (!dstManifest.some(e => e.sku === sku)) dstManifest.push({ sku, url: null });
+  if (!dstManifest.some(e => e.sku === sku)) dstManifest.push({ sku, url: null, batch: 'older' });
 }
 const compareImages = dstManifest.filter(e => dstPngs.has(`${e.sku}.png`));
 
@@ -734,6 +737,11 @@ function generateDashboard(history, compareImages, singleUrlHistory) {
           style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:6px 10px;font-size:13px"
           oninput="localStorage.setItem('gh_pat', this.value); document.getElementById('single-pat').value = this.value">
       </div>
+      <div style="margin-bottom:10px">
+        <label style="font-size:12px;color:#8b949e;display:block;margin-bottom:4px">Batch name — groups screenshots together (e.g. bottega-0421, marui-0421)</label>
+        <input id="compare-batch" type="text" placeholder="bottega-0421"
+          style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:6px 10px;font-size:13px">
+      </div>
       <div style="margin-bottom:12px">
         <label style="font-size:12px;color:#8b949e;display:block;margin-bottom:4px">URLs — one per line</label>
         <textarea id="compare-urls" rows="6" placeholder="https://example.com/product-1&#10;https://example.com/product-2"
@@ -1218,6 +1226,16 @@ const tags = new Map(
   Object.entries(JSON.parse(localStorage.getItem(TAGS_STORAGE_KEY) || '{}'))
 );
 
+// Batch filter state — sorted newest-first, default to most recent
+const ALL_BATCHES = [...new Set(COMPARE_IMAGES.map(img => img.batch || 'older'))].sort().reverse();
+let currentBatch = ALL_BATCHES[0] || 'all';
+
+function getFilteredImages() {
+  return currentBatch === 'all'
+    ? COMPARE_IMAGES
+    : COMPARE_IMAGES.filter(img => (img.batch || 'older') === currentBatch);
+}
+
 function saveTags() {
   localStorage.setItem(TAGS_STORAGE_KEY, JSON.stringify(Object.fromEntries(tags)));
 }
@@ -1248,9 +1266,11 @@ function updateCard(sku) {
 }
 
 function updateTagSummary() {
+  const filtered = getFilteredImages();
+  const skuSet = new Set(filtered.map(({ sku }) => sku));
   const counts = Object.fromEntries(TAG_DEFS.map(({ key }) => [key, 0]));
-  tags.forEach(tag => { if (counts[tag] !== undefined) counts[tag]++; });
-  const total = tags.size;
+  tags.forEach((tag, sku) => { if (skuSet.has(sku) && counts[tag] !== undefined) counts[tag]++; });
+  const total = [...tags.keys()].filter(sku => skuSet.has(sku)).length;
 
   const totalEl = document.getElementById('tag-total');
   if (totalEl) totalEl.textContent = total + ' tagged';
@@ -1262,7 +1282,40 @@ function updateTagSummary() {
     }
   });
   const exportBtn = document.getElementById('export-btn');
-  if (exportBtn) exportBtn.disabled = total === 0;
+  if (exportBtn) exportBtn.disabled = tags.size === 0;
+}
+
+function renderGrid(images) {
+  return images.map(({ sku, url }) => \`
+    <div class="overlay-card" id="card-\${sku}">
+      <img src="compare-view-screenshots/\${sku}.png" alt="">
+      <div class="card-footer">
+        <div class="card-sku">\${url ? \`<a href="\${url}" target="_blank">\${sku}</a>\` : sku}</div>
+      </div>
+      <div class="tag-pills">
+        \${TAG_DEFS.map(({ key, label, color }) => \`
+          <button class="tag-btn" id="tag-\${sku}-\${key}" style="--tag-color:\${color}"
+            onclick="setTag('\${sku}', '\${key}')">\${label}</button>
+        \`).join('')}
+      </div>
+    </div>
+  \`).join('');
+}
+
+function filterBatch(batch) {
+  currentBatch = batch;
+  const grid = document.getElementById('compare-grid');
+  if (grid) {
+    grid.innerHTML = renderGrid(getFilteredImages());
+    getFilteredImages().forEach(({ sku }) => updateCard(sku));
+  }
+  updateTagSummary();
+  updateBatchCount();
+}
+
+function updateBatchCount() {
+  const el = document.getElementById('batch-count');
+  if (el) el.textContent = getFilteredImages().length + ' products';
 }
 
 function renderCompareView() {
@@ -1275,6 +1328,8 @@ function renderCompareView() {
     </div>\`;
     return;
   }
+
+  const batchOptions = ALL_BATCHES.map(b => \`<option value="\${b}"\${b === currentBatch ? ' selected' : ''}>\${b}</option>\`).join('');
 
   el.innerHTML = \`
     <div class="tag-bar">
@@ -1289,27 +1344,23 @@ function renderCompareView() {
       </span>
       <button id="export-btn" onclick="exportTagged()" disabled>Export CSV</button>
     </div>
-    <div class="overlay-grid">
-      \${COMPARE_IMAGES.map(({ sku, url }) => \`
-        <div class="overlay-card" id="card-\${sku}">
-          <img src="compare-view-screenshots/\${sku}.png" alt="">
-          <div class="card-footer">
-            <div class="card-sku">\${url ? \`<a href="\${url}" target="_blank">\${sku}</a>\` : sku}</div>
-          </div>
-          <div class="tag-pills">
-            \${TAG_DEFS.map(({ key, label, color }) => \`
-              <button class="tag-btn" id="tag-\${sku}-\${key}" style="--tag-color:\${color}"
-                onclick="setTag('\${sku}', '\${key}')">\${label}</button>
-            \`).join('')}
-          </div>
-        </div>
-      \`).join('')}
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+      <label style="font-size:13px;color:#8b949e;white-space:nowrap">Batch:</label>
+      <select id="batch-filter" onchange="filterBatch(this.value)"
+        style="background:#161b22;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:5px 10px;font-size:13px;cursor:pointer">
+        \${batchOptions}
+        <option value="all"\${currentBatch === 'all' ? ' selected' : ''}>All batches</option>
+      </select>
+      <span id="batch-count" style="font-size:12px;color:#8b949e"></span>
+    </div>
+    <div class="overlay-grid" id="compare-grid">
+      \${renderGrid(getFilteredImages())}
     </div>
   \`;
 
-  // Restore saved tags from localStorage
-  COMPARE_IMAGES.forEach(({ sku }) => updateCard(sku));
+  getFilteredImages().forEach(({ sku }) => updateCard(sku));
   updateTagSummary();
+  updateBatchCount();
 }
 
 function exportTagged() {
@@ -1333,17 +1384,19 @@ function exportTagged() {
 async function triggerCompareRun() {
   const pat = document.getElementById('gh-pat').value.trim();
   const urls = document.getElementById('compare-urls').value.trim();
+  const batchName = document.getElementById('compare-batch').value.trim();
   const status = document.getElementById('compare-trigger-status');
 
   if (!pat) { status.textContent = '⚠️ Enter a GitHub PAT first'; status.style.color = '#d29922'; return; }
   if (!urls) { status.textContent = '⚠️ Enter at least one URL'; status.style.color = '#d29922'; return; }
+  if (!batchName) { status.textContent = '⚠️ Enter a batch name (e.g. bottega-0421)'; status.style.color = '#d29922'; return; }
 
   status.textContent = 'Triggering…'; status.style.color = '#8b949e';
 
   const res = await fetch('https://api.github.com/repos/chengalore/vs-playwright-qa/actions/workflows/compare-view-screenshot.yml/dispatches', {
     method: 'POST',
     headers: { Authorization: 'Bearer ' + pat, Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' },
-    body: JSON.stringify({ ref: 'main', inputs: { urls } }),
+    body: JSON.stringify({ ref: 'main', inputs: { urls, batch_name: batchName } }),
   });
 
   if (res.status === 204) {
