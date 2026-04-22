@@ -1,10 +1,10 @@
 {
-  "timestamp": "2026-04-21T23:36:49.611Z",
-  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/24751924509",
+  "timestamp": "2026-04-22T23:46:39.004Z",
+  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/24808418379",
   "summary": {
     "total": 86,
-    "passed": 76,
-    "widgetMissing": 7,
+    "passed": 77,
+    "widgetMissing": 6,
     "skipped": 3,
     "failed": 0,
     "fallbackUsed": 77
@@ -19,13 +19,6 @@
       ]
     },
     {
-      "store": "flandre",
-      "url": "https://store.flandre.ne.jp/7-id/others/942_52182069/",
-      "browsers": [
-        "chrome"
-      ]
-    },
-    {
       "store": "gelato_pique",
       "url": "https://gelatopique.com/Form/Product/ProductDetail.aspx?shop=0&pid=PWCO261297&vid=&bid=PIQ01&cid=&_type=&cat=WOM003001&swrd=",
       "browsers": [
@@ -34,7 +27,7 @@
     },
     {
       "store": "hankyu_hanshin",
-      "url": "https://web.hh-online.jp/fashion/goods/index.html?ggcd=508369227",
+      "url": "https://web.hh-online.jp/fashion/goods/index.html?ggcd=508767628",
       "browsers": [
         "chrome"
       ]
@@ -64,30 +57,30 @@
   "ongoingMissing": [
     {
       "store": "hankyu_hanshin",
-      "consecutiveRuns": 10
+      "consecutiveRuns": 11
     },
     {
       "store": "reebok_korea",
-      "consecutiveRuns": 10
+      "consecutiveRuns": 11
     },
     {
       "store": "snidel",
-      "consecutiveRuns": 10
+      "consecutiveRuns": 11
     },
     {
       "store": "gelato_pique",
-      "consecutiveRuns": 10
+      "consecutiveRuns": 11
     },
     {
       "store": "strasburgo_outlet",
-      "consecutiveRuns": 2
+      "consecutiveRuns": 3
     },
     {
-      "store": "camilla_and_marc",
+      "store": "hankyu_mens",
       "consecutiveRuns": 1
     },
     {
-      "store": "retouch",
+      "store": "flandre",
       "consecutiveRuns": 1
     }
   ],
