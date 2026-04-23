@@ -75,7 +75,7 @@
   },
   "hankyu_hanshin": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 12,
+    "consecutiveWidgetMissing": 0,
     "autoBlacklisted": false
   },
   "agnes_b": {
@@ -120,7 +120,7 @@
   },
   "hankyu_mens": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 2,
+    "consecutiveWidgetMissing": 0,
     "autoBlacklisted": false
   },
   "llbean": {
@@ -140,7 +140,7 @@
   },
   "strasburgo_outlet": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 4,
+    "consecutiveWidgetMissing": 5,
     "autoBlacklisted": false
   },
   "shel_tter": {
@@ -160,7 +160,7 @@
   },
   "reebok_korea": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 12,
+    "consecutiveWidgetMissing": 13,
     "autoBlacklisted": false
   },
   "aoure": {
@@ -324,7 +324,7 @@
   },
   "snidel": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 12,
+    "consecutiveWidgetMissing": 13,
     "autoBlacklisted": false
   },
   "bottega_veneta": {
@@ -408,7 +408,7 @@
   },
   "gelato_pique": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 12,
+    "consecutiveWidgetMissing": 13,
     "autoBlacklisted": false
   },
   "bottega_veneta_japan": {

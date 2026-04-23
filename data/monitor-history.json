@@ -1,5 +1,81 @@
 [
   {
+    "timestamp": "2026-04-23T23:45:35.734Z",
+    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/24864412033",
+    "summary": {
+      "total": 86,
+      "passed": 79,
+      "widgetMissing": 4,
+      "skipped": 3,
+      "failed": 0,
+      "fallbackUsed": 79
+    },
+    "newIssues": [],
+    "widgetMissingStores": [
+      {
+        "store": "snidel",
+        "url": "https://snidel.com/Form/Product/ProductDetail.aspx?shop=0&pid=SHFT261075&vid=&bid=SNH01&cid=&_type=&cat=&swrd=",
+        "browsers": [
+          "chrome"
+        ]
+      },
+      {
+        "store": "gelato_pique",
+        "url": "https://gelatopique.com/Form/Product/ProductDetail.aspx?shop=0&pid=PWCO261297&vid=&bid=PIQ01&cid=&_type=&cat=WOM003001&swrd=",
+        "browsers": [
+          "chrome"
+        ]
+      },
+      {
+        "store": "reebok_korea",
+        "url": "https://reebok.co.kr/goods/goods_view.php?goodsNo=1000002262",
+        "browsers": [
+          "chrome"
+        ]
+      },
+      {
+        "store": "strasburgo_outlet",
+        "url": "https://outlet.strasburgo.co.jp/item/STB0125F1404?via=recommend",
+        "browsers": [
+          "chrome"
+        ]
+      }
+    ],
+    "ongoingMissing": [
+      {
+        "store": "hankyu_hanshin",
+        "consecutiveRuns": 12
+      },
+      {
+        "store": "reebok_korea",
+        "consecutiveRuns": 12
+      },
+      {
+        "store": "snidel",
+        "consecutiveRuns": 12
+      },
+      {
+        "store": "gelato_pique",
+        "consecutiveRuns": 12
+      },
+      {
+        "store": "strasburgo_outlet",
+        "consecutiveRuns": 4
+      },
+      {
+        "store": "hankyu_mens",
+        "consecutiveRuns": 2
+      }
+    ],
+    "botProtected": [
+      "adidas",
+      "ralph_lauren",
+      "asics_japan"
+    ],
+    "skippedStores": [],
+    "phase": "widget"
+  },
+  {
     "timestamp": "2026-04-22T23:46:39.004Z",
     "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/24808418379",
     "summary": {

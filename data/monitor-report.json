@@ -1,13 +1,13 @@
 {
-  "timestamp": "2026-04-22T23:46:39.004Z",
-  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/24808418379",
+  "timestamp": "2026-04-23T23:45:35.734Z",
+  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/24864412033",
   "summary": {
     "total": 86,
-    "passed": 77,
-    "widgetMissing": 6,
+    "passed": 79,
+    "widgetMissing": 4,
     "skipped": 3,
     "failed": 0,
-    "fallbackUsed": 77
+    "fallbackUsed": 79
   },
   "newIssues": [],
   "widgetMissingStores": [
@@ -26,22 +26,8 @@
       ]
     },
     {
-      "store": "hankyu_hanshin",
-      "url": "https://web.hh-online.jp/fashion/goods/index.html?ggcd=508767628",
-      "browsers": [
-        "chrome"
-      ]
-    },
-    {
       "store": "reebok_korea",
       "url": "https://reebok.co.kr/goods/goods_view.php?goodsNo=1000002262",
-      "browsers": [
-        "chrome"
-      ]
-    },
-    {
-      "store": "hankyu_mens",
-      "url": "https://web.hh-online.jp/hankyu-mens/goods/index.html?ggcd=506692016",
       "browsers": [
         "chrome"
       ]
@@ -57,31 +43,27 @@
   "ongoingMissing": [
     {
       "store": "hankyu_hanshin",
-      "consecutiveRuns": 11
+      "consecutiveRuns": 12
     },
     {
       "store": "reebok_korea",
-      "consecutiveRuns": 11
+      "consecutiveRuns": 12
     },
     {
       "store": "snidel",
-      "consecutiveRuns": 11
+      "consecutiveRuns": 12
     },
     {
       "store": "gelato_pique",
-      "consecutiveRuns": 11
+      "consecutiveRuns": 12
     },
     {
       "store": "strasburgo_outlet",
-      "consecutiveRuns": 3
+      "consecutiveRuns": 4
     },
     {
       "store": "hankyu_mens",
-      "consecutiveRuns": 1
-    },
-    {
-      "store": "flandre",
-      "consecutiveRuns": 1
+      "consecutiveRuns": 2
     }
   ],
   "botProtected": [
