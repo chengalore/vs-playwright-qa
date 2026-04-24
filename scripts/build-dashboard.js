@@ -1364,11 +1364,11 @@ function renderCompareView() {
 }
 
 function exportTagged() {
-  const urlMap = Object.fromEntries(COMPARE_IMAGES.map(({ sku, url }) => [sku, url || '']));
-  const rows = [['SKU', 'URL', 'Tag']];
+  const urlMap = Object.fromEntries(COMPARE_IMAGES.map(({ sku, url, batch }) => [sku, { url: url || '', batch: batch || '' }]));
+  const rows = [['SKU', 'URL', 'Batch', 'Tag']];
   TAG_DEFS.forEach(({ key, label }) => {
     COMPARE_IMAGES.forEach(({ sku }) => {
-      if (tags.get(sku) === key) rows.push([sku, urlMap[sku], label]);
+      if (tags.get(sku) === key) rows.push([sku, urlMap[sku].url, urlMap[sku].batch, label]);
     });
   });
   const csv = rows.map(r => r.map(c => \`"\${c}"\`).join(',')).join('\\n');
