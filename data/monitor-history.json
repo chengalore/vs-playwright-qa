@@ -1,5 +1,101 @@
 [
   {
+    "timestamp": "2026-04-24T23:40:43.121Z",
+    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/24916705904",
+    "summary": {
+      "total": 86,
+      "passed": 75,
+      "widgetMissing": 8,
+      "skipped": 3,
+      "failed": 0,
+      "fallbackUsed": 75
+    },
+    "newIssues": [],
+    "widgetMissingStores": [
+      {
+        "store": "ragtag",
+        "url": "https://www.ragtag.jp/brand/10164/item/N015826M0036",
+        "browsers": [
+          "chrome"
+        ]
+      },
+      {
+        "store": "snidel",
+        "url": "https://snidel.com/Form/Product/ProductDetail.aspx?shop=0&pid=SHFT261075&vid=&bid=SNH01&cid=&_type=&cat=&swrd=",
+        "browsers": [
+          "chrome"
+        ]
+      },
+      {
+        "store": "onward",
+        "url": "https://crosset.onward.co.jp/items/PRGTLS0280?cc=075",
+        "browsers": [
+          "chrome"
+        ]
+      },
+      {
+        "store": "gelato_pique",
+        "url": "https://gelatopique.com/Form/Product/ProductDetail.aspx?shop=0&pid=PWCO261297&vid=&bid=PIQ01&cid=&_type=&cat=WOM003001&swrd=",
+        "browsers": [
+          "chrome"
+        ]
+      },
+      {
+        "store": "hankyu_hanshin",
+        "url": "https://web.hh-online.jp/fashion/goods/index.html?ggcd=508767628",
+        "browsers": [
+          "chrome"
+        ]
+      },
+      {
+        "store": "reebok_korea",
+        "url": "https://reebok.co.kr/goods/goods_view.php?goodsNo=1000002262",
+        "browsers": [
+          "chrome"
+        ]
+      },
+      {
+        "store": "hankyu_mens",
+        "url": "https://web.hh-online.jp/hankyu-mens/goods/index.html?ggcd=506692016",
+        "browsers": [
+          "chrome"
+        ]
+      },
+      {
+        "store": "llbean",
+        "url": "https://www.llbean.co.jp/mens/bottoms/casual-bottoms/g/059098.html",
+        "browsers": [
+          "chrome"
+        ]
+      }
+    ],
+    "ongoingMissing": [
+      {
+        "store": "reebok_korea",
+        "consecutiveRuns": 13
+      },
+      {
+        "store": "snidel",
+        "consecutiveRuns": 13
+      },
+      {
+        "store": "gelato_pique",
+        "consecutiveRuns": 13
+      },
+      {
+        "store": "strasburgo_outlet",
+        "consecutiveRuns": 5
+      }
+    ],
+    "botProtected": [
+      "adidas",
+      "ralph_lauren",
+      "asics_japan"
+    ],
+    "skippedStores": [],
+    "phase": "widget"
+  },
+  {
     "timestamp": "2026-04-23T23:45:35.734Z",
     "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/24864412033",
     "summary": {
