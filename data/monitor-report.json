@@ -1,13 +1,13 @@
 {
-  "timestamp": "2026-04-24T23:40:43.121Z",
-  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/24916705904",
+  "timestamp": "2026-04-25T23:38:22.902Z",
+  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/24943304858",
   "summary": {
     "total": 86,
-    "passed": 75,
-    "widgetMissing": 8,
+    "passed": 76,
+    "widgetMissing": 7,
     "skipped": 3,
     "failed": 0,
-    "fallbackUsed": 75
+    "fallbackUsed": 76
   },
   "newIssues": [],
   "widgetMissingStores": [
@@ -54,13 +54,6 @@
       ]
     },
     {
-      "store": "hankyu_mens",
-      "url": "https://web.hh-online.jp/hankyu-mens/goods/index.html?ggcd=506692016",
-      "browsers": [
-        "chrome"
-      ]
-    },
-    {
       "store": "llbean",
       "url": "https://www.llbean.co.jp/mens/bottoms/casual-bottoms/g/059098.html",
       "browsers": [
@@ -71,19 +64,35 @@
   "ongoingMissing": [
     {
       "store": "reebok_korea",
-      "consecutiveRuns": 13
+      "consecutiveRuns": 14
     },
     {
       "store": "snidel",
-      "consecutiveRuns": 13
+      "consecutiveRuns": 14
     },
     {
       "store": "gelato_pique",
-      "consecutiveRuns": 13
+      "consecutiveRuns": 14
     },
     {
-      "store": "strasburgo_outlet",
-      "consecutiveRuns": 5
+      "store": "hankyu_hanshin",
+      "consecutiveRuns": 1
+    },
+    {
+      "store": "hankyu_mens",
+      "consecutiveRuns": 1
+    },
+    {
+      "store": "llbean",
+      "consecutiveRuns": 1
+    },
+    {
+      "store": "ragtag",
+      "consecutiveRuns": 1
+    },
+    {
+      "store": "onward",
+      "consecutiveRuns": 1
     }
   ],
   "botProtected": [
