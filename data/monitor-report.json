@@ -1,13 +1,13 @@
 {
-  "timestamp": "2026-04-26T23:39:55.595Z",
-  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/24969904403",
+  "timestamp": "2026-04-27T23:54:42.141Z",
+  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/25025804962",
   "summary": {
     "total": 86,
-    "passed": 76,
-    "widgetMissing": 7,
+    "passed": 77,
+    "widgetMissing": 6,
     "skipped": 3,
     "failed": 0,
-    "fallbackUsed": 76
+    "fallbackUsed": 77
   },
   "newIssues": [],
   "widgetMissingStores": [
@@ -40,22 +40,15 @@
       ]
     },
     {
+      "store": "hankyu_hanshin",
+      "url": "https://web.hh-online.jp/fashion/goods/index.html?ggcd=508767628",
+      "browsers": [
+        "chrome"
+      ]
+    },
+    {
       "store": "reebok_korea",
       "url": "https://reebok.co.kr/goods/goods_view.php?goodsNo=1000002262",
-      "browsers": [
-        "chrome"
-      ]
-    },
-    {
-      "store": "hankyu_mens",
-      "url": "https://web.hh-online.jp/hankyu-mens/goods/index.html?ggcd=506692016",
-      "browsers": [
-        "chrome"
-      ]
-    },
-    {
-      "store": "llbean",
-      "url": "https://www.llbean.co.jp/mens/bottoms/casual-bottoms/g/059098.html",
       "browsers": [
         "chrome"
       ]
@@ -64,31 +57,31 @@
   "ongoingMissing": [
     {
       "store": "reebok_korea",
-      "consecutiveRuns": 15
+      "consecutiveRuns": 16
     },
     {
       "store": "snidel",
-      "consecutiveRuns": 15
+      "consecutiveRuns": 16
     },
     {
       "store": "gelato_pique",
-      "consecutiveRuns": 15
-    },
-    {
-      "store": "hankyu_hanshin",
-      "consecutiveRuns": 2
+      "consecutiveRuns": 16
     },
     {
       "store": "llbean",
-      "consecutiveRuns": 2
+      "consecutiveRuns": 3
     },
     {
       "store": "ragtag",
-      "consecutiveRuns": 2
+      "consecutiveRuns": 3
     },
     {
       "store": "onward",
-      "consecutiveRuns": 2
+      "consecutiveRuns": 3
+    },
+    {
+      "store": "hankyu_mens",
+      "consecutiveRuns": 1
     }
   ],
   "botProtected": [
