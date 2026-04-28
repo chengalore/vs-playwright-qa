@@ -1,5 +1,45 @@
 [
   {
+    "timestamp": "2026-04-28T01:24:25.481Z",
+    "url": "https://mitsui-shopping-park.com/ec/p/3350100000728",
+    "phase": "full",
+    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/25028686954",
+    "store": "and_mall",
+    "productType": "unknown",
+    "flow": null,
+    "onboarding": {
+      "gender": "female",
+      "age": "35",
+      "height": "161",
+      "weight": "54"
+    },
+    "giftOnboarding": {
+      "gender": "female",
+      "age": "30-39",
+      "height": "160-164",
+      "bodyType": "52 - 63 kg"
+    },
+    "footwearOnboarding": {
+      "gender": "female",
+      "brand": "Adidas",
+      "size": "25.5 cm"
+    },
+    "kidsOnboarding": {
+      "gender": "girl",
+      "age": 8,
+      "height": "120",
+      "weight": "25"
+    },
+    "events": [],
+    "browsers": [
+      {
+        "browser": "chrome",
+        "status": "skipped",
+        "error": null
+      }
+    ]
+  },
+  {
     "timestamp": "2026-04-27T06:45:11.319Z",
     "url": "https://bananarepublic.gap.co.jp/br/mid-rise-straight-sloan-pant/754557026.html?mlink=WDP_Einstein",
     "phase": "full",
