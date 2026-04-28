@@ -1364,10 +1364,10 @@ function renderCompareView() {
 }
 
 function exportTagged() {
-  // Deduplicate by SKU keeping the latest batch entry (COMPARE_IMAGES is sorted newest-first)
+  // COMPARE_IMAGES is oldest-first — iterate in order so each SKU's entry is overwritten by newer batches
   const latestBySku = new Map();
   COMPARE_IMAGES.forEach(({ sku, url, batch }) => {
-    if (!latestBySku.has(sku)) latestBySku.set(sku, { url: url || '', batch: batch || '' });
+    latestBySku.set(sku, { url: url || '', batch: batch || '' });
   });
   const rows = [['SKU', 'URL', 'Batch', 'Tag']];
   TAG_DEFS.forEach(({ key, label }) => {
