@@ -3325,5 +3325,250 @@
     "sku": "CG0240316301",
     "url": "https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails?wrt=5&mcd=CG024&cpg=031&pno=63&ino=01&vs-branch=fit-vis-bag-item-view&vs-dev&vs-env=staging",
     "batch": "marui-0428"
+  },
+  {
+    "sku": "CG0243048001",
+    "url": "https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails?wrt=5&mcd=CG024&cpg=304&pno=80&ino=01&vs-branch=fit-vis-bag-item-view&vs-dev&vs-env=staging",
+    "batch": "marui-0428"
+  },
+  {
+    "sku": "CG0241350501",
+    "url": "https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails?wrt=5&mcd=CG024&cpg=135&pno=05&ino=01&vs-branch=fit-vis-bag-item-view&vs-dev&vs-env=staging",
+    "batch": "marui-0428"
+  },
+  {
+    "sku": "CG0242989301",
+    "url": "https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails?wrt=5&mcd=CG024&cpg=298&pno=93&ino=01&vs-branch=fit-vis-bag-item-view&vs-dev&vs-env=staging",
+    "batch": "marui-0428"
+  },
+  {
+    "sku": "CG0231573601",
+    "url": "https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails?wrt=5&mcd=CG023&cpg=157&pno=36&ino=01&vs-branch=fit-vis-bag-item-view&vs-dev&vs-env=staging",
+    "batch": "marui-0428"
+  },
+  {
+    "sku": "CG0229969001",
+    "url": "https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails?wrt=5&mcd=CG022&cpg=996&pno=90&ino=01&vs-branch=fit-vis-bag-item-view&vs-dev&vs-env=staging",
+    "batch": "marui-0428"
+  },
+  {
+    "sku": "CG0229969101",
+    "url": "https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails?wrt=5&mcd=CG022&cpg=996&pno=91&ino=01&vs-branch=fit-vis-bag-item-view&vs-dev&vs-env=staging",
+    "batch": "marui-0428"
+  },
+  {
+    "sku": "CG0229967901",
+    "url": "https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails?wrt=5&mcd=CG022&cpg=996&pno=79&ino=01&vs-branch=fit-vis-bag-item-view&vs-dev&vs-env=staging",
+    "batch": "marui-0428"
+  },
+  {
+    "sku": "CG0229970001",
+    "url": "https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails?wrt=5&mcd=CG022&cpg=997&pno=00&ino=01&vs-branch=fit-vis-bag-item-view&vs-dev&vs-env=staging",
+    "batch": "marui-0428"
+  },
+  {
+    "sku": "CG0231573201",
+    "url": "https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails?wrt=5&mcd=CG023&cpg=157&pno=32&ino=01&vs-branch=fit-vis-bag-item-view&vs-dev&vs-env=staging",
+    "batch": "marui-0428"
+  },
+  {
+    "sku": "CG0240816201",
+    "url": "https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails?wrt=5&mcd=CG024&cpg=081&pno=62&ino=01&vs-branch=fit-vis-bag-item-view&vs-dev&vs-env=staging",
+    "batch": "marui-0428"
+  },
+  {
+    "sku": "CG0231572801",
+    "url": "https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails?wrt=5&mcd=CG023&cpg=157&pno=28&ino=01&vs-branch=fit-vis-bag-item-view&vs-dev&vs-env=staging",
+    "batch": "marui-0428"
+  },
+  {
+    "sku": "CG0231325101",
+    "url": "https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails?wrt=5&mcd=CG023&cpg=132&pno=51&ino=01&vs-branch=fit-vis-bag-item-view&vs-dev&vs-env=staging",
+    "batch": "marui-0428"
+  },
+  {
+    "sku": "CD0097346702",
+    "url": "https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails?wrt=5&mcd=CD009&cpg=734&pno=67&ino=02&vs-branch=fit-vis-bag-item-view&vs-dev&vs-env=staging",
+    "batch": "marui-0428"
+  },
+  {
+    "sku": "CF0226622601",
+    "url": "https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails?wrt=5&mcd=CF022&cpg=662&pno=26&ino=01&vs-branch=fit-vis-bag-item-view&vs-dev&vs-env=staging",
+    "batch": "marui-0428"
+  },
+  {
+    "sku": "CG0239500901",
+    "url": "https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails?wrt=5&mcd=CG023&cpg=950&pno=09&ino=01&vs-branch=fit-vis-bag-item-view&vs-dev&vs-env=staging",
+    "batch": "marui-0428"
+  },
+  {
+    "sku": "CF0226217501",
+    "url": "https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails?wrt=5&mcd=CF022&cpg=621&pno=75&ino=01&vs-branch=fit-vis-bag-item-view&vs-dev&vs-env=staging",
+    "batch": "marui-0428"
+  },
+  {
+    "sku": "CG0239500801",
+    "url": "https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails?wrt=5&mcd=CG023&cpg=950&pno=08&ino=01&vs-branch=fit-vis-bag-item-view&vs-dev&vs-env=staging",
+    "batch": "marui-0428"
+  },
+  {
+    "sku": "CG0239499201",
+    "url": "https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails?wrt=5&mcd=CG023&cpg=949&pno=92&ino=01&vs-branch=fit-vis-bag-item-view&vs-dev&vs-env=staging",
+    "batch": "marui-0428"
+  },
+  {
+    "sku": "CF0224418001",
+    "url": "https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails?wrt=5&mcd=CF022&cpg=441&pno=80&ino=01&vs-branch=fit-vis-bag-item-view&vs-dev&vs-env=staging",
+    "batch": "marui-0428"
+  },
+  {
+    "sku": "CF0226107701",
+    "url": "https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails?wrt=5&mcd=CF022&cpg=610&pno=77&ino=01&vs-branch=fit-vis-bag-item-view&vs-dev&vs-env=staging",
+    "batch": "marui-0428"
+  },
+  {
+    "sku": "CF0226012801",
+    "url": "https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails?wrt=5&mcd=CF022&cpg=601&pno=28&ino=01&vs-branch=fit-vis-bag-item-view&vs-dev&vs-env=staging",
+    "batch": "marui-0428"
+  },
+  {
+    "sku": "CE0174616701",
+    "url": "https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails?wrt=5&mcd=CE017&cpg=461&pno=67&ino=01&vs-branch=fit-vis-bag-item-view&vs-dev&vs-env=staging",
+    "batch": "marui-0428"
+  },
+  {
+    "sku": "CF0199841301",
+    "url": "https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails?wrt=5&mcd=CF019&cpg=984&pno=13&ino=01&vs-branch=fit-vis-bag-item-view&vs-dev&vs-env=staging",
+    "batch": "marui-0428"
+  },
+  {
+    "sku": "CF0190937801",
+    "url": "https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails?wrt=5&mcd=CF019&cpg=093&pno=78&ino=01&vs-branch=fit-vis-bag-item-view&vs-dev&vs-env=staging",
+    "batch": "marui-0428"
+  },
+  {
+    "sku": "CF0187600701",
+    "url": "https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails?wrt=5&mcd=CF018&cpg=760&pno=07&ino=01&vs-branch=fit-vis-bag-item-view&vs-dev&vs-env=staging",
+    "batch": "marui-0428"
+  },
+  {
+    "sku": "CE0152369801",
+    "url": "https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails?wrt=5&mcd=CE015&cpg=236&pno=98&ino=01&vs-branch=fit-vis-bag-item-view&vs-dev&vs-env=staging",
+    "batch": "marui-0428"
+  },
+  {
+    "sku": "CC0068686901",
+    "url": "https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails?wrt=5&mcd=CC006&cpg=868&pno=69&ino=01&vs-branch=fit-vis-bag-item-view&vs-dev&vs-env=staging",
+    "batch": "marui-0428"
+  },
+  {
+    "sku": "CF0219820401",
+    "url": "https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails?wrt=5&mcd=CF021&cpg=982&pno=04&ino=01&vs-branch=fit-vis-bag-item-view&vs-dev&vs-env=staging",
+    "batch": "marui-0428"
+  },
+  {
+    "sku": "CD0098939901",
+    "url": "https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails?wrt=5&mcd=CD009&cpg=893&pno=99&ino=01&vs-branch=fit-vis-bag-item-view&vs-dev&vs-env=staging",
+    "batch": "marui-0428"
+  },
+  {
+    "sku": "CD0119757901",
+    "url": "https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails?wrt=5&mcd=CD011&cpg=975&pno=79&ino=01&vs-branch=fit-vis-bag-item-view&vs-dev&vs-env=staging",
+    "batch": "marui-0428"
+  },
+  {
+    "sku": "CD0119757801",
+    "url": "https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails?wrt=5&mcd=CD011&cpg=975&pno=78&ino=01&vs-branch=fit-vis-bag-item-view&vs-dev&vs-env=staging",
+    "batch": "marui-0428"
+  },
+  {
+    "sku": "CG0244304601",
+    "url": "https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails?wrt=5&mcd=CG024&cpg=430&pno=46&ino=01&vs-branch=fit-vis-bag-item-view&vs-dev&vs-env=staging",
+    "batch": "marui-0428"
+  },
+  {
+    "sku": "CG0244304501",
+    "url": "https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails?wrt=5&mcd=CG024&cpg=430&pno=45&ino=01&vs-branch=fit-vis-bag-item-view&vs-dev&vs-env=staging",
+    "batch": "marui-0428"
+  },
+  {
+    "sku": "CF0201356701",
+    "url": "https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails?wrt=5&mcd=CF020&cpg=135&pno=67&ino=01&vs-branch=fit-vis-bag-item-view&vs-dev&vs-env=staging",
+    "batch": "marui-0428"
+  },
+  {
+    "sku": "CF0209011201",
+    "url": "https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails?wrt=5&mcd=CF020&cpg=901&pno=12&ino=01&vs-branch=fit-vis-bag-item-view&vs-dev&vs-env=staging",
+    "batch": "marui-0428"
+  },
+  {
+    "sku": "CG0242847201",
+    "url": "https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails?wrt=5&mcd=CG024&cpg=284&pno=72&ino=01&vs-branch=fit-vis-bag-item-view&vs-dev&vs-env=staging",
+    "batch": "marui-0428"
+  },
+  {
+    "sku": "CG0242847101",
+    "url": "https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails?wrt=5&mcd=CG024&cpg=284&pno=71&ino=01&vs-branch=fit-vis-bag-item-view&vs-dev&vs-env=staging",
+    "batch": "marui-0428"
+  },
+  {
+    "sku": "CE0174616801",
+    "url": "https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails?wrt=5&mcd=CE017&cpg=461&pno=68&ino=01&vs-branch=fit-vis-bag-item-view&vs-dev&vs-env=staging",
+    "batch": "marui-0428"
+  },
+  {
+    "sku": "CG0234815601",
+    "url": "https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails?wrt=5&mcd=CG023&cpg=481&pno=56&ino=01&vs-branch=fit-vis-bag-item-view&vs-dev&vs-env=staging",
+    "batch": "marui-0428"
+  },
+  {
+    "sku": "CG0242847001",
+    "url": "https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails?wrt=5&mcd=CG024&cpg=284&pno=70&ino=01&vs-branch=fit-vis-bag-item-view&vs-dev&vs-env=staging",
+    "batch": "marui-0428"
+  },
+  {
+    "sku": "CD0123713401",
+    "url": "https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails?wrt=5&mcd=CD012&cpg=371&pno=34&ino=01&vs-branch=fit-vis-bag-item-view&vs-dev&vs-env=staging",
+    "batch": "marui-0428"
+  },
+  {
+    "sku": "CD0123656901",
+    "url": "https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails?wrt=5&mcd=CD012&cpg=365&pno=69&ino=01&vs-branch=fit-vis-bag-item-view&vs-dev&vs-env=staging",
+    "batch": "marui-0428"
+  },
+  {
+    "sku": "CF0187024801",
+    "url": "https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails?wrt=5&mcd=CF018&cpg=702&pno=48&ino=01&vs-branch=fit-vis-bag-item-view&vs-dev&vs-env=staging",
+    "batch": "marui-0428"
+  },
+  {
+    "sku": "CD0143658101",
+    "url": "https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails?wrt=5&mcd=CD014&cpg=365&pno=81&ino=01&vs-branch=fit-vis-bag-item-view&vs-dev&vs-env=staging",
+    "batch": "marui-0428"
+  },
+  {
+    "sku": "CE0179266201",
+    "url": "https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails?wrt=5&mcd=CE017&cpg=926&pno=62&ino=01&vs-branch=fit-vis-bag-item-view&vs-dev&vs-env=staging",
+    "batch": "marui-0428"
+  },
+  {
+    "sku": "CD0116057701",
+    "url": "https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails?wrt=5&mcd=CD011&cpg=605&pno=77&ino=01&vs-branch=fit-vis-bag-item-view&vs-dev&vs-env=staging",
+    "batch": "marui-0428"
+  },
+  {
+    "sku": "CG0244306501",
+    "url": "https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails?wrt=5&mcd=CG024&cpg=430&pno=65&ino=01&vs-branch=fit-vis-bag-item-view&vs-dev&vs-env=staging",
+    "batch": "marui-0428"
+  },
+  {
+    "sku": "CD0113382101",
+    "url": "https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails?wrt=5&mcd=CD011&cpg=338&pno=21&ino=01&vs-branch=fit-vis-bag-item-view&vs-dev&vs-env=staging",
+    "batch": "marui-0428"
+  },
+  {
+    "sku": "CG0242846901",
+    "url": "https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails?wrt=5&mcd=CG024&cpg=284&pno=69&ino=01&vs-branch=fit-vis-bag-item-view&vs-dev&vs-env=staging",
+    "batch": "marui-0428"
   }
 ]
