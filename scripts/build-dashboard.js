@@ -1364,11 +1364,15 @@ function renderCompareView() {
 }
 
 function exportTagged() {
-  const urlMap = Object.fromEntries(COMPARE_IMAGES.map(({ sku, url, batch }) => [sku, { url: url || '', batch: batch || '' }]));
+  // Deduplicate by SKU keeping the latest batch entry (COMPARE_IMAGES is sorted newest-first)
+  const latestBySku = new Map();
+  COMPARE_IMAGES.forEach(({ sku, url, batch }) => {
+    if (!latestBySku.has(sku)) latestBySku.set(sku, { url: url || '', batch: batch || '' });
+  });
   const rows = [['SKU', 'URL', 'Batch', 'Tag']];
   TAG_DEFS.forEach(({ key, label }) => {
-    COMPARE_IMAGES.forEach(({ sku }) => {
-      if (tags.get(sku) === key) rows.push([sku, urlMap[sku].url, urlMap[sku].batch, label]);
+    latestBySku.forEach(({ url, batch }, sku) => {
+      if (tags.get(sku) === key) rows.push([sku, url, batch, label]);
     });
   });
   const csv = rows.map(r => r.map(c => \`"\${c}"\`).join(',')).join('\\n');
