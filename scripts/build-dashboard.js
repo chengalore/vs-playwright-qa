@@ -1364,10 +1364,14 @@ function renderCompareView() {
 }
 
 function exportTagged() {
-  // COMPARE_IMAGES is oldest-first — iterate in order so each SKU's entry is overwritten by newer batches
+  // Deduplicate by SKU, preferring named batches over 'older' and latest name among named batches
+  const batchRank = b => (b === 'older' || !b) ? '' : b;
   const latestBySku = new Map();
   COMPARE_IMAGES.forEach(({ sku, url, batch }) => {
-    latestBySku.set(sku, { url: url || '', batch: batch || '' });
+    const current = latestBySku.get(sku);
+    if (!current || batchRank(batch) >= batchRank(current.batch)) {
+      latestBySku.set(sku, { url: url || '', batch: batch || '' });
+    }
   });
   const rows = [['SKU', 'URL', 'Batch', 'Tag']];
   TAG_DEFS.forEach(({ key, label }) => {
