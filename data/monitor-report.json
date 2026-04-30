@@ -1,13 +1,13 @@
 {
-  "timestamp": "2026-04-29T23:56:07.934Z",
-  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/25139900722",
+  "timestamp": "2026-04-30T23:54:24.892Z",
+  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/25195100099",
   "summary": {
     "total": 86,
-    "passed": 78,
-    "widgetMissing": 5,
+    "passed": 79,
+    "widgetMissing": 4,
     "skipped": 3,
     "failed": 0,
-    "fallbackUsed": 78
+    "fallbackUsed": 79
   },
   "newIssues": [],
   "widgetMissingStores": [
@@ -26,13 +26,6 @@
       ]
     },
     {
-      "store": "hankyu_hanshin",
-      "url": "https://web.hh-online.jp/fashion/goods/index.html?ggcd=508767628",
-      "browsers": [
-        "chrome"
-      ]
-    },
-    {
       "store": "reebok_korea",
       "url": "https://reebok.co.kr/goods/goods_view.php?goodsNo=1000002262",
       "browsers": [
@@ -40,8 +33,8 @@
       ]
     },
     {
-      "store": "hankyu_mens",
-      "url": "https://web.hh-online.jp/hankyu-mens/goods/index.html?ggcd=506692016",
+      "store": "brooks_brothers_korea",
+      "url": "https://brooksbrothers.co.kr/product/detail.html?product_no=5372&cate_no=537&display_group=1",
       "browsers": [
         "chrome"
       ]
@@ -50,18 +43,22 @@
   "ongoingMissing": [
     {
       "store": "reebok_korea",
-      "consecutiveRuns": 19
+      "consecutiveRuns": 20
     },
     {
       "store": "snidel",
-      "consecutiveRuns": 19
+      "consecutiveRuns": 20
     },
     {
       "store": "gelato_pique",
-      "consecutiveRuns": 19
+      "consecutiveRuns": 20
     },
     {
       "store": "hankyu_hanshin",
+      "consecutiveRuns": 2
+    },
+    {
+      "store": "hankyu_mens",
       "consecutiveRuns": 1
     }
   ],
