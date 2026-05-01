@@ -1,13 +1,13 @@
 {
-  "timestamp": "2026-04-30T23:54:24.892Z",
-  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/25195100099",
+  "timestamp": "2026-05-01T23:52:31.136Z",
+  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/25238090359",
   "summary": {
     "total": 86,
-    "passed": 79,
-    "widgetMissing": 4,
+    "passed": 78,
+    "widgetMissing": 5,
     "skipped": 3,
     "failed": 0,
-    "fallbackUsed": 79
+    "fallbackUsed": 78
   },
   "newIssues": [],
   "widgetMissingStores": [
@@ -38,27 +38,30 @@
       "browsers": [
         "chrome"
       ]
+    },
+    {
+      "store": "hankyu_mens",
+      "url": "https://web.hh-online.jp/hankyu-mens/goods/index.html?ggcd=506692016",
+      "browsers": [
+        "chrome"
+      ]
     }
   ],
   "ongoingMissing": [
     {
       "store": "reebok_korea",
-      "consecutiveRuns": 20
+      "consecutiveRuns": 21
     },
     {
       "store": "snidel",
-      "consecutiveRuns": 20
+      "consecutiveRuns": 21
     },
     {
       "store": "gelato_pique",
-      "consecutiveRuns": 20
+      "consecutiveRuns": 21
     },
     {
-      "store": "hankyu_hanshin",
-      "consecutiveRuns": 2
-    },
-    {
-      "store": "hankyu_mens",
+      "store": "brooks_brothers_korea",
       "consecutiveRuns": 1
     }
   ],
