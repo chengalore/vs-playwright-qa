@@ -1,5 +1,98 @@
 [
   {
+    "timestamp": "2026-05-02T23:43:17.237Z",
+    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/25264758815",
+    "summary": {
+      "total": 86,
+      "passed": 76,
+      "widgetMissing": 7,
+      "skipped": 3,
+      "failed": 0,
+      "fallbackUsed": 76
+    },
+    "newIssues": [],
+    "widgetMissingStores": [
+      {
+        "store": "lumine",
+        "url": "https://i.lumine.jp/items/589/589250004310007.html",
+        "browsers": [
+          "chrome"
+        ]
+      },
+      {
+        "store": "snidel",
+        "url": "https://snidel.com/Form/Product/ProductDetail.aspx?shop=0&pid=SHFT261075&vid=&bid=SNH01&cid=&_type=&cat=&swrd=",
+        "browsers": [
+          "chrome"
+        ]
+      },
+      {
+        "store": "gelato_pique",
+        "url": "https://gelatopique.com/Form/Product/ProductDetail.aspx?shop=0&pid=PWCO261297&vid=&bid=PIQ01&cid=&_type=&cat=WOM003001&swrd=",
+        "browsers": [
+          "chrome"
+        ]
+      },
+      {
+        "store": "hankyu_hanshin",
+        "url": "https://web.hh-online.jp/fashion/goods/index.html?ggcd=508767628",
+        "browsers": [
+          "chrome"
+        ]
+      },
+      {
+        "store": "reebok_korea",
+        "url": "https://reebok.co.kr/goods/goods_view.php?goodsNo=1000002262",
+        "browsers": [
+          "chrome"
+        ]
+      },
+      {
+        "store": "hankyu_mens",
+        "url": "https://web.hh-online.jp/hankyu-mens/goods/index.html?ggcd=506692016",
+        "browsers": [
+          "chrome"
+        ]
+      },
+      {
+        "store": "brooks_brothers_korea",
+        "url": "https://brooksbrothers.co.kr/product/detail.html?product_no=5372&cate_no=537&display_group=1",
+        "browsers": [
+          "chrome"
+        ]
+      }
+    ],
+    "ongoingMissing": [
+      {
+        "store": "reebok_korea",
+        "consecutiveRuns": 22
+      },
+      {
+        "store": "snidel",
+        "consecutiveRuns": 22
+      },
+      {
+        "store": "gelato_pique",
+        "consecutiveRuns": 22
+      },
+      {
+        "store": "brooks_brothers_korea",
+        "consecutiveRuns": 2
+      },
+      {
+        "store": "hankyu_mens",
+        "consecutiveRuns": 1
+      }
+    ],
+    "botProtected": [
+      "adidas",
+      "ralph_lauren",
+      "asics_japan"
+    ],
+    "skippedStores": [],
+    "phase": "widget"
+  },
+  {
     "timestamp": "2026-05-01T23:52:31.136Z",
     "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/25238090359",
     "summary": {
