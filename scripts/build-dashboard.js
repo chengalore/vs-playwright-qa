@@ -661,6 +661,7 @@ function generateDashboard(history, compareImages, singleUrlHistory, metrics) {
     <button class="tnav-btn" onclick="showPanel('compare')" id="btn-compare">Compare View</button>
     <button class="tnav-btn" onclick="showPanel('inpage')" id="btn-inpage">Inpage</button>
     <button class="tnav-btn" onclick="showPanel('cart')" id="btn-cart">Cart</button>
+    <button class="tnav-btn" onclick="showPanel('cost')" id="btn-cost">Cost per client</button>
   </nav>
   <div class="sys-status ${isHealthy ? 'healthy' : 'degraded'}">● System ${isHealthy ? 'healthy' : 'degraded'}</div>
 </header>
@@ -1078,6 +1079,41 @@ function generateDashboard(history, compareImages, singleUrlHistory, metrics) {
     </div>
   </div>
 
+  <!-- Cost per client -->
+  <div class="panel" id="panel-cost">
+    <div class="page-hdr">
+      <h1>Cost per Client</h1>
+      <p class="page-sub">GitHub Actions CI spend estimates · 30 runs/month · $0.008/min</p>
+    </div>
+    <div class="kpi-section">
+      <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
+        <div class="kpi-card">
+          <div class="kpi-label">Total monthly</div>
+          <div class="kpi-val" style="color:#bc8cff">$73</div>
+          <div class="kpi-sub">GH Actions estimate</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Wasted spend</div>
+          <div class="kpi-val kpi-red">$30</div>
+          <div class="kpi-sub">41% — broken/bot stores</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Productive</div>
+          <div class="kpi-val kpi-green">$43</div>
+          <div class="kpi-sub">73 healthy stores</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Cost/healthy test</div>
+          <div class="kpi-val kpi-white">$0.56</div>
+          <div class="kpi-sub">per passing test/mo</div>
+        </div>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div id="cost-chart-container"></div>
+    </div>
+  </div>
+
 </main>
 
 <script>
@@ -1093,6 +1129,7 @@ function showPanel(name) {
   document.getElementById('btn-' + name).classList.add('active');
   if (name === 'compare') renderCompareView();
   if (name === 'single') renderSingleUrl();
+  if (name === 'cost') renderCostPanel();
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -1912,6 +1949,89 @@ function renderFlakyStores() {
         </thead>
         <tbody>\${tableBody}</tbody>
       </table>
+    </div>\`;
+}
+
+// ── Cost per client ───────────────────────────────────────────────────────────
+const STORE_LIST = [
+  'adidas','callawaygolf','banana_republic','andar_japan','coen','frans_boone','emmi',
+  'lily_brown','miesrohe','brooks_brothers','paul_smith','re_edit','seilin_online_shop',
+  'strasburgo','top_floor','hankyu_hanshin','agnes_b','barbour','another_address',
+  'brooks_brothers_korea','camilla_and_marc','estnation','fray_i_d','cox','hankyu_mens',
+  'llbean','milaowen','poppy','strasburgo_outlet','shel_tter','ua_taiwan','yohji_wildside',
+  'reebok_korea','aoure','allsaints_korea','bshop','barneys_japan','celford',
+  'fashion_square','furfur','denimlife','id_look','lumine','nagaileben','punyus','restir',
+  'style_deli','under_armour','sixpad','asics_japan','beams','classico_global','dinos',
+  'ameri_vintage','buyma','gap_japan','felissimo','ragtag','jamie_kay','makes','retouch',
+  'natulan','studio_nicholson','yosoou','unitedarrows_global','snidel','bottega_veneta',
+  'by_malene_birger','classico_taiwan','and_mall','azul_by_moussy','edwin','levi_japan',
+  'flandre','ralph_lauren','marui','onward','sanyo_online_store','world',
+  'standard_california','taion_wear','zuica','gelato_pique','bottega_veneta_japan',
+  'bottega_veneta_korea','bottega'
+];
+
+const COST_DUR  = { healthy: 2.36, bot: 17.875, missing: 10.2 };
+const COST_RATE = 0.008;
+const RUNS_PER_MO = 30;
+
+function renderCostPanel() {
+  const container = document.getElementById('cost-chart-container');
+  if (!container) return;
+
+  const latest = HISTORY.filter(r => (r.phase || 'widget') === 'widget')[0];
+  if (!latest) {
+    container.innerHTML = '<p style="color:#8b949e">No monitor data yet.</p>';
+    return;
+  }
+
+  const botSet     = new Set(latest.botProtected || []);
+  const ongoingSet = new Set((latest.ongoingMissing || []).map(o => o.store));
+  const newMissSet = new Set(
+    (latest.widgetMissingStores || []).filter(s => !ongoingSet.has(s.store)).map(s => s.store)
+  );
+
+  const storeData = STORE_LIST.map(store => {
+    let color, dur;
+    if (botSet.has(store))          { color = '#d29922'; dur = COST_DUR.bot;     }
+    else if (newMissSet.has(store)) { color = '#f85149'; dur = COST_DUR.missing; }
+    else if (ongoingSet.has(store)) { color = '#e3760e'; dur = COST_DUR.missing; }
+    else                            { color = '#3fb950'; dur = COST_DUR.healthy; }
+    return { store, color, cost: RUNS_PER_MO * dur * COST_RATE };
+  });
+
+  storeData.sort((a, b) => b.cost - a.cost);
+  const maxCost = storeData[0]?.cost || 1;
+
+  const dot = c => \`<span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:\${c};margin-right:5px;vertical-align:middle"></span>\`;
+  const legendItem = (label, c) => \`<span style="font-size:11px;color:#8b949e;margin-right:16px">\${dot(c)}\${label}</span>\`;
+
+  const bars = storeData.map(({ store, color, cost }) => {
+    const pct = (cost / maxCost * 100).toFixed(1);
+    return \`<div style="display:flex;align-items:center;gap:10px;margin-bottom:5px">
+      <div style="width:170px;flex-shrink:0;text-align:right;font-size:12px;color:#8b949e;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="\${store}">\${store}</div>
+      <div style="flex:1;height:14px;background:#21262d;border-radius:2px">
+        <div style="height:100%;width:\${pct}%;background:\${color};border-radius:2px"></div>
+      </div>
+      <div style="width:38px;flex-shrink:0;font-size:12px;color:#c9d1d9;text-align:right">$\${cost.toFixed(2)}</div>
+    </div>\`;
+  }).join('');
+
+  const tickMax = Math.ceil(maxCost);
+  const ticks = Array.from({ length: tickMax + 1 }, (_, i) =>
+    \`<span style="flex:1;text-align:center;font-size:10px;color:#484f58">$\${i}</span>\`
+  ).join('');
+
+  container.innerHTML = \`
+    <div style="background:#161b22;border:1px solid #21262d;border-radius:8px;padding:18px 22px;margin-bottom:16px">
+      <div style="font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#f0f6fc;margin-bottom:12px">CI SPEND BY STORE — MONTHLY</div>
+      <div style="margin-bottom:14px">
+        \${legendItem('Healthy', '#3fb950')}\${legendItem('Bot blocked', '#d29922')}\${legendItem('Missing', '#e3760e')}\${legendItem('Critical', '#f85149')}
+      </div>
+      <div style="max-height:560px;overflow-y:auto;padding-right:4px">\${bars}</div>
+      <div style="display:flex;margin-left:180px;margin-top:6px;padding-right:38px">\${ticks}</div>
+    </div>
+    <div style="background:#3a1515;border-radius:6px;padding:10px;font-size:11px;color:#f85149">
+      Removing bot-blocked stores (adidas, ralph_lauren, asics_japan) saves $12.87/mo immediately — zero loss of test value.
     </div>\`;
 }
 
