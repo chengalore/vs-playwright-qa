@@ -132,6 +132,18 @@ function computeMetrics(history) {
   const flakeRaw = calcFlake(widgetRuns.slice(0, 14));
   const prevFlakeRaw = widgetRuns.length >= 15 ? calcFlake(widgetRuns.slice(1, 15)) : null;
 
+  // Previous run metrics (for KPI deltas)
+  const prev = widgetRuns[1] || null;
+  let prevPassRate = null, prevMissingCount = null, prevHealthScore = null;
+  if (prev) {
+    const ps = prev.summary;
+    const prevEff = ps.total - ps.skipped;
+    prevPassRate = prevEff > 0 ? Math.round((ps.passed / prevEff * 100) * 10) / 10 : 0;
+    prevMissingCount = ps.widgetMissing;
+    const prevOngoing = (prev.ongoingMissing || []).length;
+    prevHealthScore = Math.max(0, Math.round(prevPassRate - prevOngoing * 1.5));
+  }
+
   return {
     passRate: Math.round(passRate * 10) / 10,
     healthScore,
@@ -142,6 +154,9 @@ function computeMetrics(history) {
     totalMonitored,
     flakeRate: flakeRaw !== null ? Math.round(flakeRaw * 10) / 10 : null,
     prevFlakeRate: prevFlakeRaw !== null ? Math.round(prevFlakeRaw * 10) / 10 : null,
+    prevPassRate,
+    prevMissingCount,
+    prevHealthScore,
     passedCount: s.passed,
     skippedCount: s.skipped,
     alertCount: newMissingCount + (s.failed || 0),
@@ -175,6 +190,27 @@ function generateDashboard(history, compareImages, singleUrlHistory, metrics) {
   const missingColor = metrics.missingCount === 0 ? 'kpi-green' : metrics.missingCount > 3 ? 'kpi-red' : 'kpi-amber';
   const healthyStores = metrics.totalMonitored - metrics.missingCount - metrics.botCount - (metrics.skippedCount || 0);
   const botRatePct = metrics.totalMonitored > 0 ? (metrics.botCount / metrics.totalMonitored * 100).toFixed(1) : '0.0';
+
+  // KPI delta helper — returns a <div> string
+  const kpiDeltaHtml = (delta, fmt, upGood) => {
+    if (delta === null) return `<div style="font-size:10px;color:#484f58;margin-top:4px">—</div>`;
+    if (delta === 0)    return `<div style="font-size:10px;color:#484f58;margin-top:4px">— no change</div>`;
+    const good = upGood ? delta > 0 : delta < 0;
+    const color = good ? '#3fb950' : '#f85149';
+    const arrow = delta > 0 ? '▲' : '▼';
+    return `<div style="font-size:10px;color:${color};margin-top:4px">${arrow}${fmt(Math.abs(delta))}</div>`;
+  };
+
+  const hsDelta    = metrics.prevHealthScore  !== null ? metrics.healthScore  - metrics.prevHealthScore  : null;
+  const prDelta    = metrics.prevPassRate     !== null ? Math.round((metrics.passRate - metrics.prevPassRate) * 10) / 10 : null;
+  const misDelta   = metrics.prevMissingCount !== null ? metrics.missingCount - metrics.prevMissingCount  : null;
+  const flkDelta   = metrics.flakeRate !== null && metrics.prevFlakeRate !== null
+    ? Math.round((metrics.flakeRate - metrics.prevFlakeRate) * 10) / 10 : null;
+
+  const hsDeltaHtml  = kpiDeltaHtml(hsDelta,  v => v + '%',          true);
+  const prDeltaHtml  = kpiDeltaHtml(prDelta,  v => v.toFixed(1)+'%', true);
+  const misDeltaHtml = kpiDeltaHtml(misDelta, v => String(v),         false);
+  const flkDeltaHtml = kpiDeltaHtml(flkDelta, v => v.toFixed(1)+'%', false);
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -651,26 +687,31 @@ function generateDashboard(history, compareImages, singleUrlHistory, metrics) {
           <div class="kpi-label">Health Score</div>
           <div class="kpi-val ${hsColor}">${metrics.healthScore !== null ? metrics.healthScore + '%' : '—'}</div>
           <div class="kpi-sub">target ≥ 90%</div>
+          ${hsDeltaHtml}
         </div>
         <div class="kpi-card">
           <div class="kpi-label">Pass Rate</div>
           <div class="kpi-val ${prColor}">${metrics.passRate !== null ? metrics.passRate + '%' : '—'}</div>
           <div class="kpi-sub">${metrics.passedCount}/${metrics.totalMonitored} tests</div>
+          ${prDeltaHtml}
         </div>
         <div class="kpi-card">
           <div class="kpi-label">Missing Stores</div>
           <div class="kpi-val ${missingColor}">${metrics.missingCount}</div>
           <div class="kpi-sub">${metrics.ongoingCount} ongoing · ${metrics.newMissingCount} new</div>
+          ${misDeltaHtml}
         </div>
         <div class="kpi-card">
           <div class="kpi-label">Flake Rate</div>
           <div class="kpi-val ${flakeColor}">${metrics.flakeRate !== null ? metrics.flakeRate + '%' : '—'}</div>
           <div class="kpi-sub">${flakeTrend}</div>
+          ${flkDeltaHtml}
         </div>
         <div class="kpi-card">
           <div class="kpi-label">Avg Exec Time</div>
           <div class="kpi-val kpi-white">—</div>
           <div class="kpi-sub kpi-dash">Not tracked yet</div>
+          <div style="font-size:10px;color:#484f58;margin-top:4px">—</div>
         </div>
       </div>
       <div class="kpi-row">
