@@ -340,6 +340,23 @@ function generateDashboard(history, compareImages, singleUrlHistory, metrics) {
     .kpi-white { color: #f0f6fc; }
     .kpi-sub  { font-size: 11px; color: #8b949e; line-height: 1.4; }
     .kpi-dash { color: #484f58; }
+    .kpi-info {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 13px; height: 13px; border-radius: 50%;
+      background: #30363d; color: #8b949e;
+      font-size: 8px; font-weight: 700; cursor: pointer;
+      margin-left: 5px; vertical-align: middle; flex-shrink: 0;
+      transition: background 0.15s, color 0.15s; user-select: none;
+    }
+    .kpi-info:hover { background: #58a6ff; color: #fff; }
+    #kpi-tooltip {
+      position: fixed; background: #1c2128; border: 1px solid #30363d;
+      border-radius: 8px; padding: 12px 14px; max-width: 260px;
+      font-size: 12px; color: #c9d1d9; line-height: 1.6;
+      z-index: 9999; display: none; box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    }
+    #kpi-tooltip strong { color: #f0f6fc; display: block; margin-bottom: 4px; }
+
 
     /* ── Panel body (padded content area below KPI) ── */
     .panel-body { padding: 0 32px 48px; }
@@ -653,6 +670,7 @@ function generateDashboard(history, compareImages, singleUrlHistory, metrics) {
 </head>
 <body>
 
+<div id="kpi-tooltip"></div>
 <header id="topbar">
   <div class="brand">Virtusize QA</div>
   <nav class="topnav">
@@ -687,31 +705,31 @@ function generateDashboard(history, compareImages, singleUrlHistory, metrics) {
     <div class="kpi-section">
       <div class="kpi-row">
         <div class="kpi-card">
-          <div class="kpi-label">Health Score</div>
+          <div class="kpi-label">Health Score<span class="kpi-info" data-info="max(0, passRate &minus; ongoingMissing &times; 1.5). Starts from pass rate and deducts 1.5 pts per store with consecutive missing runs. One-off misses do not count." onclick="showKpiInfo(this)">!</span></div>
           <div class="kpi-val ${hsColor}">${metrics.healthScore !== null ? metrics.healthScore + '%' : '—'}</div>
           <div class="kpi-sub">target ≥ 90%</div>
           ${hsDeltaHtml}
         </div>
         <div class="kpi-card">
-          <div class="kpi-label">Pass Rate</div>
+          <div class="kpi-label">Pass Rate<span class="kpi-info" data-info="passed &divide; (total &minus; skipped) &times; 100. Share of active stores where the widget was detected. Skipped stores are excluded from the denominator." onclick="showKpiInfo(this)">!</span></div>
           <div class="kpi-val ${prColor}">${metrics.passRate !== null ? metrics.passRate + '%' : '—'}</div>
           <div class="kpi-sub">${metrics.passedCount}/${metrics.totalMonitored} tests</div>
           ${prDeltaHtml}
         </div>
         <div class="kpi-card">
-          <div class="kpi-label">Missing Stores</div>
+          <div class="kpi-label">Missing Stores<span class="kpi-info" data-info="Stores where no widget was found in the latest run. Includes both new and ongoing misses. Target is 0." onclick="showKpiInfo(this)">!</span></div>
           <div class="kpi-val ${missingColor}">${metrics.missingCount}</div>
           <div class="kpi-sub">${metrics.ongoingCount} ongoing · ${metrics.newMissingCount} new</div>
           ${misDeltaHtml}
         </div>
         <div class="kpi-card">
-          <div class="kpi-label">Flake Rate</div>
+          <div class="kpi-label">Flake Rate<span class="kpi-info" data-info="% of stores that flipped between pass and missing at least once over the last 14 runs. High values suggest unstable widget rollout or intermittent issues." onclick="showKpiInfo(this)">!</span></div>
           <div class="kpi-val ${flakeColor}">${metrics.flakeRate !== null ? metrics.flakeRate + '%' : '—'}</div>
           <div class="kpi-sub">${flakeTrend}</div>
           ${flkDeltaHtml}
         </div>
         <div class="kpi-card">
-          <div class="kpi-label">Avg Exec Time</div>
+          <div class="kpi-label">Avg Exec Time<span class="kpi-info" data-info="Total CI runner time per full monitor run. Not tracked yet — will help identify slow stores and optimise run order." onclick="showKpiInfo(this)">!</span></div>
           <div class="kpi-val kpi-white">—</div>
           <div class="kpi-sub kpi-dash">Not tracked yet</div>
           <div style="font-size:10px;color:#484f58;margin-top:4px">—</div>
@@ -719,27 +737,27 @@ function generateDashboard(history, compareImages, singleUrlHistory, metrics) {
       </div>
       <div class="kpi-row">
         <div class="kpi-card">
-          <div class="kpi-label">Monthly CI Cost</div>
+          <div class="kpi-label">Monthly CI Cost<span class="kpi-info" data-info="Estimated GitHub Actions cost for all scheduled monitor runs. Not tracked yet." onclick="showKpiInfo(this)">!</span></div>
           <div class="kpi-val kpi-white">—</div>
           <div class="kpi-sub kpi-dash">Not tracked yet</div>
         </div>
         <div class="kpi-card">
-          <div class="kpi-label">Healthy Clients</div>
+          <div class="kpi-label">Healthy Clients<span class="kpi-info" data-info="Stores currently passing. Bot-blocked stores are counted separately and do not penalise this figure." onclick="showKpiInfo(this)">!</span></div>
           <div class="kpi-val ${metrics.passRate >= 90 ? 'kpi-green' : 'kpi-amber'}">${healthyStores}/${metrics.totalMonitored}</div>
           <div class="kpi-sub">${metrics.botCount} bot-blocked</div>
         </div>
         <div class="kpi-card">
-          <div class="kpi-label">Bot Block Rate</div>
+          <div class="kpi-label">Bot Block Rate<span class="kpi-info" data-info="% of stores where bot protection prevents automated testing. These stores cannot be monitored until access is restored." onclick="showKpiInfo(this)">!</span></div>
           <div class="kpi-val ${metrics.botCount > 0 ? 'kpi-amber' : 'kpi-green'}">${botRatePct}%</div>
           <div class="kpi-sub">${metrics.botCount} of ${metrics.totalMonitored} stores</div>
         </div>
         <div class="kpi-card">
-          <div class="kpi-label">MTTR</div>
+          <div class="kpi-label">MTTR<span class="kpi-info" data-info="Mean Time To Resolution — average time from a store going missing to passing again. Not tracked yet." onclick="showKpiInfo(this)">!</span></div>
           <div class="kpi-val kpi-white">—</div>
           <div class="kpi-sub kpi-dash">Not tracked yet</div>
         </div>
         <div class="kpi-card">
-          <div class="kpi-label">Deploy Correlation</div>
+          <div class="kpi-label">Deploy Correlation<span class="kpi-info" data-info="Tracks whether widget failures cluster around deployment windows. Not tracked yet." onclick="showKpiInfo(this)">!</span></div>
           <div class="kpi-val kpi-white">—</div>
           <div class="kpi-sub kpi-dash">Not tracked yet</div>
         </div>
@@ -2167,6 +2185,28 @@ function renderCostPanel() {
       Removing bot-blocked stores (adidas, ralph_lauren, asics_japan) saves $12.87/mo immediately — zero loss of test value.
     </div>\`;
 }
+
+// ── KPI info tooltips ────────────────────────────────────────────────────────
+function showKpiInfo(el) {
+  const tip = document.getElementById('kpi-tooltip');
+  if (tip._src === el && tip.style.display !== 'none') {
+    tip.style.display = 'none'; tip._src = null; return;
+  }
+  tip.innerHTML = '<strong>' + el.closest('.kpi-card').querySelector('.kpi-label').childNodes[0].nodeValue.trim() + '</strong>' + el.dataset.info;
+  tip.style.display = 'block';
+  tip._src = el;
+  const r = el.getBoundingClientRect();
+  let left = r.left, top = r.bottom + 6;
+  if (left + 260 > window.innerWidth - 8) left = window.innerWidth - 268;
+  if (top + tip.offsetHeight > window.innerHeight - 8) top = r.top - tip.offsetHeight - 6;
+  tip.style.left = left + 'px'; tip.style.top = top + 'px';
+}
+document.addEventListener('click', e => {
+  if (!e.target.classList.contains('kpi-info')) {
+    const tip = document.getElementById('kpi-tooltip');
+    if (tip) { tip.style.display = 'none'; tip._src = null; }
+  }
+});
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 renderSummary(HISTORY[0] || null);
