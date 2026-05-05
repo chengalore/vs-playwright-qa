@@ -156,7 +156,7 @@ jobs:
 
       - run: npm ci
 
-      - run: npx playwright install --with-deps ${{ github.event.inputs.browser || 'chrome' }}
+      - run: npx playwright install --with-deps chrome webkit
 
       - name: Download monitor chunks
         uses: actions/download-artifact@v4
@@ -166,7 +166,12 @@ jobs:
 
       - name: Run monitor tests (chunk ${{ matrix.chunk }})
         run: |
-          npx playwright test tests/monitor.spec.js --project=${{ github.event.inputs.browser || 'chrome' }} --workers=4 --retries=0 | tee monitor-output-${{ matrix.chunk }}.log
+          BROWSER="${{ github.event.inputs.browser }}"
+          if [ -n "$BROWSER" ]; then
+            npx playwright test tests/monitor.spec.js --project="$BROWSER" --workers=4 --retries=0 | tee monitor-output-${{ matrix.chunk }}.log
+          else
+            npx playwright test tests/monitor.spec.js --project=chrome --project=webkit --workers=4 --retries=0 | tee monitor-output-${{ matrix.chunk }}.log
+          fi
         env:
           TEST_PHASE: ${{ github.event.inputs.phase }}
           CHUNK_INDEX: ${{ matrix.chunk }}
