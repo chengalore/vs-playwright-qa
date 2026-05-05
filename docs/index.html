@@ -508,6 +508,7 @@
             <th style="text-align:right">✅ Passed</th>
             <th style="text-align:right">⚠️ Missing</th>
             <th style="text-align:right">❌ Failed</th>
+            <th style="text-align:center">Δ vs prev</th>
             <th style="text-align:right">⏭ Skipped</th>
             <th>Run</th>
           </tr>
@@ -932,13 +933,30 @@ function renderDetail(run) {
 // ── Monitor: history table ────────────────────────────────────────────────────
 let activePhase = 'all';
 
+function deltaCell(curr, prev) {
+  if (!prev) return `<td style="color:#484f58;font-size:10px;text-align:center">—</td>`;
+  const dM = curr.widgetMissing - prev.widgetMissing;
+  const dP = curr.passed - prev.passed;
+  if (dM === 0 && dP === 0) return `<td style="color:#484f58;font-size:10px;text-align:center">— no change</td>`;
+  const parts = [];
+  if (dM !== 0) {
+    const col = dM > 0 ? '#f85149' : '#3fb950';
+    parts.push(`<span style="color:${col}">${dM > 0 ? '▲' : '▼'}${Math.abs(dM)} missing</span>`);
+  }
+  if (dP !== 0) {
+    const col = dP < 0 ? '#f85149' : '#3fb950';
+    parts.push(`<span style="color:${col}">${dP > 0 ? '▲' : '▼'}${Math.abs(dP)} passed</span>`);
+  }
+  return `<td style="font-size:10px;text-align:center;white-space:nowrap;line-height:1.6">${parts.join('<br>')}</td>`;
+}
+
 function renderTable() {
   const tbody = document.getElementById('runs-body');
   const filtered = activePhase === 'all' ? HISTORY : HISTORY.filter(r => (r.phase || 'widget') === activePhase);
   tbody.innerHTML = '';
 
   if (filtered.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="8" class="empty-state">No runs yet.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="9" class="empty-state">No runs yet.</td></tr>';
     return;
   }
 
@@ -946,6 +964,7 @@ function renderTable() {
     const s = run.summary;
     const phase = run.phase || 'widget';
     const runUrl = run.githubRunUrl || '#';
+    const prevSummary = filtered[i + 1]?.summary ?? null;
 
     const row = document.createElement('tr');
     row.className = 'run-row';
@@ -956,6 +975,7 @@ function renderTable() {
       <td class="count passed ${countClass(s.passed,'passed')}">${s.passed}</td>
       <td class="count missing ${countClass(s.widgetMissing,'missing')}">${s.widgetMissing}</td>
       <td class="count failed ${countClass(s.failed,'failed')}">${s.failed}</td>
+      ${deltaCell(s, prevSummary)}
       <td class="count skipped ${countClass(s.skipped,'skipped')}">${s.skipped}</td>
       <td class="run-link"><a href="${runUrl}" target="_blank" rel="noopener">View →</a></td>
     `;
@@ -964,7 +984,7 @@ function renderTable() {
     detailRow.className = 'detail-row';
     const detailCell = document.createElement('td');
     detailCell.className = 'detail-cell';
-    detailCell.colSpan = 8;
+    detailCell.colSpan = 9;
     detailCell.innerHTML = renderDetail(run);
     detailRow.appendChild(detailCell);
 
