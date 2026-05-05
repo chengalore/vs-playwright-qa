@@ -95,15 +95,86 @@ for (const f of dstPngs) {
 }
 const compareImages = dstManifest.filter(e => dstPngs.has(`${e.sku}.png`));
 
+// Compute KPI metrics from history
+function computeMetrics(history) {
+  const widgetRuns = history.filter(r => (r.phase || 'widget') === 'widget');
+  const latest = widgetRuns[0] || null;
+  if (!latest) return { passRate: null, healthScore: null, missingCount: 0, ongoingCount: 0, newMissingCount: 0, botCount: 0, totalMonitored: 0, flakeRate: null, prevFlakeRate: null, passedCount: 0, alertCount: 0, lastUpdated: null };
+
+  const s = latest.summary;
+  const bots = latest.botProtected || [];
+  const botCount = bots.length;
+  const totalMonitored = s.total;
+  const effectiveTotal = s.total - s.skipped;
+  const passRate = effectiveTotal > 0 ? (s.passed / effectiveTotal * 100) : 0;
+
+  const ongoingMissing = latest.ongoingMissing || [];
+  const ongoingCount = ongoingMissing.length;
+  const ongoingSet = new Set(ongoingMissing.map(o => o.store));
+  const widgetMissingStores = latest.widgetMissingStores || [];
+  const newMissingCount = widgetMissingStores.filter(ws => !ongoingSet.has(ws.store)).length;
+  const missingCount = s.widgetMissing;
+  const healthScore = Math.max(0, Math.round(passRate - (ongoingCount * 1.5)));
+
+  function calcFlake(runs) {
+    if (runs.length < 2) return null;
+    const allStores = new Set();
+    runs.forEach(r => (r.widgetMissingStores || []).forEach(ws => allStores.add(ws.store)));
+    let flakeCount = 0;
+    allStores.forEach(store => {
+      const seenMissing = runs.some(r => (r.widgetMissingStores || []).some(ws => ws.store === store));
+      const seenPassing = runs.some(r => !(r.widgetMissingStores || []).some(ws => ws.store === store));
+      if (seenMissing && seenPassing) flakeCount++;
+    });
+    return runs[0]?.summary?.total > 0 ? (flakeCount / runs[0].summary.total * 100) : 0;
+  }
+
+  const flakeRaw = calcFlake(widgetRuns.slice(0, 14));
+  const prevFlakeRaw = widgetRuns.length >= 15 ? calcFlake(widgetRuns.slice(1, 15)) : null;
+
+  return {
+    passRate: Math.round(passRate * 10) / 10,
+    healthScore,
+    missingCount,
+    ongoingCount,
+    newMissingCount,
+    botCount,
+    totalMonitored,
+    flakeRate: flakeRaw !== null ? Math.round(flakeRaw * 10) / 10 : null,
+    prevFlakeRate: prevFlakeRaw !== null ? Math.round(prevFlakeRaw * 10) / 10 : null,
+    passedCount: s.passed,
+    skippedCount: s.skipped,
+    alertCount: newMissingCount + (s.failed || 0),
+    lastUpdated: latest.timestamp,
+  };
+}
+
+const metrics = computeMetrics(history);
+
 // Generate dashboard HTML
 fs.mkdirSync('docs', { recursive: true });
-fs.writeFileSync('docs/index.html', generateDashboard(history, compareImages, singleUrlHistory));
+fs.writeFileSync('docs/index.html', generateDashboard(history, compareImages, singleUrlHistory, metrics));
 console.log(`Dashboard written — ${history.length} monitor runs, ${singleUrlHistory.length} single-url runs`);
 
-function generateDashboard(history, compareImages, singleUrlHistory) {
+function generateDashboard(history, compareImages, singleUrlHistory, metrics) {
   const dataJson = JSON.stringify(history).replace(/<\/script>/gi, '<\\/script>');
   const compareJson = JSON.stringify(compareImages).replace(/<\/script>/gi, '<\\/script>');
   const singleUrlJson = JSON.stringify(singleUrlHistory).replace(/<\/script>/gi, '<\\/script>');
+
+  const lastUpdated = metrics.lastUpdated
+    ? new Date(metrics.lastUpdated).toLocaleString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', timeZoneName: 'short' })
+    : '—';
+  const hsColor = metrics.healthScore === null ? 'kpi-white' : metrics.healthScore >= 90 ? 'kpi-green' : metrics.healthScore >= 75 ? 'kpi-amber' : 'kpi-red';
+  const prColor = metrics.passRate === null ? 'kpi-white' : metrics.passRate >= 90 ? 'kpi-green' : metrics.passRate >= 75 ? 'kpi-amber' : 'kpi-red';
+  const flakeColor = metrics.flakeRate === null ? 'kpi-white' : metrics.flakeRate <= 5 ? 'kpi-green' : metrics.flakeRate <= 10 ? 'kpi-amber' : 'kpi-red';
+  const flakeTrend = metrics.flakeRate !== null && metrics.prevFlakeRate !== null
+    ? (metrics.flakeRate > metrics.prevFlakeRate ? `↑ from ${metrics.prevFlakeRate}% (14d avg)` : `↓ from ${metrics.prevFlakeRate}% (14d avg)`)
+    : 'Based on 14d history';
+  const isHealthy = !history[0] || (history[0].summary.failed === 0 && metrics.missingCount <= 3);
+  const alertBadge = metrics.alertCount > 0 ? `<span class="badge">${metrics.alertCount}</span>` : '';
+  const missingColor = metrics.missingCount === 0 ? 'kpi-green' : metrics.missingCount > 3 ? 'kpi-red' : 'kpi-amber';
+  const healthyStores = metrics.totalMonitored - metrics.missingCount - metrics.botCount - (metrics.skippedCount || 0);
+  const botRatePct = metrics.totalMonitored > 0 ? (metrics.botCount / metrics.totalMonitored * 100).toFixed(1) : '0.0';
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -118,57 +189,152 @@ function generateDashboard(history, compareImages, singleUrlHistory) {
       background: #0d1117;
       color: #c9d1d9;
       display: flex;
+      flex-direction: column;
       height: 100vh;
       overflow: hidden;
     }
     a { color: #58a6ff; text-decoration: none; }
     a:hover { text-decoration: underline; }
 
-    /* ── Sidebar ── */
-    #sidebar {
-      width: 210px;
-      background: #010409;
-      border-right: 1px solid #21262d;
+    /* ── Top header bar ── */
+    #topbar {
       display: flex;
-      flex-direction: column;
-      padding: 20px 0;
+      align-items: center;
+      height: 52px;
+      background: #161b22;
+      border-bottom: 1px solid #21262d;
+      padding: 0 24px;
       flex-shrink: 0;
+      gap: 0;
     }
-    #sidebar .sidebar-title {
-      font-size: 11px;
+    .brand {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
       text-transform: uppercase;
-      letter-spacing: 1px;
-      color: #484f58;
-      padding: 0 16px 14px;
+      color: #f0f6fc;
+      margin-right: 24px;
+      white-space: nowrap;
     }
-    #sidebar button {
+    .topnav { display: flex; gap: 2px; flex: 1; }
+    .tnav-btn {
       background: none;
       border: none;
       color: #8b949e;
-      text-align: left;
-      padding: 8px 16px;
+      padding: 6px 14px;
+      border-radius: 6px;
       font-size: 13px;
       cursor: pointer;
-      border-left: 2px solid transparent;
+      white-space: nowrap;
       transition: background 0.15s, color 0.15s;
-      width: 100%;
     }
-    #sidebar button:hover { background: #161b22; color: #c9d1d9; }
-    #sidebar button.active {
-      background: #161b22;
-      border-left-color: #58a6ff;
-      color: #f0f6fc;
+    .tnav-btn:hover { background: #21262d; color: #c9d1d9; }
+    .tnav-btn.active { background: #21262d; color: #f0f6fc; font-weight: 500; }
+    .sys-status {
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 12px;
+      white-space: nowrap;
     }
+    .sys-status.healthy  { color: #3fb950; background: rgba(63,185,80,0.1);  border: 1px solid rgba(63,185,80,0.2); }
+    .sys-status.degraded { color: #d29922; background: rgba(210,153,34,0.1); border: 1px solid rgba(210,153,34,0.2); }
 
-    /* ── Main ── */
-    #main {
-      flex: 1;
-      overflow-y: auto;
-      padding: 28px 32px 48px;
-    }
+    /* ── Main content ── */
+    #content { flex: 1; overflow-y: auto; }
 
     .panel { display: none; }
     .panel.active { display: block; }
+
+    /* ── Page header (within each panel) ── */
+    .page-hdr { padding: 24px 32px 0; margin-bottom: 20px; }
+    .page-hdr h1 { font-size: 22px; font-weight: 700; color: #f0f6fc; margin-bottom: 4px; }
+    .page-hdr .page-sub { font-size: 13px; color: #8b949e; }
+
+    /* ── Sub-tab bar ── */
+    .subtab-bar {
+      display: flex;
+      gap: 0;
+      padding: 0 32px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid #21262d;
+    }
+    .subtab {
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: #8b949e;
+      padding: 8px 16px;
+      font-size: 13px;
+      cursor: pointer;
+      margin-bottom: -1px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .subtab:hover { color: #c9d1d9; }
+    .subtab.active { color: #f0f6fc; border-bottom-color: #58a6ff; }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 16px;
+      height: 16px;
+      padding: 0 4px;
+      border-radius: 8px;
+      background: #f85149;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    /* ── KPI cards ── */
+    .kpi-section { padding: 0 32px; margin-bottom: 24px; }
+    .kpi-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 12px; }
+    .kpi-card { background: #161b22; border: 1px solid #21262d; border-radius: 8px; padding: 16px 18px; }
+    .kpi-label { font-size: 10px; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase; color: #8b949e; margin-bottom: 8px; }
+    .kpi-val { font-size: 30px; font-weight: 700; line-height: 1; margin-bottom: 5px; }
+    .kpi-green { color: #3fb950; }
+    .kpi-amber { color: #d29922; }
+    .kpi-red   { color: #f85149; }
+    .kpi-blue  { color: #58a6ff; }
+    .kpi-white { color: #f0f6fc; }
+    .kpi-sub  { font-size: 11px; color: #8b949e; line-height: 1.4; }
+    .kpi-dash { color: #484f58; }
+
+    /* ── Panel body (padded content area below KPI) ── */
+    .panel-body { padding: 0 32px 48px; }
+
+    /* ── Flag bar ── */
+    .flag-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: #161b22;
+      border: 1px solid #21262d;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      font-size: 13px;
+      color: #8b949e;
+    }
+    .flag-bar button {
+      padding: 5px 12px;
+      background: #238636;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .flag-bar button:disabled {
+      background: #21262d;
+      color: #484f58;
+      cursor: default;
+    }
 
     h1 { font-size: 20px; font-weight: 600; color: #f0f6fc; margin-bottom: 6px; }
     .panel-subtitle { font-size: 13px; color: #8b949e; margin-bottom: 24px; }
@@ -441,57 +607,133 @@ function generateDashboard(history, compareImages, singleUrlHistory) {
     .empty-state { color: #8b949e; font-size: 14px; padding: 48px 0; text-align: center; }
 
     @media (max-width: 640px) {
-      #sidebar { display: none; }
-      #main { padding: 20px 16px; }
+      #topbar .topnav { display: none; }
+      .kpi-section, .subtab-bar, .page-hdr { padding-left: 16px; padding-right: 16px; }
+      .panel-body { padding-left: 16px; padding-right: 16px; }
+      .kpi-row { grid-template-columns: repeat(2, 1fr); }
       .summary-card .divider { display: none; }
     }
   </style>
 </head>
 <body>
 
-<nav id="sidebar">
-  <div class="sidebar-title">Virtusize QA</div>
-  <button onclick="showPanel('monitor')" id="btn-monitor" class="active">📡 Monitor</button>
-  <button onclick="showPanel('single')" id="btn-single">🔗 Single URL</button>
-  <button onclick="showPanel('compare')" id="btn-compare">🖼 Compare View</button>
-  <button onclick="showPanel('inpage')" id="btn-inpage">🧪 Inpage</button>
-  <button onclick="showPanel('cart')" id="btn-cart">🛒 Add to Cart</button>
-</nav>
+<header id="topbar">
+  <div class="brand">Virtusize QA</div>
+  <nav class="topnav">
+    <button class="tnav-btn active" onclick="showPanel('monitor')" id="btn-monitor">Monitor</button>
+    <button class="tnav-btn" onclick="showPanel('single')" id="btn-single">Single URL</button>
+    <button class="tnav-btn" onclick="showPanel('compare')" id="btn-compare">Compare View</button>
+    <button class="tnav-btn" onclick="showPanel('inpage')" id="btn-inpage">Inpage</button>
+    <button class="tnav-btn" onclick="showPanel('cart')" id="btn-cart">Cart</button>
+  </nav>
+  <div class="sys-status ${isHealthy ? 'healthy' : 'degraded'}">● System ${isHealthy ? 'healthy' : 'degraded'}</div>
+</header>
 
-<main id="main">
+<main id="content">
 
   <!-- Monitor -->
   <div class="panel active" id="panel-monitor">
-    <h1>Monitor</h1>
-    <p class="panel-subtitle">Multi-store widget health — run automatically on a schedule</p>
-    <div class="summary-card" id="summary-card"></div>
-    <div class="filters">
-      <button class="filter-btn active" data-phase="all">All phases</button>
-      <button class="filter-btn" data-phase="widget">Widget</button>
-      <button class="filter-btn" data-phase="api">API</button>
+    <div class="page-hdr">
+      <h1>Monitor Health</h1>
+      <p class="page-sub">Operational intelligence · Last updated ${lastUpdated}</p>
     </div>
-    <table>
-      <thead>
-        <tr>
-          <th style="width:20px"></th>
-          <th>Date &amp; Time</th>
-          <th>Phase</th>
-          <th style="text-align:right">✅ Passed</th>
-          <th style="text-align:right">⚠️ Missing</th>
-          <th style="text-align:right">❌ Failed</th>
-          <th style="text-align:right">⏭ Skipped</th>
-          <th>Run</th>
-        </tr>
-      </thead>
-      <tbody id="runs-body"></tbody>
-    </table>
+
+    <div class="subtab-bar">
+      <button class="subtab active">Running</button>
+      <button class="subtab">Bot Alert</button>
+      <button class="subtab">Missing Stores</button>
+      <button class="subtab">Alerts ${alertBadge}</button>
+    </div>
+
+    <div class="kpi-section">
+      <div class="kpi-row">
+        <div class="kpi-card">
+          <div class="kpi-label">Health Score</div>
+          <div class="kpi-val ${hsColor}">${metrics.healthScore !== null ? metrics.healthScore + '%' : '—'}</div>
+          <div class="kpi-sub">target ≥ 90%</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Pass Rate</div>
+          <div class="kpi-val ${prColor}">${metrics.passRate !== null ? metrics.passRate + '%' : '—'}</div>
+          <div class="kpi-sub">${metrics.passedCount}/${metrics.totalMonitored} tests</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Missing Stores</div>
+          <div class="kpi-val ${missingColor}">${metrics.missingCount}</div>
+          <div class="kpi-sub">${metrics.ongoingCount} ongoing · ${metrics.newMissingCount} new</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Flake Rate</div>
+          <div class="kpi-val ${flakeColor}">${metrics.flakeRate !== null ? metrics.flakeRate + '%' : '—'}</div>
+          <div class="kpi-sub">${flakeTrend}</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Avg Exec Time</div>
+          <div class="kpi-val kpi-white">—</div>
+          <div class="kpi-sub kpi-dash">Not tracked yet</div>
+        </div>
+      </div>
+      <div class="kpi-row">
+        <div class="kpi-card">
+          <div class="kpi-label">Monthly CI Cost</div>
+          <div class="kpi-val kpi-white">—</div>
+          <div class="kpi-sub kpi-dash">Not tracked yet</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Healthy Clients</div>
+          <div class="kpi-val ${metrics.passRate >= 90 ? 'kpi-green' : 'kpi-amber'}">${healthyStores}/${metrics.totalMonitored}</div>
+          <div class="kpi-sub">${metrics.botCount} bot-blocked</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Bot Block Rate</div>
+          <div class="kpi-val ${metrics.botCount > 0 ? 'kpi-amber' : 'kpi-green'}">${botRatePct}%</div>
+          <div class="kpi-sub">${metrics.botCount} of ${metrics.totalMonitored} stores</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">MTTR</div>
+          <div class="kpi-val kpi-white">—</div>
+          <div class="kpi-sub kpi-dash">Not tracked yet</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Deploy Correlation</div>
+          <div class="kpi-val kpi-white">—</div>
+          <div class="kpi-sub kpi-dash">Not tracked yet</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel-body">
+      <div class="summary-card" id="summary-card"></div>
+      <div class="filters">
+        <button class="filter-btn active" data-phase="all">All phases</button>
+        <button class="filter-btn" data-phase="widget">Widget</button>
+        <button class="filter-btn" data-phase="api">API</button>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:20px"></th>
+            <th>Date &amp; Time</th>
+            <th>Phase</th>
+            <th style="text-align:right">✅ Passed</th>
+            <th style="text-align:right">⚠️ Missing</th>
+            <th style="text-align:right">❌ Failed</th>
+            <th style="text-align:right">⏭ Skipped</th>
+            <th>Run</th>
+          </tr>
+        </thead>
+        <tbody id="runs-body"></tbody>
+      </table>
+    </div>
   </div>
 
   <!-- Single URL -->
   <div class="panel" id="panel-single">
-    <h1>Single URL Tests</h1>
-    <p class="panel-subtitle">Per-URL tests run across chrome, firefox, and webkit</p>
-
+    <div class="page-hdr">
+      <h1>Single URL Tests</h1>
+      <p class="page-sub">Per-URL tests run across chrome, firefox, and webkit</p>
+    </div>
+    <div class="panel-body">
     <div style="background:#161b22;border:1px solid #21262d;border-radius:8px;padding:16px;margin-bottom:24px">
       <div style="font-size:13px;font-weight:600;color:#c9d1d9;margin-bottom:12px">Run a new test</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
@@ -722,13 +964,16 @@ function generateDashboard(history, compareImages, singleUrlHistory) {
       </thead>
       <tbody id="single-url-body"></tbody>
     </table>
+    </div>
   </div>
 
   <!-- Compare View -->
   <div class="panel" id="panel-compare">
-    <h1>Compare View</h1>
-    <p class="panel-subtitle">Screenshots of the compare view after onboarding — bags, apparel, footwear</p>
-
+    <div class="page-hdr">
+      <h1>Compare View</h1>
+      <p class="page-sub">Screenshots of the compare view after onboarding — bags, apparel, footwear</p>
+    </div>
+    <div class="panel-body">
     <div style="background:#161b22;border:1px solid #21262d;border-radius:8px;padding:16px;margin-bottom:24px">
       <div style="font-size:13px;font-weight:600;color:#c9d1d9;margin-bottom:12px">Run new screenshot test</div>
       <div style="margin-bottom:10px">
@@ -757,27 +1002,36 @@ function generateDashboard(history, compareImages, singleUrlHistory) {
     </div>
 
     <div id="compare-content"></div>
+    </div>
   </div>
 
   <!-- Inpage -->
   <div class="panel" id="panel-inpage">
-    <h1>Inpage QA</h1>
-    <p class="panel-subtitle">Full user journey through the inpage widget</p>
-    <div class="info-panel">
-      <div class="icon">🧪</div>
-      <p>Run locally against any store or URL. Results appear in the Playwright HTML report.</p>
-      <div class="run-cmd">npx playwright test tests/inpage.spec.js --project=chrome</div>
+    <div class="page-hdr">
+      <h1>Inpage QA</h1>
+      <p class="page-sub">Full user journey through the inpage widget</p>
+    </div>
+    <div class="panel-body">
+      <div class="info-panel">
+        <div class="icon">🧪</div>
+        <p>Run locally against any store or URL. Results appear in the Playwright HTML report.</p>
+        <div class="run-cmd">npx playwright test tests/inpage.spec.js --project=chrome</div>
+      </div>
     </div>
   </div>
 
   <!-- Add to Cart -->
   <div class="panel" id="panel-cart">
-    <h1>Add to Cart</h1>
-    <p class="panel-subtitle">Validates the add-to-cart flow after size recommendation</p>
-    <div class="info-panel">
-      <div class="icon">🛒</div>
-      <p>Run locally. Results appear in the Playwright HTML report.</p>
-      <div class="run-cmd">npx playwright test tests/addToCart.spec.js --project=chrome</div>
+    <div class="page-hdr">
+      <h1>Add to Cart</h1>
+      <p class="page-sub">Validates the add-to-cart flow after size recommendation</p>
+    </div>
+    <div class="panel-body">
+      <div class="info-panel">
+        <div class="icon">🛒</div>
+        <p>Run locally. Results appear in the Playwright HTML report.</p>
+        <div class="run-cmd">npx playwright test tests/addToCart.spec.js --project=chrome</div>
+      </div>
     </div>
   </div>
 
@@ -791,7 +1045,7 @@ const COMPARE_IMAGES = ${compareJson};
 // ── Navigation ────────────────────────────────────────────────────────────────
 function showPanel(name) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('#sidebar button').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tnav-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('panel-' + name).classList.add('active');
   document.getElementById('btn-' + name).classList.add('active');
   if (name === 'compare') renderCompareView();

@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Virtusize QA — Preview</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0d1117;
+      color: #c9d1d9;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+    a { color: #58a6ff; text-decoration: none; }
+
+    /* ── Top header bar ── */
+    #topbar {
+      display: flex;
+      align-items: center;
+      height: 52px;
+      background: #161b22;
+      border-bottom: 1px solid #21262d;
+      padding: 0 24px;
+      flex-shrink: 0;
+    }
+    .brand {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #f0f6fc;
+      margin-right: 24px;
+    }
+    .topnav { display: flex; gap: 2px; flex: 1; }
+    .tnav-btn {
+      background: none;
+      border: none;
+      color: #8b949e;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    .tnav-btn:hover { background: #21262d; color: #c9d1d9; }
+    .tnav-btn.active { background: #21262d; color: #f0f6fc; font-weight: 500; }
+    .sys-status {
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 12px;
+    }
+    .sys-status.healthy { color: #3fb950; background: rgba(63,185,80,0.1); border: 1px solid rgba(63,185,80,0.2); }
+
+    /* ── Main content ── */
+    #content { flex: 1; overflow-y: auto; }
+
+    /* ── Page header ── */
+    .page-hdr { padding: 24px 32px 0; margin-bottom: 20px; }
+    .page-hdr h1 { font-size: 22px; font-weight: 700; color: #f0f6fc; margin-bottom: 4px; }
+    .page-hdr .page-sub { font-size: 13px; color: #8b949e; }
+
+    /* ── Sub-tab bar ── */
+    .subtab-bar {
+      display: flex;
+      padding: 0 32px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid #21262d;
+    }
+    .subtab {
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: #8b949e;
+      padding: 8px 16px;
+      font-size: 13px;
+      cursor: pointer;
+      margin-bottom: -1px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .subtab:hover { color: #c9d1d9; }
+    .subtab.active { color: #f0f6fc; border-bottom-color: #58a6ff; }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 16px;
+      height: 16px;
+      padding: 0 4px;
+      border-radius: 8px;
+      background: #f85149;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    /* ── KPI cards ── */
+    .kpi-section { padding: 0 32px; margin-bottom: 24px; }
+    .kpi-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 12px; }
+    .kpi-card { background: #161b22; border: 1px solid #21262d; border-radius: 8px; padding: 16px 18px; }
+    .kpi-label { font-size: 10px; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase; color: #8b949e; margin-bottom: 8px; }
+    .kpi-val { font-size: 30px; font-weight: 700; line-height: 1; margin-bottom: 5px; }
+    .kpi-green { color: #3fb950; }
+    .kpi-amber { color: #d29922; }
+    .kpi-red   { color: #f85149; }
+    .kpi-white { color: #f0f6fc; }
+    .kpi-sub  { font-size: 11px; color: #8b949e; line-height: 1.4; }
+    .kpi-dash { color: #484f58; }
+
+    /* ── Panel body ── */
+    .panel-body { padding: 0 32px 48px; }
+
+    /* ── Summary card ── */
+    .summary-card {
+      background: #161b22;
+      border: 1px solid #21262d;
+      border-radius: 8px;
+      padding: 18px 22px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .summary-card .label { font-size: 12px; color: #8b949e; text-transform: uppercase; letter-spacing: 0.5px; }
+    .summary-card .stat { font-size: 28px; font-weight: 700; line-height: 1; }
+    .summary-card .stat-block { text-align: center; min-width: 64px; }
+    .summary-card .divider { width: 1px; height: 40px; background: #21262d; }
+    .stat.passed  { color: #3fb950; }
+    .stat.missing { color: #d29922; }
+    .stat.failed  { color: #f85149; }
+    .stat.skipped { color: #8b949e; }
+
+    /* ── Table ── */
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    thead th { text-align: left; padding: 8px 12px; font-size: 12px; color: #8b949e; font-weight: 500; border-bottom: 1px solid #21262d; white-space: nowrap; }
+    tbody tr { border-bottom: 1px solid #161b22; }
+    tbody tr:hover { background: #161b22; }
+    tbody td { padding: 10px 12px; vertical-align: middle; }
+    .ts { color: #8b949e; font-size: 13px; white-space: nowrap; }
+    .phase-badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .phase-widget { background: #1f3a5f; color: #58a6ff; }
+    .count { font-weight: 600; text-align: right; }
+    .count.passed  { color: #3fb950; }
+    .count.missing { color: #d29922; }
+    .count.failed  { color: #f85149; }
+    .count.skipped { color: #8b949e; }
+    .count.zero    { color: #30363d; font-weight: 400; }
+    .status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
+    .dot-green  { background: #3fb950; }
+    .dot-yellow { background: #d29922; }
+    .filters { display: flex; gap: 8px; margin-bottom: 16px; }
+    .filter-btn { padding: 4px 12px; border-radius: 20px; border: 1px solid #30363d; background: transparent; color: #8b949e; font-size: 12px; cursor: pointer; }
+    .filter-btn.active { background: #21262d; color: #c9d1d9; border-color: #58a6ff; }
+  </style>
+</head>
+<body>
+
+<header id="topbar">
+  <div class="brand">Virtusize QA</div>
+  <nav class="topnav">
+    <button class="tnav-btn active">Monitor</button>
+    <button class="tnav-btn">Single URL</button>
+    <button class="tnav-btn">Compare View</button>
+    <button class="tnav-btn">Inpage</button>
+    <button class="tnav-btn">Cart</button>
+  </nav>
+  <div class="sys-status healthy">● System healthy</div>
+</header>
+
+<main id="content">
+  <div class="page-hdr">
+    <h1>Monitor Health</h1>
+    <p class="page-sub">Operational intelligence · Last updated 05 May 2026, 08:55 JST</p>
+  </div>
+
+  <div class="subtab-bar">
+    <button class="subtab active">Running</button>
+    <button class="subtab">Bot Alert</button>
+    <button class="subtab">Missing Stores</button>
+    <button class="subtab">Alerts <span class="badge">1</span></button>
+  </div>
+
+  <div class="kpi-section">
+    <div class="kpi-row">
+      <div class="kpi-card">
+        <div class="kpi-label">Health Score</div>
+        <div class="kpi-val kpi-amber">85%</div>
+        <div class="kpi-sub">target ≥ 90%</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Pass Rate</div>
+        <div class="kpi-val kpi-green">94.0%</div>
+        <div class="kpi-sub">78/83 tests</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Missing Stores</div>
+        <div class="kpi-val kpi-amber">5</div>
+        <div class="kpi-sub">4 ongoing · 1 new</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Flake Rate</div>
+        <div class="kpi-val kpi-amber">8.1%</div>
+        <div class="kpi-sub">Based on 14d history</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Avg Exec Time</div>
+        <div class="kpi-val kpi-white">—</div>
+        <div class="kpi-sub kpi-dash">Not tracked yet</div>
+      </div>
+    </div>
+    <div class="kpi-row">
+      <div class="kpi-card">
+        <div class="kpi-label">Monthly CI Cost</div>
+        <div class="kpi-val kpi-white">—</div>
+        <div class="kpi-sub kpi-dash">Not tracked yet</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Healthy Clients</div>
+        <div class="kpi-val kpi-amber">75/86</div>
+        <div class="kpi-sub">3 bot-blocked</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Bot Block Rate</div>
+        <div class="kpi-val kpi-amber">3.5%</div>
+        <div class="kpi-sub">3 of 86 stores</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">MTTR</div>
+        <div class="kpi-val kpi-white">—</div>
+        <div class="kpi-sub kpi-dash">Not tracked yet</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Deploy Correlation</div>
+        <div class="kpi-val kpi-white">—</div>
+        <div class="kpi-sub kpi-dash">Not tracked yet</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel-body">
+    <div class="summary-card">
+      <div class="stat-block"><div class="label">Passed</div><div class="stat passed">78</div></div>
+      <div class="divider"></div>
+      <div class="stat-block"><div class="label">Missing</div><div class="stat missing">5</div></div>
+      <div class="divider"></div>
+      <div class="stat-block"><div class="label">Failed</div><div class="stat failed">0</div></div>
+      <div class="divider"></div>
+      <div class="stat-block"><div class="label">Skipped</div><div class="stat skipped">3</div></div>
+      <div class="divider"></div>
+      <div class="stat-block"><div class="label">Total</div><div class="stat" style="color:#f0f6fc">86</div></div>
+      <div style="margin-left:auto;font-size:12px;color:#8b949e">Last run: 05 May 2026, 08:55 JST</div>
+    </div>
+
+    <div class="filters">
+      <button class="filter-btn active">All phases</button>
+      <button class="filter-btn">Widget</button>
+      <button class="filter-btn">API</button>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th style="width:20px"></th>
+          <th>Date &amp; Time</th>
+          <th>Phase</th>
+          <th style="text-align:right">✅ Passed</th>
+          <th style="text-align:right">⚠️ Missing</th>
+          <th style="text-align:right">❌ Failed</th>
+          <th style="text-align:right">⏭ Skipped</th>
+          <th>Run</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>›</td>
+          <td class="ts"><span class="status-dot dot-yellow"></span>05 May 2026, 08:55 JST</td>
+          <td><span class="phase-badge phase-widget">widget</span></td>
+          <td class="count passed">78</td>
+          <td class="count missing">5</td>
+          <td class="count zero">0</td>
+          <td class="count skipped">3</td>
+          <td style="font-size:13px"><a href="#">View →</a></td>
+        </tr>
+        <tr>
+          <td>›</td>
+          <td class="ts"><span class="status-dot dot-yellow"></span>04 May 2026, 08:44 JST</td>
+          <td><span class="phase-badge phase-widget">widget</span></td>
+          <td class="count passed">77</td>
+          <td class="count missing">6</td>
+          <td class="count zero">0</td>
+          <td class="count skipped">3</td>
+          <td style="font-size:13px"><a href="#">View →</a></td>
+        </tr>
+        <tr>
+          <td>›</td>
+          <td class="ts"><span class="status-dot dot-yellow"></span>03 May 2026, 08:43 JST</td>
+          <td><span class="phase-badge phase-widget">widget</span></td>
+          <td class="count passed">76</td>
+          <td class="count missing">7</td>
+          <td class="count zero">0</td>
+          <td class="count skipped">3</td>
+          <td style="font-size:13px"><a href="#">View →</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</main>
+
+</body>
+</html>
