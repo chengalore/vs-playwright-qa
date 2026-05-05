@@ -417,7 +417,6 @@
     <button class="tnav-btn" onclick="showPanel('cart')" id="btn-cart">Cart</button>
     <button class="tnav-btn" onclick="showPanel('cost')" id="btn-cost">Cost per client</button>
     <button class="tnav-btn" onclick="showPanel('alerting')" id="btn-alerting">Alerting</button>
-    <button onclick="showPanel('health-suite')" id="btn-health-suite">📊 Health Suite</button>
   </nav>
   <div class="sys-status healthy">● System healthy</div>
 </header>
@@ -988,63 +987,6 @@
     </div>
   </div>
 
-  <!-- Health Suite -->
-  <div class="panel" id="panel-health-suite">
-    <h1>Health Monitoring Suite</h1>
-    <p class="panel-subtitle">Operational intelligence · Last updated <span id="hs-timestamp"></span></p>
-
-    <div style="display:flex;border-bottom:2px solid #21262d;margin-bottom:18px">
-      <button onclick="switchHealthTab('qa',this)" class="health-tab active" style="padding:9px 24px;font-size:13px;font-weight:500;cursor:pointer;border:none;background:none;color:#f0f6fc;border-bottom:2px solid #f0f6fc;margin-bottom:-2px;transition:all .15s">QA dashboard</button>
-      <button onclick="switchHealthTab('client',this)" class="health-tab" style="padding:9px 24px;font-size:13px;font-weight:500;cursor:pointer;border:none;background:none;color:#8b949e;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s">Client dashboard</button>
-      <button onclick="switchHealthTab('sales',this)" class="health-tab" style="padding:9px 24px;font-size:13px;font-weight:500;cursor:pointer;border:none;background:none;color:#8b949e;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s">Sales dashboard</button>
-    </div>
-
-    <div id="health-qa-panel" class="health-panel">
-      <div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-bottom:14px" id="hs-kpi-row1"></div>
-      <div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-bottom:14px" id="hs-kpi-row2"></div>
-
-      <div style="background:#161b22;border:1px solid #21262d;border-radius:8px;padding:14px;margin-bottom:12px">
-        <div style="font-size:11px;font-weight:500;color:#8b949e;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">Store health matrix</div>
-        <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-bottom:10px">
-          <div style="padding:7px 10px;border-radius:6px;font-size:10px;font-weight:500;background:#1a3a2a;color:#3fb950">banana_republic<div style="display:flex;align-items:flex-end;gap:1px;height:12px;margin-top:4px"><span style="flex:1;border-radius:1px 1px 0 0;height:80%;background:#3fb950"></span><span style="flex:1;border-radius:1px 1px 0 0;height:85%;background:#3fb950"></span><span style="flex:1;border-radius:1px 1px 0 0;height:88%;background:#3fb950"></span><span style="flex:1;border-radius:1px 1px 0 0;height:90%;background:#3fb950"></span><span style="flex:1;border-radius:1px 1px 0 0;height:92%;background:#3fb950"></span><span style="flex:1;border-radius:1px 1px 0 0;height:95%;background:#3fb950"></span><span style="flex:1;border-radius:1px 1px 0 0;height:100%;background:#3fb950"></span></div></div>
-          <div style="padding:7px 10px;border-radius:6px;font-size:10px;font-weight:500;background:#1a3a2a;color:#3fb950">gap_japan<div style="display:flex;align-items:flex-end;gap:1px;height:12px;margin-top:4px"><span style="flex:1;border-radius:1px 1px 0 0;height:78%;background:#3fb950"></span><span style="flex:1;border-radius:1px 1px 0 0;height:80%;background:#3fb950"></span><span style="flex:1;border-radius:1px 1px 0 0;height:82%;background:#3fb950"></span><span style="flex:1;border-radius:1px 1px 0 0;height:85%;background:#3fb950"></span><span style="flex:1;border-radius:1px 1px 0 0;height:88%;background:#3fb950"></span><span style="flex:1;border-radius:1px 1px 0 0;height:90%;background:#3fb950"></span><span style="flex:1;border-radius:1px 1px 0 0;height:90%;background:#3fb950"></span></div></div>
-          <div style="padding:7px 10px;border-radius:6px;font-size:10px;font-weight:500;background:#1a3a2a;color:#3fb950">zozo<div style="display:flex;align-items:flex-end;gap:1px;height:12px;margin-top:4px"><span style="flex:1;border-radius:1px 1px 0 0;height:90%;background:#3fb950"></span><span style="flex:1;border-radius:1px 1px 0 0;height:90%;background:#3fb950"></span><span style="flex:1;border-radius:1px 1px 0 0;height:92%;background:#3fb950"></span><span style="flex:1;border-radius:1px 1px 0 0;height:90%;background:#3fb950"></span><span style="flex:1;border-radius:1px 1px 0 0;height:93%;background:#3fb950"></span><span style="flex:1;border-radius:1px 1px 0 0;height:95%;background:#3fb950"></span><span style="flex:1;border-radius:1px 1px 0 0;height:95%;background:#3fb950"></span></div></div>
-          <div style="padding:7px 10px;border-radius:6px;font-size:10px;font-weight:500;background:#1a3a2a;color:#3fb950">united_arrows<div style="display:flex;align-items:flex-end;gap:1px;height:12px;margin-top:4px"><span style="flex:1;border-radius:1px 1px 0 0;height:88%;background:#3fb950"></span><span style="flex:1;border-radius:1px 1px 0 0;height:88%;background:#3fb950"></span><span style="flex:1;border-radius:1px 1px 0 0;height:90%;background:#3fb950"></span><span style="flex:1;border-radius:1px 1px 0 0;height:88%;background:#3fb950"></span><span style="flex:1;border-radius:1px 1px 0 0;height:90%;background:#3fb950"></span><span style="flex:1;border-radius:1px 1px 0 0;height:92%;background:#3fb950"></span><span style="flex:1;border-radius:1px 1px 0 0;height:92%;background:#3fb950"></span></div></div>
-          <div style="padding:7px 10px;border-radius:6px;font-size:10px;font-weight:500;background:#3a2a1a;color:#d29922">adidas · bot<div style="display:flex;align-items:flex-end;gap:1px;height:12px;margin-top:4px"><span style="flex:1;border-radius:1px 1px 0 0;height:5%;background:#d29922"></span><span style="flex:1;border-radius:1px 1px 0 0;height:5%;background:#d29922"></span><span style="flex:1;border-radius:1px 1px 0 0;height:5%;background:#d29922"></span><span style="flex:1;border-radius:1px 1px 0 0;height:5%;background:#d29922"></span><span style="flex:1;border-radius:1px 1px 0 0;height:5%;background:#d29922"></span><span style="flex:1;border-radius:1px 1px 0 0;height:5%;background:#d29922"></span><span style="flex:1;border-radius:1px 1px 0 0;height:5%;background:#d29922"></span></div></div>
-          <div style="padding:7px 10px;border-radius:6px;font-size:10px;font-weight:500;background:#3a2a1a;color:#d29922">ralph_lauren · bot<div style="display:flex;align-items:flex-end;gap:1px;height:12px;margin-top:4px"><span style="flex:1;border-radius:1px 1px 0 0;height:5%;background:#d29922"></span><span style="flex:1;border-radius:1px 1px 0 0;height:5%;background:#d29922"></span><span style="flex:1;border-radius:1px 1px 0 0;height:5%;background:#d29922"></span><span style="flex:1;border-radius:1px 1px 0 0;height:5%;background:#d29922"></span><span style="flex:1;border-radius:1px 1px 0 0;height:5%;background:#d29922"></span><span style="flex:1;border-radius:1px 1px 0 0;height:5%;background:#d29922"></span><span style="flex:1;border-radius:1px 1px 0 0;height:5%;background:#d29922"></span></div></div>
-          <div style="padding:7px 10px;border-radius:6px;font-size:10px;font-weight:500;background:#3a2a1a;color:#d29922">asics_japan · bot<div style="display:flex;align-items:flex-end;gap:1px;height:12px;margin-top:4px"><span style="flex:1;border-radius:1px 1px 0 0;height:5%;background:#d29922"></span><span style="flex:1;border-radius:1px 1px 0 0;height:5%;background:#d29922"></span><span style="flex:1;border-radius:1px 1px 0 0;height:5%;background:#d29922"></span><span style="flex:1;border-radius:1px 1px 0 0;height:5%;background:#d29922"></span><span style="flex:1;border-radius:1px 1px 0 0;height:5%;background:#d29922"></span><span style="flex:1;border-radius:1px 1px 0 0;height:5%;background:#d29922"></span><span style="flex:1;border-radius:1px 1px 0 0;height:5%;background:#d29922"></span></div></div>
-          <div style="padding:7px 10px;border-radius:6px;font-size:10px;font-weight:500;background:#3a1f1a;color:#d85a30">snidel · 17 runs<div style="display:flex;align-items:flex-end;gap:1px;height:12px;margin-top:4px"><span style="flex:1;border-radius:1px 1px 0 0;height:60%;background:#d85a30"></span><span style="flex:1;border-radius:1px 1px 0 0;height:40%;background:#d85a30"></span><span style="flex:1;border-radius:1px 1px 0 0;height:20%;background:#d85a30"></span><span style="flex:1;border-radius:1px 1px 0 0;height:10%;background:#d85a30"></span><span style="flex:1;border-radius:1px 1px 0 0;height:5%;background:#d85a30"></span><span style="flex:1;border-radius:1px 1px 0 0;height:5%;background:#d85a30"></span><span style="flex:1;border-radius:1px 1px 0 0;height:5%;background:#d85a30"></span></div></div>
-        </div>
-        <div style="display:flex;gap:14px;font-size:10px;color:#8b949e">
-          <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#3fb950;margin-right:4px"></span>Healthy (4)</span>
-          <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#d29922;margin-right:4px"></span>Bot blocked (3)</span>
-          <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#d85a30;margin-right:4px"></span>Missing (1)</span>
-        </div>
-      </div>
-
-      <div style="background:#161b22;border:1px solid #21262d;border-radius:8px;padding:14px;margin-bottom:12px">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-          <div style="font-size:11px;font-weight:500;color:#8b949e;text-transform:uppercase;letter-spacing:.05em">Flaky stores</div>
-          <div id="hs-flake-badge" style="display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:10px;font-size:10px;font-weight:500;background:#3a2a1a;color:#d29922"></div>
-        </div>
-        <table style="width:100%;border-collapse:collapse;font-size:11px">
-          <thead>
-            <tr>
-              <th style="padding:7px 8px;border-bottom:1px solid #21262d;font-weight:500;color:#8b949e;font-size:10px;text-align:left;text-transform:uppercase;letter-spacing:.04em">Store</th>
-              <th style="padding:7px 8px;border-bottom:1px solid #21262d;font-weight:500;color:#8b949e;font-size:10px;text-align:left;text-transform:uppercase;letter-spacing:.04em">Flake rate</th>
-              <th style="padding:7px 8px;border-bottom:1px solid #21262d;font-weight:500;color:#8b949e;font-size:10px;text-align:left;text-transform:uppercase;letter-spacing:.04em">Last flip</th>
-              <th style="padding:7px 8px;border-bottom:1px solid #21262d;font-weight:500;color:#8b949e;font-size:10px;text-align:left;text-transform:uppercase;letter-spacing:.04em">Status</th>
-            </tr>
-          </thead>
-          <tbody id="hs-flaky-body"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <div id="health-client-panel" class="health-panel" style="display:none">Client dashboard content goes here</div>
-    <div id="health-sales-panel" class="health-panel" style="display:none">Sales dashboard content goes here</div>
-  </div>
-
 </main>
 
 <script>
@@ -1061,7 +1003,6 @@ function showPanel(name) {
   if (name === 'compare') renderCompareView();
   if (name === 'single') renderSingleUrl();
   if (name === 'cost') renderCostPanel();
-  if (name === 'health-suite') renderHealthSuite();
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -1968,125 +1909,6 @@ function renderCostPanel() {
     <div style="background:#3a1515;border-radius:6px;padding:10px;font-size:11px;color:#f85149">
       Removing bot-blocked stores (adidas, ralph_lauren, asics_japan) saves $12.87/mo immediately — zero loss of test value.
     </div>`;
-}
-
-// ── Health Suite ──────────────────────────────────────────────────────────────
-function switchHealthTab(tab, btn) {
-  document.querySelectorAll('.health-tab').forEach(b => {
-    b.classList.remove('active');
-    b.style.color = '#8b949e';
-    b.style.borderBottom = '2px solid transparent';
-  });
-  btn.classList.add('active');
-  btn.style.color = '#f0f6fc';
-  btn.style.borderBottom = '2px solid #f0f6fc';
-  document.querySelectorAll('.health-panel').forEach(p => p.style.display = 'none');
-  document.getElementById('health-' + tab + '-panel').style.display = 'block';
-}
-
-function renderHealthSuite() {
-  const latest  = HISTORY.filter(r => (r.phase || 'widget') === 'widget')[0] || {};
-  const prev    = HISTORY.filter(r => (r.phase || 'widget') === 'widget')[1] || {};
-  const last7   = HISTORY.filter(r => (r.phase || 'widget') === 'widget').slice(0, 7);
-
-  const s  = latest.summary || {};
-  const sp = prev.summary   || {};
-
-  const totalStores   = s.total   || 0;
-  const healthyStores = s.passed  || 0;
-  const missingCount  = s.widgetMissing || 0;
-  const botBlocked    = (latest.botProtected || []).length;
-
-  const passRate      = totalStores > 0 ? ((healthyStores / totalStores) * 100).toFixed(1) : '0.0';
-  const passRatePrev  = (sp.total  > 0) ? ((sp.passed  / sp.total)  * 100).toFixed(1) : passRate;
-  const passRateDelta = (parseFloat(passRate) - parseFloat(passRatePrev)).toFixed(1);
-  const botBlockRate  = totalStores > 0 ? ((botBlocked / totalStores) * 100).toFixed(1) : '0.0';
-
-  // Flake rate
-  let totalFlips = 0;
-  for (let i = 0; i < last7.length - 1; i++) {
-    const currM = new Set((last7[i].widgetMissingStores   || []).map(x => x.store));
-    const prevM = new Set((last7[i+1].widgetMissingStores || []).map(x => x.store));
-    currM.forEach(store => { if (!prevM.has(store)) totalFlips++; });
-    prevM.forEach(store => { if (!currM.has(store)) totalFlips++; });
-  }
-  const flakeRate = totalStores > 0 ? ((totalFlips / (totalStores * 6)) * 100).toFixed(1) : '0.0';
-
-  const healthScore = Math.round(
-    (parseFloat(passRate) * 0.6) +
-    ((s.failed || 0) === 0 ? 20 : 0) +
-    (missingCount <= 3 ? 20 : missingCount <= 6 ? 10 : 0)
-  );
-
-  const dStyle = v => parseFloat(v) > 0 ? '#f85149' : parseFloat(v) < 0 ? '#3fb950' : '#8b949e';
-  const dArrow = v => parseFloat(v) > 0 ? '▲' : parseFloat(v) < 0 ? '▼' : '—';
-
-  const card = (label, val, sub, extra = '') =>
-    `<div style="background:#161b22;border:1px solid #21262d;border-radius:8px;padding:12px 14px">
-      <div style="font-size:10px;color:#8b949e;text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px">${label}</div>
-      ${val}
-      <div style="font-size:10px;color:#8b949e;margin-top:4px">${sub}</div>${extra}
-    </div>`;
-
-  const bigVal = (v, c) => `<div style="font-size:28px;font-weight:600;line-height:1;color:${c}">${v}</div>`;
-  const smVal  = (v, c) => `<div style="font-size:20px;font-weight:600;line-height:1;color:${c}">${v}</div>`;
-
-  document.getElementById('hs-kpi-row1').innerHTML =
-    card('Health score',   bigVal(healthScore + '%', '#3fb950'), 'target ≥ 90%') +
-    card('Pass rate',      bigVal(passRate + '%', '#3fb950'), `${healthyStores}/${totalStores} tests`,
-         `<div style="font-size:10px;color:${dStyle(passRateDelta)};margin-top:4px">${dArrow(passRateDelta)}${Math.abs(passRateDelta)}% vs yesterday</div>`) +
-    card('Missing stores', bigVal(missingCount, '#d85a30'), `${missingCount} stores`) +
-    card('Flake rate',     bigVal(flakeRate + '%', '#d29922'), 'Based on 7d window') +
-    card('Avg exec time',  smVal('—', '#8b949e'), 'Not tracked yet');
-
-  document.getElementById('hs-kpi-row2').innerHTML =
-    card('Monthly CI cost',  smVal('—', '#8b949e'), 'Not tracked yet') +
-    card('Healthy clients',  bigVal(`${healthyStores}/${totalStores}`, '#c9d1d9'), `${totalStores > 0 ? Math.round(healthyStores/totalStores*100) : 0}% of total`) +
-    card('Bot block rate',   bigVal(botBlockRate + '%', '#d29922'), `${botBlocked} of ${totalStores} stores`) +
-    card('MTTR',             smVal('—', '#8b949e'), 'Not tracked yet') +
-    card('Deploy corr.',     smVal('—', '#8b949e'), 'Not tracked yet');
-
-  document.getElementById('hs-flake-badge').textContent = flakeRate + '% overall';
-  document.getElementById('hs-timestamp').textContent = latest.timestamp
-    ? new Date(latest.timestamp).toLocaleString('en-GB', {day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',timeZoneName:'short'})
-    : '—';
-
-  // Flaky stores table
-  const storeSet = new Set();
-  last7.forEach(r => (r.widgetMissingStores || []).forEach(s => storeSet.add(s.store)));
-  const flaky = [];
-  for (const store of storeSet) {
-    const statuses = last7.map(r => (r.widgetMissingStores || []).some(x => x.store === store) ? 'miss' : 'pass');
-    let flips = 0, lastIdx = -1;
-    for (let i = 0; i < statuses.length - 1; i++) {
-      if (statuses[i] !== statuses[i+1]) { flips++; lastIdx = i; }
-    }
-    if (flips === 0) continue;
-    const rate = (flips / 7 * 100).toFixed(1);
-    let flip = '—';
-    if (lastIdx >= 0) {
-      const from = statuses[lastIdx+1] === 'pass' ? 'Pass' : 'Miss';
-      const to   = statuses[lastIdx]   === 'pass' ? 'Pass' : 'Miss';
-      flip = `${from}→${to} · ${lastIdx+1} runs`;
-    }
-    flaky.push({ store, rate: parseFloat(rate), flip });
-  }
-  flaky.sort((a, b) => b.rate - a.rate);
-
-  document.getElementById('hs-flaky-body').innerHTML = flaky.length === 0
-    ? `<tr><td colspan="4" style="padding:12px 8px;color:#8b949e;font-size:11px">No flaky stores in the last 7 runs</td></tr>`
-    : flaky.map(({ store, rate, flip }) => `
-        <tr>
-          <td style="padding:8px;border-bottom:1px solid #21262d;font-weight:500">${store}</td>
-          <td style="padding:8px;border-bottom:1px solid #21262d">
-            <div style="font-size:11px;margin-bottom:2px">${rate}%</div>
-            <div style="height:4px;border-radius:2px;margin-top:3px;width:${Math.min(rate,100)}%;background:#f85149"></div>
-          </td>
-          <td style="padding:8px;border-bottom:1px solid #21262d;color:#8b949e;font-size:10px">${flip}</td>
-          <td style="padding:8px;border-bottom:1px solid #21262d">
-            <span style="display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:10px;font-size:10px;font-weight:500;background:#3a2a1a;color:#d29922">Watch</span>
-          </td>
-        </tr>`).join('');
 }
 
 // ── Init ──────────────────────────────────────────────────────────────────────
