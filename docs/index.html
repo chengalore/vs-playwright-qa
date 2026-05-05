@@ -416,6 +416,7 @@
     <button class="tnav-btn" onclick="showPanel('inpage')" id="btn-inpage">Inpage</button>
     <button class="tnav-btn" onclick="showPanel('cart')" id="btn-cart">Cart</button>
     <button class="tnav-btn" onclick="showPanel('cost')" id="btn-cost">Cost per client</button>
+    <button class="tnav-btn" onclick="showPanel('alerting')" id="btn-alerting">Alerting</button>
   </nav>
   <div class="sys-status healthy">● System healthy</div>
 </header>
@@ -862,6 +863,127 @@
     </div>
     <div class="panel-body">
       <div id="cost-chart-container"></div>
+    </div>
+  </div>
+
+  <!-- Alerting -->
+  <div class="panel" id="panel-alerting">
+    <div class="page-hdr">
+      <h1>Alerting</h1>
+      <p class="page-sub">Alert rules, channels, and digest schedule</p>
+    </div>
+    <div class="panel-body">
+
+      <!-- Notice banner -->
+      <div style="background:#3a1515;border:1px solid #f85149;border-radius:6px;padding:10px 14px;font-size:12px;color:#f85149;margin-bottom:24px">
+        Channel updated: all alerts post to <strong>#qa-automation-run</strong> (changed from #qa-automation-alerts).
+      </div>
+
+      <!-- KPI cards -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px">
+        <div class="kpi-card">
+          <div class="kpi-label">Immediate alerts</div>
+          <div class="kpi-val kpi-red">8</div>
+          <div class="kpi-sub">fire within 1 min</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Daily digest</div>
+          <div class="kpi-val kpi-white">09:00</div>
+          <div class="kpi-sub">GMT+9 after run</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Weekly summary</div>
+          <div class="kpi-val kpi-white">Mon</div>
+          <div class="kpi-sub">09:30 GMT+9</div>
+        </div>
+      </div>
+
+      <!-- Immediate alerts card -->
+      <div style="background:#161b22;border:1px solid #21262d;border-radius:8px;padding:18px 22px;margin-bottom:20px">
+        <div style="font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#f0f6fc;margin-bottom:14px">IMMEDIATE ALERTS — FIRE WITHIN 1 MIN</div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+
+          <div style="border-left:3px solid #f85149;padding:8px 11px;background:#0d1117;border-radius:0 4px 4px 0">
+            <div style="font-size:13px;font-weight:600;color:#f85149;margin-bottom:3px">Any test → FAILED</div>
+            <div style="font-size:12px;color:#8b949e">Store, URL, failure type, screenshot → #qa-automation-run</div>
+          </div>
+
+          <div style="border-left:3px solid #f85149;padding:8px 11px;background:#0d1117;border-radius:0 4px 4px 0">
+            <div style="font-size:13px;font-weight:600;color:#f85149;margin-bottom:3px">New store enters MISSING</div>
+            <div style="font-size:12px;color:#8b949e">Store name, last-passing timestamp → #qa-automation-run</div>
+          </div>
+
+          <div style="border-left:3px solid #f85149;padding:8px 11px;background:#0d1117;border-radius:0 4px 4px 0">
+            <div style="font-size:13px;font-weight:600;color:#f85149;margin-bottom:3px">Health Score drops below 75%</div>
+            <div style="font-size:12px;color:#8b949e">Score, delta, contributing factors → #qa-automation-run</div>
+          </div>
+
+          <div style="border-left:3px solid #d29922;padding:8px 11px;background:#0d1117;border-radius:0 4px 4px 0">
+            <div style="font-size:13px;font-weight:600;color:#d29922;margin-bottom:3px">p95 exec time &gt; 45 minutes</div>
+            <div style="font-size:12px;color:#8b949e">Top 3 slowest stores + durations → #qa-automation-run</div>
+          </div>
+
+          <div style="border-left:3px solid #d29922;padding:8px 11px;background:#0d1117;border-radius:0 4px 4px 0">
+            <div style="font-size:13px;font-weight:600;color:#d29922;margin-bottom:3px">Store crosses 10-miss threshold</div>
+            <div style="font-size:12px;color:#8b949e">Store, miss count, Jira link, owner → #qa-automation-run</div>
+          </div>
+
+          <div style="border-left:3px solid #3fb950;padding:8px 11px;background:#0d1117;border-radius:0 4px 4px 0">
+            <div style="font-size:13px;font-weight:600;color:#3fb950;margin-bottom:3px">Store recovers (Phase 3)</div>
+            <div style="font-size:12px;color:#8b949e">Store name, MTTR duration → #qa-automation-run</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Daily + Weekly side by side -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+
+        <div style="background:#161b22;border:1px solid #21262d;border-radius:8px;padding:18px 22px">
+          <div style="font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#f0f6fc;margin-bottom:14px">DAILY DIGEST — 09:00 GMT+9</div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;align-items:flex-start;gap:10px">
+              <span style="width:8px;height:8px;border-radius:50%;background:#3fb950;flex-shrink:0;margin-top:4px"></span>
+              <span style="font-size:13px;color:#c9d1d9">Full run summary + delta from yesterday</span>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:10px">
+              <span style="width:8px;height:8px;border-radius:50%;background:#e3760e;flex-shrink:0;margin-top:4px"></span>
+              <span style="font-size:13px;color:#c9d1d9">All MISSING stores with consecutive-miss count</span>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:10px">
+              <span style="width:8px;height:8px;border-radius:50%;background:#d29922;flex-shrink:0;margin-top:4px"></span>
+              <span style="font-size:13px;color:#c9d1d9">Flake rate for the run</span>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:10px">
+              <span style="width:8px;height:8px;border-radius:50%;background:#bc8cff;flex-shrink:0;margin-top:4px"></span>
+              <span style="font-size:13px;color:#c9d1d9">Total CI cost for the day</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="background:#161b22;border:1px solid #21262d;border-radius:8px;padding:18px 22px">
+          <div style="font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#f0f6fc;margin-bottom:14px">WEEKLY SUMMARY — MON 09:30 GMT+9</div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;align-items:flex-start;gap:10px">
+              <span style="width:8px;height:8px;border-radius:50%;background:#3fb950;flex-shrink:0;margin-top:4px"></span>
+              <span style="font-size:13px;color:#c9d1d9">7-day pass rate trend</span>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:10px">
+              <span style="width:8px;height:8px;border-radius:50%;background:#e3760e;flex-shrink:0;margin-top:4px"></span>
+              <span style="font-size:13px;color:#c9d1d9">Aging missing stores — 5+ consecutive</span>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:10px">
+              <span style="width:8px;height:8px;border-radius:50%;background:#d29922;flex-shrink:0;margin-top:4px"></span>
+              <span style="font-size:13px;color:#c9d1d9">Bot protection status until resolved</span>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:10px">
+              <span style="width:8px;height:8px;border-radius:50%;background:#f85149;flex-shrink:0;margin-top:4px"></span>
+              <span style="font-size:13px;color:#c9d1d9">Action items requiring human attention</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
     </div>
   </div>
 
