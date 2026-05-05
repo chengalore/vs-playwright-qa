@@ -765,6 +765,17 @@ function generateDashboard(history, compareImages, singleUrlHistory, metrics) {
     </div>
 
     <div class="panel-body">
+      <div id="trend-charts" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+        <div style="background:#161b22;border:1px solid #21262d;border-radius:8px;padding:16px 18px">
+          <div style="font-size:11px;font-weight:600;color:#8b949e;text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px">Pass Rate Trend — 14-Day Rolling · Widget Phase</div>
+          <div id="chart-passrate" style="height:200px"></div>
+        </div>
+        <div style="background:#161b22;border:1px solid #21262d;border-radius:8px;padding:16px 18px">
+          <div style="font-size:11px;font-weight:600;color:#8b949e;text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px">Flake Rate Trend — % Tests Flipping Between Runs</div>
+          <div id="chart-flakerate" style="height:200px"></div>
+        </div>
+      </div>
+      <div id="store-matrix-section" style="margin-bottom:20px"></div>
       <div id="flaky-stores-section" style="margin-top:32px"></div>
     </div>
     </div>
@@ -2207,10 +2218,121 @@ document.addEventListener('click', e => {
   }
 });
 
+// ── Trend charts ─────────────────────────────────────────────────────────────
+function makeSvgChart(values, labels, color, unit, dec) {
+  if (!values.length) return '<p style="color:#8b949e;font-size:12px;padding:20px">Not enough data</p>';
+  const W = 500, H = 200, ml = 42, mr = 12, mt = 12, mb = 32;
+  const cw = W - ml - mr, ch = H - mt - mb;
+  const minV = Math.min(...values), maxV = Math.max(...values);
+  const spread = maxV - minV || 1;
+  const yMin = parseFloat((minV - spread * 0.18).toFixed(dec));
+  const yMax = parseFloat((maxV + spread * 0.18).toFixed(dec));
+  const yRange = yMax - yMin;
+  const xS = i => ml + (i / Math.max(values.length - 1, 1)) * cw;
+  const yS = v => mt + ch - ((v - yMin) / yRange * ch);
+  const steps = 4;
+  let grid = '', xlbls = '';
+  for (let i = 0; i <= steps; i++) {
+    const v = yMin + (yRange / steps) * i;
+    const y = yS(v);
+    grid += \`<line x1="\${ml}" y1="\${y.toFixed(1)}" x2="\${W-mr}" y2="\${y.toFixed(1)}" stroke="#21262d" stroke-width="1"/>\`;
+    grid += \`<text x="\${ml-4}" y="\${(y+3.5).toFixed(1)}" text-anchor="end" fill="#8b949e" font-size="9">\${v.toFixed(dec)}\${unit}</text>\`;
+  }
+  const skip = labels.length > 10 ? 2 : 1;
+  labels.forEach((lbl, i) => {
+    if (i % skip !== 0 && i !== labels.length - 1) return;
+    xlbls += \`<text x="\${xS(i).toFixed(1)}" y="\${H-6}" text-anchor="middle" fill="#8b949e" font-size="9">\${lbl}</text>\`;
+  });
+  const pts = values.map((v, i) => \`\${xS(i).toFixed(1)},\${yS(v).toFixed(1)}\`).join(' ');
+  const areaPts = \`\${xS(0).toFixed(1)},\${(mt+ch).toFixed(1)} \${pts} \${xS(values.length-1).toFixed(1)},\${(mt+ch).toFixed(1)}\`;
+  const uid = 'g' + color.replace('#','');
+  const dots = values.map((v, i) =>
+    \`<circle cx="\${xS(i).toFixed(1)}" cy="\${yS(v).toFixed(1)}" r="3" fill="\${color}" stroke="#161b22" stroke-width="1.5"/>\`
+  ).join('');
+  return \`<svg viewBox="0 0 \${W} \${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%">
+    <defs><linearGradient id="\${uid}" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="\${color}" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="\${color}" stop-opacity="0"/>
+    </linearGradient></defs>
+    \${grid}
+    <polygon points="\${areaPts}" fill="url(#\${uid})"/>
+    <polyline points="\${pts}" fill="none" stroke="\${color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+    \${dots}\${xlbls}
+  </svg>\`;
+}
+
+function renderTrendCharts() {
+  const runs = HISTORY.filter(r => (r.phase || 'widget') === 'widget').slice(0, 14).reverse();
+  if (runs.length < 2) return;
+  const passRates = runs.map(r => {
+    const s = r.summary, eff = s.total - s.skipped;
+    return eff > 0 ? Math.round(s.passed / eff * 1000) / 10 : 0;
+  });
+  const dates = runs.map(r => {
+    const d = new Date(r.timestamp);
+    return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+  });
+  const flakeRates = [], flakeDates = [];
+  for (let i = 1; i < runs.length; i++) {
+    const cm = new Set((runs[i].widgetMissingStores || []).map(x => x.store));
+    const pm = new Set((runs[i-1].widgetMissingStores || []).map(x => x.store));
+    let flips = 0;
+    cm.forEach(s => { if (!pm.has(s)) flips++; });
+    pm.forEach(s => { if (!cm.has(s)) flips++; });
+    const tot = runs[i].summary.total || 1;
+    flakeRates.push(Math.round(flips / tot * 1000) / 10);
+    flakeDates.push(dates[i]);
+  }
+  document.getElementById('chart-passrate').innerHTML  = makeSvgChart(passRates, dates, '#3fb950', '%', 1);
+  document.getElementById('chart-flakerate').innerHTML = makeSvgChart(flakeRates, flakeDates, '#d29922', '%', 1);
+}
+
+function renderStoreMatrix() {
+  const latest = HISTORY.filter(r => (r.phase || 'widget') === 'widget')[0];
+  if (!latest) return;
+  const bots    = new Set(latest.botProtected || []);
+  const missing = new Set((latest.widgetMissingStores || []).map(x => x.store));
+  const ongoingMap = new Map((latest.ongoingMissing || []).map(o => [o.store, o.consecutiveRuns]));
+  const isNew = s => missing.has(s) && !ongoingMap.has(s);
+  const healthy = STORE_LIST.filter(s => !bots.has(s) && !missing.has(s));
+  const tiles = [];
+  healthy.slice(0, 8).forEach(s => tiles.push({ s, type: 'healthy', label: s }));
+  [...bots].forEach(s => tiles.push({ s, type: 'bot', label: s + ' · bot' }));
+  ongoingMap.forEach((runs, s) => tiles.push({ s, type: 'ongoing', label: \`\${s} · \${runs} runs\` }));
+  [...missing].filter(s => isNew(s)).forEach(s => tiles.push({ s, type: 'new', label: s + ' · new' }));
+  const styles = {
+    healthy: 'background:rgba(63,185,80,0.08);border:1px solid rgba(63,185,80,0.2);color:#3fb950',
+    bot:     'background:rgba(210,153,34,0.08);border:1px solid rgba(210,153,34,0.2);color:#d29922',
+    ongoing: 'background:rgba(216,90,48,0.08);border:1px solid rgba(216,90,48,0.3);color:#d85a30',
+    new:     'background:rgba(248,81,73,0.08);border:1px solid rgba(248,81,73,0.3);color:#f85149',
+  };
+  const legend = [
+    ['healthy', \`Healthy (\${healthy.length})\`],
+    ['bot',     \`Bot blocked (\${bots.size})\`],
+    ['ongoing', \`Missing ongoing (\${ongoingMap.size})\`],
+    ['new',     \`Missing new (\${[...missing].filter(s=>isNew(s)).length})\`],
+  ];
+  const grid = tiles.map(t =>
+    \`<div style="\${styles[t.type]};border-radius:6px;padding:8px 12px;font-size:12px;font-weight:500">\${t.label}</div>\`
+  ).join('');
+  const lgnd = legend.map(([type, lbl]) =>
+    \`<span style="display:inline-flex;align-items:center;gap:5px;font-size:11px;color:#8b949e">\` +
+    \`<span style="width:10px;height:10px;border-radius:2px;\${styles[type].split(';')[0]}"></span>\${lbl}</span>\`
+  ).join('');
+  document.getElementById('store-matrix-section').innerHTML =
+    \`<div style="background:#161b22;border:1px solid #21262d;border-radius:8px;padding:16px 18px">
+      <div style="font-size:11px;font-weight:600;color:#8b949e;text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px">Store Health Matrix</div>
+      <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:14px">\${grid}</div>
+      <div style="display:flex;flex-wrap:wrap;gap:14px">\${lgnd}</div>
+    </div>\`;
+}
+
 // ── Init ──────────────────────────────────────────────────────────────────────
 renderSummary(HISTORY[0] || null);
 renderTable();
 renderFlakyStores();
+renderTrendCharts();
+renderStoreMatrix();
 renderSingleUrl();
 // Restore saved PAT into both PAT fields
 const savedPat = localStorage.getItem('gh_pat');
