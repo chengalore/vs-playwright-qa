@@ -766,6 +766,7 @@ function generateDashboard(history, compareImages, singleUrlHistory, metrics) {
         </thead>
         <tbody id="runs-body"></tbody>
       </table>
+      <div id="flaky-stores-section" style="margin-top:32px"></div>
     </div>
   </div>
 
@@ -1821,9 +1822,103 @@ async function triggerSingleRun() {
   }
 }
 
+// ── Flaky Stores card ─────────────────────────────────────────────────────────
+function renderFlakyStores() {
+  const section = document.getElementById('flaky-stores-section');
+  if (!section) return;
+
+  const widgetRuns = HISTORY.filter(r => (r.phase || 'widget') === 'widget');
+
+  // Overall flake rate: mirrors KPI card computation (14d)
+  const runs14 = widgetRuns.slice(0, 14);
+  const allStores14 = new Set();
+  runs14.forEach(r => (r.widgetMissingStores || []).forEach(s => allStores14.add(s.store)));
+  const totalMonitored = widgetRuns[0]?.summary?.total || 0;
+  let flakeCount14 = 0;
+  for (const s of allStores14) {
+    const seenMiss = runs14.some(r => (r.widgetMissingStores || []).some(ws => ws.store === s));
+    const seenPass = runs14.some(r => !(r.widgetMissingStores || []).some(ws => ws.store === s));
+    if (seenMiss && seenPass) flakeCount14++;
+  }
+  const overallRate = totalMonitored > 0 ? Math.round(flakeCount14 / totalMonitored * 1000) / 10 : null;
+  const overallStr  = overallRate !== null ? overallRate + '%' : '—';
+  const aboveTarget = overallRate !== null && overallRate > 5;
+
+  // Per-store flake rate from last 7 widget runs
+  const runs7 = widgetRuns.slice(0, 7);
+  const storeSet = new Set();
+  runs7.forEach(r => (r.widgetMissingStores || []).forEach(s => storeSet.add(s.store)));
+
+  const results = [];
+  for (const store of storeSet) {
+    const statuses = runs7.map(r => (r.widgetMissingStores || []).some(s => s.store === store) ? 'miss' : 'pass');
+    let flips = 0, lastFlipIdx = -1;
+    for (let i = 0; i < statuses.length - 1; i++) {
+      if (statuses[i] !== statuses[i + 1]) { flips++; lastFlipIdx = i; }
+    }
+    if (flips === 0) continue;
+    const flakeRate = Math.round(flips / 7 * 1000) / 10;
+    let lastFlipDesc = '—';
+    if (lastFlipIdx >= 0) {
+      const from    = statuses[lastFlipIdx + 1] === 'pass' ? 'Pass' : 'Miss';
+      const to      = statuses[lastFlipIdx]     === 'pass' ? 'Pass' : 'Miss';
+      const runsAgo = lastFlipIdx + 1;
+      lastFlipDesc  = \`\${from}→\${to} · \${runsAgo} run\${runsAgo !== 1 ? 's' : ''} ago\`;
+    }
+    results.push({ store, flakeRate, lastFlipDesc });
+  }
+  results.sort((a, b) => b.flakeRate - a.flakeRate);
+
+  const barColor    = r => r > 15 ? '#f85149' : r >= 5 ? '#d29922' : '#3fb950';
+  const statusBadge = r => r > 10
+    ? \`<span style="display:inline-block;background:rgba(210,153,34,0.15);border:1px solid rgba(210,153,34,0.3);color:#d29922;font-size:11px;font-weight:600;padding:2px 8px;border-radius:10px">Watch</span>\`
+    : \`<span style="display:inline-block;background:rgba(63,185,80,0.15);border:1px solid rgba(63,185,80,0.3);color:#3fb950;font-size:11px;font-weight:600;padding:2px 8px;border-radius:10px">Stable</span>\`;
+
+  const tableBody = results.length === 0
+    ? \`<tr><td colspan="5" style="padding:16px 12px;color:#8b949e;font-size:13px">No flaky stores in the last 7 runs</td></tr>\`
+    : results.map(({ store, flakeRate, lastFlipDesc }) => {
+        const bc = barColor(flakeRate);
+        return \`<tr style="border-bottom:1px solid #161b22">
+          <td style="padding:10px 12px;font-weight:600;color:#f0f6fc">\${store}</td>
+          <td style="padding:10px 12px">
+            <div style="font-size:13px;color:#c9d1d9;margin-bottom:5px">\${flakeRate}%</div>
+            <div style="height:3px;background:#21262d;border-radius:2px;max-width:120px">
+              <div style="height:3px;background:\${bc};border-radius:2px;width:\${Math.min(flakeRate, 100)}%"></div>
+            </div>
+          </td>
+          <td style="padding:10px 12px;color:#8b949e;font-size:13px">\${lastFlipDesc}</td>
+          <td style="padding:10px 12px">\${statusBadge(flakeRate)}</td>
+          <td style="padding:10px 12px"></td>
+        </tr>\`;
+      }).join('');
+
+  section.innerHTML = \`
+    <div style="background:#161b22;border:1px solid #21262d;border-radius:8px;padding:18px 22px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+        <div style="font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#f0f6fc">
+          FLAKY STORES — \${overallStr} OVERALL
+        </div>
+        \${aboveTarget ? \`<span style="background:rgba(210,153,34,0.15);border:1px solid rgba(210,153,34,0.3);color:#d29922;font-size:11px;font-weight:600;padding:2px 8px;border-radius:10px">above 5% target</span>\` : ''}
+      </div>
+      <table style="width:100%;border-collapse:collapse;font-size:14px">
+        <thead>
+          <tr style="border-bottom:1px solid #21262d">
+            <th style="text-align:left;padding:8px 12px;font-size:12px;color:#8b949e;font-weight:500">Store</th>
+            <th style="text-align:left;padding:8px 12px;font-size:12px;color:#8b949e;font-weight:500">Flake rate (7d)</th>
+            <th style="text-align:left;padding:8px 12px;font-size:12px;color:#8b949e;font-weight:500">Last flip</th>
+            <th style="text-align:left;padding:8px 12px;font-size:12px;color:#8b949e;font-weight:500">Status</th>
+            <th style="text-align:left;padding:8px 12px;font-size:12px;color:#8b949e;font-weight:500">Action</th>
+          </tr>
+        </thead>
+        <tbody>\${tableBody}</tbody>
+      </table>
+    </div>\`;
+}
+
 // ── Init ──────────────────────────────────────────────────────────────────────
 renderSummary(HISTORY[0] || null);
 renderTable();
+renderFlakyStores();
 renderSingleUrl();
 // Restore saved PAT into both PAT fields
 const savedPat = localStorage.getItem('gh_pat');
