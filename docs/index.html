@@ -881,6 +881,28 @@ function renderSummary(run) {
   `;
 }
 
+// ── Store sparkline (7-day bar chart) ────────────────────────────────────────
+function storeSparkline(storeName) {
+  const runs = HISTORY.filter(r => (r.phase || 'widget') === 'widget').slice(0, 7).reverse();
+  const bars = [];
+  for (let i = 0; i < 7; i++) {
+    const r = runs[i];
+    let color, height;
+    if (!r) {
+      color = '#30363d'; height = '2.4px';
+    } else {
+      const missing = (r.widgetMissingStores || []).some(s => s.store === storeName);
+      const skipped = (r.skippedStores || []).some(s => (s.store || s) === storeName)
+                   || (r.botProtected || []).includes(storeName);
+      if (missing)       { color = '#f85149'; height = '2.4px'; }
+      else if (skipped)  { color = '#30363d'; height = '2.4px'; }
+      else               { color = '#3fb950'; height = '12px';  }
+    }
+    bars.push(`<span style="width:3px;height:${height};background:${color};display:inline-block;border-radius:1px"></span>`);
+  }
+  return `<span style="display:inline-flex;align-items:flex-end;gap:1px;margin-left:8px;vertical-align:middle">${bars.join('')}</span>`;
+}
+
 // ── Monitor: expandable detail row ────────────────────────────────────────────
 function renderDetail(run) {
   const issues = run.newIssues || [];
@@ -907,13 +929,13 @@ function renderDetail(run) {
 
   const newMissingHtml = newMissing.length === 0 ? '' :
     `<div class="detail-section"><h4>⚠️ Widget missing (new)</h4><ul>${newMissing.map(s => `<li>
-        ${s.url ? `<a class="store" href="${s.url}" target="_blank" rel="noopener">${s.store}</a>` : `<span class="store">${s.store}</span>`}
+        ${s.url ? `<a class="store" href="${s.url}" target="_blank" rel="noopener">${s.store}</a>` : `<span class="store">${s.store}</span>`}${storeSparkline(s.store)}
         ${browserTag(s.browsers)}
       </li>`).join('')}</ul></div>`;
 
   const recurringHtml = recurring.length === 0 ? '' :
     `<div class="detail-section"><h4>⚠️ Widget missing (ongoing)</h4><ul>${recurring.map(m => `<li>
-        ${m.url ? `<a class="store" href="${m.url}" target="_blank" rel="noopener">${m.store}</a>` : `<span class="store">${m.store}</span>`}
+        ${m.url ? `<a class="store" href="${m.url}" target="_blank" rel="noopener">${m.store}</a>` : `<span class="store">${m.store}</span>`}${storeSparkline(m.store)}
         ${browserTag(m.browsers)}
         <span class="meta">×${m.runs} runs</span>
       </li>`).join('')}</ul></div>`;
