@@ -677,12 +677,13 @@ function generateDashboard(history, compareImages, singleUrlHistory, metrics) {
     </div>
 
     <div class="subtab-bar">
-      <button class="subtab active">Running</button>
-      <button class="subtab">Bot Alert</button>
-      <button class="subtab">Missing Stores</button>
-      <button class="subtab">Alerts ${alertBadge}</button>
+      <button class="subtab active" onclick="showMonitorSubtab('overview', this)">Overview</button>
+      <button class="subtab" onclick="showMonitorSubtab('history', this)">History</button>
+      <button class="subtab" onclick="showMonitorSubtab('missing', this)">Missing Stores</button>
+      <button class="subtab" onclick="showMonitorSubtab('alerts', this)">Alerts \${alertBadge}</button>
     </div>
 
+    <div id="monitor-overview">
     <div class="kpi-section">
       <div class="kpi-row">
         <div class="kpi-card">
@@ -747,7 +748,13 @@ function generateDashboard(history, compareImages, singleUrlHistory, metrics) {
 
     <div class="panel-body">
       <div class="summary-card" id="summary-card"></div>
-      <div class="filters">
+      <div id="flaky-stores-section" style="margin-top:32px"></div>
+    </div>
+    </div>
+
+    <div id="monitor-history" style="display:none">
+    <div class="panel-body">
+      <div class="filters" id="history-filters">
         <button class="filter-btn active" data-phase="all">All phases</button>
         <button class="filter-btn" data-phase="widget">Widget</button>
         <button class="filter-btn" data-phase="api">API</button>
@@ -768,7 +775,7 @@ function generateDashboard(history, compareImages, singleUrlHistory, metrics) {
         </thead>
         <tbody id="runs-body"></tbody>
       </table>
-      <div id="flaky-stores-section" style="margin-top:32px"></div>
+    </div>
     </div>
   </div>
 
@@ -1238,6 +1245,14 @@ function generateDashboard(history, compareImages, singleUrlHistory, metrics) {
 const HISTORY = ${dataJson};
 const SINGLE_URL_HISTORY = ${singleUrlJson};
 const COMPARE_IMAGES = ${compareJson};
+
+// ── Monitor subtab switcher ──────────────────────────────────────────────────
+function showMonitorSubtab(name, btn) {
+  document.querySelectorAll('#panel-monitor .subtab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('monitor-overview').style.display = name === 'overview' ? '' : 'none';
+  document.getElementById('monitor-history').style.display  = name === 'history'  ? '' : 'none';
+}
 
 // ── Navigation ────────────────────────────────────────────────────────────────
 function showPanel(name) {
