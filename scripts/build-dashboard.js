@@ -765,7 +765,6 @@ function generateDashboard(history, compareImages, singleUrlHistory, metrics) {
     </div>
 
     <div class="panel-body">
-      <div class="summary-card" id="summary-card"></div>
       <div id="flaky-stores-section" style="margin-top:32px"></div>
     </div>
     </div>
