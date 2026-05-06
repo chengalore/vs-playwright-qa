@@ -253,6 +253,7 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
             fromFallback: fromFallback || false,
             browser: testInfo.project.name,
             durationMs: Date.now() - startTime,
+            widgetVisibleMs: Date.now() - startTime,
           });
           return;
         }
