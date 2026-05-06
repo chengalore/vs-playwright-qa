@@ -1529,8 +1529,8 @@ const CHECKLISTS = {
     { label: 'Try-it-on panel opened',        event: 'user-opened-panel-tryiton' },
     { label: 'Size selected',                 event: 'user-selected-size' },
     // Refresh
-    { label: 'Refresh: widget re-mounts',     event: 'inpage-mounted::integration' },
-    { label: 'Refresh: recommendation re-fires', event: 'user-got-size-recommendation::integration' },
+    { label: 'Refresh: widget re-mounts',     event: 'inpage-mounted::integration',              phase: 'refresh' },
+    { label: 'Refresh: recommendation re-fires', event: 'user-got-size-recommendation::integration', phase: 'refresh' },
     // Gift
     { label: 'Gift flow: recommendation',     event: 'user-opened-panel-rec::gift' },
   ],
@@ -1541,8 +1541,8 @@ const CHECKLISTS = {
     { label: 'Footwear silhouette created',   event: 'user-created-footwear-silhouette' },
     { label: 'Recommendation panel opened',   event: 'user-opened-panel-rec' },
     { label: 'Size selected',                 event: 'user-selected-size' },
-    { label: 'Refresh: widget re-mounts',     event: 'inpage-mounted' },
-    { label: 'Refresh: recommendation re-fires', event: 'user-selected-size::inpage' },
+    { label: 'Refresh: widget re-mounts',     event: 'inpage-mounted',         phase: 'refresh' },
+    { label: 'Refresh: recommendation re-fires', event: 'user-selected-size::inpage', phase: 'refresh' },
   ],
   bag: [
     { label: 'Widget present on page',        event: 'user-saw-widget-button' },
@@ -1557,14 +1557,14 @@ const CHECKLISTS = {
     { label: 'Measurements updated',          event: 'user-updated-body-measurements' },
     { label: 'Onboarding complete',           event: 'user-completed-onboarding' },
     { label: 'Recommendation shown',          event: 'user-selected-size-kids-rec' },
-    { label: 'Refresh: recommendation re-fires', event: 'user-selected-size-kids-rec::kids' },
+    { label: 'Refresh: recommendation re-fires', event: 'user-selected-size-kids-rec::kids', phase: 'refresh' },
   ],
   noVisor: [
     { label: 'Widget present on page',        event: 'user-saw-widget-button' },
     { label: 'Widget opens',                  event: 'user-opened-widget' },
     { label: 'Product seen',                  event: 'user-saw-product' },
     { label: 'Silhouette created',            event: 'user-created-silhouette' },
-    { label: 'Refresh: widget re-mounts',     event: 'inpage-mounted' },
+    { label: 'Refresh: widget re-mounts',     event: 'inpage-mounted',         phase: 'refresh' },
   ],
 };
 
@@ -1578,11 +1578,23 @@ function renderSingleDetail(entry) {
     typeof e === 'string' ? { event: e, phase: null } : e
   );
 
-  // Checklist matching — name-only or exact name::source
+  // Checklist matching — name-only or exact name::source, with optional phase filter
   const firedFull      = new Set(normEvents.map(e => e.event));
   const firedNamesOnly = new Set(normEvents.map(e => e.event.split('::')[0]));
-  const eventMatches   = (pattern) =>
-    pattern.includes('::') ? firedFull.has(pattern) : firedNamesOnly.has(pattern);
+  const phaseIndex = new Map();
+  for (const { event, phase } of normEvents) {
+    const ph = phase || '—';
+    if (!phaseIndex.has(ph)) phaseIndex.set(ph, { full: new Set(), names: new Set() });
+    phaseIndex.get(ph).full.add(event);
+    phaseIndex.get(ph).names.add(event.split('::')[0]);
+  }
+  const eventMatches = (pattern, phase) => {
+    if (phase) {
+      const s = phaseIndex.get(phase) || { full: new Set(), names: new Set() };
+      return pattern.includes('::') ? s.full.has(pattern) : s.names.has(pattern);
+    }
+    return pattern.includes('::') ? firedFull.has(pattern) : firedNamesOnly.has(pattern);
+  };
 
   // Group by phase, count within-phase duplicates
   // byPhase: Map<phase, Map<event, count>>
@@ -1620,7 +1632,7 @@ function renderSingleDetail(entry) {
   const checklistHtml = checklist.length === 0
     ? '<span style="color:#8b949e;font-size:13px">No checklist for this flow</span>'
     : \`<ul style="list-style:none;padding:0;margin:0">\${checklist.map(item => {
-        const passed = eventMatches(item.event);
+        const passed = eventMatches(item.event, item.phase);
         return \`<li style="font-size:12px;padding:3px 0;display:flex;align-items:center;gap:6px">
           <span style="color:\${passed ? '#3fb950' : '#484f58'}">\${passed ? '✅' : '⬜'}</span>
           <span style="color:\${passed ? '#c9d1d9' : '#484f58'}">\${item.label}</span>
