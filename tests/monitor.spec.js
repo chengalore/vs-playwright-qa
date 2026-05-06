@@ -473,6 +473,14 @@ async function triggerVirtusizeUI(page) {
       }
     });
 
+    // Click accordion trigger used by snidel/gelato_pique (enf platform)
+    // — widget only mounts after this element is clicked
+    const enfTrigger = document.querySelector("h3.enf-detail-link");
+    if (enfTrigger) {
+      enfTrigger.scrollIntoView({ block: "center" });
+      enfTrigger.click();
+    }
+
     // Click Virtusize button if present (button-trigger stores)
     const vsButton = document.querySelector("#virtusize-button");
     if (vsButton) {
