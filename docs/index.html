@@ -560,6 +560,10 @@
           <div id="chart-flakerate" style="height:200px"></div>
         </div>
       </div>
+      <div style="background:#161b22;border:1px solid #21262d;border-radius:8px;padding:16px 18px;margin-bottom:20px">
+        <div style="font-size:11px;font-weight:600;color:#8b949e;text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px">Widget Load Time — Avg vs P95 (14-Day)</div>
+        <div id="chart-widgettime" style="height:220px"></div>
+      </div>
       <div id="store-matrix-section" style="margin-bottom:20px"></div>
       <div id="flaky-stores-section" style="margin-top:32px"></div>
     </div>
@@ -2082,6 +2086,58 @@ function renderTrendCharts() {
   }
   document.getElementById('chart-passrate').innerHTML  = makeSvgChart(passRates, dates, '#3fb950', '%', 1);
   document.getElementById('chart-flakerate').innerHTML = makeSvgChart(flakeRates, flakeDates, '#d29922', '%', 1);
+
+  const timedRuns = runs.filter(r => typeof r.summary?.avgWidgetVisibleMs === 'number');
+  if (timedRuns.length >= 2) {
+    const avgS  = timedRuns.map(r => Math.round(r.summary.avgWidgetVisibleMs / 100) / 10);
+    const p95S  = timedRuns.map(r => typeof r.summary?.p95WidgetVisibleMs === 'number'
+      ? Math.round(r.summary.p95WidgetVisibleMs / 100) / 10
+      : Math.round(r.summary.avgWidgetVisibleMs / 100) / 10);
+    const wDates = timedRuns.map(r => new Date(r.timestamp).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }));
+    document.getElementById('chart-widgettime').innerHTML = makeDualLineSvgChart(avgS, p95S, wDates, '#58a6ff', '#e09432', 's', 1);
+  }
+}
+
+function makeDualLineSvgChart(vals1, vals2, labels, color1, color2, unit, dec) {
+  const allVals = [...vals1, ...vals2].filter(v => v != null);
+  if (allVals.length < 2) return '<p style="color:#8b949e;font-size:12px;padding:20px">Not enough data</p>';
+  const W = 900, H = 220, ml = 48, mr = 20, mt = 36, mb = 32;
+  const cw = W - ml - mr, ch = H - mt - mb;
+  const minV = Math.min(...allVals), maxV = Math.max(...allVals);
+  const spread = maxV - minV || 1;
+  const yMin = Math.max(0, minV - spread * 0.18);
+  const yMax = maxV + spread * 0.18;
+  const yRange = yMax - yMin || 1;
+  const n = vals1.length;
+  const xS = i => ml + (i / Math.max(n - 1, 1)) * cw;
+  const yS = v => mt + ch - ((v - yMin) / yRange * ch);
+  const steps = 4;
+  let grid = '', xlbls = '';
+  for (let i = 0; i <= steps; i++) {
+    const v = yMin + (yRange / steps) * i;
+    const y = yS(v);
+    grid += `<line x1="${ml}" y1="${y.toFixed(1)}" x2="${W-mr}" y2="${y.toFixed(1)}" stroke="#21262d" stroke-width="1"/>`;
+    grid += `<text x="${ml-4}" y="${(y+3.5).toFixed(1)}" text-anchor="end" fill="#8b949e" font-size="9">${v.toFixed(dec)}${unit}</text>`;
+  }
+  const skip = labels.length > 10 ? 2 : 1;
+  labels.forEach((lbl, i) => {
+    if (i % skip !== 0 && i !== labels.length - 1) return;
+    xlbls += `<text x="${xS(i).toFixed(1)}" y="${H-6}" text-anchor="middle" fill="#8b949e" font-size="9">${lbl}</text>`;
+  });
+  const pts1 = vals1.map((v, i) => `${xS(i).toFixed(1)},${yS(v).toFixed(1)}`).join(' ');
+  const dots1 = vals1.map((v, i) => `<circle cx="${xS(i).toFixed(1)}" cy="${yS(v).toFixed(1)}" r="3" fill="${color1}" stroke="#161b22" stroke-width="1.5"/>`).join('');
+  const pts2 = vals2.map((v, i) => `${xS(i).toFixed(1)},${yS(v).toFixed(1)}`).join(' ');
+  const dots2 = vals2.map((v, i) => `<circle cx="${xS(i).toFixed(1)}" cy="${yS(v).toFixed(1)}" r="3" fill="${color2}" stroke="#161b22" stroke-width="1.5"/>`).join('');
+  const lx = (W / 2) - 70;
+  const legend = `<rect x="${lx}" y="8" width="12" height="12" fill="none" stroke="${color1}" stroke-width="2"/><text x="${lx+16}" y="18" fill="#8b949e" font-size="10">avg</text><rect x="${lx+55}" y="8" width="12" height="12" fill="none" stroke="${color2}" stroke-width="2" stroke-dasharray="3,2"/><text x="${lx+71}" y="18" fill="#8b949e" font-size="10">p95</text>`;
+  return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%">
+    ${grid}
+    <polyline points="${pts1}" fill="none" stroke="${color1}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+    ${dots1}
+    <polyline points="${pts2}" fill="none" stroke="${color2}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="6,3"/>
+    ${dots2}
+    ${xlbls}${legend}
+  </svg>`;
 }
 
 function renderStoreMatrix() {

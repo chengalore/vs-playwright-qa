@@ -250,6 +250,8 @@ jobs:
 
           const widgetTimes = results.filter(r => r.status === 'passed' && typeof r.widgetVisibleMs === 'number').map(r => r.widgetVisibleMs);
           const avgWidgetVisibleMs = widgetTimes.length > 0 ? Math.round(widgetTimes.reduce((a, b) => a + b, 0) / widgetTimes.length) : null;
+          const sortedTimes = [...widgetTimes].sort((a, b) => a - b);
+          const p95WidgetVisibleMs = sortedTimes.length > 0 ? sortedTimes[Math.max(0, Math.ceil(sortedTimes.length * 0.95) - 1)] : null;
 
           const summary = {
             total: results.length,
@@ -259,6 +261,7 @@ jobs:
             failed: results.filter(r => r.status === 'failed').length,
             fallbackUsed: results.filter(r => r.fromFallback).length,
             avgWidgetVisibleMs,
+            p95WidgetVisibleMs,
           };
 
           const ongoingMissing = Object.entries(health)
