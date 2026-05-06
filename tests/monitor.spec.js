@@ -19,6 +19,7 @@ import { startPDCWatcher } from "../utils/pdcWatcher.js";
 import { loadFallback } from "../utils/fallbackStore.js";
 import { BOT_PROTECTED_ALIASES, BOT_PROTECTED_REASON } from "../config/botProtectedStores.js";
 import { MONITOR_STORES } from "../config/monitorStores.js";
+import { blockMarketingScripts } from "../utils/blockMarketingScripts.js";
 
 test.setTimeout(90000);
 
@@ -111,12 +112,34 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
     const startTime = Date.now();
     let widgetVisibleMs = null;
 
-    // Hide headless indicators — some stores (e.g. Brooks Brothers Japan) suppress
-    // third-party scripts like Virtusize when automation is detected.
+    // Hide headless indicators and continuously dismiss third-party overlays
+    // (Buyee, WorldShopping, KARTE) that can cover the page and prevent the
+    // VS widget's IntersectionObserver from firing.
     await page.addInitScript(() => {
       Object.defineProperty(navigator, "webdriver", { get: () => undefined });
       document.hasFocus = () => true;
+
+      let lastDismiss = 0;
+      const dismissOverlays = () => {
+        const now = Date.now();
+        if (now - lastDismiss < 300) return;
+        lastDismiss = now;
+        document.querySelectorAll("#buyee-bcFrame, #buyee-bcSection, .bcModalBase").forEach((el) => el.remove());
+        document.querySelectorAll(".bcIntro__closeBtn").forEach((el) => el.click());
+        const wsShadow = document.querySelector("#zigzag-worldshopping-checkout")?.shadowRoot;
+        if (wsShadow) {
+          wsShadow.querySelector("#zigzag-test__banner-close-popup")?.click();
+          wsShadow.querySelector("#zigzag-test__banner-hide")?.click();
+          const wsInner = wsShadow.querySelector("#zigzag-worldshopping-checkout");
+          if (wsInner) wsInner.style.display = "none";
+        }
+        document.querySelectorAll(".karte-close").forEach((el) => el.click());
+      };
+      const observer = new MutationObserver(dismissOverlays);
+      observer.observe(document.documentElement, { childList: true, subtree: true, attributes: true });
     });
+
+    await blockMarketingScripts(page);
 
     try {
       try {
