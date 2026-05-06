@@ -109,6 +109,7 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
 
   test(`[${storeAlias}] ${phase}`, async ({ page }, testInfo) => {
     const startTime = Date.now();
+    let widgetVisibleMs = null;
 
     // Hide headless indicators — some stores (e.g. Brooks Brothers Japan) suppress
     // third-party scripts like Virtusize when automation is detected.
@@ -353,6 +354,8 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
           });
           return;
         }
+
+        widgetVisibleMs = Date.now() - startTime;
       }
 
       if (phase === "api") {
@@ -378,6 +381,7 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
         fromFallback: fromFallback || false,
         browser: testInfo.project.name,
         durationMs: Date.now() - startTime,
+        widgetVisibleMs,
       });
     } catch (error) {
       const isWidgetMissing =

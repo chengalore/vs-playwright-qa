@@ -161,6 +161,7 @@ function computeMetrics(history) {
     skippedCount: s.skipped,
     alertCount: newMissingCount + (s.failed || 0),
     lastUpdated: latest.timestamp,
+    avgWidgetVisibleMs: s.avgWidgetVisibleMs ?? null,
   };
 }
 
@@ -729,10 +730,9 @@ function generateDashboard(history, compareImages, singleUrlHistory, metrics) {
           ${flkDeltaHtml}
         </div>
         <div class="kpi-card">
-          <div class="kpi-label">Avg Exec Time<span class="kpi-info" data-info="Total CI runner time per full monitor run. Not tracked yet — will help identify slow stores and optimise run order." onclick="showKpiInfo(this)">!</span></div>
-          <div class="kpi-val kpi-white">—</div>
-          <div class="kpi-sub kpi-dash">Not tracked yet</div>
-          <div style="font-size:10px;color:#484f58;margin-top:4px">—</div>
+          <div class="kpi-label">Avg Widget Time<span class="kpi-info" data-info="Average time from page navigation to widget first detected in the DOM, across all passing stores in the latest run." onclick="showKpiInfo(this)">!</span></div>
+          <div class="kpi-val kpi-blue">${metrics.avgWidgetVisibleMs !== null ? (metrics.avgWidgetVisibleMs / 1000).toFixed(1) + 's' : '—'}</div>
+          <div class="kpi-sub">${metrics.avgWidgetVisibleMs !== null ? 'page load → widget visible' : 'Not tracked yet'}</div>
         </div>
       </div>
       <div class="kpi-row">

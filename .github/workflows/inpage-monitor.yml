@@ -248,6 +248,9 @@ jobs:
           const HEALTH_FILE = 'data/storeHealth.json';
           const health = fs.existsSync(HEALTH_FILE) ? JSON.parse(fs.readFileSync(HEALTH_FILE, 'utf8')) : {};
 
+          const widgetTimes = results.filter(r => r.status === 'passed' && typeof r.widgetVisibleMs === 'number').map(r => r.widgetVisibleMs);
+          const avgWidgetVisibleMs = widgetTimes.length > 0 ? Math.round(widgetTimes.reduce((a, b) => a + b, 0) / widgetTimes.length) : null;
+
           const summary = {
             total: results.length,
             passed: results.filter(r => r.status === 'passed').length,
@@ -255,6 +258,7 @@ jobs:
             skipped: results.filter(r => r.status === 'skipped' || r.status === 'bot_protected').length,
             failed: results.filter(r => r.status === 'failed').length,
             fallbackUsed: results.filter(r => r.fromFallback).length,
+            avgWidgetVisibleMs,
           };
 
           const ongoingMissing = Object.entries(health)

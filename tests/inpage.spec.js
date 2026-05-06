@@ -176,8 +176,12 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
 
   let flow = null;
 
+  let widgetVisibleMs = null;
+  let flowDoneMs = null;
+
   try {
     console.log("Navigating to:", url);
+    const t_nav = Date.now();
     await page.goto(url);
     console.log("Page loaded");
 
@@ -409,6 +413,7 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
       },
       { timeout: 30000 },
     );
+    widgetVisibleMs = Date.now() - t_nav;
 
     flow = detectFlow(pdc);
     console.log("Flow:", flow);
@@ -473,6 +478,7 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
     if (flow === "noVisor") {
       isNewUser = await runNoVisorFlow(page, bodyAPI, onboardingOpts);
     }
+    flowDoneMs = Date.now() - t_nav;
 
     // onboarding phase: onboarding complete — skip full validation
     if (phase === "onboarding") {
@@ -578,7 +584,7 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
     // Refresh Validation
     // -----------------------------
 
-    await page.waitForTimeout(3000);
+    await page.waitForTimeout(5000);
 
     // REFRESH
     await validateRefresh(page, eventWatcher, recommendationAPI, flow);
@@ -626,6 +632,8 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
       browser: testInfo.project.name,
       events: eventWatcher.getAllEvents(),
       durationMs: Date.now() - startTime,
+      widgetVisibleMs,
+      flowDoneMs,
       ...(inpageMountCount > 1 && { doubleMount: inpageMountCount }),
     });
   } catch (error) {
@@ -638,6 +646,8 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
       missingEvents: error.missingEvents || [],
       events: eventWatcher.getAllEvents(),
       durationMs: Date.now() - startTime,
+      widgetVisibleMs,
+      flowDoneMs,
     });
 
     throw error;
