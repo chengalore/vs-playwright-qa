@@ -1,14 +1,14 @@
 {
-  "timestamp": "2026-05-06T04:43:24.991Z",
-  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/25416758474",
+  "timestamp": "2026-05-06T05:02:20.819Z",
+  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/25417284435",
   "summary": {
     "total": 86,
     "passed": 78,
-    "widgetMissing": 4,
-    "skipped": 4,
+    "widgetMissing": 5,
+    "skipped": 3,
     "failed": 0,
     "fallbackUsed": 78,
-    "avgWidgetVisibleMs": null
+    "avgWidgetVisibleMs": 28304
   },
   "newIssues": [],
   "widgetMissingStores": [
@@ -22,6 +22,13 @@
     {
       "store": "gelato_pique",
       "url": "https://gelatopique.com/Form/Product/ProductDetail.aspx?shop=0&pid=PWCO261297&vid=&bid=PIQ01&cid=&_type=&cat=WOM003001&swrd=",
+      "browsers": [
+        "chrome"
+      ]
+    },
+    {
+      "store": "hankyu_hanshin",
+      "url": "https://web.hh-online.jp/fashion/goods/index.html?ggcd=508767628",
       "browsers": [
         "chrome"
       ]
@@ -44,19 +51,19 @@
   "ongoingMissing": [
     {
       "store": "reebok_korea",
-      "consecutiveRuns": 28
+      "consecutiveRuns": 29
     },
     {
       "store": "snidel",
-      "consecutiveRuns": 28
+      "consecutiveRuns": 29
     },
     {
       "store": "gelato_pique",
-      "consecutiveRuns": 28
+      "consecutiveRuns": 29
     },
     {
       "store": "hankyu_mens",
-      "consecutiveRuns": 2
+      "consecutiveRuns": 3
     }
   ],
   "botProtected": [
@@ -64,10 +71,5 @@
     "ralph_lauren",
     "asics_japan"
   ],
-  "skippedStores": [
-    {
-      "store": "unitedarrows_global",
-      "reason": "navigation_error"
-    }
-  ]
+  "skippedStores": []
 }
