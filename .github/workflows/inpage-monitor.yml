@@ -49,6 +49,7 @@ jobs:
         run: |
           node --input-type=module <<'SCRIPT'
           import { MONITOR_STORES } from './config/monitorStores.js';
+          import { BOT_PROTECTED_ALIASES } from './config/botProtectedStores.js';
           import { fetchRandomProduct } from './utils/fetchRandomProduct.js';
           import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 
@@ -70,6 +71,10 @@ jobs:
           const storeEntries = Object.entries(MONITOR_STORES)
             .filter(([alias, storeId]) => {
               if (storeIdFilter && storeId !== storeIdFilter) return false;
+              if (BOT_PROTECTED_ALIASES.has(alias)) {
+                console.log(`[${alias}] Bot-protected — skipping`);
+                return false;
+              }
               if (health[alias]?.autoBlacklisted) {
                 console.log(`[${alias}] Auto-blacklisted (${health[alias].consecutiveFailures} consecutive failures) — skipping`);
                 return false;
@@ -218,6 +223,7 @@ jobs:
         run: |
           node --input-type=module <<'EOF'
           import fs from 'fs';
+          import { BOT_PROTECTED_ALIASES } from './config/botProtectedStores.js';
 
           if (!fs.existsSync('monitor-output.log')) process.exit(0);
 
@@ -276,7 +282,7 @@ jobs:
             newIssues: results.filter(r => r.status === 'failed').map(r => ({ store: r.storeAlias, url: r.url, browsers: r.browsers, error: r.error || r.reason })),
             widgetMissingStores: results.filter(r => r.status === 'widget_missing').map(r => ({ store: r.storeAlias, url: r.url, browsers: r.browsers })),
             ongoingMissing,
-            botProtected: results.filter(r => r.status === 'bot_protected').map(r => r.storeAlias),
+            botProtected: [...BOT_PROTECTED_ALIASES],
             skippedStores: results.filter(r => r.status === 'skipped').map(r => ({ store: r.storeAlias, reason: r.reason })),
           };
 
