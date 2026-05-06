@@ -661,6 +661,18 @@ function generateDashboard(history, compareImages, singleUrlHistory, metrics) {
 
     .empty-state { color: #8b949e; font-size: 14px; padding: 48px 0; text-align: center; }
 
+    /* Single URL test card */
+    .phase-pill { padding:3px 11px; border-radius:20px; font-size:12px; border:1px solid #30363d; background:transparent; color:#8b949e; cursor:pointer; transition:border-color .15s,color .15s,background .15s; white-space:nowrap; }
+    .phase-pill:hover { border-color:#8b949e; color:#c9d1d9; }
+    .phase-pill-active { border-color:#58a6ff; background:rgba(88,166,255,.08); color:#58a6ff; font-weight:500; }
+    .sdr-btn { padding:7px 10px; background:#0d1117; border:1px solid #30363d; border-radius:6px; color:#8b949e; cursor:pointer; display:flex; align-items:center; transition:border-color .15s,color .15s,background .15s; }
+    .sdr-btn:hover, .sdr-btn-active { border-color:#58a6ff; color:#58a6ff; background:rgba(88,166,255,.06); }
+    .vs-toggle-input { position:absolute; opacity:0; width:0; height:0; }
+    .vs-toggle-track { display:block; width:34px; height:18px; background:#30363d; border-radius:18px; transition:background .2s; cursor:pointer; }
+    .vs-toggle-input:checked ~ .vs-toggle-track { background:#238636; }
+    .vs-toggle-thumb { display:block; width:14px; height:14px; background:#8b949e; border-radius:50%; margin:2px; transition:transform .2s,background .2s; }
+    .vs-toggle-input:checked ~ .vs-toggle-track .vs-toggle-thumb { transform:translateX(16px); background:#fff; }
+
     @media (max-width: 640px) {
       #topbar .topnav { display: none; }
       .kpi-section, .subtab-bar, .page-hdr { padding-left: 16px; padding-right: 16px; }
@@ -819,210 +831,224 @@ function generateDashboard(history, compareImages, singleUrlHistory, metrics) {
       <p class="page-sub">Per-URL tests run across chrome, firefox, and webkit</p>
     </div>
     <div class="panel-body">
-    <div style="background:#161b22;border:1px solid #21262d;border-radius:8px;padding:16px;margin-bottom:24px">
-      <div style="font-size:13px;font-weight:600;color:#c9d1d9;margin-bottom:12px">Run a new test</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
-        <div>
-          <label style="font-size:12px;color:#8b949e;display:block;margin-bottom:4px">GitHub PAT (workflow scope) — saved in browser only</label>
-          <input id="single-pat" type="password" placeholder="ghp_xxxxxxxxxxxx"
-            style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:6px 10px;font-size:13px"
-            oninput="localStorage.setItem('gh_pat', this.value); document.getElementById('gh-pat').value = this.value">
-        </div>
-        <div>
-          <label style="font-size:12px;color:#8b949e;display:block;margin-bottom:4px">Phase</label>
-          <select id="single-phase"
-            style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:6px 10px;font-size:13px;cursor:pointer">
-            <option value="full">full — complete flow</option>
-            <option value="widget">widget — widget present &amp; opens</option>
-            <option value="api">api — PDC integration check</option>
-            <option value="onboarding">onboarding — onboarding flow only</option>
-            <option value="compare">compare — compare view screenshot</option>
-            <option value="events">events — events fired check</option>
-          </select>
-        </div>
-      </div>
+    <div style="background:#161b22;border:1px solid #21262d;border-radius:10px;padding:16px;margin-bottom:24px">
+
+      <!-- PAT -->
       <div style="margin-bottom:12px">
-        <label style="font-size:12px;color:#8b949e;display:block;margin-bottom:4px">Product page URL</label>
+        <label style="font-size:11px;color:#484f58;text-transform:uppercase;letter-spacing:.05em;font-weight:600;display:block;margin-bottom:5px">GitHub PAT — workflow scope, saved in browser only</label>
+        <input id="single-pat" type="password" placeholder="ghp_xxxxxxxxxxxx"
+          style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:7px 10px;font-size:13px"
+          oninput="localStorage.setItem('gh_pat', this.value); document.getElementById('gh-pat').value = this.value">
+      </div>
+
+      <!-- URL + sliders + run -->
+      <div style="display:flex;gap:6px;align-items:center">
         <input id="single-url-input" type="url" placeholder="https://example.com/product"
-          style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:6px 10px;font-size:13px">
-      </div>
-      <details style="margin-bottom:8px">
-        <summary style="font-size:12px;color:#8b949e;cursor:pointer;user-select:none">Onboarding body (apparel &amp; noVisor only)</summary>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-top:8px">
-          <div>
-            <label style="font-size:11px;color:#8b949e;display:block;margin-bottom:3px">Gender</label>
-            <select id="single-ob-gender"
-              style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:5px 8px;font-size:12px;cursor:pointer">
-              <option value="0">Female (0)</option>
-              <option value="1">Male (1)</option>
-            </select>
-          </div>
-          <div>
-            <label style="font-size:11px;color:#8b949e;display:block;margin-bottom:3px">Age (years)</label>
-            <input id="single-ob-age" type="number" value="35" min="10" max="99"
-              style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:5px 8px;font-size:12px">
-          </div>
-          <div>
-            <label style="font-size:11px;color:#8b949e;display:block;margin-bottom:3px">Height (cm)</label>
-            <input id="single-ob-height" type="number" value="161" min="100" max="220"
-              style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:5px 8px;font-size:12px">
-          </div>
-          <div>
-            <label style="font-size:11px;color:#8b949e;display:block;margin-bottom:3px">Weight (kg)</label>
-            <input id="single-ob-weight" type="number" value="54" min="30" max="200"
-              style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:5px 8px;font-size:12px">
-          </div>
-        </div>
-      </details>
-      <details style="margin-bottom:8px">
-        <summary style="font-size:12px;color:#8b949e;cursor:pointer;user-select:none">Gift flow body (apparel only)</summary>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-top:8px">
-          <div>
-            <label style="font-size:11px;color:#8b949e;display:block;margin-bottom:3px">Gender</label>
-            <select id="single-gift-gender"
-              style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:5px 8px;font-size:12px;cursor:pointer">
-              <option value="0">Female (0)</option>
-              <option value="1">Male (1)</option>
-            </select>
-          </div>
-          <div>
-            <label style="font-size:11px;color:#8b949e;display:block;margin-bottom:3px">Age range</label>
-            <select id="single-gift-age"
-              style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:5px 8px;font-size:12px;cursor:pointer">
-              <option value="0">16-19</option>
-              <option value="1">20-25</option>
-              <option value="2">26-29</option>
-              <option value="3" selected>30-39</option>
-              <option value="4">40-49</option>
-              <option value="5">50-59</option>
-              <option value="6">&gt;60</option>
-            </select>
-          </div>
-          <div>
-            <label style="font-size:11px;color:#8b949e;display:block;margin-bottom:3px">Height (cm)</label>
-            <select id="single-gift-height"
-              style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:5px 8px;font-size:12px;cursor:pointer">
-              <option value="0">145-149</option>
-              <option value="1">150-154</option>
-              <option value="2">155-159</option>
-              <option value="3" selected>160-164</option>
-              <option value="4">165-169</option>
-              <option value="5">170-174</option>
-              <option value="6">175-179</option>
-              <option value="7">180-184</option>
-              <option value="8">185-189</option>
-              <option value="9">190-194</option>
-              <option value="10">195+</option>
-            </select>
-          </div>
-          <div>
-            <label style="font-size:11px;color:#8b949e;display:block;margin-bottom:3px">Body type (weight)</label>
-            <select id="single-gift-bodytype"
-              style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:5px 8px;font-size:12px;cursor:pointer">
-              <option value="0">&lt;52 kg</option>
-              <option value="1" selected>52 - 63 kg</option>
-              <option value="2">63 - 74 kg</option>
-              <option value="3">74 - 84 kg</option>
-              <option value="4">85 - 98 kg</option>
-              <option value="5">&gt;98 kg</option>
-            </select>
-          </div>
-        </div>
-      </details>
-      <details style="margin-bottom:8px">
-        <summary style="font-size:12px;color:#8b949e;cursor:pointer;user-select:none">Footwear onboarding (footwear flow only)</summary>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px">
-          <div>
-            <label style="font-size:11px;color:#8b949e;display:block;margin-bottom:3px">Gender</label>
-            <select id="single-fw-gender"
-              style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:5px 8px;font-size:12px;cursor:pointer">
-              <option value="0">Female (0)</option>
-              <option value="1">Male (1)</option>
-            </select>
-          </div>
-          <div>
-            <label style="font-size:11px;color:#8b949e;display:block;margin-bottom:3px">Brand</label>
-            <select id="single-fw-brand"
-              style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:5px 8px;font-size:12px;cursor:pointer">
-              <option value="0">Under Armour</option>
-              <option value="1" selected>Adidas</option>
-              <option value="2">Asics</option>
-              <option value="3">Converse</option>
-              <option value="4">New Balance</option>
-              <option value="5">Nike</option>
-              <option value="6">Puma</option>
-              <option value="7">Reebok</option>
-              <option value="8">Vans</option>
-              <option value="9">I don't know</option>
-            </select>
-          </div>
-          <div>
-            <label style="font-size:11px;color:#8b949e;display:block;margin-bottom:3px">Shoe size</label>
-            <select id="single-fw-size"
-              style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:5px 8px;font-size:12px;cursor:pointer">
-              ${Array.from({length: 37}, (_, i) => {
-                const cm = (17 + i * 0.5).toFixed(1).replace('.0', '');
-                return `<option value="${i}"${i === 17 ? ' selected' : ''}>${cm} cm</option>`;
-              }).join('')}
-            </select>
-          </div>
-        </div>
-      </details>
-      <details style="margin-bottom:12px">
-        <summary style="font-size:12px;color:#8b949e;cursor:pointer;user-select:none">Kids onboarding (kids flow only)</summary>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-top:8px">
-          <div>
-            <label style="font-size:11px;color:#8b949e;display:block;margin-bottom:3px">Gender</label>
-            <select id="single-kids-gender"
-              style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:5px 8px;font-size:12px;cursor:pointer">
-              <option value="0">Girl (0)</option>
-              <option value="1">Boy (1)</option>
-            </select>
-          </div>
-          <div>
-            <label style="font-size:11px;color:#8b949e;display:block;margin-bottom:3px">Age</label>
-            <select id="single-kids-age"
-              style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:5px 8px;font-size:12px;cursor:pointer">
-              ${Array.from({length: 16}, (_, i) => `<option value="${i}"${i === 5 ? ' selected' : ''}>${i + 3} yr</option>`).join('')}
-            </select>
-          </div>
-          <div>
-            <label style="font-size:11px;color:#8b949e;display:block;margin-bottom:3px">Height (cm)</label>
-            <input id="single-kids-height" type="number" value="120" min="60" max="180"
-              style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:5px 8px;font-size:12px">
-          </div>
-          <div>
-            <label style="font-size:11px;color:#8b949e;display:block;margin-bottom:3px">Weight (kg)</label>
-            <input id="single-kids-weight" type="number" value="25" min="10" max="100"
-              style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:5px 8px;font-size:12px">
-          </div>
-        </div>
-      </details>
-      <div style="margin-bottom:12px">
-        <label style="font-size:12px;color:#8b949e;display:block;margin-bottom:6px">Browsers</label>
-        <div style="display:flex;gap:16px;align-items:center">
-          <label style="display:flex;align-items:center;gap:5px;font-size:13px;color:#c9d1d9;cursor:default">
-            <input type="checkbox" id="browser-chrome" checked disabled
-              style="accent-color:#3fb950;width:14px;height:14px">
-            Chrome
-          </label>
-          <label style="display:flex;align-items:center;gap:5px;font-size:13px;color:#c9d1d9;cursor:pointer">
-            <input type="checkbox" id="browser-firefox"
-              style="accent-color:#3fb950;width:14px;height:14px">
-            Firefox
-          </label>
-          <label style="display:flex;align-items:center;gap:5px;font-size:13px;color:#c9d1d9;cursor:pointer">
-            <input type="checkbox" id="browser-webkit"
-              style="accent-color:#3fb950;width:14px;height:14px">
-            WebKit
-          </label>
-        </div>
-      </div>
-      <div style="display:flex;align-items:center;gap:12px">
-        <button onclick="triggerSingleRun()"
-          style="padding:7px 18px;background:#238636;color:#fff;border:none;border-radius:6px;font-size:13px;cursor:pointer;font-weight:500">
-          Run on GitHub Actions ▶
+          style="flex:1;min-width:0;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:7px 10px;font-size:13px">
+        <button class="sdr-btn" id="single-drawer-btn" title="Test options"
+          onclick="(function(btn){var d=document.getElementById('single-drawer');var open=d.style.display!=='none';d.style.display=open?'none':'block';btn.classList.toggle('sdr-btn-active',!open)})(this)">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" style="display:block">
+            <path d="M11.5 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM9.05 3a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0V3h9.05zM4.5 7a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM2.05 8a2.5 2.5 0 0 1 4.9 0H16v1H6.95a2.5 2.5 0 0 1-4.9 0H0V8h2.05zm9.45 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm-2.45 1a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0v-1h9.05z"/>
+          </svg>
         </button>
+        <button onclick="triggerSingleRun()"
+          style="padding:7px 14px;background:#238636;color:#fff;border:none;border-radius:6px;font-size:13px;cursor:pointer;font-weight:500;white-space:nowrap;flex-shrink:0">
+          Run test ▶
+        </button>
+      </div>
+
+      <!-- Inline drawer -->
+      <div id="single-drawer" style="display:none;margin-top:10px;border:1px solid #30363d;border-radius:8px;overflow:hidden">
+
+        <!-- Test phase -->
+        <div style="padding:14px 16px;border-bottom:1px solid #21262d">
+          <div style="font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#484f58;font-weight:600;margin-bottom:10px">Test phase</div>
+          <select id="single-phase" style="display:none">
+            <option value="full" selected>full</option>
+            <option value="widget">widget</option>
+            <option value="api">api</option>
+            <option value="onboarding">onboarding</option>
+            <option value="compare">compare</option>
+            <option value="events">events</option>
+          </select>
+          <div style="display:flex;flex-wrap:wrap;gap:6px">
+            <button class="phase-pill phase-pill-active" onclick="this.parentNode.querySelectorAll('.phase-pill').forEach(b=>b.classList.remove('phase-pill-active'));this.classList.add('phase-pill-active');document.getElementById('single-phase').value='full'">full</button>
+            <button class="phase-pill" onclick="this.parentNode.querySelectorAll('.phase-pill').forEach(b=>b.classList.remove('phase-pill-active'));this.classList.add('phase-pill-active');document.getElementById('single-phase').value='widget'">widget</button>
+            <button class="phase-pill" onclick="this.parentNode.querySelectorAll('.phase-pill').forEach(b=>b.classList.remove('phase-pill-active'));this.classList.add('phase-pill-active');document.getElementById('single-phase').value='api'">api</button>
+            <button class="phase-pill" onclick="this.parentNode.querySelectorAll('.phase-pill').forEach(b=>b.classList.remove('phase-pill-active'));this.classList.add('phase-pill-active');document.getElementById('single-phase').value='onboarding'">onboarding</button>
+            <button class="phase-pill" onclick="this.parentNode.querySelectorAll('.phase-pill').forEach(b=>b.classList.remove('phase-pill-active'));this.classList.add('phase-pill-active');document.getElementById('single-phase').value='compare'">compare</button>
+            <button class="phase-pill" onclick="this.parentNode.querySelectorAll('.phase-pill').forEach(b=>b.classList.remove('phase-pill-active'));this.classList.add('phase-pill-active');document.getElementById('single-phase').value='events'">events</button>
+          </div>
+        </div>
+
+        <!-- Browsers -->
+        <div style="padding:14px 16px;border-bottom:1px solid #21262d">
+          <div style="font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#484f58;font-weight:600;margin-bottom:10px">Browsers</div>
+          <div style="display:flex;gap:16px;flex-wrap:wrap">
+            <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:#c9d1d9;cursor:default;user-select:none">
+              <input type="checkbox" id="browser-chrome" checked disabled style="accent-color:#3fb950;width:14px;height:14px">Chrome
+            </label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:#c9d1d9;cursor:pointer;user-select:none">
+              <input type="checkbox" id="browser-firefox" style="accent-color:#3fb950;width:14px;height:14px">Firefox
+            </label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:#c9d1d9;cursor:pointer;user-select:none">
+              <input type="checkbox" id="browser-webkit" style="accent-color:#3fb950;width:14px;height:14px">WebKit
+            </label>
+          </div>
+        </div>
+
+        <!-- Body data -->
+        <div style="padding:14px 16px">
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <div style="font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#484f58;font-weight:600">Body data</div>
+            <label style="display:flex;align-items:center;gap:7px;cursor:pointer;user-select:none">
+              <span style="font-size:11px;color:#484f58">Show fields</span>
+              <span style="position:relative;display:inline-block">
+                <input type="checkbox" id="single-bodydata-toggle" class="vs-toggle-input"
+                  onchange="document.getElementById('single-bodydata-fields').style.display=this.checked?'block':'none'">
+                <span class="vs-toggle-track"><span class="vs-toggle-thumb"></span></span>
+              </span>
+            </label>
+          </div>
+          <div id="single-bodydata-fields" style="display:none;margin-top:14px">
+
+            <!-- Onboarding -->
+            <div style="margin-bottom:14px">
+              <div style="font-size:11px;color:#8b949e;margin-bottom:7px">Onboarding — apparel &amp; noVisor</div>
+              <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+                <div>
+                  <label style="font-size:11px;color:#8b949e;display:block;margin-bottom:3px">Gender</label>
+                  <select id="single-ob-gender" style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:5px 8px;font-size:12px;cursor:pointer">
+                    <option value="0">Female (0)</option>
+                    <option value="1">Male (1)</option>
+                  </select>
+                </div>
+                <div>
+                  <label style="font-size:11px;color:#8b949e;display:block;margin-bottom:3px">Age (years)</label>
+                  <input id="single-ob-age" type="number" value="35" min="10" max="99"
+                    style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:5px 8px;font-size:12px">
+                </div>
+                <div>
+                  <label style="font-size:11px;color:#8b949e;display:block;margin-bottom:3px">Height (cm)</label>
+                  <input id="single-ob-height" type="number" value="161" min="100" max="220"
+                    style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:5px 8px;font-size:12px">
+                </div>
+                <div>
+                  <label style="font-size:11px;color:#8b949e;display:block;margin-bottom:3px">Weight (kg)</label>
+                  <input id="single-ob-weight" type="number" value="54" min="30" max="200"
+                    style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:5px 8px;font-size:12px">
+                </div>
+              </div>
+            </div>
+
+            <!-- Gift -->
+            <div style="margin-bottom:14px">
+              <div style="font-size:11px;color:#8b949e;margin-bottom:7px">Gift recipient — apparel only</div>
+              <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+                <div>
+                  <label style="font-size:11px;color:#8b949e;display:block;margin-bottom:3px">Gender</label>
+                  <select id="single-gift-gender" style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:5px 8px;font-size:12px;cursor:pointer">
+                    <option value="0">Female (0)</option>
+                    <option value="1">Male (1)</option>
+                  </select>
+                </div>
+                <div>
+                  <label style="font-size:11px;color:#8b949e;display:block;margin-bottom:3px">Age range</label>
+                  <select id="single-gift-age" style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:5px 8px;font-size:12px;cursor:pointer">
+                    <option value="0">16-19</option><option value="1">20-25</option><option value="2">26-29</option>
+                    <option value="3" selected>30-39</option><option value="4">40-49</option>
+                    <option value="5">50-59</option><option value="6">&gt;60</option>
+                  </select>
+                </div>
+                <div>
+                  <label style="font-size:11px;color:#8b949e;display:block;margin-bottom:3px">Height (cm)</label>
+                  <select id="single-gift-height" style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:5px 8px;font-size:12px;cursor:pointer">
+                    <option value="0">145-149</option><option value="1">150-154</option><option value="2">155-159</option>
+                    <option value="3" selected>160-164</option><option value="4">165-169</option>
+                    <option value="5">170-174</option><option value="6">175-179</option><option value="7">180-184</option>
+                    <option value="8">185-189</option><option value="9">190-194</option><option value="10">195+</option>
+                  </select>
+                </div>
+                <div>
+                  <label style="font-size:11px;color:#8b949e;display:block;margin-bottom:3px">Body type</label>
+                  <select id="single-gift-bodytype" style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:5px 8px;font-size:12px;cursor:pointer">
+                    <option value="0">&lt;52 kg</option><option value="1" selected>52–63 kg</option>
+                    <option value="2">63–74 kg</option><option value="3">74–84 kg</option>
+                    <option value="4">85–98 kg</option><option value="5">&gt;98 kg</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Footwear -->
+            <div style="margin-bottom:14px">
+              <div style="font-size:11px;color:#8b949e;margin-bottom:7px">Footwear — footwear flow only</div>
+              <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+                <div>
+                  <label style="font-size:11px;color:#8b949e;display:block;margin-bottom:3px">Gender</label>
+                  <select id="single-fw-gender" style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:5px 8px;font-size:12px;cursor:pointer">
+                    <option value="0">Female (0)</option>
+                    <option value="1">Male (1)</option>
+                  </select>
+                </div>
+                <div>
+                  <label style="font-size:11px;color:#8b949e;display:block;margin-bottom:3px">Brand</label>
+                  <select id="single-fw-brand" style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:5px 8px;font-size:12px;cursor:pointer">
+                    <option value="0">Under Armour</option><option value="1" selected>Adidas</option>
+                    <option value="2">Asics</option><option value="3">Converse</option>
+                    <option value="4">New Balance</option><option value="5">Nike</option>
+                    <option value="6">Puma</option><option value="7">Reebok</option>
+                    <option value="8">Vans</option><option value="9">I don't know</option>
+                  </select>
+                </div>
+                <div>
+                  <label style="font-size:11px;color:#8b949e;display:block;margin-bottom:3px">Shoe size</label>
+                  <select id="single-fw-size" style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:5px 8px;font-size:12px;cursor:pointer">
+                    ${Array.from({length: 37}, (_, i) => {
+                      const cm = (17 + i * 0.5).toFixed(1).replace('.0', '');
+                      return `<option value="${i}"${i === 17 ? ' selected' : ''}>${cm} cm</option>`;
+                    }).join('')}
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Kids -->
+            <div>
+              <div style="font-size:11px;color:#8b949e;margin-bottom:7px">Kids — kids flow only</div>
+              <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+                <div>
+                  <label style="font-size:11px;color:#8b949e;display:block;margin-bottom:3px">Gender</label>
+                  <select id="single-kids-gender" style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:5px 8px;font-size:12px;cursor:pointer">
+                    <option value="0">Girl (0)</option>
+                    <option value="1">Boy (1)</option>
+                  </select>
+                </div>
+                <div>
+                  <label style="font-size:11px;color:#8b949e;display:block;margin-bottom:3px">Age</label>
+                  <select id="single-kids-age" style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:5px 8px;font-size:12px;cursor:pointer">
+                    ${Array.from({length: 16}, (_, i) => `<option value="${i}"${i === 5 ? ' selected' : ''}>${i + 3} yr</option>`).join('')}
+                  </select>
+                </div>
+                <div>
+                  <label style="font-size:11px;color:#8b949e;display:block;margin-bottom:3px">Height (cm)</label>
+                  <input id="single-kids-height" type="number" value="120" min="60" max="180"
+                    style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:5px 8px;font-size:12px">
+                </div>
+                <div>
+                  <label style="font-size:11px;color:#8b949e;display:block;margin-bottom:3px">Weight (kg)</label>
+                  <input id="single-kids-weight" type="number" value="25" min="10" max="100"
+                    style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:5px 8px;font-size:12px">
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <div style="margin-top:10px;min-height:18px">
         <span id="single-trigger-status" style="font-size:12px;color:#8b949e"></span>
       </div>
     </div>
