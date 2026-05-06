@@ -208,6 +208,15 @@ jobs:
           path: result-${{ matrix.browser }}.json
           retention-days: 1
 
+      - name: Upload widget screenshot
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: widget-screenshots-${{ matrix.browser }}
+          path: test-results/widget-screenshots/
+          if-no-files-found: ignore
+          retention-days: 1
+
       - name: Upload compare view screenshots
         if: ${{ github.event.inputs.phase == 'compare' }}
         uses: actions/upload-artifact@v4
@@ -313,6 +322,14 @@ jobs:
           merge-multiple: true
           path: results/
 
+      - name: Download widget screenshots
+        uses: actions/download-artifact@v4
+        with:
+          pattern: widget-screenshots-*
+          merge-multiple: true
+          path: results/widget-screenshots/
+        continue-on-error: true
+
       - name: Save fallback and append to history
         run: |
           node --input-type=module <<'EOF'
@@ -387,8 +404,12 @@ jobs:
             weight: process.env.KIDS_WEIGHT || '25',
           };
 
+          fs.mkdirSync('docs/screenshots', { recursive: true });
+          const entryTimestamp = new Date().toISOString();
+          const tsSlug = entryTimestamp.replace(/[:.]/g, '-').slice(0, 19);
+
           const entry = {
-            timestamp: new Date().toISOString(),
+            timestamp: entryTimestamp,
             url: resolvedUrl,
             phase: process.env.PHASE,
             githubRunUrl: process.env.GITHUB_RUN_URL,
@@ -400,7 +421,16 @@ jobs:
             footwearOnboarding,
             kidsOnboarding,
             events: first.events || [],
-            browsers: browserResults.map(r => ({ browser: r.browser, status: r.status, error: r.error || null })),
+            browsers: browserResults.map(r => {
+              const screenshotSrc = `results/widget-screenshots/${r.browser}.jpg`;
+              let screenshotFile = null;
+              if (fs.existsSync(screenshotSrc)) {
+                const filename = `${tsSlug}-${r.browser}.jpg`;
+                fs.copyFileSync(screenshotSrc, `docs/screenshots/${filename}`);
+                screenshotFile = `screenshots/${filename}`;
+              }
+              return { browser: r.browser, status: r.status, error: r.error || null, widgetVisibleMs: r.widgetVisibleMs || null, screenshotFile };
+            }),
           };
 
           fs.mkdirSync('data', { recursive: true });
@@ -449,7 +479,7 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git add data/single-url-history.json data/fallbackProducts.json docs/index.html docs/compare-view-screenshots/
+          git add data/single-url-history.json data/fallbackProducts.json docs/index.html docs/compare-view-screenshots/ docs/screenshots/
           git diff --staged --quiet || git commit -m "chore: update inpage QA result [skip ci]"
           for i in 1 2 3; do
             git pull --rebase origin ${{ github.ref_name }} && git push origin HEAD:${{ github.ref_name }} && break

@@ -1685,6 +1685,28 @@ function renderSingleDetail(entry) {
     </ul>\` : null;
   }
 
+  const screenshotBrowsers = (entry.browsers || []).filter(b => b.screenshotFile);
+  const screenshotCardsHtml = screenshotBrowsers.map(b => {
+    const hostname = (() => { try { return new URL(entry.url || '').hostname; } catch { return ''; } })();
+    const ms = b.widgetVisibleMs;
+    return \`<div style="background:#0d1117;border:1px solid #30363d;border-radius:8px;overflow:hidden;max-width:480px;flex:1;min-width:260px">
+      <div style="background:#161b22;padding:8px 12px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #30363d">
+        <div style="display:flex;gap:5px;flex-shrink:0">
+          <div style="width:10px;height:10px;border-radius:50%;background:#ff5f57"></div>
+          <div style="width:10px;height:10px;border-radius:50%;background:#febc2e"></div>
+          <div style="width:10px;height:10px;border-radius:50%;background:#28c840"></div>
+        </div>
+        <div style="flex:1;background:#0d1117;border-radius:4px;padding:3px 8px;font-size:11px;color:#8b949e;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">\${hostname}</div>
+        <span style="font-size:10px;color:#484f58;flex-shrink:0">\${b.browser}</span>
+      </div>
+      <img src="\${b.screenshotFile}" alt="Widget screenshot" style="width:100%;display:block;max-height:280px;object-fit:cover;object-position:top">
+      <div style="padding:8px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px">
+        <span style="display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:#3fb950;background:rgba(46,160,67,0.1);border:1px solid rgba(46,160,67,0.3);border-radius:12px;padding:2px 8px;flex-shrink:0"><span style="font-size:8px">●</span> Widget detected</span>
+        \${ms ? \`<span style="font-size:11px;color:#8b949e">Captured at \${(ms/1000).toFixed(1)}s</span>\` : ''}
+      </div>
+    </div>\`;
+  }).join('');
+
   return \`<div class="detail-inner" style="grid-template-columns:1fr 1fr\${obHtml ? ' 160px' : ''}">
     <div class="detail-section">
       <h4>Test checklist\${flow ? \` — \${flow}\` : ''}</h4>
@@ -1695,7 +1717,11 @@ function renderSingleDetail(entry) {
       \${eventsHtml}
     </div>
     \${obHtml ? \`<div class="detail-section"><h4>Onboarding body</h4>\${obHtml}</div>\` : ''}
-  </div>\`;
+  </div>
+  \${screenshotCardsHtml ? \`<div style="margin-top:16px">
+    <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.6px;color:#484f58;font-weight:600;margin-bottom:10px">Widget Screenshot — Desktop</div>
+    <div style="display:flex;gap:16px;flex-wrap:wrap">\${screenshotCardsHtml}</div>
+  </div>\` : ''}\`;
 }
 
 function renderSingleUrl() {

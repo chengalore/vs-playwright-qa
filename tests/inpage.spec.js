@@ -427,6 +427,22 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
       await waitForWidgetRender(page);
     }
 
+    // Capture widget presence screenshot for full-phase runs
+    if (phase === "full") {
+      try {
+        const buf = await page.screenshot({ type: "jpeg", quality: 70 });
+        if (buf) {
+          const { mkdirSync, writeFileSync } = await import("fs");
+          const { join, dirname } = await import("path");
+          const { fileURLToPath } = await import("url");
+          const __dir = dirname(fileURLToPath(import.meta.url));
+          const dir = join(__dir, "../test-results/widget-screenshots");
+          mkdirSync(dir, { recursive: true });
+          writeFileSync(join(dir, `${testInfo.project.name}.jpg`), buf);
+        }
+      } catch { /* non-fatal */ }
+    }
+
     // widget phase: widget element found and opened — check complete
     if (phase === "widget") {
       logResult({
