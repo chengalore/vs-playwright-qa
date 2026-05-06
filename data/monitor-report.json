@@ -1,13 +1,13 @@
 {
-  "timestamp": "2026-05-06T04:05:22.897Z",
-  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/25415302024",
+  "timestamp": "2026-05-06T04:43:24.991Z",
+  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/25416758474",
   "summary": {
     "total": 86,
-    "passed": 79,
+    "passed": 78,
     "widgetMissing": 4,
-    "skipped": 3,
+    "skipped": 4,
     "failed": 0,
-    "fallbackUsed": 79,
+    "fallbackUsed": 78,
     "avgWidgetVisibleMs": null
   },
   "newIssues": [],
@@ -44,23 +44,19 @@
   "ongoingMissing": [
     {
       "store": "reebok_korea",
-      "consecutiveRuns": 27
+      "consecutiveRuns": 28
     },
     {
       "store": "snidel",
-      "consecutiveRuns": 27
+      "consecutiveRuns": 28
     },
     {
       "store": "gelato_pique",
-      "consecutiveRuns": 27
-    },
-    {
-      "store": "hankyu_hanshin",
-      "consecutiveRuns": 3
+      "consecutiveRuns": 28
     },
     {
       "store": "hankyu_mens",
-      "consecutiveRuns": 1
+      "consecutiveRuns": 2
     }
   ],
   "botProtected": [
@@ -68,5 +64,10 @@
     "ralph_lauren",
     "asics_japan"
   ],
-  "skippedStores": []
+  "skippedStores": [
+    {
+      "store": "unitedarrows_global",
+      "reason": "navigation_error"
+    }
+  ]
 }
