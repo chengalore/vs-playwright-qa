@@ -284,26 +284,27 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
         // If PDC never fired (undefined), do a quick synchronous check only to avoid
         // burning the full 20s timeout and racing against the test timeout ceiling.
         const checkWidgetInDOM = () => page.evaluate(() => {
-          const containerSelectors = [
+          const shadowSelectors = [
             "#vs-inpage",
             "#vs-inpage-mini",
             "#vs-inpage-luxury",
             "#vs-legacy-inpage",
             "#vs-kid",
-            "#vs-smart-table",
             "#router-view-wrapper",
           ];
-          const hasWidget = containerSelectors.some((sel) => {
+          const hasWidget = shadowSelectors.some((sel) => {
             const el = document.querySelector(sel);
             return el && el.shadowRoot;
           });
+          // #vs-smart-table does not use Shadow DOM — check presence only
+          const hasSmartTable = !!document.querySelector("#vs-smart-table");
           const hasPlaceholder = !!(
             document.querySelector("#vs-placeholder-cart") ||
             document.querySelector(".vs-placeholder-inpage") ||
             document.querySelector("#inpage-placeholder-wrapper")
           );
           const hasEntryButton = !!document.querySelector("#virtusize-button");
-          return hasWidget || hasPlaceholder || hasEntryButton;
+          return hasWidget || hasSmartTable || hasPlaceholder || hasEntryButton;
         });
 
         let widgetFound;
@@ -314,26 +315,26 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
           // PDC confirmed valid product — wait up to 20s for widget to mount
           widgetFound = await page.waitForFunction(
             () => {
-              const containerSelectors = [
+              const shadowSelectors = [
                 "#vs-inpage",
                 "#vs-inpage-mini",
                 "#vs-inpage-luxury",
                 "#vs-legacy-inpage",
                 "#vs-kid",
-                "#vs-smart-table",
                 "#router-view-wrapper",
               ];
-              const hasWidget = containerSelectors.some((sel) => {
+              const hasWidget = shadowSelectors.some((sel) => {
                 const el = document.querySelector(sel);
                 return el && el.shadowRoot;
               });
+              const hasSmartTable = !!document.querySelector("#vs-smart-table");
               const hasPlaceholder = !!(
                 document.querySelector("#vs-placeholder-cart") ||
                 document.querySelector(".vs-placeholder-inpage") ||
                 document.querySelector("#inpage-placeholder-wrapper")
               );
               const hasEntryButton = !!document.querySelector("#virtusize-button");
-              return hasWidget || hasPlaceholder || hasEntryButton;
+              return hasWidget || hasSmartTable || hasPlaceholder || hasEntryButton;
             },
             { timeout: 20000 },
           ).then(() => true).catch(() => false);
