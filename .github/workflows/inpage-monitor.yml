@@ -302,17 +302,33 @@ jobs:
 
           const webhook = process.env.SLACK_WEBHOOK_URL;
           const dashboardUrl = process.env.DASHBOARD_URL || process.env.GITHUB_RUN_URL;
-          const phase = process.env.PHASE;
+          const phase = process.env.PHASE || 'widget';
 
           if (!fs.existsSync('data/monitor-report.json')) {
-            execSync(`curl -s -X POST -H "Content-type: application/json" --data '{"text":"❌ VS Monitor failed — no report generated"}' "${webhook}"`);
+            fs.writeFileSync('/tmp/slack.json', JSON.stringify({ text: '❌ VS Monitor failed — no report generated' }));
+            execSync(`curl -s -X POST -H "Content-type: application/json" --data @/tmp/slack.json "${webhook}"`);
             process.exit(0);
           }
 
           const { summary, newIssues, widgetMissingStores, ongoingMissing } = JSON.parse(fs.readFileSync('data/monitor-report.json', 'utf8'));
-          const issues = summary.widgetMissing + summary.failed;
-          const icon = issues > 0 ? '⚠️' : '✅';
 
+          const ongoingMap = Object.fromEntries((ongoingMissing || []).map(o => [o.store, o.consecutiveRuns]));
+          const newMissing = (widgetMissingStores || []).filter(s => !ongoingMap[s.store]);
+          const recurring = (widgetMissingStores || []).filter(s => ongoingMap[s.store]);
+          const effectiveTotal = summary.total - summary.skipped;
+          const passRate = effectiveTotal > 0 ? summary.passed / effectiveTotal * 100 : 0;
+          const healthScore = Math.max(0, Math.round(passRate - (ongoingMissing || []).length * 1.5));
+          const p95Alert = typeof summary.p95WidgetVisibleMs === 'number' && summary.p95WidgetVisibleMs > 45000;
+
+          // Alert conditions
+          const alertReasons = [];
+          if (summary.failed > 0) alertReasons.push(`${summary.failed} failed`);
+          if (newMissing.length > 0) alertReasons.push(`${newMissing.length} new missing`);
+          if (healthScore < 75) alertReasons.push(`health ${healthScore}% < 75%`);
+          if (p95Alert) alertReasons.push(`p95 ${(summary.p95WidgetVisibleMs / 1000).toFixed(1)}s > 45s`);
+          const isAlert = alertReasons.length > 0;
+
+          const icon = isAlert ? '🚨' : (summary.widgetMissing > 0 ? '⚠️' : '✅');
           const parts = [
             `${summary.passed} passed`,
             summary.widgetMissing > 0 ? `${summary.widgetMissing} widget missing` : null,
@@ -321,27 +337,14 @@ jobs:
           ].filter(Boolean).join(' · ');
 
           const lines = [`${icon} VS Monitor (${phase}) — ${parts}`];
-
-          if (widgetMissingStores?.length > 0) {
-            const ongoingMap = Object.fromEntries((ongoingMissing || []).map(o => [o.store, o.consecutiveRuns]));
-            const newMissing = widgetMissingStores.filter(s => !ongoingMap[s.store]).map(s => s.store);
-            const recurring = widgetMissingStores.filter(s => ongoingMap[s.store]).map(s => `${s.store} ×${ongoingMap[s.store] + 1}`);
-
-            if (newMissing.length > 0) lines.push(`*Widget missing (new):* ${newMissing.join(', ')}`);
-            if (recurring.length > 0) lines.push(`*Widget missing (ongoing):* ${recurring.join(', ')}`);
-          }
-          if (newIssues?.length > 0) {
-            const failedList = newIssues.map(i => `${i.store} (${i.error})`).join(', ');
-            lines.push(`*Failed:* ${failedList}`);
-          }
-
+          if (isAlert) lines.push(`*Alert:* ${alertReasons.join(' · ')}`);
+          if (newMissing.length > 0) lines.push(`*Widget missing (new):* ${newMissing.map(s => s.store).join(', ')}`);
+          if (recurring.length > 0) lines.push(`*Widget missing (ongoing):* ${recurring.map(s => `${s.store} ×${ongoingMap[s.store] + 1}`).join(', ')}`);
+          if (newIssues?.length > 0) lines.push(`*Failed:* ${newIssues.map(i => `${i.store} (${i.error})`).join(', ')}`);
           lines.push(`<${dashboardUrl}|View dashboard →>`);
-          const message = lines.join('\n');
 
-          execSync(`curl -s -X POST \
-            -H "Content-type: application/json" \
-            --data '${JSON.stringify({ text: message })}' \
-            "${webhook}"`);
+          fs.writeFileSync('/tmp/slack.json', JSON.stringify({ text: lines.join('\n') }));
+          execSync(`curl -s -X POST -H "Content-type: application/json" --data @/tmp/slack.json "${webhook}"`);
           EOF
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

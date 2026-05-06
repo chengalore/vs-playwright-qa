@@ -1,0 +1,96 @@
+name: Slack Digest
+
+on:
+  schedule:
+    - cron: '0 0 * * *'    # Daily digest   09:00 JST (00:00 UTC)
+    - cron: '30 0 * * 1'   # Weekly summary 09:30 JST Monday (00:30 UTC Mon)
+  workflow_dispatch:
+    inputs:
+      type:
+        description: "Digest type"
+        required: false
+        default: "daily"
+        type: choice
+        options: [daily, weekly]
+
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Send digest
+        run: |
+          node --input-type=module <<'EOF'
+          import fs from 'fs';
+          import { execSync } from 'child_process';
+
+          const webhook = process.env.SLACK_WEBHOOK_URL;
+          const dashboardUrl = process.env.DASHBOARD_URL;
+          const isWeekly = process.env.DIGEST_TYPE === 'weekly';
+
+          if (!webhook) { console.log('No webhook — skipping'); process.exit(0); }
+          if (!fs.existsSync('data/monitor-report.json')) { console.log('No report — skipping'); process.exit(0); }
+
+          const report = JSON.parse(fs.readFileSync('data/monitor-report.json', 'utf8'));
+          const history = fs.existsSync('data/monitor-history.json')
+            ? JSON.parse(fs.readFileSync('data/monitor-history.json', 'utf8'))
+            : [];
+
+          const { summary, ongoingMissing, widgetMissingStores } = report;
+          const effectiveTotal = summary.total - summary.skipped;
+          const passRate = effectiveTotal > 0 ? summary.passed / effectiveTotal * 100 : 0;
+          const healthScore = Math.max(0, Math.round(passRate - (ongoingMissing || []).length * 1.5));
+          const healthIcon = healthScore >= 90 ? '🟢' : healthScore >= 75 ? '🟡' : '🔴';
+          const date = new Date(report.timestamp).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+
+          const lines = [];
+
+          if (isWeekly) {
+            const widgetRuns = history.filter(r => (r.phase || 'widget') === 'widget').slice(0, 7);
+            const avgHealth = widgetRuns.length > 0
+              ? Math.round(widgetRuns.reduce((sum, r) => {
+                  const s = r.summary, eff = s.total - s.skipped;
+                  const pr = eff > 0 ? s.passed / eff * 100 : 0;
+                  return sum + Math.max(0, Math.round(pr - (r.ongoingMissing || []).length * 1.5));
+                }, 0) / widgetRuns.length)
+              : null;
+
+            const prevMissing = new Set((widgetRuns[1]?.widgetMissingStores || []).map(s => s.store));
+            const nowMissing = new Set((widgetMissingStores || []).map(s => s.store));
+            const recovered = [...prevMissing].filter(s => !nowMissing.has(s));
+            const newlyMissing = [...nowMissing].filter(s => !prevMissing.has(s));
+
+            lines.push(`📈 *VS Monitor Weekly Summary* — week ending ${date}`);
+            lines.push(`${healthIcon} Health: *${healthScore}%*${avgHealth !== null ? ` · 7-day avg: ${avgHealth}%` : ''}`);
+            lines.push(`Last run: ${summary.passed} passed · ${summary.widgetMissing} missing · ${summary.skipped} skipped`);
+            if (recovered.length > 0) lines.push(`✅ *Recovered:* ${recovered.join(', ')}`);
+            if (newlyMissing.length > 0) lines.push(`🆕 *Newly missing:* ${newlyMissing.join(', ')}`);
+            if (ongoingMissing?.length > 0) {
+              const list = ongoingMissing.map(o => `${o.store} ×${o.consecutiveRuns}`).join(', ');
+              lines.push(`⚠️ *Ongoing issues (${ongoingMissing.length}):* ${list}`);
+            }
+          } else {
+            lines.push(`📊 *VS Monitor Daily Digest* — ${date}`);
+            lines.push(`${healthIcon} Health: *${healthScore}%* | ${summary.passed} passed · ${summary.widgetMissing} missing · ${summary.skipped} skipped`);
+            if (typeof summary.avgWidgetVisibleMs === 'number') {
+              const avg = (summary.avgWidgetVisibleMs / 1000).toFixed(1);
+              const p95 = typeof summary.p95WidgetVisibleMs === 'number'
+                ? ` · p95: ${(summary.p95WidgetVisibleMs / 1000).toFixed(1)}s` : '';
+              lines.push(`⏱ Avg widget time: ${avg}s${p95}`);
+            }
+            if (ongoingMissing?.length > 0) {
+              const list = ongoingMissing.map(o => `${o.store} ×${o.consecutiveRuns}`).join(', ');
+              lines.push(`⚠️ *Ongoing issues (${ongoingMissing.length}):* ${list}`);
+            }
+          }
+
+          lines.push(`<${dashboardUrl}|View dashboard →>`);
+
+          fs.writeFileSync('/tmp/slack-digest.json', JSON.stringify({ text: lines.join('\n') }));
+          execSync(`curl -s -X POST -H "Content-type: application/json" --data @/tmp/slack-digest.json "${webhook}"`);
+          EOF
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          DASHBOARD_URL: ${{ secrets.DASHBOARD_URL }}
+          DIGEST_TYPE: ${{ (github.event.schedule == '30 0 * * 1' || github.event.inputs.type == 'weekly') && 'weekly' || 'daily' }}
