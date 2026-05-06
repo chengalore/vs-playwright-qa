@@ -119,6 +119,17 @@ for (const { storeAlias, storeId, url, fromFallback } of stores) {
       Object.defineProperty(navigator, "webdriver", { get: () => undefined });
       document.hasFocus = () => true;
 
+      // Headless Chrome exposes an empty plugins list and a thin window.chrome
+      // object — both are standard bot-detection signals. Override them so
+      // headless Chrome looks the same as a headed browser.
+      if (navigator.plugins.length === 0) {
+        Object.defineProperty(navigator, "plugins", {
+          get: () => Object.assign([1, 2, 3], { item: () => null, namedItem: () => null, refresh: () => {} }),
+        });
+      }
+      if (!window.chrome) window.chrome = {};
+      if (!window.chrome.runtime) window.chrome.runtime = {};
+
       let lastDismiss = 0;
       const dismissOverlays = () => {
         const now = Date.now();
