@@ -1,13 +1,13 @@
 {
-  "timestamp": "2026-05-04T23:55:49.489Z",
-  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/25349963615",
+  "timestamp": "2026-05-06T00:14:24.849Z",
+  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/25408473950",
   "summary": {
     "total": 86,
     "passed": 78,
     "widgetMissing": 5,
     "skipped": 3,
     "failed": 0,
-    "fallbackUsed": 78
+    "fallbackUsed": 79
   },
   "newIssues": [],
   "widgetMissingStores": [
@@ -15,62 +15,63 @@
       "store": "snidel",
       "url": "https://snidel.com/Form/Product/ProductDetail.aspx?shop=0&pid=SHFT261075&vid=&bid=SNH01&cid=&_type=&cat=&swrd=",
       "browsers": [
-        "chrome"
+        "chrome",
+        "webkit"
       ]
     },
     {
       "store": "gelato_pique",
       "url": "https://gelatopique.com/Form/Product/ProductDetail.aspx?shop=0&pid=PWCO261297&vid=&bid=PIQ01&cid=&_type=&cat=WOM003001&swrd=",
       "browsers": [
-        "chrome"
+        "chrome",
+        "webkit"
+      ]
+    },
+    {
+      "store": "coen",
+      "url": "https://www.coen.co.jp/item/7600024S0452",
+      "browsers": [
+        "chrome",
+        "webkit"
       ]
     },
     {
       "store": "hankyu_hanshin",
       "url": "https://web.hh-online.jp/fashion/goods/index.html?ggcd=508767628",
       "browsers": [
-        "chrome"
+        "chrome",
+        "webkit"
       ]
     },
     {
       "store": "reebok_korea",
       "url": "https://reebok.co.kr/goods/goods_view.php?goodsNo=1000002262",
       "browsers": [
-        "chrome"
-      ]
-    },
-    {
-      "store": "hankyu_mens",
-      "url": "https://web.hh-online.jp/hankyu-mens/goods/index.html?ggcd=506982726",
-      "browsers": [
-        "chrome"
+        "chrome",
+        "webkit"
       ]
     }
   ],
   "ongoingMissing": [
     {
       "store": "reebok_korea",
-      "consecutiveRuns": 24
+      "consecutiveRuns": 25
     },
     {
       "store": "snidel",
-      "consecutiveRuns": 24
+      "consecutiveRuns": 25
     },
     {
       "store": "gelato_pique",
-      "consecutiveRuns": 24
-    },
-    {
-      "store": "brooks_brothers_korea",
-      "consecutiveRuns": 4
+      "consecutiveRuns": 25
     },
     {
       "store": "hankyu_mens",
-      "consecutiveRuns": 3
+      "consecutiveRuns": 4
     },
     {
-      "store": "lumine",
-      "consecutiveRuns": 2
+      "store": "hankyu_hanshin",
+      "consecutiveRuns": 1
     }
   ],
   "botProtected": [
