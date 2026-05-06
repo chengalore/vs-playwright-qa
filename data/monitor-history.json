@@ -1,5 +1,85 @@
 [
   {
+    "timestamp": "2026-05-06T03:37:22.895Z",
+    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/25414970494",
+    "summary": {
+      "total": 86,
+      "passed": 78,
+      "widgetMissing": 5,
+      "skipped": 3,
+      "failed": 0,
+      "fallbackUsed": 78,
+      "avgWidgetVisibleMs": null
+    },
+    "newIssues": [],
+    "widgetMissingStores": [
+      {
+        "store": "snidel",
+        "url": "https://snidel.com/Form/Product/ProductDetail.aspx?shop=0&pid=SHFT261075&vid=&bid=SNH01&cid=&_type=&cat=&swrd=",
+        "browsers": [
+          "chrome"
+        ]
+      },
+      {
+        "store": "gelato_pique",
+        "url": "https://gelatopique.com/Form/Product/ProductDetail.aspx?shop=0&pid=PWCO261297&vid=&bid=PIQ01&cid=&_type=&cat=WOM003001&swrd=",
+        "browsers": [
+          "chrome"
+        ]
+      },
+      {
+        "store": "hankyu_hanshin",
+        "url": "https://web.hh-online.jp/fashion/goods/index.html?ggcd=508767628",
+        "browsers": [
+          "chrome"
+        ]
+      },
+      {
+        "store": "reebok_korea",
+        "url": "https://reebok.co.kr/goods/goods_view.php?goodsNo=1000002262",
+        "browsers": [
+          "chrome"
+        ]
+      },
+      {
+        "store": "hankyu_mens",
+        "url": "https://web.hh-online.jp/hankyu-mens/goods/index.html?ggcd=506982726",
+        "browsers": [
+          "chrome"
+        ]
+      }
+    ],
+    "ongoingMissing": [
+      {
+        "store": "reebok_korea",
+        "consecutiveRuns": 26
+      },
+      {
+        "store": "snidel",
+        "consecutiveRuns": 26
+      },
+      {
+        "store": "gelato_pique",
+        "consecutiveRuns": 26
+      },
+      {
+        "store": "hankyu_hanshin",
+        "consecutiveRuns": 2
+      },
+      {
+        "store": "coen",
+        "consecutiveRuns": 1
+      }
+    ],
+    "botProtected": [
+      "adidas",
+      "ralph_lauren",
+      "asics_japan"
+    ],
+    "skippedStores": [],
+    "phase": "widget"
+  },
+  {
     "timestamp": "2026-05-06T00:14:24.849Z",
     "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/25408473950",
     "summary": {
