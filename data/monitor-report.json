@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-05-06T05:02:20.819Z",
-  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/25417284435",
+  "timestamp": "2026-05-06T05:42:25.495Z",
+  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/25418451581",
   "summary": {
     "total": 86,
     "passed": 78,
@@ -8,7 +8,8 @@
     "skipped": 3,
     "failed": 0,
     "fallbackUsed": 78,
-    "avgWidgetVisibleMs": 28304
+    "avgWidgetVisibleMs": 28261,
+    "p95WidgetVisibleMs": 35731
   },
   "newIssues": [],
   "widgetMissingStores": [
@@ -51,19 +52,23 @@
   "ongoingMissing": [
     {
       "store": "reebok_korea",
-      "consecutiveRuns": 29
+      "consecutiveRuns": 30
     },
     {
       "store": "snidel",
-      "consecutiveRuns": 29
+      "consecutiveRuns": 30
     },
     {
       "store": "gelato_pique",
-      "consecutiveRuns": 29
+      "consecutiveRuns": 30
     },
     {
       "store": "hankyu_mens",
-      "consecutiveRuns": 3
+      "consecutiveRuns": 4
+    },
+    {
+      "store": "hankyu_hanshin",
+      "consecutiveRuns": 1
     }
   ],
   "botProtected": [
