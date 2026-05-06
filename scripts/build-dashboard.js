@@ -1332,21 +1332,6 @@ function statusDot(run) {
 
 function countClass(n, type) { return n === 0 ? 'zero' : type; }
 
-  const s = run.summary;
-  el.innerHTML = \`
-    <div class="stat-block"><div class="label">Passed</div><div class="stat passed">\${s.passed}</div></div>
-    <div class="divider"></div>
-    <div class="stat-block"><div class="label">Missing</div><div class="stat missing">\${s.widgetMissing}</div></div>
-    <div class="divider"></div>
-    <div class="stat-block"><div class="label">Failed</div><div class="stat failed">\${s.failed}</div></div>
-    <div class="divider"></div>
-    <div class="stat-block"><div class="label">Skipped</div><div class="stat skipped">\${s.skipped}</div></div>
-    <div class="divider"></div>
-    <div class="stat-block"><div class="label">Total</div><div class="stat" style="color:#f0f6fc">\${s.total}</div></div>
-    <div style="margin-left:auto;font-size:12px;color:#8b949e">Last run: \${fmt(run.timestamp)}</div>
-  \`;
-}
-
 // ── Store sparkline (7-day bar chart) ────────────────────────────────────────
 function storeSparkline(storeName) {
   const runs = HISTORY.filter(r => (r.phase || 'widget') === 'widget').slice(0, 7).reverse();
