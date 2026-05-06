@@ -698,7 +698,7 @@ function generateDashboard(history, compareImages, singleUrlHistory, metrics) {
       <button class="subtab active" onclick="showMonitorSubtab('overview', this)">Overview</button>
       <button class="subtab" onclick="showMonitorSubtab('history', this)">History</button>
       <button class="subtab" onclick="showMonitorSubtab('missing', this)">Missing Stores</button>
-      <button class="subtab" onclick="showMonitorSubtab('alerts', this)">Alerts \${alertBadge}</button>
+      <button class="subtab" onclick="showMonitorSubtab('alerts', this)">Alerts ${alertBadge}</button>
     </div>
 
     <div id="monitor-overview">
@@ -1269,6 +1269,28 @@ function generateDashboard(history, compareImages, singleUrlHistory, metrics) {
 
 </main>
 
+<script>
+function showMonitorSubtab(name, btn) {
+  document.querySelectorAll('#panel-monitor .subtab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('monitor-overview').style.display = name !== 'history' ? '' : 'none';
+  document.getElementById('monitor-history').style.display  = name === 'history'  ? '' : 'none';
+}
+function showPanel(name) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tnav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  document.getElementById('btn-' + name).classList.add('active');
+  if (name === 'compare') renderCompareView();
+  if (name === 'single') renderSingleUrl();
+  if (name === 'cost') renderCostPanel();
+}
+function showKpiInfo(el) {
+  const tip = document.getElementById('kpi-tooltip');
+  tip.innerHTML = el.getAttribute('data-info');
+  tip.style.display = 'block';
+}
+</script>
 <script>
 const HISTORY = ${dataJson};
 const SINGLE_URL_HISTORY = ${singleUrlJson};
