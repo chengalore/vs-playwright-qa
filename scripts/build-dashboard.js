@@ -1367,31 +1367,72 @@ function renderLatestScreenshot() {
   const shots = (entry.browsers || []).filter(b => b.screenshotFile);
   if (shots.length === 0) { el.innerHTML = ''; return; }
 
+  const b = shots[0];
   const hostname = (() => { try { return new URL(entry.url || '').hostname; } catch { return ''; } })();
+  const urlSlug = (() => { try { const u = new URL(entry.url || ''); return u.hostname.replace(/^www\\./, '') + u.pathname.replace(/\\/$/, '').split('/').pop(); } catch { return hostname; } })();
+  const ms = b.widgetVisibleMs;
 
-  const cardsHtml = shots.map(b => {
-    const ms = b.widgetVisibleMs;
-    return \`<div style="background:#0d1117;border:1px solid #30363d;border-radius:8px;overflow:hidden;max-width:480px;flex:1;min-width:260px">
-      <div style="background:#161b22;padding:8px 12px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #30363d">
-        <div style="display:flex;gap:5px;flex-shrink:0">
-          <div style="width:10px;height:10px;border-radius:50%;background:#ff5f57"></div>
-          <div style="width:10px;height:10px;border-radius:50%;background:#febc2e"></div>
-          <div style="width:10px;height:10px;border-radius:50%;background:#28c840"></div>
-        </div>
-        <div style="flex:1;background:#0d1117;border-radius:4px;padding:3px 8px;font-size:11px;color:#8b949e;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">\${hostname}</div>
-        <span style="font-size:10px;color:#484f58;flex-shrink:0">\${b.browser}</span>
+  // Screenshot card
+  const screenshotCard = \`<div style="flex:1;min-width:260px;max-width:520px;background:#0d1117;border:1px solid #30363d;border-radius:8px;overflow:hidden">
+    <div style="background:#161b22;padding:8px 12px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #30363d">
+      <div style="display:flex;gap:5px;flex-shrink:0">
+        <div style="width:10px;height:10px;border-radius:50%;background:#ff5f57"></div>
+        <div style="width:10px;height:10px;border-radius:50%;background:#febc2e"></div>
+        <div style="width:10px;height:10px;border-radius:50%;background:#28c840"></div>
       </div>
-      <img src="\${b.screenshotFile}" alt="Widget screenshot" style="width:100%;display:block;max-height:280px;object-fit:cover;object-position:top">
-      <div style="padding:8px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px">
-        <span style="display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:#3fb950;background:rgba(46,160,67,0.1);border:1px solid rgba(46,160,67,0.3);border-radius:12px;padding:2px 8px;flex-shrink:0"><span style="font-size:8px">●</span> Widget detected</span>
-        \${ms ? \`<span style="font-size:11px;color:#8b949e">Captured at \${(ms/1000).toFixed(1)}s</span>\` : ''}
+      <div style="flex:1;background:#0d1117;border-radius:4px;padding:3px 8px;font-size:11px;color:#8b949e;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">\${urlSlug}</div>
+    </div>
+    <img src="\${b.screenshotFile}" alt="Widget screenshot" style="width:100%;display:block;max-height:300px;object-fit:cover;object-position:top">
+    <div style="padding:8px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px">
+      <span style="display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:#3fb950;background:rgba(46,160,67,0.1);border:1px solid rgba(46,160,67,0.3);border-radius:12px;padding:2px 8px"><span style="font-size:8px">●</span> Widget detected</span>
+      \${ms ? \`<span style="font-size:11px;color:#8b949e">Captured at \${ms}ms</span>\` : ''}
+    </div>
+  </div>\`;
+
+  // Test checks
+  const checks = [
+    { label: 'Integration valid',  val: entry.store ? 'pass' : '—',    pass: !!entry.store },
+    { label: 'Widget detected',    val: ms ? ms + 'ms' : '—',          pass: !!ms },
+    { label: 'Load time < 2s',     val: ms ? (ms < 2000 ? 'pass' : (ms/1000).toFixed(1)+'s') : '—', pass: !!ms && ms < 2000 },
+    { label: 'Test phase passed',  val: b.status === 'passed' ? 'pass' : (b.status || '—'), pass: b.status === 'passed' },
+    { label: 'Events recorded',    val: (entry.events||[]).length ? (entry.events.length)+' events' : '—', pass: !!(entry.events||[]).length },
+  ];
+  const passed = checks.filter(c => c.pass).length;
+  const total  = checks.length;
+  const pct    = Math.round(passed / total * 100);
+
+  const checksHtml = checks.map(c => \`
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #21262d">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="width:7px;height:7px;border-radius:50%;background:\${c.pass ? '#3fb950' : '#f85149'};flex-shrink:0"></span>
+        <span style="font-size:13px;color:#c9d1d9">\${c.label}</span>
       </div>
-    </div>\`;
-  }).join('');
+      <span style="font-size:12px;color:\${c.pass ? '#3fb950' : '#8b949e'};font-weight:500">\${c.val}</span>
+    </div>\`).join('');
+
+  const triggeredStr = entry.timestamp ? new Date(entry.timestamp).toLocaleString('en-GB', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit', timeZoneName:'short' }) : '—';
+
+  const checksPanel = \`<div style="flex:1;min-width:240px;background:#161b22;border:1px solid #30363d;border-radius:8px;padding:16px 18px;display:flex;flex-direction:column">
+    <div style="font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#484f58;font-weight:600;margin-bottom:4px">Test Checks</div>
+    <div style="flex:1">\${checksHtml}</div>
+    <div style="margin-top:12px">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:6px">
+        <span style="font-size:13px;font-weight:600;color:#c9d1d9">\${passed === total ? 'All checks passed' : passed + ' of ' + total + ' passed'}</span>
+        <span style="font-size:13px;font-weight:700;color:#3fb950">\${passed} / \${total}</span>
+      </div>
+      <div style="height:4px;background:#21262d;border-radius:4px;overflow:hidden">
+        <div style="height:100%;width:\${pct}%;background:\${pct === 100 ? '#3fb950' : '#d29922'};border-radius:4px;transition:width .3s"></div>
+      </div>
+    </div>
+    <div style="margin-top:12px;padding-top:12px;border-top:1px solid #21262d">
+      <div style="font-size:12px;color:#8b949e">Browser: <span style="color:#c9d1d9;font-weight:500">\${b.browser}</span>\${entry.store ? ' · Store: <span style="color:#c9d1d9;font-weight:500">' + entry.store + '</span>' : ''}</div>
+      <div style="font-size:12px;color:#8b949e;margin-top:3px">Triggered: <span style="color:#c9d1d9">\${triggeredStr}</span></div>
+    </div>
+  </div>\`;
 
   el.innerHTML = \`<div style="margin-top:20px">
     <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.6px;color:#484f58;font-weight:600;margin-bottom:10px">Widget Screenshot — Desktop</div>
-    <div style="display:flex;gap:16px;flex-wrap:wrap">\${cardsHtml}</div>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:stretch">\${screenshotCard}\${checksPanel}</div>
   </div>\`;
 }
 
