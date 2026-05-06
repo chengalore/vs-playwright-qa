@@ -185,7 +185,7 @@ function generateDashboard(history, compareImages, singleUrlHistory, metrics) {
   const flakeTrend = metrics.flakeRate !== null && metrics.prevFlakeRate !== null
     ? (metrics.flakeRate > metrics.prevFlakeRate ? `↑ from ${metrics.prevFlakeRate}% (14d avg)` : `↓ from ${metrics.prevFlakeRate}% (14d avg)`)
     : 'Based on 14d history';
-  const isHealthy = !history[0] || (history[0].summary.failed === 0 && metrics.missingCount <= 3);
+  const isHealthy = !history[0] || (history[0].summary.failed === 0 && metrics.newMissingCount === 0);
   const alertBadge = metrics.alertCount > 0 ? `<span class="badge">${metrics.alertCount}</span>` : '';
   const missingColor = metrics.missingCount === 0 ? 'kpi-green' : metrics.missingCount > 3 ? 'kpi-red' : 'kpi-amber';
   const healthyStores = metrics.totalMonitored - metrics.missingCount - metrics.botCount - (metrics.skippedCount || 0);
@@ -1278,7 +1278,7 @@ const COMPARE_IMAGES = ${compareJson};
 function showMonitorSubtab(name, btn) {
   document.querySelectorAll('#panel-monitor .subtab').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  document.getElementById('monitor-overview').style.display = name === 'overview' ? '' : 'none';
+  document.getElementById('monitor-overview').style.display = name !== 'history' ? '' : 'none';
   document.getElementById('monitor-history').style.display  = name === 'history'  ? '' : 'none';
 }
 

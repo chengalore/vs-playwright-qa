@@ -1061,7 +1061,7 @@ const COMPARE_IMAGES = [{"sku":"CG0244370201","url":"https://voi.0101.co.jp/voi/
 function showMonitorSubtab(name, btn) {
   document.querySelectorAll('#panel-monitor .subtab').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  document.getElementById('monitor-overview').style.display = name === 'overview' ? '' : 'none';
+  document.getElementById('monitor-overview').style.display = name !== 'history' ? '' : 'none';
   document.getElementById('monitor-history').style.display  = name === 'history'  ? '' : 'none';
 }
 
