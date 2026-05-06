@@ -415,19 +415,7 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
     );
     widgetVisibleMs = Date.now() - t_nav;
 
-    flow = detectFlow(pdc);
-    console.log("Flow:", flow);
-
-    if (flow === "kids") {
-      await clickKidsWidget(page);
-      await waitForKidsWidgetReady(page);
-    } else {
-      await clickWidget(page, flow);
-
-      await waitForWidgetRender(page);
-    }
-
-    // Capture widget presence screenshot for full-phase runs
+    // Capture widget presence screenshot before opening — shows inpage button on page
     if (phase === "full") {
       try {
         const buf = await page.screenshot({ type: "jpeg", quality: 70 });
@@ -441,6 +429,18 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
           writeFileSync(join(dir, `${testInfo.project.name}.jpg`), buf);
         }
       } catch { /* non-fatal */ }
+    }
+
+    flow = detectFlow(pdc);
+    console.log("Flow:", flow);
+
+    if (flow === "kids") {
+      await clickKidsWidget(page);
+      await waitForKidsWidgetReady(page);
+    } else {
+      await clickWidget(page, flow);
+
+      await waitForWidgetRender(page);
     }
 
     // widget phase: widget element found and opened — check complete
