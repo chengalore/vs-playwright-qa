@@ -1310,10 +1310,6 @@ function statusDot(run) {
 
 function countClass(n, type) { return n === 0 ? 'zero' : type; }
 
-// ── Monitor: summary card ─────────────────────────────────────────────────────
-function renderSummary(run) {
-  const el = document.getElementById('summary-card');
-  if (!run) { el.textContent = 'No runs yet.'; return; }
   const s = run.summary;
   el.innerHTML = \`
     <div class="stat-block"><div class="label">Passed</div><div class="stat passed">\${s.passed}</div></div>
@@ -2328,7 +2324,6 @@ function renderStoreMatrix() {
 }
 
 // ── Init ──────────────────────────────────────────────────────────────────────
-renderSummary(HISTORY[0] || null);
 renderTable();
 renderFlakyStores();
 renderTrendCharts();
