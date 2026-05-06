@@ -429,7 +429,7 @@ jobs:
                 fs.copyFileSync(screenshotSrc, `docs/screenshots/${filename}`);
                 screenshotFile = `screenshots/${filename}`;
               }
-              return { browser: r.browser, status: r.status, error: r.error || null, widgetVisibleMs: r.widgetVisibleMs || null, screenshotFile };
+              return { browser: r.browser, status: r.status, error: r.error || null, widgetVisibleMs: r.widgetVisibleMs || null, screenshotFile, widgetType: r.widgetType || null, hasSmartTable: r.hasSmartTable ?? null };
             }),
           };
 

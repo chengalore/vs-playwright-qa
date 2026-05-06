@@ -1397,6 +1397,9 @@ function renderLatestScreenshot() {
     { label: 'Test phase passed',  val: b.status === 'passed' ? 'pass' : (b.status || '—'), pass: b.status === 'passed' },
     { label: 'Events recorded',    val: (entry.events||[]).length ? (entry.events.length)+' events' : '—', pass: !!(entry.events||[]).length },
   ];
+  if (b.widgetType && ['inpage','inpage_luxury','inpage_mini'].includes(b.widgetType)) {
+    checks.push({ label: 'Smart table present', val: b.hasSmartTable === true ? 'yes' : b.hasSmartTable === false ? 'no' : '—', pass: b.hasSmartTable === true });
+  }
   const passed = checks.filter(c => c.pass).length;
   const total  = checks.length;
   const pct    = Math.round(passed / total * 100);

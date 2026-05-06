@@ -178,6 +178,7 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
 
   let widgetVisibleMs = null;
   let flowDoneMs = null;
+  let widgetMeta = { widgetType: null, hasSmartTable: null };
 
   try {
     console.log("Navigating to:", url);
@@ -415,6 +416,25 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
     );
     widgetVisibleMs = Date.now() - t_nav;
 
+    // Detect widget type and smart table presence
+    widgetMeta = await page.evaluate(() => {
+      const found = [
+        [document.querySelector("#vs-inpage"),           "inpage"],
+        [document.querySelector("#vs-inpage-luxury"),    "inpage_luxury"],
+        [document.querySelector("#vs-legacy-inpage"),    "inpage_mini"],
+        [document.querySelector("#vs-kid"),              "kids"],
+        [document.querySelector("#vs-placeholder-cart"), "placeholder_cart"],
+      ].find(([el]) => el);
+      if (!found) return { widgetType: null, hasSmartTable: null };
+      const [el, type] = found;
+      const sr = el.shadowRoot;
+      const smartTableTypes = ["inpage", "inpage_luxury", "inpage_mini"];
+      const hasSmartTable = smartTableTypes.includes(type) && sr != null
+        ? !!sr.querySelector("#vs-smart-table")
+        : null;
+      return { widgetType: type, hasSmartTable };
+    }).catch(() => ({ widgetType: null, hasSmartTable: null }));
+
     // Capture widget presence screenshot before opening — shows inpage button on page
     if (phase === "full") {
       try {
@@ -650,6 +670,8 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
       durationMs: Date.now() - startTime,
       widgetVisibleMs,
       flowDoneMs,
+      widgetType: widgetMeta.widgetType,
+      hasSmartTable: widgetMeta.hasSmartTable,
       ...(inpageMountCount > 1 && { doubleMount: inpageMountCount }),
     });
   } catch (error) {
