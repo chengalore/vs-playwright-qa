@@ -830,6 +830,13 @@ function generateDashboard(history, compareImages, singleUrlHistory, metrics) {
       <h1>Single URL Tests</h1>
       <p class="page-sub">Per-URL tests run across chrome, firefox, and webkit</p>
     </div>
+
+    <div class="subtab-bar">
+      <button class="subtab active" onclick="showSingleSubtab('run', this)">Run test</button>
+      <button class="subtab" onclick="showSingleSubtab('history', this)">History</button>
+    </div>
+
+    <div id="single-run">
     <div class="panel-body">
     <div style="background:#161b22;border:1px solid #21262d;border-radius:10px;padding:16px;margin-bottom:24px">
 
@@ -1052,7 +1059,11 @@ function generateDashboard(history, compareImages, singleUrlHistory, metrics) {
         <span id="single-trigger-status" style="font-size:12px;color:#8b949e"></span>
       </div>
     </div>
+    </div>
+    </div>
 
+    <div id="single-history" style="display:none">
+    <div class="panel-body">
     <div class="flag-bar">
       <span id="single-flag-count">0 items flagged</span>
       <button id="single-export-btn" onclick="exportSingleFlagged()" disabled>Export flagged URLs</button>
@@ -1075,6 +1086,7 @@ function generateDashboard(history, compareImages, singleUrlHistory, metrics) {
       </thead>
       <tbody id="single-url-body"></tbody>
     </table>
+    </div>
     </div>
   </div>
 
@@ -1333,6 +1345,15 @@ function showMonitorSubtab(name, btn) {
   btn.classList.add('active');
   document.getElementById('monitor-overview').style.display = name !== 'history' ? '' : 'none';
   document.getElementById('monitor-history').style.display  = name === 'history'  ? '' : 'none';
+}
+
+// ── Single URL subtab switcher ────────────────────────────────────────────────
+function showSingleSubtab(name, btn) {
+  document.querySelectorAll('#panel-single .subtab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('single-run').style.display     = name === 'run'     ? '' : 'none';
+  document.getElementById('single-history').style.display = name === 'history' ? '' : 'none';
+  if (name === 'history') renderSingleUrl();
 }
 
 // ── Navigation ────────────────────────────────────────────────────────────────
