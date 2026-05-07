@@ -438,6 +438,15 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
     // Capture widget presence screenshot before opening — shows inpage button on page
     if (phase === "full") {
       try {
+        // Scroll widget into view so it's visible in the viewport before shooting
+        await page.evaluate(() => {
+          const el = document.querySelector("#vs-inpage") ||
+                     document.querySelector("#vs-inpage-luxury") ||
+                     document.querySelector("#vs-legacy-inpage") ||
+                     document.querySelector("#vs-kid") ||
+                     document.querySelector("#vs-placeholder-cart");
+          if (el) el.scrollIntoView({ block: "center", behavior: "instant" });
+        }).catch(() => {});
         const buf = await page.screenshot({ type: "jpeg", quality: 70 });
         if (buf) {
           const { mkdirSync, writeFileSync } = await import("fs");
