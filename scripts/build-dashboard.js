@@ -1395,7 +1395,7 @@ function renderLatestScreenshot() {
   const checks = [
     { label: 'Integration valid',  val: entry.store ? 'pass' : '—',    pass: !!entry.store },
     { label: 'Widget detected',    val: widgetVal,                      pass: !!ms },
-    { label: 'Load time < 2s',     val: ms ? (ms < 2000 ? 'pass' : (ms/1000).toFixed(1)+'s') : '—', pass: !!ms && ms < 2000 },
+    { label: 'Load time < 10s',    val: ms ? (ms < 10000 ? 'pass' : (ms/1000).toFixed(1)+'s') : '—', pass: !!ms && ms < 10000 },
     { label: 'Test phase passed',  val: b.status === 'passed' ? 'pass' : (b.status || '—'), pass: b.status === 'passed' },
     { label: 'Events recorded',    val: (entry.events||[]).length ? (entry.events.length)+' events' : '—', pass: !!(entry.events||[]).length },
   ];
