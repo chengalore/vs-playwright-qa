@@ -1839,10 +1839,18 @@ function renderSingleDetail(entry) {
     </div>\`;
   }).join('');
 
+  const allMissing = [...new Set((entry.browsers || []).flatMap(b => b.missingEvents || []))];
+  const failCallout = allMissing.length > 0
+    ? \`<div style="margin-bottom:10px;padding:8px 10px;background:rgba(248,81,73,0.08);border:1px solid rgba(248,81,73,0.3);border-radius:6px">
+        <div style="font-size:11px;font-weight:600;color:#f85149;margin-bottom:4px">Failed waiting for</div>
+        \${allMissing.map(e => \`<div style="font-size:12px;color:#c9d1d9;font-family:monospace;padding:1px 0">\${e}</div>\`).join('')}
+      </div>\`
+    : '';
+
   return \`<div class="detail-inner" style="grid-template-columns:1fr 1fr\${obHtml ? ' 160px' : ''}">
     <div class="detail-section">
       <h4>Test checklist\${flow ? \` — \${flow}\` : ''}</h4>
-      \${checklistHtml}
+      \${failCallout}\${checklistHtml}
     </div>
     <div class="detail-section">
       <h4>Events fired (\${totalUnique} unique\${totalFired !== totalUnique ? ', ' + totalFired + ' total' : ''})</h4>
