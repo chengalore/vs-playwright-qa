@@ -1,5 +1,109 @@
 [
   {
+    "timestamp": "2026-05-07T23:58:20.764Z",
+    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/25528424905",
+    "summary": {
+      "total": 83,
+      "passed": 77,
+      "widgetMissing": 6,
+      "skipped": 0,
+      "failed": 0,
+      "fallbackUsed": 78,
+      "avgWidgetVisibleMs": 27993,
+      "p95WidgetVisibleMs": 36911
+    },
+    "newIssues": [],
+    "widgetMissingStores": [
+      {
+        "store": "gelato_pique",
+        "url": "https://gelatopique.com/Form/Product/ProductDetail.aspx?shop=0&pid=PWCO261297&vid=&bid=PIQ01&cid=&_type=&cat=WOM003001&swrd=",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "reebok_korea",
+        "url": "https://reebok.co.kr/goods/goods_view.php?goodsNo=1000002262",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "hankyu_hanshin",
+        "url": "https://web.hh-online.jp/fashion/goods/index.html?ggcd=508767628",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "hankyu_mens",
+        "url": "https://web.hh-online.jp/hankyu-mens/goods/index.html?ggcd=506982726",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "banana_republic",
+        "url": "https://bananarepublic.gap.co.jp/br/bastian-suede-jacket/869499006.html?dwvar_869499006_color=869499006",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "snidel",
+        "url": "https://snidel.com/Form/Product/ProductDetail.aspx?shop=0&pid=SHFT261075&vid=&bid=SNH01&cid=&_type=&cat=&swrd=",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      }
+    ],
+    "ongoingMissing": [
+      {
+        "store": "reebok_korea",
+        "consecutiveRuns": 32
+      },
+      {
+        "store": "snidel",
+        "consecutiveRuns": 32
+      },
+      {
+        "store": "gelato_pique",
+        "consecutiveRuns": 32
+      },
+      {
+        "store": "hankyu_mens",
+        "consecutiveRuns": 6
+      },
+      {
+        "store": "hankyu_hanshin",
+        "consecutiveRuns": 3
+      }
+    ],
+    "botProtected": [
+      "adidas",
+      "adidas_japan",
+      "adidas_korea",
+      "asics",
+      "asics_japan",
+      "ralph_lauren",
+      "ralph_lauren_australia",
+      "ralph_lauren_china",
+      "ralph_lauren_korea",
+      "ralph_lauren_singapore",
+      "ralph_lauren_taiwan",
+      "ralph_lauren_uk",
+      "rl"
+    ],
+    "skippedStores": [],
+    "phase": "widget"
+  },
+  {
     "timestamp": "2026-05-06T23:53:46.348Z",
     "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/25467482900",
     "summary": {
