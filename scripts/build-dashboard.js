@@ -1390,14 +1390,16 @@ function renderLatestScreenshot() {
   </div>\`;
 
   // Test checks
+  const widgetDisplayName = { inpage: 'vs-inpage', inpage_luxury: 'vs-inpage luxury', inpage_mini: 'inpage mini', kids: 'vs-kids', placeholder_cart: 'placeholder cart' }[b.widgetType] || null;
+  const widgetVal = ms ? (widgetDisplayName ? widgetDisplayName + ' · ' + ms + 'ms' : ms + 'ms') : '—';
   const checks = [
     { label: 'Integration valid',  val: entry.store ? 'pass' : '—',    pass: !!entry.store },
-    { label: 'Widget detected',    val: ms ? ms + 'ms' : '—',          pass: !!ms },
+    { label: 'Widget detected',    val: widgetVal,                      pass: !!ms },
     { label: 'Load time < 2s',     val: ms ? (ms < 2000 ? 'pass' : (ms/1000).toFixed(1)+'s') : '—', pass: !!ms && ms < 2000 },
     { label: 'Test phase passed',  val: b.status === 'passed' ? 'pass' : (b.status || '—'), pass: b.status === 'passed' },
     { label: 'Events recorded',    val: (entry.events||[]).length ? (entry.events.length)+' events' : '—', pass: !!(entry.events||[]).length },
   ];
-  if (b.widgetType && ['inpage','inpage_luxury','inpage_mini'].includes(b.widgetType)) {
+  if (ms && b.widgetType && ['inpage','inpage_luxury','inpage_mini'].includes(b.widgetType)) {
     checks.push({ label: 'Smart table present', val: b.hasSmartTable === true ? 'yes' : b.hasSmartTable === false ? 'no' : '—', pass: b.hasSmartTable === true });
   }
   const passed = checks.filter(c => c.pass).length;
