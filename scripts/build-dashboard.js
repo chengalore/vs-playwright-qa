@@ -190,7 +190,7 @@ function generateDashboard(history, compareImages, singleUrlHistory, metrics) {
   const isHealthy = !history[0] || (history[0].summary.failed === 0 && metrics.newMissingCount === 0);
   const alertBadge = metrics.alertCount > 0 ? `<span class="badge">${metrics.alertCount}</span>` : '';
   const missingColor = metrics.missingCount === 0 ? 'kpi-green' : metrics.missingCount > 3 ? 'kpi-red' : 'kpi-amber';
-  const healthyStores = metrics.totalMonitored - metrics.missingCount - metrics.botCount - (metrics.skippedCount || 0);
+  const healthyStores = metrics.totalMonitored - metrics.missingCount - (metrics.skippedCount || 0);
   const botRatePct = metrics.totalMonitored > 0 ? (metrics.botCount / metrics.totalMonitored * 100).toFixed(1) : '0.0';
 
   // KPI delta helper — returns a <div> string
@@ -1528,9 +1528,13 @@ function renderDetail(run) {
         <span class="meta">×\${m.runs} runs</span>
       </li>\`).join('')}</ul></div>\`;
 
-  const botHtml = bots.length === 0
+  const BOT_ALIAS_MAP = { rl: 'ralph_lauren' };
+  const botBrands = [...new Set(bots.map(b =>
+    BOT_ALIAS_MAP[b] || b.replace(/_(japan|korea|australia|china|singapore|taiwan|uk|us|global)$/, '')
+  ))].sort();
+  const botHtml = botBrands.length === 0
     ? '<span class="none-label">None</span>'
-    : bots.map(b => \`<li><span class="store">\${b}</span></li>\`).join('');
+    : botBrands.map(b => \`<li><span class="store">\${b}</span></li>\`).join('');
 
   const skippedHtml = skipped.length === 0
     ? '<span class="none-label">None</span>'

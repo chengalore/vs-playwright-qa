@@ -540,7 +540,7 @@
         </div>
         <div class="kpi-card">
           <div class="kpi-label">Healthy Clients<span class="kpi-info" data-info="Stores currently passing. Bot-blocked stores are counted separately and do not penalise this figure." onclick="showKpiInfo(this)">!</span></div>
-          <div class="kpi-val kpi-green">65/83</div>
+          <div class="kpi-val kpi-green">78/83</div>
           <div class="kpi-sub">13 bot-blocked</div>
         </div>
         <div class="kpi-card">
@@ -1309,9 +1309,13 @@ function renderDetail(run) {
         <span class="meta">×${m.runs} runs</span>
       </li>`).join('')}</ul></div>`;
 
-  const botHtml = bots.length === 0
+  const BOT_ALIAS_MAP = { rl: 'ralph_lauren' };
+  const botBrands = [...new Set(bots.map(b =>
+    BOT_ALIAS_MAP[b] || b.replace(/_(japan|korea|australia|china|singapore|taiwan|uk|us|global)$/, '')
+  ))].sort();
+  const botHtml = botBrands.length === 0
     ? '<span class="none-label">None</span>'
-    : bots.map(b => `<li><span class="store">${b}</span></li>`).join('');
+    : botBrands.map(b => `<li><span class="store">${b}</span></li>`).join('');
 
   const skippedHtml = skipped.length === 0
     ? '<span class="none-label">None</span>'
