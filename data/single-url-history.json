@@ -1,5 +1,58 @@
 [
   {
+    "timestamp": "2026-05-07T02:31:53.789Z",
+    "url": "https://www.callawaygolf.jp/product/R26128202_1030_",
+    "phase": "full",
+    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/25472692768",
+    "store": "unknown",
+    "productType": "unknown",
+    "flow": null,
+    "onboarding": {
+      "gender": "female",
+      "age": "35",
+      "height": "161",
+      "weight": "54"
+    },
+    "giftOnboarding": {
+      "gender": "female",
+      "age": "30-39",
+      "height": "160-164",
+      "bodyType": "52 - 63 kg"
+    },
+    "footwearOnboarding": {
+      "gender": "female",
+      "brand": "Adidas",
+      "size": "25.5 cm"
+    },
+    "kidsOnboarding": {
+      "gender": "girl",
+      "age": 8,
+      "height": "120",
+      "weight": "25"
+    },
+    "events": [],
+    "browsers": [
+      {
+        "browser": "chrome",
+        "status": "failed",
+        "error": "page.evaluate: Execution context was destroyed, most likely because of a navigation",
+        "widgetVisibleMs": null,
+        "screenshotFile": null,
+        "widgetType": null,
+        "hasSmartTable": null
+      },
+      {
+        "browser": "webkit",
+        "status": "skipped",
+        "error": null,
+        "widgetVisibleMs": null,
+        "screenshotFile": null,
+        "widgetType": null,
+        "hasSmartTable": null
+      }
+    ]
+  },
+  {
     "timestamp": "2026-05-06T09:29:01.515Z",
     "url": "https://www.restir.com/category/a/i/J16SP742-13",
     "phase": "full",
