@@ -686,6 +686,7 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
   } catch (error) {
     logResult({
       url,
+      store: pdc.store,
       status: "failed",
       flow,
       browser: testInfo.project.name,
@@ -695,6 +696,8 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
       durationMs: Date.now() - startTime,
       widgetVisibleMs,
       flowDoneMs,
+      widgetType: widgetMeta.widgetType,
+      hasSmartTable: widgetMeta.hasSmartTable,
     });
 
     throw error;
