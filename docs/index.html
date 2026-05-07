@@ -2118,10 +2118,9 @@ function renderCostPanel() {
     (latest.widgetMissingStores || []).filter(s => !ongoingSet.has(s.store)).map(s => s.store)
   );
 
-  const storeData = STORE_LIST.map(store => {
+  const storeData = STORE_LIST.filter(store => !botSet.has(store)).map(store => {
     let color, dur;
-    if (botSet.has(store))          { color = '#d29922'; dur = COST_DUR.bot;     }
-    else if (newMissSet.has(store)) { color = '#f85149'; dur = COST_DUR.missing; }
+    if (newMissSet.has(store)) { color = '#f85149'; dur = COST_DUR.missing; }
     else if (ongoingSet.has(store)) { color = '#e3760e'; dur = COST_DUR.missing; }
     else                            { color = '#3fb950'; dur = COST_DUR.healthy; }
     return { store, color, cost: RUNS_PER_MO * dur * COST_RATE };
