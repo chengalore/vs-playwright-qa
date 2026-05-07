@@ -1,5 +1,91 @@
 [
   {
+    "timestamp": "2026-05-07T09:24:29.584Z",
+    "url": "https://www.beams.co.jp/item/beamsheart/shoes/42330002819/",
+    "phase": "full",
+    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/25487223958",
+    "store": "beams",
+    "productType": null,
+    "flow": "footwear",
+    "onboarding": {
+      "gender": "female",
+      "age": "35",
+      "height": "161",
+      "weight": "54"
+    },
+    "giftOnboarding": {
+      "gender": "female",
+      "age": "30-39",
+      "height": "160-164",
+      "bodyType": "52 - 63 kg"
+    },
+    "footwearOnboarding": {
+      "gender": "female",
+      "brand": "Adidas",
+      "size": "25.5 cm"
+    },
+    "kidsOnboarding": {
+      "gender": "girl",
+      "age": 8,
+      "height": "120",
+      "weight": "25"
+    },
+    "events": [
+      {
+        "event": "user-saw-product::integration",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-saw-widget-button::integration",
+        "phase": "onboarding"
+      },
+      {
+        "event": "inpage-mounted::integration",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-opened-widget::inpage",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-saw-onboarding-screen::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-selected-narrow::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-clicked-proceed-foot-width::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-selected-egyptian::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-clicked-proceed-foot-shape::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-selected-gender::fit-illustrator",
+        "phase": "onboarding"
+      }
+    ],
+    "browsers": [
+      {
+        "browser": "chrome",
+        "status": "failed",
+        "error": "page.waitForFunction: Test timeout of 180000ms exceeded.",
+        "missingEvents": [],
+        "widgetVisibleMs": 17415,
+        "screenshotFile": "screenshots/2026-05-07T09-24-29-chrome.jpg",
+        "widgetType": "inpage",
+        "hasSmartTable": null
+      }
+    ]
+  },
+  {
     "timestamp": "2026-05-07T03:32:23.769Z",
     "url": "https://www.beams.co.jp/item/beams/shirt/11011774803/?rid=312",
     "phase": "full",
