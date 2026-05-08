@@ -1,5 +1,127 @@
 [
   {
+    "timestamp": "2026-05-08T02:38:29.966Z",
+    "url": "https://bananarepublic.gap.co.jp/br/bastian-suede-jacket/869499006.html?dwvar_869499006_color=869499006",
+    "phase": "full",
+    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/25533452598",
+    "store": "banana_republic",
+    "productType": "jacket",
+    "flow": "noVisor",
+    "onboarding": {
+      "gender": "female",
+      "age": "35",
+      "height": "161",
+      "weight": "54"
+    },
+    "giftOnboarding": {
+      "gender": "female",
+      "age": "30-39",
+      "height": "160-164",
+      "bodyType": "52 - 63 kg"
+    },
+    "footwearOnboarding": {
+      "gender": "female",
+      "brand": "Adidas",
+      "size": "25.5 cm"
+    },
+    "kidsOnboarding": {
+      "gender": "girl",
+      "age": 8,
+      "height": "120",
+      "weight": "25"
+    },
+    "events": [
+      {
+        "event": "user-saw-product::integration",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-saw-widget-button::integration",
+        "phase": "onboarding"
+      },
+      {
+        "event": "inpage-mounted::integration",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-opened-widget::inpage",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-saw-onboarding-screen::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-selected-gender::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-selected-age::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-selected-height::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-selected-weight::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-completed-onboarding::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-created-silhouette::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-got-size-recommendation::integration",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-opened-panel-rec::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-saw-product::integration",
+        "phase": "refresh"
+      },
+      {
+        "event": "user-saw-widget-button::integration",
+        "phase": "refresh"
+      },
+      {
+        "event": "inpage-mounted::integration",
+        "phase": "refresh"
+      },
+      {
+        "event": "user-opened-widget::inpage",
+        "phase": "refresh"
+      },
+      {
+        "event": "user-got-size-recommendation::integration",
+        "phase": "refresh"
+      },
+      {
+        "event": "user-selected-size::inpage",
+        "phase": "refresh"
+      }
+    ],
+    "browsers": [
+      {
+        "browser": "chrome",
+        "status": "passed",
+        "error": null,
+        "missingEvents": [],
+        "widgetVisibleMs": 8633,
+        "screenshotFile": "screenshots/2026-05-08T02-38-29-chrome.jpg",
+        "widgetType": "inpage",
+        "hasSmartTable": null
+      }
+    ]
+  },
+  {
     "timestamp": "2026-05-07T14:05:58.326Z",
     "url": "https://classico-global.com/en-ph/products/762",
     "phase": "full",
