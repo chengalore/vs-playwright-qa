@@ -414,7 +414,7 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
       },
       { timeout: 30000 },
     );
-    widgetVisibleMs = Date.now() - t_nav;
+    widgetVisibleMs = await page.evaluate(() => Math.round(performance.now())).catch(() => Date.now() - t_nav);
 
     // Detect widget type and smart table presence
     widgetMeta = await page.evaluate(() => {
