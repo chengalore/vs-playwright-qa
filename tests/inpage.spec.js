@@ -435,7 +435,10 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
       return { widgetType: type, hasSmartTable };
     }).catch(() => ({ widgetType: null, hasSmartTable: null }));
 
-    // Capture widget presence screenshot before opening — shows inpage button on page
+    flow = detectFlow(pdc);
+    console.log("Flow:", flow);
+
+    // Capture widget presence screenshot immediately before clicking — shows inpage button on page
     if (phase === "full") {
       try {
         // Scroll widget into view so it's visible in the viewport before shooting
@@ -459,9 +462,6 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
         }
       } catch { /* non-fatal */ }
     }
-
-    flow = detectFlow(pdc);
-    console.log("Flow:", flow);
 
     if (flow === "kids") {
       await clickKidsWidget(page);
