@@ -1,15 +1,15 @@
 {
-  "timestamp": "2026-05-09T23:50:41.297Z",
-  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/25614744753",
+  "timestamp": "2026-05-11T00:37:47.671Z",
+  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/25643144233",
   "summary": {
-    "total": 83,
-    "passed": 78,
+    "total": 67,
+    "passed": 62,
     "widgetMissing": 5,
     "skipped": 0,
     "failed": 0,
-    "fallbackUsed": 78,
-    "avgWidgetVisibleMs": 28143,
-    "p95WidgetVisibleMs": 36130
+    "fallbackUsed": 62,
+    "avgWidgetVisibleMs": 27970,
+    "p95WidgetVisibleMs": 34651
   },
   "newIssues": [],
   "widgetMissingStores": [
@@ -46,8 +46,8 @@
       ]
     },
     {
-      "store": "snidel",
-      "url": "https://snidel.com/Form/Product/ProductDetail.aspx?shop=0&pid=SHFT261075&vid=&bid=SNH01&cid=&_type=&cat=&swrd=",
+      "store": "hankyu_mens",
+      "url": "https://web.hh-online.jp/hankyu-mens/goods/index.html?ggcd=506982726",
       "browsers": [
         "chrome",
         "webkit"
@@ -57,27 +57,23 @@
   "ongoingMissing": [
     {
       "store": "reebok_korea",
-      "consecutiveRuns": 34
+      "consecutiveRuns": 35
     },
     {
       "store": "snidel",
-      "consecutiveRuns": 34
+      "consecutiveRuns": 35
     },
     {
       "store": "gelato_pique",
-      "consecutiveRuns": 34
-    },
-    {
-      "store": "hankyu_mens",
-      "consecutiveRuns": 8
+      "consecutiveRuns": 35
     },
     {
       "store": "hankyu_hanshin",
-      "consecutiveRuns": 5
+      "consecutiveRuns": 6
     },
     {
       "store": "poppy",
-      "consecutiveRuns": 1
+      "consecutiveRuns": 2
     }
   ],
   "botProtected": [

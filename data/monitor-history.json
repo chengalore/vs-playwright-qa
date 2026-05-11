@@ -1,5 +1,101 @@
 [
   {
+    "timestamp": "2026-05-11T00:37:47.671Z",
+    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/25643144233",
+    "summary": {
+      "total": 67,
+      "passed": 62,
+      "widgetMissing": 5,
+      "skipped": 0,
+      "failed": 0,
+      "fallbackUsed": 62,
+      "avgWidgetVisibleMs": 27970,
+      "p95WidgetVisibleMs": 34651
+    },
+    "newIssues": [],
+    "widgetMissingStores": [
+      {
+        "store": "gelato_pique",
+        "url": "https://gelatopique.com/Form/Product/ProductDetail.aspx?shop=0&pid=PWCO261297&vid=&bid=PIQ01&cid=&_type=&cat=WOM003001&swrd=",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "reebok_korea",
+        "url": "https://reebok.co.kr/goods/goods_view.php?goodsNo=1000002262",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "hankyu_hanshin",
+        "url": "https://web.hh-online.jp/fashion/goods/index.html?ggcd=508767628",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "poppy",
+        "url": "https://poppy-tokyo.com/products/poppy-print-long-t-shirt-pink",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "hankyu_mens",
+        "url": "https://web.hh-online.jp/hankyu-mens/goods/index.html?ggcd=506982726",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      }
+    ],
+    "ongoingMissing": [
+      {
+        "store": "reebok_korea",
+        "consecutiveRuns": 35
+      },
+      {
+        "store": "snidel",
+        "consecutiveRuns": 35
+      },
+      {
+        "store": "gelato_pique",
+        "consecutiveRuns": 35
+      },
+      {
+        "store": "hankyu_hanshin",
+        "consecutiveRuns": 6
+      },
+      {
+        "store": "poppy",
+        "consecutiveRuns": 2
+      }
+    ],
+    "botProtected": [
+      "adidas",
+      "adidas_japan",
+      "adidas_korea",
+      "asics",
+      "asics_japan",
+      "ralph_lauren",
+      "ralph_lauren_australia",
+      "ralph_lauren_china",
+      "ralph_lauren_korea",
+      "ralph_lauren_singapore",
+      "ralph_lauren_taiwan",
+      "ralph_lauren_uk",
+      "rl"
+    ],
+    "skippedStores": [],
+    "phase": "widget"
+  },
+  {
     "timestamp": "2026-05-09T23:50:41.297Z",
     "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/25614744753",
     "summary": {
