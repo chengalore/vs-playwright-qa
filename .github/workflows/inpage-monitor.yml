@@ -400,15 +400,25 @@ jobs:
                 console.log(`🚫 [${alias}] Auto-blacklisted after ${health[alias].consecutiveFailures} consecutive ${result.status} failures`);
               }
             } else if (result.status === 'widget_missing') {
+              const wasHealthy = (health[alias].consecutiveWidgetMissing || 0) === 0;
               health[alias].consecutiveWidgetMissing = (health[alias].consecutiveWidgetMissing || 0) + 1;
               health[alias].consecutiveFailures = 0;
+              if (wasHealthy) health[alias].issueStartedAt = new Date().toISOString();
             } else if (result.status === 'passed') {
               if (health[alias].autoBlacklisted) {
                 console.log(`✅ [${alias}] Recovered — removing from auto-blacklist`);
               }
+              if (health[alias].issueStartedAt && (health[alias].consecutiveWidgetMissing || 0) > 0) {
+                const durationMs = Date.now() - new Date(health[alias].issueStartedAt).getTime();
+                if (!health[alias].recoveries) health[alias].recoveries = [];
+                health[alias].recoveries.unshift({ resolvedAt: new Date().toISOString(), durationMs, type: 'widget_missing' });
+                if (health[alias].recoveries.length > 20) health[alias].recoveries.length = 20;
+                console.log(`🔄 [${alias}] Recovered after ${Math.round(durationMs / 3600000 * 10) / 10}h`);
+              }
               health[alias].consecutiveFailures = 0;
               health[alias].consecutiveWidgetMissing = 0;
               health[alias].autoBlacklisted = false;
+              delete health[alias].issueStartedAt;
               delete health[alias].lastFailureReason;
             }
           }

@@ -30,6 +30,17 @@ if (fs.existsSync('data/monitor-report.json') && process.env.PHASE !== 'skip') {
   }
 }
 
+// Load store health (for MTTR)
+const storeHealth = fs.existsSync('data/storeHealth.json') ? readJSON('data/storeHealth.json', {}) : {};
+const allRecoveries = Object.values(storeHealth).flatMap(h => h.recoveries || []);
+const mttrMs = allRecoveries.length > 0
+  ? allRecoveries.reduce((sum, r) => sum + r.durationMs, 0) / allRecoveries.length
+  : null;
+const mttrDisplay = mttrMs === null ? null
+  : mttrMs < 3600000 ? `${Math.round(mttrMs / 60000)}m`
+  : mttrMs < 86400000 ? `${(mttrMs / 3600000).toFixed(1)}h`
+  : `${(mttrMs / 86400000).toFixed(1)}d`;
+
 // Load single-url history
 const SINGLE_URL_HISTORY_FILE = 'data/single-url-history.json';
 const singleUrlHistory = fs.existsSync(SINGLE_URL_HISTORY_FILE)
@@ -765,9 +776,9 @@ function generateDashboard(history, compareImages, singleUrlHistory, metrics) {
           <div class="kpi-sub">${metrics.botCount} of ${metrics.totalMonitored} stores</div>
         </div>
         <div class="kpi-card">
-          <div class="kpi-label">MTTR<span class="kpi-info" data-info="Mean Time To Resolution — average time from a store going missing to passing again. Not tracked yet." onclick="showKpiInfo(this)">!</span></div>
-          <div class="kpi-val kpi-white">—</div>
-          <div class="kpi-sub kpi-dash">Not tracked yet</div>
+          <div class="kpi-label">MTTR<span class="kpi-info" data-info="Mean Time To Resolution — average time from a store first going widget-missing to passing again." onclick="showKpiInfo(this)">!</span></div>
+          <div class="kpi-val ${mttrDisplay ? (mttrMs < 86400000 ? 'kpi-green' : mttrMs < 259200000 ? 'kpi-amber' : 'kpi-red') : 'kpi-white'}">${mttrDisplay || '—'}</div>
+          <div class="kpi-sub">${allRecoveries.length > 0 ? `${allRecoveries.length} recoveries tracked` : 'No recoveries yet'}</div>
         </div>
         <div class="kpi-card">
           <div class="kpi-label">Deploy Correlation<span class="kpi-info" data-info="Tracks whether widget failures cluster around deployment windows. Not tracked yet." onclick="showKpiInfo(this)">!</span></div>
