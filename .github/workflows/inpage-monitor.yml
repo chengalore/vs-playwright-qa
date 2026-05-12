@@ -439,10 +439,12 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
+          # Fetch latest remote changes and reset branch pointer, keeping generated
+          # files as unstaged changes — avoids rebase conflicts on docs/index.html
+          git fetch origin ${{ github.ref_name }}
+          git reset origin/${{ github.ref_name }}
+          # Rebuild dashboard on top of the merged state
+          node scripts/build-dashboard.js
           git add data/storeHealth.json data/monitor-report.json data/monitor-history.json docs/
           git diff --staged --quiet || git commit -m "chore: update store health [skip ci]"
-          for i in 1 2 3; do
-            git pull --rebase origin ${{ github.ref_name }} && git push origin HEAD:${{ github.ref_name }} && break
-            echo "Push attempt $i failed, retrying..."
-            sleep 5
-          done
+          git push origin HEAD:${{ github.ref_name }}
