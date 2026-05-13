@@ -1,15 +1,15 @@
 [
   {
-    "timestamp": "2026-05-13T00:46:12.803Z",
+    "timestamp": "2026-05-13T02:05:09.323Z",
     "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/25769318732",
     "summary": {
-      "total": 67,
-      "passed": 63,
-      "widgetMissing": 4,
+      "total": 83,
+      "passed": 78,
+      "widgetMissing": 5,
       "skipped": 0,
       "failed": 0,
-      "fallbackUsed": 63,
-      "avgWidgetVisibleMs": 28460,
+      "fallbackUsed": 78,
+      "avgWidgetVisibleMs": 28382,
       "p95WidgetVisibleMs": 34065
     },
     "newIssues": [],
@@ -41,6 +41,14 @@
       {
         "store": "hankyu_hanshin",
         "url": "https://web.hh-online.jp/fashion/goods/index.html?ggcd=508767628",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "snidel",
+        "url": "https://snidel.com/Form/Product/ProductDetail.aspx?shop=0&pid=SHFT261075&vid=&bid=SNH01&cid=&_type=&cat=&swrd=",
         "browsers": [
           "chrome",
           "webkit"
