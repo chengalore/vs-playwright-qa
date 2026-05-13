@@ -177,7 +177,7 @@ export const STORES = {
 
   // ── Y ────────────────────────────────────────────────────────────────
   yohji_wildside: { id: 826, monitor: true, luxury: true },
-  yosoou: { id: 898, monitor: true },
+  yosoou: { id: 898, monitor: false }, // widget disabled by frontend until Aug 2026
 
   // ── Z ────────────────────────────────────────────────────────────────
   zuica: { id: 842, monitor: true },
