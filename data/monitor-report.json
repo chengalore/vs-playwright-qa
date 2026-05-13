@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-05-12T00:44:16.102Z",
-  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/25704390674",
+  "timestamp": "2026-05-13T00:46:12.803Z",
+  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/25769318732",
   "summary": {
     "total": 67,
     "passed": 63,
@@ -8,14 +8,22 @@
     "skipped": 0,
     "failed": 0,
     "fallbackUsed": 63,
-    "avgWidgetVisibleMs": 28079,
-    "p95WidgetVisibleMs": 37494
+    "avgWidgetVisibleMs": 28460,
+    "p95WidgetVisibleMs": 34065
   },
   "newIssues": [],
   "widgetMissingStores": [
     {
       "store": "gelato_pique",
       "url": "https://gelatopique.com/Form/Product/ProductDetail.aspx?shop=0&pid=PWCO261297&vid=&bid=PIQ01&cid=&_type=&cat=WOM003001&swrd=",
+      "browsers": [
+        "chrome",
+        "webkit"
+      ]
+    },
+    {
+      "store": "yosoou",
+      "url": "https://yosoou-shop.com/collections/outer/products/two-piece-collar-coat",
       "browsers": [
         "chrome",
         "webkit"
@@ -30,16 +38,8 @@
       ]
     },
     {
-      "store": "hankyu_mens",
-      "url": "https://web.hh-online.jp/hankyu-mens/goods/index.html?ggcd=508732084",
-      "browsers": [
-        "chrome",
-        "webkit"
-      ]
-    },
-    {
-      "store": "dinos",
-      "url": "https://www.dinos.co.jp/p/1204801949/?id=002003011027_i__2293245_002003011027",
+      "store": "hankyu_hanshin",
+      "url": "https://web.hh-online.jp/fashion/goods/index.html?ggcd=508767628",
       "browsers": [
         "chrome",
         "webkit"
@@ -49,23 +49,27 @@
   "ongoingMissing": [
     {
       "store": "reebok_korea",
-      "consecutiveRuns": 37
+      "consecutiveRuns": 39
     },
     {
       "store": "gelato_pique",
-      "consecutiveRuns": 37
+      "consecutiveRuns": 39
     },
     {
       "store": "snidel",
-      "consecutiveRuns": 36
-    },
-    {
-      "store": "hankyu_hanshin",
-      "consecutiveRuns": 8
+      "consecutiveRuns": 37
     },
     {
       "store": "hankyu_mens",
-      "consecutiveRuns": 2
+      "consecutiveRuns": 4
+    },
+    {
+      "store": "dinos",
+      "consecutiveRuns": 1
+    },
+    {
+      "store": "yosoou",
+      "consecutiveRuns": 1
     }
   ],
   "botProtected": [
