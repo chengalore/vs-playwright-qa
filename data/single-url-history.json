@@ -1,5 +1,50 @@
 [
   {
+    "timestamp": "2026-05-14T05:31:42.671Z",
+    "url": "https://www.t-fashion.jp/shop/lycee-mine/goods/135316013?deqwas_inflow=QGRzcDUwOnYwc2JoVWJvMkVtd3JxNFp6X2pvY1E6ZGV0YWlsOjowMDAwMTAwODg2XzI2MDItODM1MzIzMl81MDoxQw",
+    "phase": "full",
+    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/25843596921",
+    "store": "fashion_square",
+    "productType": "unknown",
+    "flow": null,
+    "onboarding": {
+      "gender": "female",
+      "age": "35",
+      "height": "161",
+      "weight": "54"
+    },
+    "giftOnboarding": {
+      "gender": "female",
+      "age": "30-39",
+      "height": "160-164",
+      "bodyType": "52 - 63 kg"
+    },
+    "footwearOnboarding": {
+      "gender": "female",
+      "brand": "Adidas",
+      "size": "25.5 cm"
+    },
+    "kidsOnboarding": {
+      "gender": "girl",
+      "age": 8,
+      "height": "120",
+      "weight": "25"
+    },
+    "events": [],
+    "browsers": [
+      {
+        "browser": "chrome",
+        "status": "skipped",
+        "error": null,
+        "missingEvents": [],
+        "widgetVisibleMs": null,
+        "screenshotFile": null,
+        "widgetType": null,
+        "hasSmartTable": null
+      }
+    ]
+  },
+  {
     "timestamp": "2026-05-14T05:11:57.339Z",
     "url": "https://www.estnation.co.jp/item/detail/1_890_6110907050356/419",
     "phase": "full",
