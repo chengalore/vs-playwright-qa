@@ -120,7 +120,7 @@
   },
   "hankyu_mens": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 4,
+    "consecutiveWidgetMissing": 5,
     "autoBlacklisted": false,
     "issueStartedAt": "2026-05-11T00:37:47.671Z"
   },
@@ -161,7 +161,7 @@
   },
   "reebok_korea": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 39,
+    "consecutiveWidgetMissing": 40,
     "autoBlacklisted": false,
     "issueStartedAt": "2026-04-13T09:15:18.244Z"
   },
@@ -261,9 +261,15 @@
   },
   "dinos": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 1,
+    "consecutiveWidgetMissing": 0,
     "autoBlacklisted": false,
-    "issueStartedAt": "2026-05-12T00:44:16.386Z"
+    "recoveries": [
+      {
+        "resolvedAt": "2026-05-14T00:00:33.701Z",
+        "durationMs": 170177315,
+        "type": "widget_missing"
+      }
+    ]
   },
   "ameri_vintage": {
     "consecutiveFailures": 0,
@@ -322,7 +328,7 @@
   },
   "snidel": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 37,
+    "consecutiveWidgetMissing": 38,
     "autoBlacklisted": false,
     "issueStartedAt": "2026-04-13T09:15:18.244Z"
   },
@@ -407,7 +413,7 @@
   },
   "gelato_pique": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 39,
+    "consecutiveWidgetMissing": 40,
     "autoBlacklisted": false,
     "issueStartedAt": "2026-04-13T09:15:18.244Z"
   },

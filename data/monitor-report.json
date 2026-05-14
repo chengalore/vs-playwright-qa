@@ -1,29 +1,21 @@
 {
-  "timestamp": "2026-05-13T02:05:09.323Z",
-  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/25769318732",
+  "timestamp": "2026-05-14T00:00:33.497Z",
+  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/25833209089",
   "summary": {
-    "total": 83,
+    "total": 82,
     "passed": 78,
-    "widgetMissing": 5,
+    "widgetMissing": 4,
     "skipped": 0,
     "failed": 0,
     "fallbackUsed": 78,
-    "avgWidgetVisibleMs": 28382,
-    "p95WidgetVisibleMs": 34065
+    "avgWidgetVisibleMs": 28676,
+    "p95WidgetVisibleMs": 36720
   },
   "newIssues": [],
   "widgetMissingStores": [
     {
       "store": "gelato_pique",
       "url": "https://gelatopique.com/Form/Product/ProductDetail.aspx?shop=0&pid=PWCO261297&vid=&bid=PIQ01&cid=&_type=&cat=WOM003001&swrd=",
-      "browsers": [
-        "chrome",
-        "webkit"
-      ]
-    },
-    {
-      "store": "yosoou",
-      "url": "https://yosoou-shop.com/collections/outer/products/two-piece-collar-coat",
       "browsers": [
         "chrome",
         "webkit"
@@ -38,8 +30,8 @@
       ]
     },
     {
-      "store": "hankyu_hanshin",
-      "url": "https://web.hh-online.jp/fashion/goods/index.html?ggcd=508767628",
+      "store": "hankyu_mens",
+      "url": "https://web.hh-online.jp/hankyu-mens/goods/index.html?ggcd=508732084",
       "browsers": [
         "chrome",
         "webkit"
@@ -73,10 +65,6 @@
     },
     {
       "store": "dinos",
-      "consecutiveRuns": 1
-    },
-    {
-      "store": "yosoou",
       "consecutiveRuns": 1
     }
   ],
