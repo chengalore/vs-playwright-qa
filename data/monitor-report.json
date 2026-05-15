@@ -1,21 +1,29 @@
 {
-  "timestamp": "2026-05-14T00:00:33.497Z",
-  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/25833209089",
+  "timestamp": "2026-05-15T00:01:44.406Z",
+  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/25892415782",
   "summary": {
     "total": 82,
-    "passed": 78,
-    "widgetMissing": 4,
+    "passed": 75,
+    "widgetMissing": 7,
     "skipped": 0,
     "failed": 0,
-    "fallbackUsed": 78,
-    "avgWidgetVisibleMs": 28676,
-    "p95WidgetVisibleMs": 36720
+    "fallbackUsed": 75,
+    "avgWidgetVisibleMs": 28356,
+    "p95WidgetVisibleMs": 36845
   },
   "newIssues": [],
   "widgetMissingStores": [
     {
       "store": "gelato_pique",
       "url": "https://gelatopique.com/Form/Product/ProductDetail.aspx?shop=0&pid=PWCO261297&vid=&bid=PIQ01&cid=&_type=&cat=WOM003001&swrd=",
+      "browsers": [
+        "chrome",
+        "webkit"
+      ]
+    },
+    {
+      "store": "seilin_online_shop",
+      "url": "https://www.hrm-eshop.com//shop/g/g1010671240006/",
       "browsers": [
         "chrome",
         "webkit"
@@ -44,28 +52,40 @@
         "chrome",
         "webkit"
       ]
+    },
+    {
+      "store": "fashion_square",
+      "url": "https://www.t-fashion.jp/shop/sonnylabel/goods/121762682?deqwas_inflow=QGRzcDUwOk5wU1I5cHFpelVPZ1k1TThsTWlXYmc6dG9wOjowNjFkNGJjNmQxZGE0NjQyZDc5NWQxYjMwZDM2MGZhYjoxRA",
+      "browsers": [
+        "chrome",
+        "webkit"
+      ]
+    },
+    {
+      "store": "bshop",
+      "url": "https://bshop-inc.com/shop/ec/item/view/shop_product_id/42078",
+      "browsers": [
+        "chrome",
+        "webkit"
+      ]
     }
   ],
   "ongoingMissing": [
     {
       "store": "reebok_korea",
-      "consecutiveRuns": 39
+      "consecutiveRuns": 40
     },
     {
       "store": "gelato_pique",
-      "consecutiveRuns": 39
+      "consecutiveRuns": 40
     },
     {
       "store": "snidel",
-      "consecutiveRuns": 37
+      "consecutiveRuns": 38
     },
     {
       "store": "hankyu_mens",
-      "consecutiveRuns": 4
-    },
-    {
-      "store": "dinos",
-      "consecutiveRuns": 1
+      "consecutiveRuns": 5
     }
   ],
   "botProtected": [
