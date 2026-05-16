@@ -1,15 +1,15 @@
 {
-  "timestamp": "2026-05-15T00:01:44.406Z",
-  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/25892415782",
+  "timestamp": "2026-05-16T00:01:54.977Z",
+  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/25946952196",
   "summary": {
     "total": 82,
     "passed": 75,
     "widgetMissing": 7,
     "skipped": 0,
     "failed": 0,
-    "fallbackUsed": 75,
-    "avgWidgetVisibleMs": 28356,
-    "p95WidgetVisibleMs": 36845
+    "fallbackUsed": 76,
+    "avgWidgetVisibleMs": 27806,
+    "p95WidgetVisibleMs": 34713
   },
   "newIssues": [],
   "widgetMissingStores": [
@@ -24,6 +24,14 @@
     {
       "store": "seilin_online_shop",
       "url": "https://www.hrm-eshop.com//shop/g/g1010671240006/",
+      "browsers": [
+        "chrome",
+        "webkit"
+      ]
+    },
+    {
+      "store": "coen",
+      "url": "https://www.coen.co.jp/item/7600024S0452",
       "browsers": [
         "chrome",
         "webkit"
@@ -54,14 +62,6 @@
       ]
     },
     {
-      "store": "fashion_square",
-      "url": "https://www.t-fashion.jp/shop/sonnylabel/goods/121762682?deqwas_inflow=QGRzcDUwOk5wU1I5cHFpelVPZ1k1TThsTWlXYmc6dG9wOjowNjFkNGJjNmQxZGE0NjQyZDc5NWQxYjMwZDM2MGZhYjoxRA",
-      "browsers": [
-        "chrome",
-        "webkit"
-      ]
-    },
-    {
       "store": "bshop",
       "url": "https://bshop-inc.com/shop/ec/item/view/shop_product_id/42078",
       "browsers": [
@@ -73,19 +73,31 @@
   "ongoingMissing": [
     {
       "store": "reebok_korea",
-      "consecutiveRuns": 40
+      "consecutiveRuns": 41
     },
     {
       "store": "gelato_pique",
-      "consecutiveRuns": 40
+      "consecutiveRuns": 41
     },
     {
       "store": "snidel",
-      "consecutiveRuns": 38
+      "consecutiveRuns": 39
     },
     {
       "store": "hankyu_mens",
-      "consecutiveRuns": 5
+      "consecutiveRuns": 6
+    },
+    {
+      "store": "seilin_online_shop",
+      "consecutiveRuns": 1
+    },
+    {
+      "store": "bshop",
+      "consecutiveRuns": 1
+    },
+    {
+      "store": "fashion_square",
+      "consecutiveRuns": 1
     }
   ],
   "botProtected": [
