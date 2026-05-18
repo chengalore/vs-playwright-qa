@@ -1,15 +1,15 @@
 {
-  "timestamp": "2026-05-16T23:56:30.209Z",
-  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/25976158966",
+  "timestamp": "2026-05-18T00:02:45.348Z",
+  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/26006403905",
   "summary": {
     "total": 82,
-    "passed": 75,
-    "widgetMissing": 7,
+    "passed": 76,
+    "widgetMissing": 6,
     "skipped": 0,
     "failed": 0,
     "fallbackUsed": 77,
-    "avgWidgetVisibleMs": 27852,
-    "p95WidgetVisibleMs": 34368
+    "avgWidgetVisibleMs": 28445,
+    "p95WidgetVisibleMs": 35885
   },
   "newIssues": [],
   "widgetMissingStores": [
@@ -30,14 +30,6 @@
       ]
     },
     {
-      "store": "coen",
-      "url": "https://www.coen.co.jp/item/7600024S0452",
-      "browsers": [
-        "chrome",
-        "webkit"
-      ]
-    },
-    {
       "store": "reebok_korea",
       "url": "https://reebok.co.kr/goods/goods_view.php?goodsNo=1000002262",
       "browsers": [
@@ -46,16 +38,16 @@
       ]
     },
     {
-      "store": "cox",
-      "url": "https://tokyodesignchannel.com/c/lbc/26180639",
+      "store": "snidel",
+      "url": "https://snidel.com/Form/Product/ProductDetail.aspx?shop=0&pid=SHFT261075&vid=&bid=SNH01&cid=&_type=&cat=&swrd=",
       "browsers": [
         "chrome",
         "webkit"
       ]
     },
     {
-      "store": "snidel",
-      "url": "https://snidel.com/Form/Product/ProductDetail.aspx?shop=0&pid=SHFT261075&vid=&bid=SNH01&cid=&_type=&cat=&swrd=",
+      "store": "fashion_square",
+      "url": "https://www.t-fashion.jp/shop/sonnylabel/goods/121762682?deqwas_inflow=QGRzcDUwOk5wU1I5cHFpelVPZ1k1TThsTWlXYmc6dG9wOjowNjFkNGJjNmQxZGE0NjQyZDc5NWQxYjMwZDM2MGZhYjoxRA",
       "browsers": [
         "chrome",
         "webkit"
@@ -73,30 +65,30 @@
   "ongoingMissing": [
     {
       "store": "reebok_korea",
-      "consecutiveRuns": 42
+      "consecutiveRuns": 43
     },
     {
       "store": "gelato_pique",
-      "consecutiveRuns": 42
+      "consecutiveRuns": 43
     },
     {
       "store": "snidel",
-      "consecutiveRuns": 40
-    },
-    {
-      "store": "hankyu_mens",
-      "consecutiveRuns": 7
+      "consecutiveRuns": 41
     },
     {
       "store": "seilin_online_shop",
-      "consecutiveRuns": 2
+      "consecutiveRuns": 3
     },
     {
       "store": "bshop",
-      "consecutiveRuns": 2
+      "consecutiveRuns": 3
     },
     {
       "store": "coen",
+      "consecutiveRuns": 2
+    },
+    {
+      "store": "cox",
       "consecutiveRuns": 1
     }
   ],
