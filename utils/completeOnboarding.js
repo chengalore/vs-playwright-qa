@@ -97,7 +97,7 @@ export async function completeOnboarding(page, opts = {}) {
     await buttonHandle.dispose();
     throw new Error("Submit button not found");
   }
-
+ await page.waitForTimeout(3000);
   await submitButton.click();
   await buttonHandle.dispose();
 
