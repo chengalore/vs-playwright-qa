@@ -1685,6 +1685,10 @@ const CHECKLISTS = {
     { label: 'Refresh: recommendation re-fires', event: 'user-got-size-recommendation::integration', phase: 'refresh' },
     // Gift
     { label: 'Gift flow: recommendation',     event: 'user-opened-panel-rec::gift' },
+    // Optional interactions — informational only, do not affect pass/fail
+    { label: 'Details panel opened',          event: 'user-opened-panel-details', optional: true },
+    { label: 'Compare panel opened',          event: 'user-opened-panel-compare', optional: true },
+    { label: 'Product added',                 event: 'user-added-product',        optional: true },
   ],
   footwear: [
     { label: 'Widget present on page',        event: 'user-saw-widget-button' },
@@ -1785,6 +1789,13 @@ function renderSingleDetail(entry) {
     ? '<span style="color:#8b949e;font-size:13px">No checklist for this flow</span>'
     : \`<ul style="list-style:none;padding:0;margin:0">\${checklist.map(item => {
         const passed = eventMatches(item.event, item.phase);
+        if (item.optional) {
+          return \`<li style="font-size:12px;padding:3px 0;display:flex;align-items:center;gap:6px">
+            <span style="color:\${passed ? '#3fb950' : '#484f58'};font-size:11px">\${passed ? '✅' : '○'}</span>
+            <span style="color:\${passed ? '#8b949e' : '#484f58'};font-style:italic">\${item.label}</span>
+            \${!passed ? \`<span style="font-size:10px;color:#484f58">not executed</span>\` : ''}
+          </li>\`;
+        }
         return \`<li style="font-size:12px;padding:3px 0;display:flex;align-items:center;gap:6px">
           <span style="color:\${passed ? '#3fb950' : '#484f58'}">\${passed ? '✅' : '⬜'}</span>
           <span style="color:\${passed ? '#c9d1d9' : '#484f58'}">\${item.label}</span>
