@@ -1,5 +1,50 @@
 [
   {
+    "timestamp": "2026-05-19T03:00:32.472Z",
+    "url": "https://poppy-tokyo.com/products/blue-ribbon-see-through-tops",
+    "phase": "full",
+    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/26073455122",
+    "store": "unknown",
+    "productType": "unknown",
+    "flow": null,
+    "onboarding": {
+      "gender": "female",
+      "age": "35",
+      "height": "161",
+      "weight": "54"
+    },
+    "giftOnboarding": {
+      "gender": "female",
+      "age": "30-39",
+      "height": "160-164",
+      "bodyType": "52 - 63 kg"
+    },
+    "footwearOnboarding": {
+      "gender": "female",
+      "brand": "Adidas",
+      "size": "25.5 cm"
+    },
+    "kidsOnboarding": {
+      "gender": "girl",
+      "age": 8,
+      "height": "120",
+      "weight": "25"
+    },
+    "events": [],
+    "browsers": [
+      {
+        "browser": "chrome",
+        "status": "skipped",
+        "error": null,
+        "missingEvents": [],
+        "widgetVisibleMs": null,
+        "screenshotFile": null,
+        "widgetType": null,
+        "hasSmartTable": null
+      }
+    ]
+  },
+  {
     "timestamp": "2026-05-19T02:54:31.774Z",
     "url": "https://poppy-tokyo.com/en/products/blue-ribbon-see-through-tops?pr_prod_strat=pinned&pr_rec_id=f922d5210&pr_rec_pid=8402018631932&pr_ref_pid=8831862800636&pr_seq=uniform",
     "phase": "full",
