@@ -34,7 +34,7 @@
         "type": "widget_missing"
       }
     ],
-    "issueStartedAt": "2026-05-21T01:09:36.854Z"
+    "issueStartedAt": "2026-05-21T03:06:04.311Z"
   },
   "frans_boone": {
     "consecutiveFailures": 0,
@@ -151,7 +151,7 @@
         "type": "widget_missing"
       }
     ],
-    "issueStartedAt": "2026-05-21T01:09:36.854Z"
+    "issueStartedAt": "2026-05-21T03:06:04.311Z"
   },
   "hankyu_mens": {
     "consecutiveFailures": 0,
@@ -387,8 +387,9 @@
   },
   "studio_nicholson": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 0,
-    "autoBlacklisted": false
+    "consecutiveWidgetMissing": 1,
+    "autoBlacklisted": false,
+    "issueStartedAt": "2026-05-21T03:06:04.311Z"
   },
   "unitedarrows_global": {
     "consecutiveFailures": 0,
@@ -397,7 +398,7 @@
   },
   "snidel": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 45,
+    "consecutiveWidgetMissing": 46,
     "autoBlacklisted": false,
     "issueStartedAt": "2026-04-13T09:15:18.244Z"
   },

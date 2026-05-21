@@ -1,15 +1,15 @@
 {
-  "timestamp": "2026-05-21T01:09:36.586Z",
+  "timestamp": "2026-05-21T03:06:03.937Z",
   "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/26197216056",
   "summary": {
-    "total": 66,
-    "passed": 57,
-    "widgetMissing": 9,
+    "total": 82,
+    "passed": 71,
+    "widgetMissing": 11,
     "skipped": 0,
     "failed": 0,
-    "fallbackUsed": 59,
-    "avgWidgetVisibleMs": 28667,
-    "p95WidgetVisibleMs": 36627
+    "fallbackUsed": 73,
+    "avgWidgetVisibleMs": 28423,
+    "p95WidgetVisibleMs": 35141
   },
   "newIssues": [],
   "widgetMissingStores": [
@@ -72,6 +72,22 @@
     {
       "store": "poppy",
       "url": "https://poppy-tokyo.com/products/poppy-print-long-t-shirt-pink",
+      "browsers": [
+        "chrome",
+        "webkit"
+      ]
+    },
+    {
+      "store": "snidel",
+      "url": "https://snidel.com/Form/Product/ProductDetail.aspx?shop=0&pid=SHFT261075&vid=&bid=SNH01&cid=&_type=&cat=&swrd=",
+      "browsers": [
+        "chrome",
+        "webkit"
+      ]
+    },
+    {
+      "store": "studio_nicholson",
+      "url": "https://japan.studionicholson.com/products/chalco-denim-pant-in-parchment",
       "browsers": [
         "chrome",
         "webkit"
