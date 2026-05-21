@@ -3570,5 +3570,30 @@
     "sku": "CG0242846901",
     "url": "https://voi.0101.co.jp/voi/webcatalog/showGoodsDetails?wrt=5&mcd=CG024&cpg=284&pno=69&ino=01&vs-branch=fit-vis-bag-item-view&vs-dev&vs-env=staging",
     "batch": "marui-0428"
+  },
+  {
+    "sku": "JMH03C-0012",
+    "url": "https://edwin-mall.jp/shop/g/gJMH03C-116-02/",
+    "batch": "edwin-0621"
+  },
+  {
+    "sku": "DB2037-0001",
+    "url": "https://edwin-mall.jp/shop/g/gDB2037-W14S-32/",
+    "batch": "edwin-0621"
+  },
+  {
+    "sku": "LM5812-0002",
+    "url": "https://edwin-mall.jp/shop/g/gLM5812-200-00/",
+    "batch": "edwin-0621"
+  },
+  {
+    "sku": "JMH03C-0013",
+    "url": "https://edwin-mall.jp/shop/g/gJMH03C-1326-05/",
+    "batch": "edwin-0621"
+  },
+  {
+    "sku": "JM732C-0003",
+    "url": "https://edwin-mall.jp/shop/g/gJM732C-419-02/",
+    "batch": "edwin-0621"
   }
 ]
