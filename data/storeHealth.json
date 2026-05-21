@@ -20,7 +20,7 @@
   },
   "coen": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 0,
+    "consecutiveWidgetMissing": 1,
     "autoBlacklisted": false,
     "recoveries": [
       {
@@ -33,7 +33,8 @@
         "durationMs": 172850326,
         "type": "widget_missing"
       }
-    ]
+    ],
+    "issueStartedAt": "2026-05-21T00:12:21.352Z"
   },
   "frans_boone": {
     "consecutiveFailures": 0,
@@ -72,7 +73,7 @@
   },
   "seilin_online_shop": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 7,
+    "consecutiveWidgetMissing": 8,
     "autoBlacklisted": false,
     "issueStartedAt": "2026-05-15T00:01:44.729Z"
   },
@@ -88,7 +89,7 @@
   },
   "hankyu_hanshin": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 1,
+    "consecutiveWidgetMissing": 2,
     "autoBlacklisted": false,
     "recoveries": [
       {
@@ -136,7 +137,7 @@
   },
   "cox": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 0,
+    "consecutiveWidgetMissing": 1,
     "autoBlacklisted": false,
     "recoveries": [
       {
@@ -149,11 +150,12 @@
         "durationMs": 86775137,
         "type": "widget_missing"
       }
-    ]
+    ],
+    "issueStartedAt": "2026-05-21T00:12:21.352Z"
   },
   "hankyu_mens": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 3,
+    "consecutiveWidgetMissing": 4,
     "autoBlacklisted": false,
     "recoveries": [
       {
@@ -176,7 +178,7 @@
   },
   "poppy": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 2,
+    "consecutiveWidgetMissing": 3,
     "autoBlacklisted": false,
     "issueStartedAt": "2026-05-19T03:57:11.252Z"
   },
@@ -202,7 +204,7 @@
   },
   "reebok_korea": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 47,
+    "consecutiveWidgetMissing": 48,
     "autoBlacklisted": false,
     "issueStartedAt": "2026-04-13T09:15:18.244Z"
   },
@@ -455,7 +457,7 @@
   },
   "sanyo_online_store": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 1,
+    "consecutiveWidgetMissing": 2,
     "autoBlacklisted": false,
     "issueStartedAt": "2026-05-20T00:07:54.414Z"
   },
@@ -481,7 +483,7 @@
   },
   "gelato_pique": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 47,
+    "consecutiveWidgetMissing": 48,
     "autoBlacklisted": false,
     "issueStartedAt": "2026-04-13T09:15:18.244Z"
   },
