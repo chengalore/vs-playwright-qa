@@ -61,18 +61,12 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git pull --rebase origin ${{ github.ref_name }}
-          for i in 1 2 3; do
-            node scripts/build-dashboard.js
-            git add docs/
-            git diff --staged --quiet && { echo "Nothing new to publish"; break; }
-            git commit -m "chore: publish compare view screenshots [skip ci]"
-            git push origin HEAD:${{ github.ref_name }} && break
-            echo "Push attempt $i failed, retrying..."
-            git reset HEAD~1
-            git restore docs/ 2>/dev/null || git checkout -- docs/
-            git pull --rebase origin ${{ github.ref_name }}
-            sleep 5
-          done
+          git fetch origin ${{ github.ref_name }}
+          git reset origin/${{ github.ref_name }}
+          node scripts/build-dashboard.js
+          git add docs/
+          git diff --staged --quiet && { echo "Nothing new to publish"; exit 0; }
+          git commit -m "chore: publish compare view screenshots [skip ci]"
+          git push origin HEAD:${{ github.ref_name }}
         env:
           PHASE: skip
