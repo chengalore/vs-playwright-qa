@@ -15,12 +15,13 @@
   },
   "andar_japan": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 0,
-    "autoBlacklisted": false
+    "consecutiveWidgetMissing": 1,
+    "autoBlacklisted": false,
+    "issueStartedAt": "2026-05-23T00:10:52.876Z"
   },
   "coen": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 0,
+    "consecutiveWidgetMissing": 1,
     "autoBlacklisted": false,
     "recoveries": [
       {
@@ -38,12 +39,14 @@
         "durationMs": 172850326,
         "type": "widget_missing"
       }
-    ]
+    ],
+    "issueStartedAt": "2026-05-23T00:10:52.875Z"
   },
   "frans_boone": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 0,
-    "autoBlacklisted": false
+    "consecutiveWidgetMissing": 1,
+    "autoBlacklisted": false,
+    "issueStartedAt": "2026-05-23T00:10:52.875Z"
   },
   "emmi": {
     "consecutiveFailures": 0,
@@ -72,12 +75,13 @@
   },
   "re_edit": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 0,
-    "autoBlacklisted": false
+    "consecutiveWidgetMissing": 1,
+    "autoBlacklisted": false,
+    "issueStartedAt": "2026-05-23T00:10:52.875Z"
   },
   "seilin_online_shop": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 9,
+    "consecutiveWidgetMissing": 10,
     "autoBlacklisted": false,
     "issueStartedAt": "2026-05-15T00:01:44.729Z"
   },
@@ -93,7 +97,7 @@
   },
   "hankyu_hanshin": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 3,
+    "consecutiveWidgetMissing": 4,
     "autoBlacklisted": false,
     "recoveries": [
       {
@@ -126,8 +130,9 @@
   },
   "camilla_and_marc": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 0,
-    "autoBlacklisted": false
+    "consecutiveWidgetMissing": 1,
+    "autoBlacklisted": false,
+    "issueStartedAt": "2026-05-23T00:10:52.876Z"
   },
   "estnation": {
     "consecutiveFailures": 0,
@@ -163,16 +168,20 @@
   },
   "hankyu_mens": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 5,
+    "consecutiveWidgetMissing": 0,
     "autoBlacklisted": false,
     "recoveries": [
+      {
+        "resolvedAt": "2026-05-23T00:10:52.875Z",
+        "durationMs": 345629145,
+        "type": "widget_missing"
+      },
       {
         "resolvedAt": "2026-05-16T23:56:30.449Z",
         "durationMs": 515922778,
         "type": "widget_missing"
       }
-    ],
-    "issueStartedAt": "2026-05-19T00:10:23.730Z"
+    ]
   },
   "llbean": {
     "consecutiveFailures": 0,
@@ -186,7 +195,7 @@
   },
   "poppy": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 4,
+    "consecutiveWidgetMissing": 5,
     "autoBlacklisted": false,
     "issueStartedAt": "2026-05-19T03:57:11.252Z"
   },
@@ -212,7 +221,7 @@
   },
   "reebok_korea": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 49,
+    "consecutiveWidgetMissing": 50,
     "autoBlacklisted": false,
     "issueStartedAt": "2026-04-13T09:15:18.244Z"
   },
@@ -333,8 +342,9 @@
   },
   "classico_global": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 0,
-    "autoBlacklisted": false
+    "consecutiveWidgetMissing": 1,
+    "autoBlacklisted": false,
+    "issueStartedAt": "2026-05-23T00:10:52.876Z"
   },
   "dinos": {
     "consecutiveFailures": 0,
@@ -350,8 +360,9 @@
   },
   "ameri_vintage": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 0,
-    "autoBlacklisted": false
+    "consecutiveWidgetMissing": 1,
+    "autoBlacklisted": false,
+    "issueStartedAt": "2026-05-23T00:10:52.876Z"
   },
   "buyma": {
     "consecutiveFailures": 0,
@@ -395,18 +406,19 @@
   },
   "studio_nicholson": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 2,
+    "consecutiveWidgetMissing": 3,
     "autoBlacklisted": false,
     "issueStartedAt": "2026-05-21T03:06:04.311Z"
   },
   "unitedarrows_global": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 0,
-    "autoBlacklisted": false
+    "consecutiveWidgetMissing": 1,
+    "autoBlacklisted": false,
+    "issueStartedAt": "2026-05-23T00:10:52.876Z"
   },
   "snidel": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 47,
+    "consecutiveWidgetMissing": 48,
     "autoBlacklisted": false,
     "issueStartedAt": "2026-04-13T09:15:18.244Z"
   },
@@ -422,8 +434,9 @@
   },
   "classico_taiwan": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 0,
-    "autoBlacklisted": false
+    "consecutiveWidgetMissing": 1,
+    "autoBlacklisted": false,
+    "issueStartedAt": "2026-05-23T00:10:52.875Z"
   },
   "and_mall": {
     "consecutiveFailures": 0,
@@ -442,8 +455,9 @@
   },
   "levi_japan": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 0,
-    "autoBlacklisted": false
+    "consecutiveWidgetMissing": 1,
+    "autoBlacklisted": false,
+    "issueStartedAt": "2026-05-23T00:10:52.875Z"
   },
   "flandre": {
     "consecutiveFailures": 0,
@@ -466,7 +480,7 @@
   },
   "sanyo_online_store": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 0,
+    "consecutiveWidgetMissing": 1,
     "autoBlacklisted": false,
     "recoveries": [
       {
@@ -474,7 +488,8 @@
         "durationMs": 172715542,
         "type": "widget_missing"
       }
-    ]
+    ],
+    "issueStartedAt": "2026-05-23T00:10:52.876Z"
   },
   "world": {
     "consecutiveFailures": 0,
@@ -488,8 +503,9 @@
   },
   "taion_wear": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 0,
-    "autoBlacklisted": false
+    "consecutiveWidgetMissing": 1,
+    "autoBlacklisted": false,
+    "issueStartedAt": "2026-05-23T00:10:52.876Z"
   },
   "zuica": {
     "consecutiveFailures": 0,
@@ -498,7 +514,7 @@
   },
   "gelato_pique": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 49,
+    "consecutiveWidgetMissing": 50,
     "autoBlacklisted": false,
     "issueStartedAt": "2026-04-13T09:15:18.244Z"
   },
