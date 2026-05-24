@@ -1,5 +1,173 @@
 [
   {
+    "timestamp": "2026-05-24T00:01:21.718Z",
+    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/26346832128",
+    "summary": {
+      "total": 66,
+      "passed": 59,
+      "widgetMissing": 7,
+      "skipped": 0,
+      "failed": 0,
+      "fallbackUsed": 60,
+      "avgWidgetVisibleMs": 27928,
+      "p95WidgetVisibleMs": 34291
+    },
+    "newIssues": [],
+    "widgetMissingStores": [
+      {
+        "store": "gelato_pique",
+        "url": "https://gelatopique.com/Form/Product/ProductDetail.aspx?shop=0&pid=PWCO261297&vid=&bid=PIQ01&cid=&_type=&cat=WOM003001&swrd=",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "seilin_online_shop",
+        "url": "https://www.hrm-eshop.com//shop/g/g1010671240006/",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "reebok_korea",
+        "url": "https://reebok.co.kr/goods/goods_view.php?goodsNo=1000002262",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "hankyu_hanshin",
+        "url": "https://web.hh-online.jp/fashion/goods/index.html?ggcd=508767628",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "hankyu_mens",
+        "url": "https://web.hh-online.jp/hankyu-mens/goods/index.html?ggcd=508732084",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "cox",
+        "url": "https://tokyodesignchannel.com/c/lbc/26180639",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "poppy",
+        "url": "https://poppy-tokyo.com/products/poppy-print-long-t-shirt-pink",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      }
+    ],
+    "ongoingMissing": [
+      {
+        "store": "reebok_korea",
+        "consecutiveRuns": 50
+      },
+      {
+        "store": "gelato_pique",
+        "consecutiveRuns": 50
+      },
+      {
+        "store": "snidel",
+        "consecutiveRuns": 48
+      },
+      {
+        "store": "seilin_online_shop",
+        "consecutiveRuns": 10
+      },
+      {
+        "store": "poppy",
+        "consecutiveRuns": 5
+      },
+      {
+        "store": "hankyu_hanshin",
+        "consecutiveRuns": 4
+      },
+      {
+        "store": "studio_nicholson",
+        "consecutiveRuns": 3
+      },
+      {
+        "store": "andar_japan",
+        "consecutiveRuns": 1
+      },
+      {
+        "store": "coen",
+        "consecutiveRuns": 1
+      },
+      {
+        "store": "frans_boone",
+        "consecutiveRuns": 1
+      },
+      {
+        "store": "re_edit",
+        "consecutiveRuns": 1
+      },
+      {
+        "store": "camilla_and_marc",
+        "consecutiveRuns": 1
+      },
+      {
+        "store": "classico_global",
+        "consecutiveRuns": 1
+      },
+      {
+        "store": "ameri_vintage",
+        "consecutiveRuns": 1
+      },
+      {
+        "store": "unitedarrows_global",
+        "consecutiveRuns": 1
+      },
+      {
+        "store": "classico_taiwan",
+        "consecutiveRuns": 1
+      },
+      {
+        "store": "levi_japan",
+        "consecutiveRuns": 1
+      },
+      {
+        "store": "sanyo_online_store",
+        "consecutiveRuns": 1
+      },
+      {
+        "store": "taion_wear",
+        "consecutiveRuns": 1
+      }
+    ],
+    "botProtected": [
+      "adidas",
+      "adidas_japan",
+      "adidas_korea",
+      "asics",
+      "asics_japan",
+      "ralph_lauren",
+      "ralph_lauren_australia",
+      "ralph_lauren_china",
+      "ralph_lauren_korea",
+      "ralph_lauren_singapore",
+      "ralph_lauren_taiwan",
+      "ralph_lauren_uk",
+      "rl"
+    ],
+    "skippedStores": [],
+    "phase": "widget"
+  },
+  {
     "timestamp": "2026-05-23T00:10:52.632Z",
     "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/26317781399",
     "summary": {
@@ -4778,71 +4946,6 @@
     "skippedStores": [
       {
         "store": "bottega_veneta_japan",
-        "reason": "navigation_error"
-      }
-    ],
-    "phase": "widget"
-  },
-  {
-    "timestamp": "2026-04-14T01:19:02.234Z",
-    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/24375567362",
-    "summary": {
-      "total": 86,
-      "passed": 77,
-      "widgetMissing": 4,
-      "skipped": 4,
-      "failed": 1,
-      "fallbackUsed": 78
-    },
-    "newIssues": [
-      {
-        "store": "callawaygolf",
-        "url": "https://www.callawaygolf.jp/mens/bottoms/pants/C26126101_.html?pid=C26126101_1120_L",
-        "browsers": [
-          "chrome"
-        ],
-        "error": "page.evaluate: Execution context was destroyed, most likely because of a navigation"
-      }
-    ],
-    "widgetMissingStores": [
-      {
-        "store": "snidel",
-        "url": "https://snidel.com/Form/Product/ProductDetail.aspx?shop=0&pid=SHFT261075&vid=&bid=SNH01&cid=&_type=&cat=&swrd=",
-        "browsers": [
-          "chrome"
-        ]
-      },
-      {
-        "store": "gelato_pique",
-        "url": "https://gelatopique.com/Form/Product/ProductDetail.aspx?shop=0&pid=PWCO261297&vid=&bid=PIQ01&cid=&_type=&cat=WOM003001&swrd=",
-        "browsers": [
-          "chrome"
-        ]
-      },
-      {
-        "store": "hankyu_hanshin",
-        "url": "https://web.hh-online.jp/fashion/goods/index.html?ggcd=508369227",
-        "browsers": [
-          "chrome"
-        ]
-      },
-      {
-        "store": "reebok_korea",
-        "url": "https://reebok.co.kr/goods/goods_view.php?goodsNo=1000002262",
-        "browsers": [
-          "chrome"
-        ]
-      }
-    ],
-    "ongoingMissing": [],
-    "botProtected": [
-      "adidas",
-      "ralph_lauren",
-      "asics_japan"
-    ],
-    "skippedStores": [
-      {
-        "store": "zuica",
         "reason": "navigation_error"
       }
     ],
