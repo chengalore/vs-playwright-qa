@@ -1,15 +1,15 @@
 {
-  "timestamp": "2026-05-25T00:04:43.480Z",
-  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/26376363335",
+  "timestamp": "2026-05-26T00:10:01.713Z",
+  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/26424777726",
   "summary": {
     "total": 82,
-    "passed": 73,
-    "widgetMissing": 9,
+    "passed": 74,
+    "widgetMissing": 8,
     "skipped": 0,
     "failed": 0,
-    "fallbackUsed": 75,
-    "avgWidgetVisibleMs": 28011,
-    "p95WidgetVisibleMs": 35066
+    "fallbackUsed": 74,
+    "avgWidgetVisibleMs": 28526,
+    "p95WidgetVisibleMs": 38797
   },
   "newIssues": [],
   "widgetMissingStores": [
@@ -30,14 +30,6 @@
       ]
     },
     {
-      "store": "coen",
-      "url": "https://www.coen.co.jp/item/7600024S0452",
-      "browsers": [
-        "chrome",
-        "webkit"
-      ]
-    },
-    {
       "store": "reebok_korea",
       "url": "https://reebok.co.kr/goods/goods_view.php?goodsNo=1000002262",
       "browsers": [
@@ -46,16 +38,16 @@
       ]
     },
     {
-      "store": "hankyu_mens",
-      "url": "https://web.hh-online.jp/hankyu-mens/goods/index.html?ggcd=508732084",
+      "store": "hankyu_hanshin",
+      "url": "https://web.hh-online.jp/fashion/goods/index.html?ggcd=508767628",
       "browsers": [
         "chrome",
         "webkit"
       ]
     },
     {
-      "store": "cox",
-      "url": "https://tokyodesignchannel.com/c/lbc/26180639",
+      "store": "hankyu_mens",
+      "url": "https://web.hh-online.jp/hankyu-mens/goods/index.html?ggcd=508732084",
       "browsers": [
         "chrome",
         "webkit"
@@ -89,42 +81,38 @@
   "ongoingMissing": [
     {
       "store": "reebok_korea",
-      "consecutiveRuns": 51
+      "consecutiveRuns": 52
     },
     {
       "store": "gelato_pique",
-      "consecutiveRuns": 51
+      "consecutiveRuns": 52
     },
     {
       "store": "snidel",
-      "consecutiveRuns": 48
+      "consecutiveRuns": 49
     },
     {
       "store": "seilin_online_shop",
-      "consecutiveRuns": 11
+      "consecutiveRuns": 12
     },
     {
       "store": "poppy",
-      "consecutiveRuns": 6
-    },
-    {
-      "store": "hankyu_hanshin",
-      "consecutiveRuns": 5
+      "consecutiveRuns": 7
     },
     {
       "store": "studio_nicholson",
-      "consecutiveRuns": 3
+      "consecutiveRuns": 4
     },
     {
       "store": "cox",
-      "consecutiveRuns": 1
+      "consecutiveRuns": 2
     },
     {
       "store": "hankyu_mens",
-      "consecutiveRuns": 1
+      "consecutiveRuns": 2
     },
     {
-      "store": "unitedarrows_global",
+      "store": "coen",
       "consecutiveRuns": 1
     }
   ],
