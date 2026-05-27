@@ -99,17 +99,12 @@ const dstManifest = fs.existsSync(dstManifestPath) ? readJSON(dstManifestPath) :
 const dstPngs = new Set(fs.readdirSync(screenshotsDst).filter(f => f.endsWith('.png')));
 // Migrate old entries (no batch field) to 'older'
 for (const e of dstManifest) { if (!e.batch) e.batch = 'older'; }
-// Add any PNGs not yet in manifest — skip numbered shot files already referenced in shots arrays
-const shotFilenames = new Set(dstManifest.flatMap(e => (e.shots || []).map(s => s.filename)));
+// Add any PNGs not yet in manifest
 for (const f of dstPngs) {
-  if (shotFilenames.has(f)) continue;
   const sku = f.replace('.png', '');
   if (!dstManifest.some(e => e.sku === sku)) dstManifest.push({ sku, url: null, batch: 'older' });
 }
-const compareImages = dstManifest.filter(e => {
-  if (e.shots?.length) return e.shots.some(s => dstPngs.has(s.filename));
-  return dstPngs.has(`${e.sku}.png`);
-});
+const compareImages = dstManifest.filter(e => dstPngs.has(`${e.sku}.png`));
 
 // Compute KPI metrics from history
 function computeMetrics(history) {
@@ -566,12 +561,7 @@ function generateDashboard(history, compareImages, singleUrlHistory, metrics) {
       cursor: pointer;
       transition: border-color 0.15s;
     }
-    .overlay-card > img { width: 100%; display: block; }
-    .overlay-filmstrip { display: flex; overflow-x: auto; border-bottom: 1px solid #21262d; }
-    .overlay-shot { flex: 0 0 auto; text-align: center; border-right: 1px solid #21262d; }
-    .overlay-shot:last-child { border-right: none; }
-    .overlay-shot img { height: 180px; width: auto; display: block; }
-    .overlay-shot-label { padding: 3px 8px; font-size: 10px; color: #8b949e; background: #0d1117; white-space: nowrap; }
+    .overlay-card img { width: 100%; display: block; }
     .overlay-card .card-footer {
       display: flex;
       align-items: center;
@@ -2044,15 +2034,9 @@ function updateTagSummary() {
 }
 
 function renderGrid(images) {
-  return images.map(({ sku, url, shots }) => {
-    const imgHtml = shots?.length
-      ? \`<div class="overlay-filmstrip">\${shots.map(s =>
-          \`<div class="overlay-shot"><img src="compare-view-screenshots/\${s.filename}" alt="\${s.label}"><div class="overlay-shot-label">\${s.label}</div></div>\`
-        ).join('')}</div>\`
-      : \`<img src="compare-view-screenshots/\${sku}.png" alt="">\`;
-    return \`
+  return images.map(({ sku, url }) => \`
     <div class="overlay-card" id="card-\${sku}">
-      \${imgHtml}
+      <img src="compare-view-screenshots/\${sku}.png" alt="">
       <div class="card-footer">
         <div class="card-sku">\${url ? \`<a href="\${url}" target="_blank">\${sku}</a>\` : sku}</div>
       </div>
@@ -2063,8 +2047,7 @@ function renderGrid(images) {
         \`).join('')}
       </div>
     </div>
-  \`;
-  }).join('');
+  \`).join('');
 }
 
 function filterBatch(batch) {
