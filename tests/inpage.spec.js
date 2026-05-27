@@ -445,13 +445,24 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
     // Capture widget presence screenshot immediately before clicking — shows inpage button on page
     if (phase !== "api") {
       try {
+        // Scroll widget into view, then clip page screenshot to the element bounding box.
+        // element.screenshot() can under-capture custom elements whose rendered size comes
+        // entirely from shadow DOM children; page.screenshot({ clip }) is always accurate.
+        await page.evaluate(() => {
+          const el = document.querySelector("#vs-inpage") ||
+                     document.querySelector("#vs-inpage-luxury") ||
+                     document.querySelector("#vs-legacy-inpage") ||
+                     document.querySelector("#vs-kid") ||
+                     document.querySelector("#vs-placeholder-cart");
+          if (el) el.scrollIntoView({ block: "center", behavior: "instant" });
+        }).catch(() => {});
+        await page.waitForTimeout(400);
         const widgetLoc = page.locator(
           "#vs-inpage, #vs-inpage-luxury, #vs-legacy-inpage, #vs-kid, #vs-placeholder-cart"
         ).first();
-        await widgetLoc.scrollIntoViewIfNeeded({ timeout: 3000 }).catch(() => {});
-        const isVisible = await widgetLoc.isVisible().catch(() => false);
-        const buf = isVisible
-          ? await widgetLoc.screenshot({ type: "jpeg", quality: 80 }).catch(() => null)
+        const bbox = await widgetLoc.boundingBox().catch(() => null);
+        const buf = bbox
+          ? await page.screenshot({ type: "jpeg", quality: 80, clip: bbox }).catch(() => null)
           : await page.screenshot({ type: "jpeg", quality: 70 }).catch(() => null);
         if (buf) {
           const { mkdirSync, writeFileSync } = await import("fs");
