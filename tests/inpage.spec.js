@@ -313,6 +313,10 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
           browser: testInfo.project.name,
           phase,
           durationMs: Date.now() - startTime,
+          widgetVisibleMs,
+          widgetType: widgetMeta.widgetType,
+          hasSmartTable: widgetMeta.hasSmartTable,
+          events: eventWatcher.getAllEvents(),
         });
         return;
       }
@@ -439,7 +443,7 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
     console.log("Flow:", flow);
 
     // Capture widget presence screenshot immediately before clicking — shows inpage button on page
-    if (phase === "full") {
+    if (phase !== "api") {
       try {
         const widgetLoc = page.locator(
           "#vs-inpage, #vs-inpage-luxury, #vs-legacy-inpage, #vs-kid, #vs-placeholder-cart"
@@ -480,6 +484,10 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
         browser: testInfo.project.name,
         phase,
         durationMs: Date.now() - startTime,
+        widgetVisibleMs,
+        widgetType: widgetMeta.widgetType,
+        hasSmartTable: widgetMeta.hasSmartTable,
+        events: eventWatcher.getAllEvents(),
       });
       return;
     }
