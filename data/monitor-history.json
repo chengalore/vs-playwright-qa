@@ -1,5 +1,150 @@
 [
   {
+    "timestamp": "2026-05-27T00:08:32.603Z",
+    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/26482258366",
+    "summary": {
+      "total": 82,
+      "passed": 72,
+      "widgetMissing": 9,
+      "skipped": 1,
+      "failed": 0,
+      "fallbackUsed": 73,
+      "avgWidgetVisibleMs": 29184,
+      "p95WidgetVisibleMs": 35147
+    },
+    "newIssues": [],
+    "widgetMissingStores": [
+      {
+        "store": "gelato_pique",
+        "url": "https://gelatopique.com/Form/Product/ProductDetail.aspx?shop=0&pid=PWCO261297&vid=&bid=PIQ01&cid=&_type=&cat=WOM003001&swrd=",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "seilin_online_shop",
+        "url": "https://www.hrm-eshop.com//shop/g/g1010671240006/",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "coen",
+        "url": "https://www.coen.co.jp/item/7600024S0452",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "reebok_korea",
+        "url": "https://reebok.co.kr/goods/goods_view.php?goodsNo=1000002262",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "hankyu_hanshin",
+        "url": "https://web.hh-online.jp/fashion/goods/index.html?ggcd=508767628",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "hankyu_mens",
+        "url": "https://web.hh-online.jp/hankyu-mens/goods/index.html?ggcd=508732084",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "poppy",
+        "url": "https://poppy-tokyo.com/products/poppy-print-long-t-shirt-pink",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "snidel",
+        "url": "https://snidel.com/Form/Product/ProductDetail.aspx?shop=0&pid=SHFT261075&vid=&bid=SNH01&cid=&_type=&cat=&swrd=",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "studio_nicholson",
+        "url": "https://japan.studionicholson.com/products/chalco-denim-pant-in-parchment",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      }
+    ],
+    "ongoingMissing": [
+      {
+        "store": "reebok_korea",
+        "consecutiveRuns": 53
+      },
+      {
+        "store": "gelato_pique",
+        "consecutiveRuns": 53
+      },
+      {
+        "store": "snidel",
+        "consecutiveRuns": 50
+      },
+      {
+        "store": "seilin_online_shop",
+        "consecutiveRuns": 13
+      },
+      {
+        "store": "poppy",
+        "consecutiveRuns": 8
+      },
+      {
+        "store": "studio_nicholson",
+        "consecutiveRuns": 5
+      },
+      {
+        "store": "hankyu_mens",
+        "consecutiveRuns": 3
+      },
+      {
+        "store": "hankyu_hanshin",
+        "consecutiveRuns": 1
+      }
+    ],
+    "botProtected": [
+      "adidas",
+      "adidas_japan",
+      "adidas_korea",
+      "asics",
+      "asics_japan",
+      "ralph_lauren",
+      "ralph_lauren_australia",
+      "ralph_lauren_china",
+      "ralph_lauren_korea",
+      "ralph_lauren_singapore",
+      "ralph_lauren_taiwan",
+      "ralph_lauren_uk",
+      "rl"
+    ],
+    "skippedStores": [
+      {
+        "store": "id_look",
+        "reason": "navigation_error"
+      }
+    ],
+    "phase": "widget"
+  },
+  {
     "timestamp": "2026-05-26T00:10:01.713Z",
     "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/26424777726",
     "summary": {
@@ -4958,94 +5103,6 @@
       {
         "store": "hankyu_mens",
         "consecutiveRuns": 3
-      }
-    ],
-    "botProtected": [
-      "adidas",
-      "ralph_lauren",
-      "asics_japan"
-    ],
-    "skippedStores": [],
-    "phase": "widget"
-  },
-  {
-    "timestamp": "2026-04-16T23:41:15.289Z",
-    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/24539636142",
-    "summary": {
-      "total": 86,
-      "passed": 77,
-      "widgetMissing": 5,
-      "skipped": 3,
-      "failed": 1,
-      "fallbackUsed": 78
-    },
-    "newIssues": [
-      {
-        "store": "callawaygolf",
-        "url": "https://www.callawaygolf.jp/mens/bottoms/pants/C26126101_.html?pid=C26126101_1120_L",
-        "browsers": [
-          "chrome"
-        ],
-        "error": "page.evaluate: Execution context was destroyed, most likely because of a navigation"
-      }
-    ],
-    "widgetMissingStores": [
-      {
-        "store": "snidel",
-        "url": "https://snidel.com/Form/Product/ProductDetail.aspx?shop=0&pid=SHFT261075&vid=&bid=SNH01&cid=&_type=&cat=&swrd=",
-        "browsers": [
-          "chrome"
-        ]
-      },
-      {
-        "store": "gelato_pique",
-        "url": "https://gelatopique.com/Form/Product/ProductDetail.aspx?shop=0&pid=PWCO261297&vid=&bid=PIQ01&cid=&_type=&cat=WOM003001&swrd=",
-        "browsers": [
-          "chrome"
-        ]
-      },
-      {
-        "store": "hankyu_hanshin",
-        "url": "https://web.hh-online.jp/fashion/goods/index.html?ggcd=508369227",
-        "browsers": [
-          "chrome"
-        ]
-      },
-      {
-        "store": "reebok_korea",
-        "url": "https://reebok.co.kr/goods/goods_view.php?goodsNo=1000002262",
-        "browsers": [
-          "chrome"
-        ]
-      },
-      {
-        "store": "hankyu_mens",
-        "url": "https://web.hh-online.jp/hankyu-mens/goods/index.html?ggcd=506692016",
-        "browsers": [
-          "chrome"
-        ]
-      }
-    ],
-    "ongoingMissing": [
-      {
-        "store": "hankyu_hanshin",
-        "consecutiveRuns": 3
-      },
-      {
-        "store": "reebok_korea",
-        "consecutiveRuns": 3
-      },
-      {
-        "store": "snidel",
-        "consecutiveRuns": 3
-      },
-      {
-        "store": "gelato_pique",
-        "consecutiveRuns": 3
-      },
-      {
-        "store": "hankyu_mens",
-        "consecutiveRuns": 2
       }
     ],
     "botProtected": [
