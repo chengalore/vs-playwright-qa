@@ -92,7 +92,8 @@ test.afterAll(async () => {
 
   const manifestPath = join(screenshotsDir, "manifest.json");
   const images = existsSync(manifestPath)
-    ? JSON.parse(readFileSync(manifestPath, "utf8")).filter(({ sku }) =>
+    ? JSON.parse(readFileSync(manifestPath, "utf8")).filter(({ sku, shots: s }) =>
+        s?.some((shot) => existsSync(join(screenshotsDir, shot.filename))) ||
         existsSync(join(screenshotsDir, `${sku}.png`))
       )
     : [];
@@ -110,20 +111,37 @@ test.afterAll(async () => {
     .card img { width: 100%; display: block; }
     .card .label { padding: 8px 12px; font-size: 12px; color: #555; word-break: break-all; }
     .card .sku { padding: 4px 12px 8px; font-size: 13px; font-weight: bold; color: #222; }
+    .filmstrip { display: flex; overflow-x: auto; border-bottom: 1px solid #e0e0e0; }
+    .shot-item { flex: 0 0 auto; text-align: center; border-right: 1px solid #e0e0e0; }
+    .shot-item:last-child { border-right: none; }
+    .shot-item img { height: 200px; width: auto; display: block; }
+    .shot-label { padding: 4px 8px; font-size: 11px; color: #777; background: #f9f9f9; white-space: nowrap; }
   </style>
 </head>
 <body>
   <h1>Compare View — ${images.length} products</h1>
   <div class="grid">
     ${images
-      .map(
-        ({ sku, url }) => `
+      .map(({ sku, url, shots: s }) => {
+        const validShots = (s || []).filter((shot) =>
+          existsSync(join(screenshotsDir, shot.filename))
+        );
+        const imgHtml =
+          validShots.length > 0
+            ? `<div class="filmstrip">${validShots
+                .map(
+                  (shot) =>
+                    `<div class="shot-item"><img src="${shot.filename}" alt="${shot.label}"><div class="shot-label">${shot.label}</div></div>`
+                )
+                .join("")}</div>`
+            : `<img src="${sku}.png" alt="${sku}">`;
+        return `
     <div class="card">
-      <img src="${sku}.png" alt="${sku}">
+      ${imgHtml}
       <div class="sku">${sku}</div>
-      <div class="label"><a href="${url}" target="_blank">${url}</a></div>
-    </div>`
-      )
+      <div class="label">${url ? `<a href="${url}" target="_blank">${url}</a>` : "—"}</div>
+    </div>`;
+      })
       .join("")}
   </div>
 </body>
@@ -212,6 +230,20 @@ for (const url of urls) {
         return;
       }
 
+      // ── Screenshot state tracking ───────────────────────────────────────────
+      const screenshotsDir = join(__dirname, "../test-results/compare-view-screenshots", runDate);
+      mkdirSync(screenshotsDir, { recursive: true });
+      const shots = [];
+
+      // Capture the open VS panel (widget host), falling back to full page.
+      const captureWidget = async () => {
+        const h = await page.evaluateHandle(() => window.getWidgetHost()).catch(() => null);
+        const el = h?.asElement() ?? null;
+        return el
+          ? el.screenshot({ timeout: 5000 }).catch(() => null)
+          : page.screenshot({ fullPage: false }).catch(() => null);
+      };
+
       // ── Find and click the inpage open button ───────────────────────────────
       const btnFound = await page
         .waitForFunction(
@@ -233,6 +265,14 @@ for (const url of urls) {
         return;
       }
 
+      // Shot 1: widget button in closed state
+      const shot01 = await page.locator("#vs-inpage, #vs-inpage-luxury").first()
+        .screenshot({ timeout: 5000 }).catch(() => null);
+      if (shot01) {
+        writeFileSync(join(screenshotsDir, `${sku}-01-widget.png`), shot01);
+        shots.push({ filename: `${sku}-01-widget.png`, label: "Widget button" });
+      }
+
       await page.evaluate(() => {
         const root =
           document.querySelector("#vs-inpage")?.shadowRoot ||
@@ -248,6 +288,14 @@ for (const url of urls) {
         .waitForFunction(() => !!window.getWidgetHost()?.shadowRoot, { timeout: 15000 })
         .catch(() => {});
       await page.waitForTimeout(1500);
+
+      // Shot 2: widget opened — onboarding form (apparel) or bag view
+      const shot02 = await captureWidget();
+      if (shot02) {
+        const label02 = isBagProduct(pdc) ? "Widget opened" : "Onboarding form";
+        writeFileSync(join(screenshotsDir, `${sku}-02-onboarding.png`), shot02);
+        shots.push({ filename: `${sku}-02-onboarding.png`, label: label02 });
+      }
 
       // ── Bag flow ────────────────────────────────────────────────────────────
       if (isBagProduct(pdc)) {
@@ -335,17 +383,17 @@ for (const url of urls) {
       }
 
       // ── Save to disk ────────────────────────────────────────────────────────
-      const screenshotsDir = join(__dirname, "../test-results/compare-view-screenshots", runDate);
-      mkdirSync(screenshotsDir, { recursive: true });
       writeFileSync(join(screenshotsDir, `${sku}.png`), screenshot);
+      shots.push({ filename: `${sku}.png`, label: "Compare view" });
 
       const manifestPath = join(screenshotsDir, "manifest.json");
       const manifest = existsSync(manifestPath)
         ? JSON.parse(readFileSync(manifestPath, "utf8"))
         : [];
       const existingIdx = manifest.findIndex((e) => e.sku === sku);
-      if (existingIdx >= 0) manifest[existingIdx] = { sku, url };
-      else manifest.push({ sku, url });
+      const entry = { sku, url, shots };
+      if (existingIdx >= 0) manifest[existingIdx] = entry;
+      else manifest.push(entry);
       writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
 
       await testInfo.attach(`${sku}.png`, { body: screenshot, contentType: "image/png" });
