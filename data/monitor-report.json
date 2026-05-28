@@ -1,15 +1,15 @@
 {
-  "timestamp": "2026-05-27T00:08:32.603Z",
-  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/26482258366",
+  "timestamp": "2026-05-28T00:06:39.247Z",
+  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/26545925416",
   "summary": {
     "total": 82,
-    "passed": 72,
-    "widgetMissing": 9,
-    "skipped": 1,
+    "passed": 71,
+    "widgetMissing": 11,
+    "skipped": 0,
     "failed": 0,
-    "fallbackUsed": 73,
-    "avgWidgetVisibleMs": 29184,
-    "p95WidgetVisibleMs": 35147
+    "fallbackUsed": 72,
+    "avgWidgetVisibleMs": 27804,
+    "p95WidgetVisibleMs": 35725
   },
   "newIssues": [],
   "widgetMissingStores": [
@@ -30,8 +30,8 @@
       ]
     },
     {
-      "store": "coen",
-      "url": "https://www.coen.co.jp/item/7600024S0452",
+      "store": "strasburgo",
+      "url": "https://outlet.strasburgo.co.jp/item/STB0125S0853?via=recommend",
       "browsers": [
         "chrome",
         "webkit"
@@ -54,8 +54,24 @@
       ]
     },
     {
+      "store": "strasburgo_outlet",
+      "url": "https://outlet.strasburgo.co.jp/item/STB0125F0889?via=recommend",
+      "browsers": [
+        "chrome",
+        "webkit"
+      ]
+    },
+    {
       "store": "hankyu_mens",
       "url": "https://web.hh-online.jp/hankyu-mens/goods/index.html?ggcd=508732084",
+      "browsers": [
+        "chrome",
+        "webkit"
+      ]
+    },
+    {
+      "store": "cox",
+      "url": "https://tokyodesignchannel.com/c/lbc/26180639",
       "browsers": [
         "chrome",
         "webkit"
@@ -89,34 +105,38 @@
   "ongoingMissing": [
     {
       "store": "reebok_korea",
-      "consecutiveRuns": 53
+      "consecutiveRuns": 54
     },
     {
       "store": "gelato_pique",
-      "consecutiveRuns": 53
+      "consecutiveRuns": 54
     },
     {
       "store": "snidel",
-      "consecutiveRuns": 50
+      "consecutiveRuns": 51
     },
     {
       "store": "seilin_online_shop",
-      "consecutiveRuns": 13
+      "consecutiveRuns": 14
     },
     {
       "store": "poppy",
-      "consecutiveRuns": 8
+      "consecutiveRuns": 9
     },
     {
       "store": "studio_nicholson",
-      "consecutiveRuns": 5
+      "consecutiveRuns": 6
     },
     {
       "store": "hankyu_mens",
-      "consecutiveRuns": 3
+      "consecutiveRuns": 4
     },
     {
       "store": "hankyu_hanshin",
+      "consecutiveRuns": 2
+    },
+    {
+      "store": "coen",
       "consecutiveRuns": 1
     }
   ],
@@ -135,10 +155,5 @@
     "ralph_lauren_uk",
     "rl"
   ],
-  "skippedStores": [
-    {
-      "store": "id_look",
-      "reason": "navigation_error"
-    }
-  ]
+  "skippedStores": []
 }
