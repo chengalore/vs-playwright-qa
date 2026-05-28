@@ -457,13 +457,7 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
           if (el) el.scrollIntoView({ block: "center", behavior: "instant" });
         }).catch(() => {});
         await page.waitForTimeout(400);
-        const widgetLoc = page.locator(
-          "#vs-inpage, #vs-inpage-luxury, #vs-legacy-inpage, #vs-kid, #vs-placeholder-cart"
-        ).first();
-        const bbox = await widgetLoc.boundingBox().catch(() => null);
-        const buf = bbox
-          ? await page.screenshot({ type: "jpeg", quality: 80, clip: bbox }).catch(() => null)
-          : await page.screenshot({ type: "jpeg", quality: 70 }).catch(() => null);
+        const buf = await page.screenshot({ type: "jpeg", quality: 80, fullPage: false }).catch(() => null);
         if (buf) {
           const { mkdirSync, writeFileSync } = await import("fs");
           const { join, dirname } = await import("path");
