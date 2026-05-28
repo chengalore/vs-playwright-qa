@@ -448,15 +448,11 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
         // Scroll widget into view, then clip page screenshot to the element bounding box.
         // element.screenshot() can under-capture custom elements whose rendered size comes
         // entirely from shadow DOM children; page.screenshot({ clip }) is always accurate.
-        await page.evaluate(() => {
-          const el = document.querySelector("#vs-inpage") ||
-                     document.querySelector("#vs-inpage-luxury") ||
-                     document.querySelector("#vs-legacy-inpage") ||
-                     document.querySelector("#vs-kid") ||
-                     document.querySelector("#vs-placeholder-cart");
-          if (el) el.scrollIntoView({ block: "center", behavior: "instant" });
-        }).catch(() => {});
-        await page.waitForTimeout(400);
+        const widgetLoc = page.locator(
+          "#vs-inpage, #vs-inpage-luxury, #vs-legacy-inpage, #vs-kid, #vs-placeholder-cart"
+        ).first();
+        await widgetLoc.scrollIntoViewIfNeeded({ timeout: 5000 }).catch(() => {});
+        await page.waitForTimeout(600);
         const buf = await page.screenshot({ type: "jpeg", quality: 80, fullPage: false }).catch(() => null);
         if (buf) {
           const { mkdirSync, writeFileSync } = await import("fs");
