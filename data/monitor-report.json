@@ -1,15 +1,15 @@
 {
-  "timestamp": "2026-05-28T00:06:39.247Z",
-  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/26545925416",
+  "timestamp": "2026-05-29T00:16:08.098Z",
+  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/26609789290",
   "summary": {
     "total": 82,
     "passed": 71,
     "widgetMissing": 11,
     "skipped": 0,
     "failed": 0,
-    "fallbackUsed": 72,
-    "avgWidgetVisibleMs": 27804,
-    "p95WidgetVisibleMs": 35725
+    "fallbackUsed": 71,
+    "avgWidgetVisibleMs": 28512,
+    "p95WidgetVisibleMs": 36021
   },
   "newIssues": [],
   "widgetMissingStores": [
@@ -38,16 +38,16 @@
       ]
     },
     {
-      "store": "reebok_korea",
-      "url": "https://reebok.co.kr/goods/goods_view.php?goodsNo=1000002262",
+      "store": "coen",
+      "url": "https://www.coen.co.jp/item/7600024S0452",
       "browsers": [
         "chrome",
         "webkit"
       ]
     },
     {
-      "store": "hankyu_hanshin",
-      "url": "https://web.hh-online.jp/fashion/goods/index.html?ggcd=508767628",
+      "store": "reebok_korea",
+      "url": "https://reebok.co.kr/goods/goods_view.php?goodsNo=1000002262",
       "browsers": [
         "chrome",
         "webkit"
@@ -70,16 +70,16 @@
       ]
     },
     {
-      "store": "cox",
-      "url": "https://tokyodesignchannel.com/c/lbc/26180639",
+      "store": "poppy",
+      "url": "https://poppy-tokyo.com/products/poppy-print-long-t-shirt-pink",
       "browsers": [
         "chrome",
         "webkit"
       ]
     },
     {
-      "store": "poppy",
-      "url": "https://poppy-tokyo.com/products/poppy-print-long-t-shirt-pink",
+      "store": "and_mall",
+      "url": "https://mitsui-shopping-park.com/ec/p/2160600008471?mallColor=0501",
       "browsers": [
         "chrome",
         "webkit"
@@ -105,38 +105,46 @@
   "ongoingMissing": [
     {
       "store": "reebok_korea",
-      "consecutiveRuns": 54
+      "consecutiveRuns": 55
     },
     {
       "store": "gelato_pique",
-      "consecutiveRuns": 54
+      "consecutiveRuns": 55
     },
     {
       "store": "snidel",
-      "consecutiveRuns": 51
+      "consecutiveRuns": 52
     },
     {
       "store": "seilin_online_shop",
-      "consecutiveRuns": 14
+      "consecutiveRuns": 15
     },
     {
       "store": "poppy",
-      "consecutiveRuns": 9
+      "consecutiveRuns": 10
     },
     {
       "store": "studio_nicholson",
-      "consecutiveRuns": 6
+      "consecutiveRuns": 7
     },
     {
       "store": "hankyu_mens",
-      "consecutiveRuns": 4
+      "consecutiveRuns": 5
     },
     {
       "store": "hankyu_hanshin",
-      "consecutiveRuns": 2
+      "consecutiveRuns": 3
     },
     {
-      "store": "coen",
+      "store": "strasburgo",
+      "consecutiveRuns": 1
+    },
+    {
+      "store": "cox",
+      "consecutiveRuns": 1
+    },
+    {
+      "store": "strasburgo_outlet",
       "consecutiveRuns": 1
     }
   ],

@@ -1,5 +1,173 @@
 [
   {
+    "timestamp": "2026-05-29T00:16:08.098Z",
+    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/26609789290",
+    "summary": {
+      "total": 82,
+      "passed": 71,
+      "widgetMissing": 11,
+      "skipped": 0,
+      "failed": 0,
+      "fallbackUsed": 71,
+      "avgWidgetVisibleMs": 28512,
+      "p95WidgetVisibleMs": 36021
+    },
+    "newIssues": [],
+    "widgetMissingStores": [
+      {
+        "store": "gelato_pique",
+        "url": "https://gelatopique.com/Form/Product/ProductDetail.aspx?shop=0&pid=PWCO261297&vid=&bid=PIQ01&cid=&_type=&cat=WOM003001&swrd=",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "seilin_online_shop",
+        "url": "https://www.hrm-eshop.com//shop/g/g1010671240006/",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "strasburgo",
+        "url": "https://outlet.strasburgo.co.jp/item/STB0125S0853?via=recommend",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "coen",
+        "url": "https://www.coen.co.jp/item/7600024S0452",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "reebok_korea",
+        "url": "https://reebok.co.kr/goods/goods_view.php?goodsNo=1000002262",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "strasburgo_outlet",
+        "url": "https://outlet.strasburgo.co.jp/item/STB0125F0889?via=recommend",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "hankyu_mens",
+        "url": "https://web.hh-online.jp/hankyu-mens/goods/index.html?ggcd=508732084",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "poppy",
+        "url": "https://poppy-tokyo.com/products/poppy-print-long-t-shirt-pink",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "and_mall",
+        "url": "https://mitsui-shopping-park.com/ec/p/2160600008471?mallColor=0501",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "snidel",
+        "url": "https://snidel.com/Form/Product/ProductDetail.aspx?shop=0&pid=SHFT261075&vid=&bid=SNH01&cid=&_type=&cat=&swrd=",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "studio_nicholson",
+        "url": "https://japan.studionicholson.com/products/chalco-denim-pant-in-parchment",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      }
+    ],
+    "ongoingMissing": [
+      {
+        "store": "reebok_korea",
+        "consecutiveRuns": 55
+      },
+      {
+        "store": "gelato_pique",
+        "consecutiveRuns": 55
+      },
+      {
+        "store": "snidel",
+        "consecutiveRuns": 52
+      },
+      {
+        "store": "seilin_online_shop",
+        "consecutiveRuns": 15
+      },
+      {
+        "store": "poppy",
+        "consecutiveRuns": 10
+      },
+      {
+        "store": "studio_nicholson",
+        "consecutiveRuns": 7
+      },
+      {
+        "store": "hankyu_mens",
+        "consecutiveRuns": 5
+      },
+      {
+        "store": "hankyu_hanshin",
+        "consecutiveRuns": 3
+      },
+      {
+        "store": "strasburgo",
+        "consecutiveRuns": 1
+      },
+      {
+        "store": "cox",
+        "consecutiveRuns": 1
+      },
+      {
+        "store": "strasburgo_outlet",
+        "consecutiveRuns": 1
+      }
+    ],
+    "botProtected": [
+      "adidas",
+      "adidas_japan",
+      "adidas_korea",
+      "asics",
+      "asics_japan",
+      "ralph_lauren",
+      "ralph_lauren_australia",
+      "ralph_lauren_china",
+      "ralph_lauren_korea",
+      "ralph_lauren_singapore",
+      "ralph_lauren_taiwan",
+      "ralph_lauren_uk",
+      "rl"
+    ],
+    "skippedStores": [],
+    "phase": "widget"
+  },
+  {
     "timestamp": "2026-05-28T00:06:39.247Z",
     "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/26545925416",
     "summary": {
@@ -5108,90 +5276,6 @@
       "asics_japan"
     ],
     "skippedStores": [],
-    "phase": "widget"
-  },
-  {
-    "timestamp": "2026-04-17T23:40:15.457Z",
-    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/24591301821",
-    "summary": {
-      "total": 86,
-      "passed": 77,
-      "widgetMissing": 5,
-      "skipped": 4,
-      "failed": 0,
-      "fallbackUsed": 77
-    },
-    "newIssues": [],
-    "widgetMissingStores": [
-      {
-        "store": "snidel",
-        "url": "https://snidel.com/Form/Product/ProductDetail.aspx?shop=0&pid=SHFT261075&vid=&bid=SNH01&cid=&_type=&cat=&swrd=",
-        "browsers": [
-          "chrome"
-        ]
-      },
-      {
-        "store": "gelato_pique",
-        "url": "https://gelatopique.com/Form/Product/ProductDetail.aspx?shop=0&pid=PWCO261297&vid=&bid=PIQ01&cid=&_type=&cat=WOM003001&swrd=",
-        "browsers": [
-          "chrome"
-        ]
-      },
-      {
-        "store": "hankyu_hanshin",
-        "url": "https://web.hh-online.jp/fashion/goods/index.html?ggcd=508369227",
-        "browsers": [
-          "chrome"
-        ]
-      },
-      {
-        "store": "reebok_korea",
-        "url": "https://reebok.co.kr/goods/goods_view.php?goodsNo=1000002262",
-        "browsers": [
-          "chrome"
-        ]
-      },
-      {
-        "store": "hankyu_mens",
-        "url": "https://web.hh-online.jp/hankyu-mens/goods/index.html?ggcd=506692016",
-        "browsers": [
-          "chrome"
-        ]
-      }
-    ],
-    "ongoingMissing": [
-      {
-        "store": "hankyu_hanshin",
-        "consecutiveRuns": 5
-      },
-      {
-        "store": "reebok_korea",
-        "consecutiveRuns": 5
-      },
-      {
-        "store": "snidel",
-        "consecutiveRuns": 5
-      },
-      {
-        "store": "gelato_pique",
-        "consecutiveRuns": 5
-      },
-      {
-        "store": "hankyu_mens",
-        "consecutiveRuns": 4
-      }
-    ],
-    "botProtected": [
-      "adidas",
-      "ralph_lauren",
-      "asics_japan"
-    ],
-    "skippedStores": [
-      {
-        "store": "allsaints_korea",
-        "reason": "navigation_error"
-      }
-    ],
     "phase": "widget"
   }
 ]
