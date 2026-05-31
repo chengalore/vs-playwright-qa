@@ -1,15 +1,15 @@
 {
-  "timestamp": "2026-05-30T00:13:41.531Z",
-  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/26668536225",
+  "timestamp": "2026-05-31T00:06:00.288Z",
+  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/26698344078",
   "summary": {
-    "total": 82,
-    "passed": 70,
-    "widgetMissing": 12,
+    "total": 66,
+    "passed": 58,
+    "widgetMissing": 8,
     "skipped": 0,
     "failed": 0,
-    "fallbackUsed": 72,
-    "avgWidgetVisibleMs": 28224,
-    "p95WidgetVisibleMs": 35376
+    "fallbackUsed": 59,
+    "avgWidgetVisibleMs": 28563,
+    "p95WidgetVisibleMs": 34203
   },
   "newIssues": [],
   "widgetMissingStores": [
@@ -70,40 +70,8 @@
       ]
     },
     {
-      "store": "cox",
-      "url": "https://tokyodesignchannel.com/c/lbc/26180639",
-      "browsers": [
-        "chrome",
-        "webkit"
-      ]
-    },
-    {
       "store": "poppy",
       "url": "https://poppy-tokyo.com/products/poppy-print-long-t-shirt-pink",
-      "browsers": [
-        "chrome",
-        "webkit"
-      ]
-    },
-    {
-      "store": "and_mall",
-      "url": "https://mitsui-shopping-park.com/ec/p/2160600008471?mallColor=0501",
-      "browsers": [
-        "chrome",
-        "webkit"
-      ]
-    },
-    {
-      "store": "snidel",
-      "url": "https://snidel.com/Form/Product/ProductDetail.aspx?shop=0&pid=SHFT261075&vid=&bid=SNH01&cid=&_type=&cat=&swrd=",
-      "browsers": [
-        "chrome",
-        "webkit"
-      ]
-    },
-    {
-      "store": "studio_nicholson",
-      "url": "https://japan.studionicholson.com/products/chalco-denim-pant-in-parchment",
       "browsers": [
         "chrome",
         "webkit"
@@ -113,46 +81,50 @@
   "ongoingMissing": [
     {
       "store": "reebok_korea",
-      "consecutiveRuns": 56
+      "consecutiveRuns": 57
     },
     {
       "store": "gelato_pique",
-      "consecutiveRuns": 56
+      "consecutiveRuns": 57
     },
     {
       "store": "snidel",
-      "consecutiveRuns": 53
+      "consecutiveRuns": 54
     },
     {
       "store": "seilin_online_shop",
-      "consecutiveRuns": 16
+      "consecutiveRuns": 17
     },
     {
       "store": "poppy",
-      "consecutiveRuns": 11
+      "consecutiveRuns": 12
     },
     {
       "store": "studio_nicholson",
-      "consecutiveRuns": 8
+      "consecutiveRuns": 9
     },
     {
       "store": "hankyu_mens",
-      "consecutiveRuns": 6
+      "consecutiveRuns": 7
     },
     {
       "store": "strasburgo",
-      "consecutiveRuns": 2
+      "consecutiveRuns": 3
     },
     {
       "store": "strasburgo_outlet",
-      "consecutiveRuns": 2
+      "consecutiveRuns": 3
     },
     {
       "store": "coen",
-      "consecutiveRuns": 1
+      "consecutiveRuns": 2
     },
     {
       "store": "and_mall",
+      "consecutiveRuns": 2
+    },
+    {
+      "store": "cox",
       "consecutiveRuns": 1
     }
   ],
