@@ -491,6 +491,23 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
       await waitForWidgetRender(page);
     }
 
+    // Screenshot 2: onboarding panel after widget opens
+    if (phase !== "api") {
+      try {
+        const { mkdirSync, writeFileSync } = await import("fs");
+        const { join, dirname } = await import("path");
+        const { fileURLToPath } = await import("url");
+        const __dir = dirname(fileURLToPath(import.meta.url));
+        const dir = join(__dir, "../test-results/widget-screenshots");
+        mkdirSync(dir, { recursive: true });
+        const widgetHost = page.locator("#router-view-wrapper").first();
+        const onboardingBuf = await widgetHost.screenshot({ type: "jpeg", quality: 80 }).catch(() => null);
+        if (onboardingBuf) {
+          writeFileSync(join(dir, `${testInfo.project.name}-onboarding.jpg`), onboardingBuf);
+        }
+      } catch { /* non-fatal */ }
+    }
+
     // widget phase: widget element found and opened — check complete
     if (phase === "widget") {
       logResult({
