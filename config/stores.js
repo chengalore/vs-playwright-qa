@@ -146,7 +146,7 @@ export const STORES = {
   sanyo: { id: 861 }, // shorthand
   sanyo_online_store: { id: 861, monitor: true },
   seilin: { id: 762 }, // shorthand
-  seilin_online_shop: { id: 762, monitor: true },
+  seilin_online_shop: { id: 762 }, // geo-restricted (CloudFront blocks non-JP)
   shel_tter: { id: 697, monitor: true, luxury: true },
   sixpad: { id: 886, monitor: true },
   snidel: { id: 695, monitor: true },

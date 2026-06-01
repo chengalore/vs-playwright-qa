@@ -111,12 +111,6 @@
       }
     ]
   },
-  "seilin_online_shop": {
-    "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 15,
-    "autoBlacklisted": false,
-    "issueStartedAt": "2026-05-15T00:01:44.729Z"
-  },
   "strasburgo": {
     "consecutiveFailures": 0,
     "consecutiveWidgetMissing": 1,
