@@ -111,12 +111,6 @@
       }
     ]
   },
-  "strasburgo": {
-    "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 1,
-    "autoBlacklisted": false,
-    "issueStartedAt": "2026-05-28T00:06:39.581Z"
-  },
   "top_floor": {
     "consecutiveFailures": 0,
     "consecutiveWidgetMissing": 0,
@@ -243,12 +237,6 @@
     "consecutiveWidgetMissing": 10,
     "autoBlacklisted": false,
     "issueStartedAt": "2026-05-19T03:57:11.252Z"
-  },
-  "strasburgo_outlet": {
-    "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 1,
-    "autoBlacklisted": false,
-    "issueStartedAt": "2026-05-28T00:06:39.582Z"
   },
   "shel_tter": {
     "consecutiveFailures": 0,

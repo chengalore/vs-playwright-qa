@@ -153,8 +153,6 @@ export const STORES = {
   snkrdunk: { id: 915 },
   stancal: { id: 713 }, // shorthand
   standard_california: { id: 713, monitor: true },
-  strasburgo: { id: 452, monitor: true },
-  strasburgo_outlet: { id: 799, monitor: true },
   style_deli: { id: 136, monitor: true },
   studio_nicholson: { id: 908, monitor: true },
 
