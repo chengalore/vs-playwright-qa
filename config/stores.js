@@ -23,7 +23,6 @@ export const STORES = {
   allsaints_korea: { id: 850, monitor: true },
   ameri: { id: 885 }, // shorthand
   ameri_vintage: { id: 885, monitor: true },
-  and_mall: { id: 644, monitor: true },
   andar: { id: 878 }, // shorthand
   andar_japan: { id: 878, monitor: true },
   andar_korea: { id: 902 },
