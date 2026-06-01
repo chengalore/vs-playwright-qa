@@ -500,8 +500,7 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
         const __dir = dirname(fileURLToPath(import.meta.url));
         const dir = join(__dir, "../test-results/widget-screenshots");
         mkdirSync(dir, { recursive: true });
-        const widgetHost = page.locator("#router-view-wrapper").first();
-        const onboardingBuf = await widgetHost.screenshot({ type: "jpeg", quality: 80 }).catch(() => null);
+        const onboardingBuf = await page.screenshot({ type: "jpeg", quality: 80, fullPage: false }).catch(() => null);
         if (onboardingBuf) {
           writeFileSync(join(dir, `${testInfo.project.name}-onboarding.jpg`), onboardingBuf);
         }
