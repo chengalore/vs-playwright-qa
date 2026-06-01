@@ -453,7 +453,23 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
         ).first();
         await widgetLoc.scrollIntoViewIfNeeded({ timeout: 5000 }).catch(() => {});
         await page.waitForTimeout(600);
-        const buf = await page.screenshot({ type: "jpeg", quality: 80, fullPage: false }).catch(() => null);
+        // Clip to widget bounding box + 150px vertical padding so the widget is always
+        // visible regardless of banners or overlays elsewhere in the viewport.
+        const bbox = await widgetLoc.boundingBox().catch(() => null);
+        const vp = page.viewportSize();
+        const padding = 150;
+        const buf = bbox
+          ? await page.screenshot({
+              type: "jpeg",
+              quality: 80,
+              clip: {
+                x: 0,
+                y: Math.max(0, bbox.y - padding),
+                width: vp?.width ?? 1280,
+                height: bbox.height + padding * 2,
+              },
+            }).catch(() => null)
+          : await page.screenshot({ type: "jpeg", quality: 70, fullPage: false }).catch(() => null);
         if (buf) {
           const { mkdirSync, writeFileSync } = await import("fs");
           const { join, dirname } = await import("path");
