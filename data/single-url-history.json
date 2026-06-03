@@ -1,5 +1,87 @@
 [
   {
+    "timestamp": "2026-06-03T01:58:01.368Z",
+    "url": "https://www.ec-store.net/sws/g/g14196649/",
+    "phase": "full",
+    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/26859047406",
+    "store": "shel_tter",
+    "productType": null,
+    "flow": "apparel",
+    "onboarding": {
+      "gender": "female",
+      "age": "35",
+      "height": "161",
+      "weight": "54"
+    },
+    "giftOnboarding": {
+      "gender": "female",
+      "age": "30-39",
+      "height": "160-164",
+      "bodyType": "52 - 63 kg"
+    },
+    "footwearOnboarding": {
+      "gender": "female",
+      "brand": "Adidas",
+      "size": "25.5 cm"
+    },
+    "kidsOnboarding": {
+      "gender": "girl",
+      "age": 8,
+      "height": "120",
+      "weight": "25"
+    },
+    "events": [
+      {
+        "event": "user-saw-product::integration",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-saw-widget-button::integration",
+        "phase": "onboarding"
+      },
+      {
+        "event": "inpage-mounted::integration",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-opened-widget::inpage",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-saw-onboarding-screen::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-selected-gender::fit-illustrator",
+        "phase": "onboarding"
+      }
+    ],
+    "browsers": [
+      {
+        "browser": "chrome",
+        "status": "failed",
+        "error": "elementHandle.evaluate: TypeError: Failed to execute 'dispatchEvent' on 'EventTarget': parameter 1 is not of type 'Event'.\n    at eval (eval at evaluate (:290:30), <anonymous>:5:19)\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)",
+        "missingEvents": [],
+        "widgetVisibleMs": 14171,
+        "screenshotFile": "screenshots/2026-06-03T01-58-01-chrome.jpg",
+        "onboardingFile": "screenshots/2026-06-03T01-58-01-chrome-onboarding.jpg",
+        "widgetType": "inpage",
+        "hasSmartTable": null
+      },
+      {
+        "browser": "webkit",
+        "status": "failed",
+        "error": "elementHandle.evaluate: TypeError: Argument 1 ('event') to EventTarget.dispatchEvent must be an instance of Event",
+        "missingEvents": [],
+        "widgetVisibleMs": 10866,
+        "screenshotFile": "screenshots/2026-06-03T01-58-01-webkit.jpg",
+        "onboardingFile": "screenshots/2026-06-03T01-58-01-webkit-onboarding.jpg",
+        "widgetType": "inpage",
+        "hasSmartTable": null
+      }
+    ]
+  },
+  {
     "timestamp": "2026-06-03T01:49:10.363Z",
     "url": "https://www.underarmour.co.jp/f/dsg-1058651",
     "phase": "full",
