@@ -1,5 +1,234 @@
 [
   {
+    "timestamp": "2026-06-03T09:15:53.020Z",
+    "url": "https://www.underarmour.co.jp/f/dsg-1094927",
+    "phase": "full",
+    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/26875220175",
+    "store": "under_armour",
+    "productType": "shirt",
+    "flow": "apparel",
+    "onboarding": {
+      "gender": "female",
+      "age": "35",
+      "height": "161",
+      "weight": "54"
+    },
+    "giftOnboarding": {
+      "gender": "female",
+      "age": "30-39",
+      "height": "160-164",
+      "bodyType": "52 - 63 kg"
+    },
+    "footwearOnboarding": {
+      "gender": "female",
+      "brand": "Adidas",
+      "size": "25.5 cm"
+    },
+    "kidsOnboarding": {
+      "gender": "girl",
+      "age": 8,
+      "height": "120",
+      "weight": "25"
+    },
+    "events": [
+      {
+        "event": "user-saw-product::integration",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-saw-widget-button::integration",
+        "phase": "onboarding"
+      },
+      {
+        "event": "inpage-mounted::integration",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-opened-widget::inpage",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-saw-onboarding-screen::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-selected-gender::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-selected-age::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-selected-height::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-selected-weight::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-completed-onboarding::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-created-silhouette::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-got-size-recommendation::integration",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-opened-panel-tryiton::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-selected-size::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-saw-product::integration",
+        "phase": "refresh"
+      },
+      {
+        "event": "user-saw-widget-button::integration",
+        "phase": "refresh"
+      },
+      {
+        "event": "inpage-mounted::integration",
+        "phase": "refresh"
+      },
+      {
+        "event": "user-opened-widget::inpage",
+        "phase": "refresh"
+      },
+      {
+        "event": "user-opened-panel-tryiton::fit-illustrator",
+        "phase": "refresh"
+      },
+      {
+        "event": "user-selected-size::fit-illustrator",
+        "phase": "refresh"
+      },
+      {
+        "event": "user-got-size-recommendation::integration",
+        "phase": "refresh"
+      },
+      {
+        "event": "user-selected-size::inpage",
+        "phase": "refresh"
+      },
+      {
+        "event": "user-opened-widget::gift",
+        "phase": "gift"
+      },
+      {
+        "event": "user-saw-onboarding-screen::gift",
+        "phase": "gift"
+      },
+      {
+        "event": "user-selected-gender::gift",
+        "phase": "gift"
+      },
+      {
+        "event": "user-clicked-age::gift",
+        "phase": "gift"
+      },
+      {
+        "event": "user-selected-age-30_39::gift",
+        "phase": "gift"
+      },
+      {
+        "event": "user-clicked-height::gift",
+        "phase": "gift"
+      },
+      {
+        "event": "user-selected-height-160_164::gift",
+        "phase": "gift"
+      },
+      {
+        "event": "user-clicked-bodyType::gift",
+        "phase": "gift"
+      },
+      {
+        "event": "user-selected-bodyType-1::gift",
+        "phase": "gift"
+      },
+      {
+        "event": "user-completed-onboarding::gift",
+        "phase": "gift"
+      },
+      {
+        "event": "user-opened-panel-rec::gift",
+        "phase": "gift"
+      },
+      {
+        "event": "user-saw-product::integration",
+        "phase": "gift-refresh"
+      },
+      {
+        "event": "user-saw-widget-button::integration",
+        "phase": "gift-refresh"
+      },
+      {
+        "event": "inpage-mounted::integration",
+        "phase": "gift-refresh"
+      },
+      {
+        "event": "user-got-size-recommendation::integration",
+        "phase": "gift-refresh"
+      },
+      {
+        "event": "user-selected-size::inpage",
+        "phase": "gift-refresh"
+      },
+      {
+        "event": "user-opened-widget::inpage",
+        "phase": "gift-refresh"
+      },
+      {
+        "event": "user-opened-panel-tryiton::fit-illustrator",
+        "phase": "gift-refresh"
+      },
+      {
+        "event": "user-opened-widget::gift",
+        "phase": "gift-refresh"
+      },
+      {
+        "event": "user-opened-panel-rec::gift",
+        "phase": "gift-refresh"
+      }
+    ],
+    "browsers": [
+      {
+        "browser": "chrome",
+        "status": "passed",
+        "error": null,
+        "missingEvents": [],
+        "widgetVisibleMs": 10027,
+        "screenshotFile": "screenshots/2026-06-03T09-15-53-chrome.jpg",
+        "onboardingFile": "screenshots/2026-06-03T09-15-53-chrome-onboarding.jpg",
+        "widgetType": "inpage",
+        "hasSmartTable": false
+      },
+      {
+        "browser": "webkit",
+        "status": "failed",
+        "error": "Refresh missing events: user-selected-size::inpage, user-got-size-recommendation::integration",
+        "missingEvents": [
+          "user-selected-size::inpage",
+          "user-got-size-recommendation::integration"
+        ],
+        "widgetVisibleMs": 7594,
+        "screenshotFile": "screenshots/2026-06-03T09-15-53-webkit.jpg",
+        "onboardingFile": "screenshots/2026-06-03T09-15-53-webkit-onboarding.jpg",
+        "widgetType": "inpage",
+        "hasSmartTable": null
+      }
+    ]
+  },
+  {
     "timestamp": "2026-06-03T04:28:22.039Z",
     "url": "https://www.buyma.com/item/92907812/?vs-staging",
     "phase": "full",
@@ -14617,31 +14846,6 @@
         "browser": "chrome",
         "status": "failed",
         "error": "Refresh missing events: user-selected-size::inpage"
-      },
-      {
-        "browser": "firefox",
-        "status": "passed",
-        "error": null
-      },
-      {
-        "browser": "webkit",
-        "status": "passed",
-        "error": null
-      }
-    ]
-  },
-  {
-    "timestamp": "2026-04-13T10:05:34.453Z",
-    "url": "https://www.bottegaveneta.com/ja-jp/%E3%82%B9%E3%83%A2%E3%83%BC%E3%83%AB-%E3%83%B4%E3%82%A7%E3%83%8D%E3%82%BF-%E3%83%95%E3%82%A9%E3%83%B3%E3%83%87%E3%83%B3%E3%83%86-856736V66V02190.html",
-    "phase": "full",
-    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/24337571751",
-    "store": "bottega_veneta_japan",
-    "productType": "bag",
-    "browsers": [
-      {
-        "browser": "chrome",
-        "status": "passed",
-        "error": null
       },
       {
         "browser": "firefox",
