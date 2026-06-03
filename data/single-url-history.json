@@ -1,5 +1,95 @@
 [
   {
+    "timestamp": "2026-06-03T04:22:40.294Z",
+    "url": "https://www.buyma.com/item/92907812/?vs-staging",
+    "phase": "full",
+    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/26863404209",
+    "store": "buyma",
+    "productType": null,
+    "flow": null,
+    "onboarding": {
+      "gender": "female",
+      "age": "35",
+      "height": "161",
+      "weight": "54"
+    },
+    "giftOnboarding": {
+      "gender": "female",
+      "age": "30-39",
+      "height": "160-164",
+      "bodyType": "52 - 63 kg"
+    },
+    "footwearOnboarding": {
+      "gender": "female",
+      "brand": "Adidas",
+      "size": "25.5 cm"
+    },
+    "kidsOnboarding": {
+      "gender": "girl",
+      "age": 8,
+      "height": "120",
+      "weight": "25"
+    },
+    "events": [
+      {
+        "event": "user-saw-product::integration",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-saw-widget-button::integration",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-saw-bag-disclaimer::smart-table",
+        "phase": "onboarding"
+      },
+      {
+        "event": "inpage-mounted::integration",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-opened-widget::inpage",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-opened-panel-compare::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-saw-bag-disclaimer::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-clicked-start::integration",
+        "phase": "onboarding"
+      }
+    ],
+    "browsers": [
+      {
+        "browser": "chrome",
+        "status": "failed",
+        "error": "page.waitForFunction: Test timeout of 180000ms exceeded.",
+        "missingEvents": [],
+        "widgetVisibleMs": null,
+        "screenshotFile": null,
+        "onboardingFile": null,
+        "widgetType": null,
+        "hasSmartTable": null
+      },
+      {
+        "browser": "webkit",
+        "status": "failed",
+        "error": "page.waitForFunction: Test timeout of 180000ms exceeded.",
+        "missingEvents": [],
+        "widgetVisibleMs": null,
+        "screenshotFile": null,
+        "onboardingFile": null,
+        "widgetType": null,
+        "hasSmartTable": null
+      }
+    ]
+  },
+  {
     "timestamp": "2026-06-03T02:02:38.931Z",
     "url": "https://azul-m.com/item/detail/1_1_251JSB12-3111/111",
     "phase": "full",
