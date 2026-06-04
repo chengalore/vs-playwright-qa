@@ -1,15 +1,15 @@
 {
-  "timestamp": "2026-06-03T00:32:20.764Z",
-  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/26856110790",
+  "timestamp": "2026-06-04T00:34:55.643Z",
+  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/26921972762",
   "summary": {
-    "total": 78,
-    "passed": 70,
+    "total": 62,
+    "passed": 54,
     "widgetMissing": 8,
     "skipped": 0,
     "failed": 0,
-    "fallbackUsed": 71,
-    "avgWidgetVisibleMs": 27824,
-    "p95WidgetVisibleMs": 33306
+    "fallbackUsed": 54,
+    "avgWidgetVisibleMs": 28266,
+    "p95WidgetVisibleMs": 35959
   },
   "newIssues": [],
   "widgetMissingStores": [
@@ -38,14 +38,6 @@
       ]
     },
     {
-      "store": "cox",
-      "url": "https://tokyodesignchannel.com/c/lbc/26180639",
-      "browsers": [
-        "chrome",
-        "webkit"
-      ]
-    },
-    {
       "store": "snidel",
       "url": "https://snidel.com/Form/Product/ProductDetail.aspx?shop=0&pid=SHFT261075&vid=&bid=SNH01&cid=&_type=&cat=&swrd=",
       "browsers": [
@@ -56,6 +48,14 @@
     {
       "store": "poppy",
       "url": "https://poppy-tokyo.com/products/poppy-print-long-t-shirt-pink",
+      "browsers": [
+        "chrome",
+        "webkit"
+      ]
+    },
+    {
+      "store": "felissimo",
+      "url": "https://www.felissimo.co.jp/sunnyclouds/707525.html?vf=01",
       "browsers": [
         "chrome",
         "webkit"
@@ -81,38 +81,34 @@
   "ongoingMissing": [
     {
       "store": "reebok_korea",
-      "consecutiveRuns": 57
+      "consecutiveRuns": 58
     },
     {
       "store": "gelato_pique",
-      "consecutiveRuns": 57
+      "consecutiveRuns": 58
     },
     {
       "store": "snidel",
-      "consecutiveRuns": 54
+      "consecutiveRuns": 55
     },
     {
       "store": "poppy",
-      "consecutiveRuns": 12
+      "consecutiveRuns": 13
     },
     {
       "store": "studio_nicholson",
-      "consecutiveRuns": 9
-    },
-    {
-      "store": "shel_tter",
-      "consecutiveRuns": 2
-    },
-    {
-      "store": "azul_by_moussy",
-      "consecutiveRuns": 2
-    },
-    {
-      "store": "coen",
-      "consecutiveRuns": 1
+      "consecutiveRuns": 10
     },
     {
       "store": "hankyu_hanshin",
+      "consecutiveRuns": 2
+    },
+    {
+      "store": "cox",
+      "consecutiveRuns": 1
+    },
+    {
+      "store": "hankyu_mens",
       "consecutiveRuns": 1
     }
   ],
