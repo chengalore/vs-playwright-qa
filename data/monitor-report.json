@@ -1,15 +1,15 @@
 {
-  "timestamp": "2026-06-04T00:34:55.643Z",
+  "timestamp": "2026-06-04T01:50:04.557Z",
   "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/26921972762",
   "summary": {
-    "total": 62,
-    "passed": 54,
-    "widgetMissing": 8,
+    "total": 78,
+    "passed": 68,
+    "widgetMissing": 10,
     "skipped": 0,
     "failed": 0,
-    "fallbackUsed": 54,
-    "avgWidgetVisibleMs": 28266,
-    "p95WidgetVisibleMs": 35959
+    "fallbackUsed": 68,
+    "avgWidgetVisibleMs": 27935,
+    "p95WidgetVisibleMs": 34884
   },
   "newIssues": [],
   "widgetMissingStores": [
@@ -48,6 +48,22 @@
     {
       "store": "poppy",
       "url": "https://poppy-tokyo.com/products/poppy-print-long-t-shirt-pink",
+      "browsers": [
+        "chrome",
+        "webkit"
+      ]
+    },
+    {
+      "store": "denimlife",
+      "url": "https://denimlife.jp/shopdetail/000000002987",
+      "browsers": [
+        "chrome",
+        "webkit"
+      ]
+    },
+    {
+      "store": "standard_california",
+      "url": "https://shop.standardcalifornia.com/shopdetail/000000005191/",
       "browsers": [
         "chrome",
         "webkit"

@@ -192,8 +192,8 @@
     "autoBlacklisted": false,
     "recoveries": [
       {
-        "resolvedAt": "2026-06-04T00:34:55.860Z",
-        "durationMs": 86554901,
+        "resolvedAt": "2026-06-04T01:50:04.792Z",
+        "durationMs": 91063833,
         "type": "widget_missing"
       },
       {
@@ -346,8 +346,9 @@
   },
   "denimlife": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 0,
-    "autoBlacklisted": false
+    "consecutiveWidgetMissing": 1,
+    "autoBlacklisted": false,
+    "issueStartedAt": "2026-06-04T01:50:04.793Z"
   },
   "id_look": {
     "consecutiveFailures": 0,
@@ -455,7 +456,7 @@
     "consecutiveFailures": 0,
     "consecutiveWidgetMissing": 1,
     "autoBlacklisted": false,
-    "issueStartedAt": "2026-06-04T00:34:55.861Z"
+    "issueStartedAt": "2026-06-04T01:50:04.793Z"
   },
   "ragtag": {
     "consecutiveFailures": 0,
@@ -600,8 +601,9 @@
   },
   "standard_california": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 0,
-    "autoBlacklisted": false
+    "consecutiveWidgetMissing": 1,
+    "autoBlacklisted": false,
+    "issueStartedAt": "2026-06-04T01:50:04.793Z"
   },
   "taion_wear": {
     "consecutiveFailures": 0,
