@@ -509,6 +509,13 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
             await page.waitForTimeout(1000);
           }
           await stLoc.scrollIntoViewIfNeeded({ timeout: 3000 }).catch(() => {});
+          // Wait for shadow root content to fully render (fit-vis-container must have height)
+          await page.waitForFunction(() => {
+            const st = document.querySelector("#vs-smart-table");
+            if (!st?.shadowRoot) return false;
+            const fitVis = st.shadowRoot.querySelector(".fit-vis-container, .fit-vis");
+            return fitVis ? fitVis.getBoundingClientRect().height > 0 : false;
+          }, { timeout: 8000 }).catch(() => {});
           await page.waitForTimeout(500);
           const stBbox = await stLoc.boundingBox().catch(() => null);
           const stVp = page.viewportSize();
@@ -544,6 +551,7 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
       await clickWidget(page, flow);
 
       await waitForWidgetRender(page);
+      await page.waitForTimeout(1000); // let panel slide-in animation finish
     }
 
     // Screenshot 2: onboarding panel after widget opens
