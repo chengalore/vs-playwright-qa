@@ -798,7 +798,7 @@ export async function runKidsFlow(page, _pdc, kidsOpts = {}) {
  * @param {number} [giftOpts.heightIndex=3]    0=145-149cm … 10=195+cm
  * @param {number} [giftOpts.bodyTypeIndex=1]  0=<52kg, 1=52-63, 2=63-74, 3=74-84, 4=85-98, 5=>98kg
  */
-export async function runGiftFlow(page, eventWatcher, giftOpts = {}) {
+export async function runGiftFlow(page, eventWatcher, giftOpts = {}, screenshotFn = null) {
   const {
     genderIndex   = 0,
     ageIndex      = 3,
@@ -835,6 +835,7 @@ export async function runGiftFlow(page, eventWatcher, giftOpts = {}) {
   );
   console.log("Gift onboarding detected");
   await page.waitForTimeout(5000);
+  await screenshotFn?.("gift-onboarding");
 
   await page.evaluate((gv) => {
     const radio = findInShadow(`input[name="selectGender"][value="${gv}"]`);
@@ -907,6 +908,8 @@ export async function runGiftFlow(page, eventWatcher, giftOpts = {}) {
   console.log("Clicked see ideal fit button");
 
   await waitForEvent(eventWatcher, "user-opened-panel-rec::gift", 20000);
+  await page.waitForTimeout(1500);
+  await screenshotFn?.("gift-result");
 
   const giftMissing = await verifyEvents(
     page,

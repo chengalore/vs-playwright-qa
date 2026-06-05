@@ -1412,6 +1412,8 @@ function renderLatestScreenshot() {
     ? makeScreenshotCard(b.screenshotFile, 'Widget button', 'Widget detected', ms ? \`\${ms}ms\` : null)
       + makeScreenshotCard(b.onboardingFile, 'Onboarding', 'Panel opened', null)
       + (b.resultFile ? makeScreenshotCard(b.resultFile, 'Size result', 'After onboarding', null) : '')
+      + (b.giftOnboardingFile ? makeScreenshotCard(b.giftOnboardingFile, 'Gift onboarding', 'Gift form', null) : '')
+      + (b.giftResultFile ? makeScreenshotCard(b.giftResultFile, 'Gift result', 'Gift recommendation', null) : '')
     : makeScreenshotCard(b.screenshotFile, urlSlug, 'Widget detected', ms ? \`Captured at \${ms}ms\` : null);
 
   // Test checks
@@ -1880,6 +1882,8 @@ function renderSingleDetail(entry, idx) {
     const cards = [mkCard(b.screenshotFile, 'Widget button', 'Widget detected', ms ? \`\${(ms/1000).toFixed(1)}s\` : null)];
     if (b.onboardingFile) cards.push(mkCard(b.onboardingFile, 'Onboarding', 'Panel opened', null));
     if (b.resultFile) cards.push(mkCard(b.resultFile, 'Size result', 'After onboarding', null));
+    if (b.giftOnboardingFile) cards.push(mkCard(b.giftOnboardingFile, 'Gift onboarding', 'Gift form', null));
+    if (b.giftResultFile) cards.push(mkCard(b.giftResultFile, 'Gift result', 'Gift recommendation', null));
     return cards;
   }).join('');
 
@@ -2325,10 +2329,28 @@ function showComparison(entryIdx) {
           </div>
         </div>\`
       : '';
-    return widgetRow || onboardingRow || resultRow
+    const giftOnboardingRow = (eb?.giftOnboardingFile || bb?.giftOnboardingFile)
+      ? \`<div style="margin-bottom:8px">
+          <div style="font-size:10px;color:#484f58;text-transform:uppercase;margin-bottom:6px">Gift onboarding</div>
+          <div style="display:flex;gap:12px">
+            \${eb?.giftOnboardingFile ? mkCard(eb.giftOnboardingFile, entryLabel)    : \`<div style="flex:1;min-width:0;color:#484f58;font-size:12px">No screenshot</div>\`}
+            \${bb?.giftOnboardingFile ? mkCard(bb.giftOnboardingFile, baselineLabel) : \`<div style="flex:1;min-width:0;color:#484f58;font-size:12px">No screenshot</div>\`}
+          </div>
+        </div>\`
+      : '';
+    const giftResultRow = (eb?.giftResultFile || bb?.giftResultFile)
+      ? \`<div>
+          <div style="font-size:10px;color:#484f58;text-transform:uppercase;margin-bottom:6px">Gift result</div>
+          <div style="display:flex;gap:12px">
+            \${eb?.giftResultFile ? mkCard(eb.giftResultFile, entryLabel)    : \`<div style="flex:1;min-width:0;color:#484f58;font-size:12px">No screenshot</div>\`}
+            \${bb?.giftResultFile ? mkCard(bb.giftResultFile, baselineLabel) : \`<div style="flex:1;min-width:0;color:#484f58;font-size:12px">No screenshot</div>\`}
+          </div>
+        </div>\`
+      : '';
+    return widgetRow || onboardingRow || resultRow || giftOnboardingRow || giftResultRow
       ? \`<div style="background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:14px;margin-bottom:10px">
           <div style="font-size:11px;font-weight:600;color:#8b949e;margin-bottom:12px;text-transform:uppercase">\${browser}</div>
-          \${widgetRow}\${onboardingRow}\${resultRow}
+          \${widgetRow}\${onboardingRow}\${resultRow}\${giftOnboardingRow}\${giftResultRow}
         </div>\`
       : '';
   }).filter(Boolean).join('');

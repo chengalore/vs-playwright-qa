@@ -707,7 +707,21 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
       await page.waitForTimeout(10000);
       eventWatcher.setPhase("gift");
       eventWatcher.reset();
-      await runGiftFlow(page, eventWatcher, giftOpts);
+      const giftScreenshotFn = async (name) => {
+        try {
+          const buf = await page.screenshot({ type: "jpeg", quality: 80, fullPage: false }).catch(() => null);
+          if (buf) {
+            const { mkdirSync, writeFileSync } = await import("fs");
+            const { join, dirname } = await import("path");
+            const { fileURLToPath } = await import("url");
+            const __dir = dirname(fileURLToPath(import.meta.url));
+            const dir = join(__dir, "../test-results/widget-screenshots");
+            mkdirSync(dir, { recursive: true });
+            writeFileSync(join(dir, `${testInfo.project.name}-${name}.jpg`), buf);
+          }
+        } catch { /* non-fatal */ }
+      };
+      await runGiftFlow(page, eventWatcher, giftOpts, giftScreenshotFn);
     }
 
     eventWatcher.logPhaseSummary();
