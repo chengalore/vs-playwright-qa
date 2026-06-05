@@ -587,10 +587,6 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
     // Screenshot 4: smart table — VS measurements illustration embedded in the page.
     // Close the VS modal first so it doesn't cover the smart table, then expand accordion if needed.
     try {
-      // Click far left (backdrop area outside the modal) to close the VS panel
-      const vp = page.viewportSize();
-      await page.mouse.click(10, (vp?.height ?? 600) / 2).catch(() => {});
-      await page.waitForTimeout(800);
       const stLoc = page.locator("#vs-smart-table").first();
       if (await stLoc.count() > 0) {
         // Use getBoundingClientRect().height — reliable even when display/overflow tricks fool isVisible()
