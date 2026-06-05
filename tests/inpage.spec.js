@@ -585,29 +585,38 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
     } catch { /* non-fatal */ }
 
     // Screenshot 4: smart table — VS measurements illustration embedded in the page.
-    // It may be inside a collapsed accordion; try to expand it first.
+    // Always attempt to expand a containing accordion first (collapsed accordions may
+    // still pass isVisible() when they use height:0 / overflow:hidden rather than display:none).
     try {
       const stLoc = page.locator("#vs-smart-table").first();
       if (await stLoc.count() > 0) {
-        // Expand containing accordion if the element isn't visible
-        const isVis = await stLoc.isVisible().catch(() => false);
-        if (!isVis) {
-          await page.evaluate(() => {
-            const st = document.querySelector("#vs-smart-table");
-            if (!st) return;
-            let p = st.parentElement;
-            while (p && p !== document.body) {
-              const prev = p.previousElementSibling;
-              if (prev && (prev.classList.contains("js-accodion-tab") || prev.getAttribute("role") === "tab" || prev.getAttribute("role") === "button")) {
-                prev.click(); return;
-              }
-              const tab = p.parentElement?.querySelector(".js-accodion-tab, [role='tab']");
-              if (tab) { tab.click(); return; }
-              p = p.parentElement;
+        // Walk up the DOM to find and click the nearest accordion toggle
+        const expanded = await page.evaluate(() => {
+          const st = document.querySelector("#vs-smart-table");
+          if (!st) return false;
+          let p = st.parentElement;
+          while (p && p !== document.body) {
+            // Check the previous sibling of the current ancestor — typical accordion layout
+            const prev = p.previousElementSibling;
+            if (prev) {
+              const isToggle =
+                prev.classList.contains("js-accodion-tab") ||
+                prev.getAttribute("role") === "tab" ||
+                prev.getAttribute("role") === "button" ||
+                prev.hasAttribute("data-toggle") ||
+                prev.hasAttribute("aria-expanded");
+              if (isToggle) { prev.click(); return true; }
             }
-          }).catch(() => {});
-          await page.waitForTimeout(800);
-        }
+            // Also check within the parent's parent for a tab-style toggle
+            const ancestorToggle = p.parentElement?.querySelector(
+              ".js-accodion-tab, [role='tab'][aria-selected], [aria-expanded='false']"
+            );
+            if (ancestorToggle) { ancestorToggle.click(); return true; }
+            p = p.parentElement;
+          }
+          return false;
+        }).catch(() => false);
+        if (expanded) await page.waitForTimeout(800); // let animation finish
         await stLoc.scrollIntoViewIfNeeded({ timeout: 3000 }).catch(() => {});
         await page.waitForTimeout(500);
         const bbox = await stLoc.boundingBox().catch(() => null);
