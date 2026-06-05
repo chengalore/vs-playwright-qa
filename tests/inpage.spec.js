@@ -564,9 +564,29 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
     }
     flowDoneMs = Date.now() - t_nav;
 
-    // Screenshot 3: result/recommendation page shown after onboarding completes
+    // Screenshot 3: widget in result/recommendation state after onboarding completes.
+    // Scroll widget into view and wait for the silhouette + sizes to finish painting.
     try {
-      const resultBuf = await page.screenshot({ type: "jpeg", quality: 80, fullPage: false }).catch(() => null);
+      const widgetResultLoc = page.locator(
+        "#vs-inpage, #vs-inpage-luxury, #vs-legacy-inpage, #vs-kid"
+      ).first();
+      await widgetResultLoc.scrollIntoViewIfNeeded({ timeout: 5000 }).catch(() => {});
+      await page.waitForTimeout(2000); // let recommendation UI settle
+      const bbox = await widgetResultLoc.boundingBox().catch(() => null);
+      const vp = page.viewportSize();
+      const padding = 150;
+      const resultBuf = bbox
+        ? await page.screenshot({
+            type: "jpeg",
+            quality: 80,
+            clip: {
+              x: 0,
+              y: Math.max(0, bbox.y - padding),
+              width: vp?.width ?? 1280,
+              height: bbox.height + padding * 2,
+            },
+          }).catch(() => null)
+        : await page.screenshot({ type: "jpeg", quality: 80, fullPage: false }).catch(() => null);
       if (resultBuf) {
         const { mkdirSync, writeFileSync } = await import("fs");
         const { join, dirname } = await import("path");
