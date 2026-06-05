@@ -571,7 +571,7 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
         "#vs-inpage, #vs-inpage-luxury, #vs-legacy-inpage, #vs-kid"
       ).first();
       await widgetResultLoc.scrollIntoViewIfNeeded({ timeout: 5000 }).catch(() => {});
-      await page.waitForTimeout(2000); // let recommendation UI settle
+      await page.waitForTimeout(4000); // let silhouette image load from server
       const resultBuf = await page.screenshot({ type: "jpeg", quality: 80, fullPage: false }).catch(() => null);
       if (resultBuf) {
         const { mkdirSync, writeFileSync } = await import("fs");
