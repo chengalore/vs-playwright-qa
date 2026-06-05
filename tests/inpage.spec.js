@@ -480,6 +480,61 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
           writeFileSync(join(dir, `${testInfo.project.name}.jpg`), buf);
         }
       } catch { /* non-fatal */ }
+
+      // Smart table screenshot — taken here before the VS modal opens so it's never covered.
+      // #vs-smart-table is a page-embedded element; may be inside a collapsed accordion.
+      try {
+        const stLoc = page.locator("#vs-smart-table").first();
+        if (await stLoc.count() > 0) {
+          const needsExpand = await page.evaluate(() => {
+            const st = document.querySelector("#vs-smart-table");
+            return st ? st.getBoundingClientRect().height === 0 : false;
+          }).catch(() => false);
+          if (needsExpand) {
+            await page.evaluate(() => {
+              const st = document.querySelector("#vs-smart-table");
+              if (!st) return;
+              let el = st.parentElement;
+              while (el && el !== document.body) {
+                const prev = el.previousElementSibling;
+                if (prev && (
+                  prev.classList.contains("js-accodion-tab") ||
+                  prev.getAttribute("role") === "tab" ||
+                  prev.getAttribute("role") === "button" ||
+                  prev.hasAttribute("aria-expanded")
+                )) { prev.click(); return; }
+                el = el.parentElement;
+              }
+            }).catch(() => {});
+            await page.waitForTimeout(1000);
+          }
+          await stLoc.scrollIntoViewIfNeeded({ timeout: 3000 }).catch(() => {});
+          await page.waitForTimeout(500);
+          const stBbox = await stLoc.boundingBox().catch(() => null);
+          const stVp = page.viewportSize();
+          const stPad = 40;
+          const stBuf = stBbox
+            ? await page.screenshot({
+                type: "jpeg", quality: 85,
+                clip: {
+                  x: Math.max(0, stBbox.x - stPad),
+                  y: Math.max(0, stBbox.y - stPad),
+                  width: Math.min((stVp?.width ?? 1280) - Math.max(0, stBbox.x - stPad), stBbox.width + stPad * 2),
+                  height: stBbox.height + stPad * 2,
+                },
+              }).catch(() => null)
+            : null;
+          if (stBuf) {
+            const { mkdirSync, writeFileSync } = await import("fs");
+            const { join, dirname } = await import("path");
+            const { fileURLToPath } = await import("url");
+            const __dir = dirname(fileURLToPath(import.meta.url));
+            const dir = join(__dir, "../test-results/widget-screenshots");
+            mkdirSync(dir, { recursive: true });
+            writeFileSync(join(dir, `${testInfo.project.name}-smart-table.jpg`), stBuf);
+          }
+        }
+      } catch { /* non-fatal */ }
     }
 
     if (flow === "kids") {
@@ -597,69 +652,6 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
         const dir = join(__dir, "../test-results/widget-screenshots");
         mkdirSync(dir, { recursive: true });
         writeFileSync(join(dir, `${testInfo.project.name}-result.jpg`), resultBuf);
-      }
-    } catch { /* non-fatal */ }
-
-    // Screenshot 4: smart table — VS measurements illustration embedded in the page.
-    // Close the VS modal first so it doesn't cover the smart table, then expand accordion if needed.
-    try {
-      const stLoc = page.locator("#vs-smart-table").first();
-      if (await stLoc.count() > 0) {
-        // Use getBoundingClientRect().height — reliable even when display/overflow tricks fool isVisible()
-        const needsExpand = await page.evaluate(() => {
-          const st = document.querySelector("#vs-smart-table");
-          if (!st) return false;
-          return st.getBoundingClientRect().height === 0;
-        }).catch(() => false);
-
-        if (needsExpand) {
-          await page.evaluate(() => {
-            const st = document.querySelector("#vs-smart-table");
-            if (!st) return;
-            // Walk up ancestors; click the first previous-sibling that looks like an accordion toggle
-            let el = st.parentElement;
-            while (el && el !== document.body) {
-              const prev = el.previousElementSibling;
-              if (prev && (
-                prev.classList.contains("js-accodion-tab") ||
-                prev.getAttribute("role") === "tab" ||
-                prev.getAttribute("role") === "button" ||
-                prev.hasAttribute("aria-expanded")
-              )) {
-                prev.click();
-                return;
-              }
-              el = el.parentElement;
-            }
-          }).catch(() => {});
-          await page.waitForTimeout(1000); // let accordion animate open
-        }
-
-        await stLoc.scrollIntoViewIfNeeded({ timeout: 3000 }).catch(() => {});
-        await page.waitForTimeout(500);
-        const bbox = await stLoc.boundingBox().catch(() => null);
-        const vp = page.viewportSize();
-        const pad = 40;
-        const stBuf = bbox
-          ? await page.screenshot({
-              type: "jpeg", quality: 85,
-              clip: {
-                x: Math.max(0, bbox.x - pad),
-                y: Math.max(0, bbox.y - pad),
-                width: Math.min((vp?.width ?? 1280) - Math.max(0, bbox.x - pad), bbox.width + pad * 2),
-                height: bbox.height + pad * 2,
-              },
-            }).catch(() => null)
-          : null;
-        if (stBuf) {
-          const { mkdirSync, writeFileSync } = await import("fs");
-          const { join, dirname } = await import("path");
-          const { fileURLToPath } = await import("url");
-          const __dir = dirname(fileURLToPath(import.meta.url));
-          const dir = join(__dir, "../test-results/widget-screenshots");
-          mkdirSync(dir, { recursive: true });
-          writeFileSync(join(dir, `${testInfo.project.name}-smart-table.jpg`), stBuf);
-        }
       }
     } catch { /* non-fatal */ }
 
