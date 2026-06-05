@@ -463,7 +463,14 @@ jobs:
                 fs.copyFileSync(giftResultSrc, `docs/screenshots/${filename}`);
                 giftResultFile = `screenshots/${filename}`;
               }
-              return { browser: r.browser, status: r.status, error: r.error || null, missingEvents: r.missingEvents || [], widgetVisibleMs: r.widgetVisibleMs || null, screenshotFile, onboardingFile, resultFile, giftOnboardingFile, giftResultFile, widgetType: r.widgetType || null, hasSmartTable: r.hasSmartTable ?? null };
+              const smartTableSrc = `results/widget-screenshots/${r.browser}-smart-table.jpg`;
+              let smartTableFile = null;
+              if (fs.existsSync(smartTableSrc)) {
+                const filename = `${tsSlug}-${r.browser}-smart-table.jpg`;
+                fs.copyFileSync(smartTableSrc, `docs/screenshots/${filename}`);
+                smartTableFile = `screenshots/${filename}`;
+              }
+              return { browser: r.browser, status: r.status, error: r.error || null, missingEvents: r.missingEvents || [], widgetVisibleMs: r.widgetVisibleMs || null, screenshotFile, onboardingFile, resultFile, giftOnboardingFile, giftResultFile, smartTableFile, widgetType: r.widgetType || null, hasSmartTable: r.hasSmartTable ?? null };
             }),
           };
 

@@ -584,6 +584,58 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
       }
     } catch { /* non-fatal */ }
 
+    // Screenshot 4: smart table — VS measurements illustration embedded in the page.
+    // It may be inside a collapsed accordion; try to expand it first.
+    try {
+      const stLoc = page.locator("#vs-smart-table").first();
+      if (await stLoc.count() > 0) {
+        // Expand containing accordion if the element isn't visible
+        const isVis = await stLoc.isVisible().catch(() => false);
+        if (!isVis) {
+          await page.evaluate(() => {
+            const st = document.querySelector("#vs-smart-table");
+            if (!st) return;
+            let p = st.parentElement;
+            while (p && p !== document.body) {
+              const prev = p.previousElementSibling;
+              if (prev && (prev.classList.contains("js-accodion-tab") || prev.getAttribute("role") === "tab" || prev.getAttribute("role") === "button")) {
+                prev.click(); return;
+              }
+              const tab = p.parentElement?.querySelector(".js-accodion-tab, [role='tab']");
+              if (tab) { tab.click(); return; }
+              p = p.parentElement;
+            }
+          }).catch(() => {});
+          await page.waitForTimeout(800);
+        }
+        await stLoc.scrollIntoViewIfNeeded({ timeout: 3000 }).catch(() => {});
+        await page.waitForTimeout(500);
+        const bbox = await stLoc.boundingBox().catch(() => null);
+        const vp = page.viewportSize();
+        const pad = 40;
+        const stBuf = bbox
+          ? await page.screenshot({
+              type: "jpeg", quality: 85,
+              clip: {
+                x: Math.max(0, bbox.x - pad),
+                y: Math.max(0, bbox.y - pad),
+                width: Math.min((vp?.width ?? 1280) - Math.max(0, bbox.x - pad), bbox.width + pad * 2),
+                height: bbox.height + pad * 2,
+              },
+            }).catch(() => null)
+          : null;
+        if (stBuf) {
+          const { mkdirSync, writeFileSync } = await import("fs");
+          const { join, dirname } = await import("path");
+          const { fileURLToPath } = await import("url");
+          const __dir = dirname(fileURLToPath(import.meta.url));
+          const dir = join(__dir, "../test-results/widget-screenshots");
+          mkdirSync(dir, { recursive: true });
+          writeFileSync(join(dir, `${testInfo.project.name}-smart-table.jpg`), stBuf);
+        }
+      }
+    } catch { /* non-fatal */ }
+
     // onboarding phase: onboarding complete — skip full validation
     if (phase === "onboarding") {
       logResult({

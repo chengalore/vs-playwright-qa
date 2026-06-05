@@ -1414,6 +1414,7 @@ function renderLatestScreenshot() {
       + (b.resultFile ? makeScreenshotCard(b.resultFile, 'Size result', 'After onboarding', null) : '')
       + (b.giftOnboardingFile ? makeScreenshotCard(b.giftOnboardingFile, 'Gift onboarding', 'Gift form', null) : '')
       + (b.giftResultFile ? makeScreenshotCard(b.giftResultFile, 'Gift result', 'Gift recommendation', null) : '')
+      + (b.smartTableFile ? makeScreenshotCard(b.smartTableFile, 'Smart table', 'Measurements', null) : '')
     : makeScreenshotCard(b.screenshotFile, urlSlug, 'Widget detected', ms ? \`Captured at \${ms}ms\` : null);
 
   // Test checks
@@ -1884,6 +1885,7 @@ function renderSingleDetail(entry, idx) {
     if (b.resultFile) cards.push(mkCard(b.resultFile, 'Size result', 'After onboarding', null));
     if (b.giftOnboardingFile) cards.push(mkCard(b.giftOnboardingFile, 'Gift onboarding', 'Gift form', null));
     if (b.giftResultFile) cards.push(mkCard(b.giftResultFile, 'Gift result', 'Gift recommendation', null));
+    if (b.smartTableFile) cards.push(mkCard(b.smartTableFile, 'Smart table', 'Measurements', null));
     return cards;
   }).join('');
 
@@ -2347,10 +2349,19 @@ function showComparison(entryIdx) {
           </div>
         </div>\`
       : '';
-    return widgetRow || onboardingRow || resultRow || giftOnboardingRow || giftResultRow
+    const smartTableRow = (eb?.smartTableFile || bb?.smartTableFile)
+      ? \`<div>
+          <div style="font-size:10px;color:#484f58;text-transform:uppercase;margin-bottom:6px">Smart table</div>
+          <div style="display:flex;gap:12px">
+            \${eb?.smartTableFile ? mkCard(eb.smartTableFile, entryLabel)    : \`<div style="flex:1;min-width:0;color:#484f58;font-size:12px">No screenshot</div>\`}
+            \${bb?.smartTableFile ? mkCard(bb.smartTableFile, baselineLabel) : \`<div style="flex:1;min-width:0;color:#484f58;font-size:12px">No screenshot</div>\`}
+          </div>
+        </div>\`
+      : '';
+    return widgetRow || onboardingRow || resultRow || giftOnboardingRow || giftResultRow || smartTableRow
       ? \`<div style="background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:14px;margin-bottom:10px">
           <div style="font-size:11px;font-weight:600;color:#8b949e;margin-bottom:12px;text-transform:uppercase">\${browser}</div>
-          \${widgetRow}\${onboardingRow}\${resultRow}\${giftOnboardingRow}\${giftResultRow}
+          \${widgetRow}\${onboardingRow}\${resultRow}\${giftOnboardingRow}\${giftResultRow}\${smartTableRow}
         </div>\`
       : '';
   }).filter(Boolean).join('');
