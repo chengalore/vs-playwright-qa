@@ -8,7 +8,7 @@
  * @param {string} [opts.height="161"]
  * @param {string} [opts.weight="54"]
  */
-export async function completeOnboarding(page, opts = {}) {
+export async function completeOnboarding(page, opts = {}, screenshotFn = null) {
   const {
     genderIndex = 0,
     age    = "35",
@@ -86,6 +86,9 @@ export async function completeOnboarding(page, opts = {}) {
   }
 
   await privacyHandle.dispose();
+
+  // Screenshot: onboarding form filled — body data entered, privacy policy accepted, before submit
+  await screenshotFn?.("onboarding-filled");
 
   // Submit onboarding
   const buttonHandle = await shadowRoot.evaluateHandle((root) =>

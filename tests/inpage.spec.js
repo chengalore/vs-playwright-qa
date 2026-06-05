@@ -549,9 +549,25 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
       return;
     }
 
+    // Shared screenshot callback for onboarding-state captures (filled form before submit)
+    const onboardingScreenshotFn = async (name) => {
+      try {
+        const buf = await page.screenshot({ type: "jpeg", quality: 80, fullPage: false }).catch(() => null);
+        if (buf) {
+          const { mkdirSync, writeFileSync } = await import("fs");
+          const { join, dirname } = await import("path");
+          const { fileURLToPath } = await import("url");
+          const __dir = dirname(fileURLToPath(import.meta.url));
+          const dir = join(__dir, "../test-results/widget-screenshots");
+          mkdirSync(dir, { recursive: true });
+          writeFileSync(join(dir, `${testInfo.project.name}-${name}.jpg`), buf);
+        }
+      } catch { /* non-fatal */ }
+    };
+
     let isNewUser;
     if (flow === "apparel") {
-      isNewUser = await runApparelFlow(page, bodyAPI, eventWatcher, recommendationAPI, onboardingOpts);
+      isNewUser = await runApparelFlow(page, bodyAPI, eventWatcher, recommendationAPI, onboardingOpts, onboardingScreenshotFn);
     }
     if (flow === "footwear") {
       isNewUser = await runFootwearFlow(page, footwearOpts);
@@ -560,7 +576,7 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
       isNewUser = await runKidsFlow(page, pdc, kidsOpts);
     }
     if (flow === "noVisor") {
-      isNewUser = await runNoVisorFlow(page, bodyAPI, onboardingOpts);
+      isNewUser = await runNoVisorFlow(page, bodyAPI, onboardingOpts, onboardingScreenshotFn);
     }
     flowDoneMs = Date.now() - t_nav;
 

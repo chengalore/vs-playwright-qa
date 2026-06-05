@@ -489,7 +489,7 @@
   <div class="panel active" id="panel-monitor">
     <div class="page-hdr">
       <h1>Monitor Health</h1>
-      <p class="page-sub">Operational intelligence · Last updated 05 Jun 2026, 00:09 UTC</p>
+      <p class="page-sub">Operational intelligence · Last updated 05 Jun 2026, 08:09 GMT+8</p>
     </div>
 
     <div class="subtab-bar">
@@ -1181,6 +1181,7 @@ function renderLatestScreenshot() {
   const screenshotCard = b.onboardingFile
     ? makeScreenshotCard(b.screenshotFile, 'Widget button', 'Widget detected', ms ? `${ms}ms` : null)
       + makeScreenshotCard(b.onboardingFile, 'Onboarding', 'Panel opened', null)
+      + (b.onboardingFilledFile ? makeScreenshotCard(b.onboardingFilledFile, 'Onboarding filled', 'Before submit', null) : '')
       + (b.resultFile ? makeScreenshotCard(b.resultFile, 'Size result', 'After onboarding', null) : '')
       + (b.giftOnboardingFile ? makeScreenshotCard(b.giftOnboardingFile, 'Gift onboarding', 'Gift form', null) : '')
       + (b.giftResultFile ? makeScreenshotCard(b.giftResultFile, 'Gift result', 'Gift recommendation', null) : '')
@@ -1652,6 +1653,7 @@ function renderSingleDetail(entry, idx) {
       </div>`;
     const cards = [mkCard(b.screenshotFile, 'Widget button', 'Widget detected', ms ? `${(ms/1000).toFixed(1)}s` : null)];
     if (b.onboardingFile) cards.push(mkCard(b.onboardingFile, 'Onboarding', 'Panel opened', null));
+    if (b.onboardingFilledFile) cards.push(mkCard(b.onboardingFilledFile, 'Onboarding filled', 'Before submit', null));
     if (b.resultFile) cards.push(mkCard(b.resultFile, 'Size result', 'After onboarding', null));
     if (b.giftOnboardingFile) cards.push(mkCard(b.giftOnboardingFile, 'Gift onboarding', 'Gift form', null));
     if (b.giftResultFile) cards.push(mkCard(b.giftResultFile, 'Gift result', 'Gift recommendation', null));
@@ -2092,6 +2094,15 @@ function showComparison(entryIdx) {
           </div>
         </div>`
       : '';
+    const onboardingFilledRow = (eb?.onboardingFilledFile || bb?.onboardingFilledFile)
+      ? `<div style="margin-bottom:8px">
+          <div style="font-size:10px;color:#484f58;text-transform:uppercase;margin-bottom:6px">Onboarding filled</div>
+          <div style="display:flex;gap:12px">
+            ${eb?.onboardingFilledFile ? mkCard(eb.onboardingFilledFile, entryLabel)    : `<div style="flex:1;min-width:0;color:#484f58;font-size:12px">No screenshot</div>`}
+            ${bb?.onboardingFilledFile ? mkCard(bb.onboardingFilledFile, baselineLabel) : `<div style="flex:1;min-width:0;color:#484f58;font-size:12px">No screenshot</div>`}
+          </div>
+        </div>`
+      : '';
     const resultRow = (eb?.resultFile || bb?.resultFile)
       ? `<div>
           <div style="font-size:10px;color:#484f58;text-transform:uppercase;margin-bottom:6px">Size result</div>
@@ -2128,10 +2139,10 @@ function showComparison(entryIdx) {
           </div>
         </div>`
       : '';
-    return widgetRow || onboardingRow || resultRow || giftOnboardingRow || giftResultRow || smartTableRow
+    return widgetRow || onboardingRow || onboardingFilledRow || resultRow || giftOnboardingRow || giftResultRow || smartTableRow
       ? `<div style="background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:14px;margin-bottom:10px">
           <div style="font-size:11px;font-weight:600;color:#8b949e;margin-bottom:12px;text-transform:uppercase">${browser}</div>
-          ${widgetRow}${onboardingRow}${resultRow}${giftOnboardingRow}${giftResultRow}${smartTableRow}
+          ${widgetRow}${onboardingRow}${onboardingFilledRow}${resultRow}${giftOnboardingRow}${giftResultRow}${smartTableRow}
         </div>`
       : '';
   }).filter(Boolean).join('');

@@ -442,6 +442,13 @@ jobs:
                 fs.copyFileSync(onboardingSrc, `docs/screenshots/${filename}`);
                 onboardingFile = `screenshots/${filename}`;
               }
+              const onboardingFilledSrc = `results/widget-screenshots/${r.browser}-onboarding-filled.jpg`;
+              let onboardingFilledFile = null;
+              if (fs.existsSync(onboardingFilledSrc)) {
+                const filename = `${tsSlug}-${r.browser}-onboarding-filled.jpg`;
+                fs.copyFileSync(onboardingFilledSrc, `docs/screenshots/${filename}`);
+                onboardingFilledFile = `screenshots/${filename}`;
+              }
               const resultSrc = `results/widget-screenshots/${r.browser}-result.jpg`;
               let resultFile = null;
               if (fs.existsSync(resultSrc)) {
@@ -470,7 +477,7 @@ jobs:
                 fs.copyFileSync(smartTableSrc, `docs/screenshots/${filename}`);
                 smartTableFile = `screenshots/${filename}`;
               }
-              return { browser: r.browser, status: r.status, error: r.error || null, missingEvents: r.missingEvents || [], widgetVisibleMs: r.widgetVisibleMs || null, screenshotFile, onboardingFile, resultFile, giftOnboardingFile, giftResultFile, smartTableFile, widgetType: r.widgetType || null, hasSmartTable: r.hasSmartTable ?? null };
+              return { browser: r.browser, status: r.status, error: r.error || null, missingEvents: r.missingEvents || [], widgetVisibleMs: r.widgetVisibleMs || null, screenshotFile, onboardingFile, onboardingFilledFile, resultFile, giftOnboardingFile, giftResultFile, smartTableFile, widgetType: r.widgetType || null, hasSmartTable: r.hasSmartTable ?? null };
             }),
           };
 

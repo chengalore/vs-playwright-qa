@@ -322,11 +322,12 @@ export async function runApparelFlow(
   eventWatcher,
   recommendationAPI,
   onboardingOpts = {},
+  screenshotFn = null,
 ) {
   const isNewUser = await isOnboardingVisible(page);
 
   if (isNewUser) {
-    await completeOnboarding(page, onboardingOpts);
+    await completeOnboarding(page, onboardingOpts, screenshotFn);
     await waitForRecommendationReady(eventWatcher, recommendationAPI);
     const bodyStatus = await waitForStatus(() => bodyAPI.getStatus(), 5000);
     expect(bodyStatus).toBe(200);
@@ -385,12 +386,12 @@ export async function runBagFlow(page) {
   return false;
 }
 
-export async function runNoVisorFlow(page, bodyAPI, onboardingOpts = {}) {
+export async function runNoVisorFlow(page, bodyAPI, onboardingOpts = {}, screenshotFn = null) {
   const isNewUser = await isOnboardingVisible(page);
 
   if (isNewUser) {
     console.log("New user → running onboarding (no-visor)");
-    await completeOnboarding(page, onboardingOpts);
+    await completeOnboarding(page, onboardingOpts, screenshotFn);
     const bodyStatus = await waitForStatus(() => bodyAPI.getStatus(), 5000);
     expect(bodyStatus).toBe(200);
   }
