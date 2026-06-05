@@ -123,6 +123,11 @@ on:
         required: false
         default: '["chrome"]'
         type: string
+      version_label:
+        description: "Version label for comparison e.g. 3.9.18, staging, before-fix (optional)"
+        required: false
+        default: ""
+        type: string
 
 jobs:
   # ── Run in selected browsers in parallel ──────────────────────────────────
@@ -416,6 +421,7 @@ jobs:
             store: first.store || null,
             productType: first.productType || null,
             flow: first.flow || null,
+            versionLabel: process.env.VERSION_LABEL || null,
             onboarding,
             giftOnboarding,
             footwearOnboarding,
@@ -468,6 +474,7 @@ jobs:
           KIDS_HEIGHT: ${{ github.event.inputs.kids_height }}
           KIDS_WEIGHT: ${{ github.event.inputs.kids_weight }}
           BROWSERS_INPUT: ${{ github.event.inputs.browsers }}
+          VERSION_LABEL: ${{ github.event.inputs.version_label }}
 
       - name: Download compare view screenshots
         if: ${{ github.event.inputs.phase == 'compare' }}

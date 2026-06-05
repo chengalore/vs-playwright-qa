@@ -915,6 +915,14 @@ function generateDashboard(history, compareImages, singleUrlHistory, metrics) {
           </div>
         </div>
 
+        <!-- Version label -->
+        <div style="padding:14px 16px;border-bottom:1px solid #21262d">
+          <div style="font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#484f58;font-weight:600;margin-bottom:8px">Version label <span style="font-weight:400;letter-spacing:0;text-transform:none;font-size:11px">(optional)</span></div>
+          <input id="single-version-label" type="text" placeholder="e.g. 3.9.18, staging, before-fix"
+            style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:6px 10px;font-size:12px">
+          <div style="font-size:11px;color:#484f58;margin-top:5px">Tag this run — pick two labelled runs in History to compare screenshots side by side</div>
+        </div>
+
         <!-- Body data -->
         <div style="padding:14px 16px">
           <div style="display:flex;align-items:center;justify-content:space-between">
@@ -1729,7 +1737,7 @@ const CHECKLISTS = {
   ],
 };
 
-function renderSingleDetail(entry) {
+function renderSingleDetail(entry, idx) {
   const raw = entry.events || [];
   const flow = entry.flow;
   const checklist = CHECKLISTS[flow] || [];
@@ -1895,7 +1903,26 @@ function renderSingleDetail(entry) {
   \${screenshotCardsHtml ? \`<div style="margin-top:16px">
     <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.6px;color:#484f58;font-weight:600;margin-bottom:10px">Widget Screenshot — Desktop</div>
     <div style="display:flex;gap:16px;flex-wrap:wrap">\${screenshotCardsHtml}</div>
-  </div>\` : ''}\`;
+  </div>\` : ''}
+  <div style="margin-top:16px;padding-top:14px;border-top:1px solid #21262d">
+    <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.6px;color:#484f58;font-weight:600;margin-bottom:10px">Compare screenshots with another run</div>
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+      <select id="compare-pick-\${idx}" onchange="showComparison(\${idx})"
+        style="background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:5px 10px;font-size:12px;cursor:pointer;min-width:280px">
+        <option value="">— select baseline run —</option>
+        \${SINGLE_URL_HISTORY.map((r, i) => {
+          if (i === idx) return '';
+          const hasSameStore = r.store && r.store === entry.store;
+          const dateStr = r.timestamp ? new Date(r.timestamp).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
+          const label = [r.store || '—', r.versionLabel ? \`[\${r.versionLabel}]\` : '', dateStr].filter(Boolean).join(' · ');
+          const hasShots = (r.browsers || []).some(b => b.screenshotFile);
+          if (!hasShots) return '';
+          return \`<option value="\${i}"\${hasSameStore ? ' style="color:#c9d1d9"' : ''}>\${hasSameStore ? '★ ' : ''}\${label}</option>\`;
+        }).join('')}
+      </select>
+    </div>
+    <div id="comparison-panel-\${idx}" style="margin-top:12px"></div>
+  </div>\`;
 }
 
 function renderSingleUrl() {
@@ -1938,7 +1965,7 @@ function renderSingleUrl() {
       <td style="font-size:12px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
         <a href="\${entry.url}" target="_blank" rel="noopener" title="\${entry.url}" onclick="event.stopPropagation()">\${shortUrl(entry.url)}</a>
       </td>
-      <td style="font-size:13px">\${entry.store || '—'}</td>
+      <td style="font-size:13px">\${entry.store || '—'}\${entry.versionLabel ? \` <span style="font-size:10px;background:#1c2128;border:1px solid #30363d;color:#8b949e;padding:1px 6px;border-radius:4px;font-family:monospace">\${entry.versionLabel}</span>\` : ''}</td>
       <td>\${flowBadge}</td>
       <td><span class="phase-badge phase-\${entry.phase || 'full'}">\${entry.phase || 'full'}</span></td>
       \${statusCell('chrome')}
@@ -1952,7 +1979,7 @@ function renderSingleUrl() {
     const detailCell = document.createElement('td');
     detailCell.className = 'detail-cell';
     detailCell.colSpan = 11;
-    detailCell.innerHTML = renderSingleDetail(entry);
+    detailCell.innerHTML = renderSingleDetail(entry, idx);
     detailRow.appendChild(detailCell);
 
     row.addEventListener('click', (e) => {
@@ -2194,7 +2221,8 @@ async function triggerSingleRun() {
   const kidsGender  = document.getElementById('single-kids-gender').value;
   const kidsAge     = document.getElementById('single-kids-age').value;
   const kidsHeight  = document.getElementById('single-kids-height').value;
-  const kidsWeight  = document.getElementById('single-kids-weight').value;
+  const kidsWeight     = document.getElementById('single-kids-weight').value;
+  const versionLabel   = document.getElementById('single-version-label').value.trim();
   const browsers = ['chrome', 'firefox', 'webkit'].filter(b => {
     const el = document.getElementById('browser-' + b);
     return el && (el.checked || el.disabled); // chrome is disabled+checked
@@ -2226,6 +2254,7 @@ async function triggerSingleRun() {
       kids_age: kidsAge,
       kids_height: kidsHeight,
       kids_weight: kidsWeight,
+      version_label: versionLabel,
     }}),
   });
 
@@ -2238,6 +2267,62 @@ async function triggerSingleRun() {
     status.textContent = '❌ ' + (body.message || 'Failed (' + res.status + ')');
     status.style.color = '#f85149';
   }
+}
+
+// ── Visual comparison ────────────────────────────────────────────────────────
+function showComparison(entryIdx) {
+  const baselineIdxStr = document.getElementById(\`compare-pick-\${entryIdx}\`)?.value;
+  const panel = document.getElementById(\`comparison-panel-\${entryIdx}\`);
+  if (!panel) return;
+  if (!baselineIdxStr) { panel.innerHTML = ''; return; }
+
+  const entry    = SINGLE_URL_HISTORY[entryIdx];
+  const baseline = SINGLE_URL_HISTORY[parseInt(baselineIdxStr)];
+  if (!entry || !baseline) return;
+
+  const entryLabel    = entry.versionLabel    || new Date(entry.timestamp).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
+  const baselineLabel = baseline.versionLabel || new Date(baseline.timestamp).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
+
+  const mkCard = (src, label) => \`
+    <div style="flex:1;min-width:0">
+      <div style="font-size:10px;font-weight:600;color:#8b949e;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;font-family:monospace">\${label}</div>
+      <img src="\${src}" style="width:100%;display:block;border-radius:6px;border:1px solid #30363d">
+    </div>\`;
+
+  const entryBrowsers    = (entry.browsers    || []).filter(b => b.screenshotFile);
+  const baselineBrowsers = (baseline.browsers || []).filter(b => b.screenshotFile);
+  const browsers = [...new Set([...entryBrowsers.map(b => b.browser), ...baselineBrowsers.map(b => b.browser)])];
+
+  const rows = browsers.map(browser => {
+    const eb = entryBrowsers.find(b => b.browser === browser);
+    const bb = baselineBrowsers.find(b => b.browser === browser);
+    const widgetRow = (eb?.screenshotFile || bb?.screenshotFile)
+      ? \`<div style="margin-bottom:8px">
+          <div style="font-size:10px;color:#484f58;text-transform:uppercase;margin-bottom:6px">Widget button</div>
+          <div style="display:flex;gap:12px">
+            \${eb?.screenshotFile ? mkCard(eb.screenshotFile, entryLabel)    : \`<div style="flex:1;min-width:0;color:#484f58;font-size:12px">No screenshot</div>\`}
+            \${bb?.screenshotFile ? mkCard(bb.screenshotFile, baselineLabel) : \`<div style="flex:1;min-width:0;color:#484f58;font-size:12px">No screenshot</div>\`}
+          </div>
+        </div>\`
+      : '';
+    const onboardingRow = (eb?.onboardingFile || bb?.onboardingFile)
+      ? \`<div>
+          <div style="font-size:10px;color:#484f58;text-transform:uppercase;margin-bottom:6px">Onboarding</div>
+          <div style="display:flex;gap:12px">
+            \${eb?.onboardingFile ? mkCard(eb.onboardingFile, entryLabel)    : \`<div style="flex:1;min-width:0;color:#484f58;font-size:12px">No screenshot</div>\`}
+            \${bb?.onboardingFile ? mkCard(bb.onboardingFile, baselineLabel) : \`<div style="flex:1;min-width:0;color:#484f58;font-size:12px">No screenshot</div>\`}
+          </div>
+        </div>\`
+      : '';
+    return widgetRow || onboardingRow
+      ? \`<div style="background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:14px;margin-bottom:10px">
+          <div style="font-size:11px;font-weight:600;color:#8b949e;margin-bottom:12px;text-transform:uppercase">\${browser}</div>
+          \${widgetRow}\${onboardingRow}
+        </div>\`
+      : '';
+  }).filter(Boolean).join('');
+
+  panel.innerHTML = rows || \`<p style="font-size:12px;color:#484f58;margin-top:4px">No screenshots available in the selected runs.</p>\`;
 }
 
 // ── Flaky Stores card ─────────────────────────────────────────────────────────
