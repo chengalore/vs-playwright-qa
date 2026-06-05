@@ -442,7 +442,14 @@ jobs:
                 fs.copyFileSync(onboardingSrc, `docs/screenshots/${filename}`);
                 onboardingFile = `screenshots/${filename}`;
               }
-              return { browser: r.browser, status: r.status, error: r.error || null, missingEvents: r.missingEvents || [], widgetVisibleMs: r.widgetVisibleMs || null, screenshotFile, onboardingFile, widgetType: r.widgetType || null, hasSmartTable: r.hasSmartTable ?? null };
+              const resultSrc = `results/widget-screenshots/${r.browser}-result.jpg`;
+              let resultFile = null;
+              if (fs.existsSync(resultSrc)) {
+                const filename = `${tsSlug}-${r.browser}-result.jpg`;
+                fs.copyFileSync(resultSrc, `docs/screenshots/${filename}`);
+                resultFile = `screenshots/${filename}`;
+              }
+              return { browser: r.browser, status: r.status, error: r.error || null, missingEvents: r.missingEvents || [], widgetVisibleMs: r.widgetVisibleMs || null, screenshotFile, onboardingFile, resultFile, widgetType: r.widgetType || null, hasSmartTable: r.hasSmartTable ?? null };
             }),
           };
 

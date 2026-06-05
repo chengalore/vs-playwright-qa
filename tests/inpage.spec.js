@@ -564,6 +564,20 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
     }
     flowDoneMs = Date.now() - t_nav;
 
+    // Screenshot 3: result/recommendation page shown after onboarding completes
+    try {
+      const resultBuf = await page.screenshot({ type: "jpeg", quality: 80, fullPage: false }).catch(() => null);
+      if (resultBuf) {
+        const { mkdirSync, writeFileSync } = await import("fs");
+        const { join, dirname } = await import("path");
+        const { fileURLToPath } = await import("url");
+        const __dir = dirname(fileURLToPath(import.meta.url));
+        const dir = join(__dir, "../test-results/widget-screenshots");
+        mkdirSync(dir, { recursive: true });
+        writeFileSync(join(dir, `${testInfo.project.name}-result.jpg`), resultBuf);
+      }
+    } catch { /* non-fatal */ }
+
     // onboarding phase: onboarding complete — skip full validation
     if (phase === "onboarding") {
       logResult({

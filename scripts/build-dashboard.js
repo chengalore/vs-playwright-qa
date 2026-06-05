@@ -1411,6 +1411,7 @@ function renderLatestScreenshot() {
   const screenshotCard = b.onboardingFile
     ? makeScreenshotCard(b.screenshotFile, 'Widget button', 'Widget detected', ms ? \`\${ms}ms\` : null)
       + makeScreenshotCard(b.onboardingFile, 'Onboarding', 'Panel opened', null)
+      + (b.resultFile ? makeScreenshotCard(b.resultFile, 'Size result', 'After onboarding', null) : '')
     : makeScreenshotCard(b.screenshotFile, urlSlug, 'Widget detected', ms ? \`Captured at \${ms}ms\` : null);
 
   // Test checks
@@ -1878,6 +1879,7 @@ function renderSingleDetail(entry, idx) {
       </div>\`;
     const cards = [mkCard(b.screenshotFile, 'Widget button', 'Widget detected', ms ? \`\${(ms/1000).toFixed(1)}s\` : null)];
     if (b.onboardingFile) cards.push(mkCard(b.onboardingFile, 'Onboarding', 'Panel opened', null));
+    if (b.resultFile) cards.push(mkCard(b.resultFile, 'Size result', 'After onboarding', null));
     return cards;
   }).join('');
 
@@ -2306,7 +2308,7 @@ function showComparison(entryIdx) {
         </div>\`
       : '';
     const onboardingRow = (eb?.onboardingFile || bb?.onboardingFile)
-      ? \`<div>
+      ? \`<div style="margin-bottom:8px">
           <div style="font-size:10px;color:#484f58;text-transform:uppercase;margin-bottom:6px">Onboarding</div>
           <div style="display:flex;gap:12px">
             \${eb?.onboardingFile ? mkCard(eb.onboardingFile, entryLabel)    : \`<div style="flex:1;min-width:0;color:#484f58;font-size:12px">No screenshot</div>\`}
@@ -2314,10 +2316,19 @@ function showComparison(entryIdx) {
           </div>
         </div>\`
       : '';
-    return widgetRow || onboardingRow
+    const resultRow = (eb?.resultFile || bb?.resultFile)
+      ? \`<div>
+          <div style="font-size:10px;color:#484f58;text-transform:uppercase;margin-bottom:6px">Size result</div>
+          <div style="display:flex;gap:12px">
+            \${eb?.resultFile ? mkCard(eb.resultFile, entryLabel)    : \`<div style="flex:1;min-width:0;color:#484f58;font-size:12px">No screenshot</div>\`}
+            \${bb?.resultFile ? mkCard(bb.resultFile, baselineLabel) : \`<div style="flex:1;min-width:0;color:#484f58;font-size:12px">No screenshot</div>\`}
+          </div>
+        </div>\`
+      : '';
+    return widgetRow || onboardingRow || resultRow
       ? \`<div style="background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:14px;margin-bottom:10px">
           <div style="font-size:11px;font-weight:600;color:#8b949e;margin-bottom:12px;text-transform:uppercase">\${browser}</div>
-          \${widgetRow}\${onboardingRow}
+          \${widgetRow}\${onboardingRow}\${resultRow}
         </div>\`
       : '';
   }).filter(Boolean).join('');
