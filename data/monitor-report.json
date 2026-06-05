@@ -1,37 +1,21 @@
 {
-  "timestamp": "2026-06-04T01:50:04.557Z",
-  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/26921972762",
+  "timestamp": "2026-06-05T00:09:47.578Z",
+  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/26986984462",
   "summary": {
     "total": 78,
     "passed": 68,
-    "widgetMissing": 10,
-    "skipped": 0,
+    "widgetMissing": 9,
+    "skipped": 1,
     "failed": 0,
-    "fallbackUsed": 68,
-    "avgWidgetVisibleMs": 27935,
-    "p95WidgetVisibleMs": 34884
+    "fallbackUsed": 70,
+    "avgWidgetVisibleMs": 27819,
+    "p95WidgetVisibleMs": 33932
   },
   "newIssues": [],
   "widgetMissingStores": [
     {
-      "store": "hankyu_hanshin",
-      "url": "https://web.hh-online.jp/fashion/goods/index.html?ggcd=508767628",
-      "browsers": [
-        "chrome",
-        "webkit"
-      ]
-    },
-    {
       "store": "reebok_korea",
       "url": "https://reebok.co.kr/goods/goods_view.php?goodsNo=1000002262",
-      "browsers": [
-        "chrome",
-        "webkit"
-      ]
-    },
-    {
-      "store": "hankyu_mens",
-      "url": "https://web.hh-online.jp/hankyu-mens/goods/index.html?ggcd=508732084",
       "browsers": [
         "chrome",
         "webkit"
@@ -54,6 +38,14 @@
       ]
     },
     {
+      "store": "banana_republic",
+      "url": "https://bananarepublic.gap.co.jp/br/bastian-suede-jacket/869499006.html?dwvar_869499006_color=869499006",
+      "browsers": [
+        "chrome",
+        "webkit"
+      ]
+    },
+    {
       "store": "denimlife",
       "url": "https://denimlife.jp/shopdetail/000000002987",
       "browsers": [
@@ -70,8 +62,8 @@
       ]
     },
     {
-      "store": "felissimo",
-      "url": "https://www.felissimo.co.jp/sunnyclouds/707525.html?vf=01",
+      "store": "lumine",
+      "url": "https://i.lumine.jp/items/306/30625005401.html",
       "browsers": [
         "chrome",
         "webkit"
@@ -97,34 +89,42 @@
   "ongoingMissing": [
     {
       "store": "reebok_korea",
-      "consecutiveRuns": 58
+      "consecutiveRuns": 59
     },
     {
       "store": "gelato_pique",
-      "consecutiveRuns": 58
+      "consecutiveRuns": 59
     },
     {
       "store": "snidel",
-      "consecutiveRuns": 55
+      "consecutiveRuns": 56
     },
     {
       "store": "poppy",
-      "consecutiveRuns": 13
+      "consecutiveRuns": 14
     },
     {
       "store": "studio_nicholson",
-      "consecutiveRuns": 10
+      "consecutiveRuns": 11
     },
     {
       "store": "hankyu_hanshin",
-      "consecutiveRuns": 2
-    },
-    {
-      "store": "cox",
-      "consecutiveRuns": 1
+      "consecutiveRuns": 3
     },
     {
       "store": "hankyu_mens",
+      "consecutiveRuns": 2
+    },
+    {
+      "store": "denimlife",
+      "consecutiveRuns": 1
+    },
+    {
+      "store": "felissimo",
+      "consecutiveRuns": 1
+    },
+    {
+      "store": "standard_california",
       "consecutiveRuns": 1
     }
   ],
@@ -143,5 +143,10 @@
     "ralph_lauren_uk",
     "rl"
   ],
-  "skippedStores": []
+  "skippedStores": [
+    {
+      "store": "id_look",
+      "reason": "navigation_error"
+    }
+  ]
 }
