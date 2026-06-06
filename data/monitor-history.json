@@ -1,5 +1,149 @@
 [
   {
+    "timestamp": "2026-06-06T00:10:18.281Z",
+    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/27046549199",
+    "summary": {
+      "total": 62,
+      "passed": 53,
+      "widgetMissing": 9,
+      "skipped": 0,
+      "failed": 0,
+      "fallbackUsed": 54,
+      "avgWidgetVisibleMs": 28093,
+      "p95WidgetVisibleMs": 35017
+    },
+    "newIssues": [],
+    "widgetMissingStores": [
+      {
+        "store": "hankyu_hanshin",
+        "url": "https://web.hh-online.jp/fashion/goods/index.html?ggcd=508767628",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "reebok_korea",
+        "url": "https://reebok.co.kr/goods/goods_view.php?goodsNo=1000002262",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "hankyu_mens",
+        "url": "https://web.hh-online.jp/hankyu-mens/goods/index.html?ggcd=508732084",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "cox",
+        "url": "https://tokyodesignchannel.com/c/lbc/26180639",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "snidel",
+        "url": "https://snidel.com/Form/Product/ProductDetail.aspx?shop=0&pid=SHFT261075&vid=&bid=SNH01&cid=&_type=&cat=&swrd=",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "poppy",
+        "url": "https://poppy-tokyo.com/products/poppy-print-long-t-shirt-pink",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "felissimo",
+        "url": "https://www.felissimo.co.jp/sunnyclouds/707525.html?vf=01",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "studio_nicholson",
+        "url": "https://japan.studionicholson.com/products/chalco-denim-pant-in-parchment",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "gelato_pique",
+        "url": "https://gelatopique.com/Form/Product/ProductDetail.aspx?shop=0&pid=PWCO261297&vid=&bid=PIQ01&cid=&_type=&cat=WOM003001&swrd=",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      }
+    ],
+    "ongoingMissing": [
+      {
+        "store": "reebok_korea",
+        "consecutiveRuns": 60
+      },
+      {
+        "store": "gelato_pique",
+        "consecutiveRuns": 60
+      },
+      {
+        "store": "snidel",
+        "consecutiveRuns": 57
+      },
+      {
+        "store": "poppy",
+        "consecutiveRuns": 15
+      },
+      {
+        "store": "studio_nicholson",
+        "consecutiveRuns": 12
+      },
+      {
+        "store": "denimlife",
+        "consecutiveRuns": 2
+      },
+      {
+        "store": "standard_california",
+        "consecutiveRuns": 2
+      },
+      {
+        "store": "banana_republic",
+        "consecutiveRuns": 1
+      },
+      {
+        "store": "lumine",
+        "consecutiveRuns": 1
+      }
+    ],
+    "botProtected": [
+      "adidas",
+      "adidas_japan",
+      "adidas_korea",
+      "asics",
+      "asics_japan",
+      "ralph_lauren",
+      "ralph_lauren_australia",
+      "ralph_lauren_china",
+      "ralph_lauren_korea",
+      "ralph_lauren_singapore",
+      "ralph_lauren_taiwan",
+      "ralph_lauren_uk",
+      "rl"
+    ],
+    "skippedStores": [],
+    "phase": "widget"
+  },
+  {
     "timestamp": "2026-06-05T00:09:47.578Z",
     "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/26986984462",
     "summary": {
@@ -5678,111 +5822,6 @@
       {
         "store": "onward",
         "consecutiveRuns": 2
-      }
-    ],
-    "botProtected": [
-      "adidas",
-      "ralph_lauren",
-      "asics_japan"
-    ],
-    "skippedStores": [],
-    "phase": "widget"
-  },
-  {
-    "timestamp": "2026-04-25T23:38:22.902Z",
-    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/24943304858",
-    "summary": {
-      "total": 86,
-      "passed": 76,
-      "widgetMissing": 7,
-      "skipped": 3,
-      "failed": 0,
-      "fallbackUsed": 76
-    },
-    "newIssues": [],
-    "widgetMissingStores": [
-      {
-        "store": "ragtag",
-        "url": "https://www.ragtag.jp/brand/10164/item/N015826M0036",
-        "browsers": [
-          "chrome"
-        ]
-      },
-      {
-        "store": "snidel",
-        "url": "https://snidel.com/Form/Product/ProductDetail.aspx?shop=0&pid=SHFT261075&vid=&bid=SNH01&cid=&_type=&cat=&swrd=",
-        "browsers": [
-          "chrome"
-        ]
-      },
-      {
-        "store": "onward",
-        "url": "https://crosset.onward.co.jp/items/PRGTLS0280?cc=075",
-        "browsers": [
-          "chrome"
-        ]
-      },
-      {
-        "store": "gelato_pique",
-        "url": "https://gelatopique.com/Form/Product/ProductDetail.aspx?shop=0&pid=PWCO261297&vid=&bid=PIQ01&cid=&_type=&cat=WOM003001&swrd=",
-        "browsers": [
-          "chrome"
-        ]
-      },
-      {
-        "store": "hankyu_hanshin",
-        "url": "https://web.hh-online.jp/fashion/goods/index.html?ggcd=508767628",
-        "browsers": [
-          "chrome"
-        ]
-      },
-      {
-        "store": "reebok_korea",
-        "url": "https://reebok.co.kr/goods/goods_view.php?goodsNo=1000002262",
-        "browsers": [
-          "chrome"
-        ]
-      },
-      {
-        "store": "llbean",
-        "url": "https://www.llbean.co.jp/mens/bottoms/casual-bottoms/g/059098.html",
-        "browsers": [
-          "chrome"
-        ]
-      }
-    ],
-    "ongoingMissing": [
-      {
-        "store": "reebok_korea",
-        "consecutiveRuns": 14
-      },
-      {
-        "store": "snidel",
-        "consecutiveRuns": 14
-      },
-      {
-        "store": "gelato_pique",
-        "consecutiveRuns": 14
-      },
-      {
-        "store": "hankyu_hanshin",
-        "consecutiveRuns": 1
-      },
-      {
-        "store": "hankyu_mens",
-        "consecutiveRuns": 1
-      },
-      {
-        "store": "llbean",
-        "consecutiveRuns": 1
-      },
-      {
-        "store": "ragtag",
-        "consecutiveRuns": 1
-      },
-      {
-        "store": "onward",
-        "consecutiveRuns": 1
       }
     ],
     "botProtected": [
