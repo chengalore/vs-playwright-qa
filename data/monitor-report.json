@@ -1,21 +1,29 @@
 {
-  "timestamp": "2026-06-06T00:10:18.281Z",
-  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/27046549199",
+  "timestamp": "2026-06-07T00:08:26.000Z",
+  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/27077495933",
   "summary": {
-    "total": 62,
-    "passed": 53,
-    "widgetMissing": 9,
+    "total": 78,
+    "passed": 70,
+    "widgetMissing": 8,
     "skipped": 0,
     "failed": 0,
-    "fallbackUsed": 54,
-    "avgWidgetVisibleMs": 28093,
-    "p95WidgetVisibleMs": 35017
+    "fallbackUsed": 72,
+    "avgWidgetVisibleMs": 28619,
+    "p95WidgetVisibleMs": 35592
   },
   "newIssues": [],
   "widgetMissingStores": [
     {
       "store": "hankyu_hanshin",
       "url": "https://web.hh-online.jp/fashion/goods/index.html?ggcd=508767628",
+      "browsers": [
+        "chrome",
+        "webkit"
+      ]
+    },
+    {
+      "store": "coen",
+      "url": "https://www.coen.co.jp/item/7600024S0452",
       "browsers": [
         "chrome",
         "webkit"
@@ -38,14 +46,6 @@
       ]
     },
     {
-      "store": "cox",
-      "url": "https://tokyodesignchannel.com/c/lbc/26180639",
-      "browsers": [
-        "chrome",
-        "webkit"
-      ]
-    },
-    {
       "store": "snidel",
       "url": "https://snidel.com/Form/Product/ProductDetail.aspx?shop=0&pid=SHFT261075&vid=&bid=SNH01&cid=&_type=&cat=&swrd=",
       "browsers": [
@@ -56,14 +56,6 @@
     {
       "store": "poppy",
       "url": "https://poppy-tokyo.com/products/poppy-print-long-t-shirt-pink",
-      "browsers": [
-        "chrome",
-        "webkit"
-      ]
-    },
-    {
-      "store": "felissimo",
-      "url": "https://www.felissimo.co.jp/sunnyclouds/707525.html?vf=01",
       "browsers": [
         "chrome",
         "webkit"
@@ -89,23 +81,23 @@
   "ongoingMissing": [
     {
       "store": "reebok_korea",
-      "consecutiveRuns": 60
+      "consecutiveRuns": 61
     },
     {
       "store": "gelato_pique",
-      "consecutiveRuns": 60
+      "consecutiveRuns": 61
     },
     {
       "store": "snidel",
-      "consecutiveRuns": 57
+      "consecutiveRuns": 58
     },
     {
       "store": "poppy",
-      "consecutiveRuns": 15
+      "consecutiveRuns": 16
     },
     {
       "store": "studio_nicholson",
-      "consecutiveRuns": 12
+      "consecutiveRuns": 13
     },
     {
       "store": "denimlife",
@@ -120,7 +112,23 @@
       "consecutiveRuns": 1
     },
     {
+      "store": "hankyu_hanshin",
+      "consecutiveRuns": 1
+    },
+    {
+      "store": "cox",
+      "consecutiveRuns": 1
+    },
+    {
+      "store": "hankyu_mens",
+      "consecutiveRuns": 1
+    },
+    {
       "store": "lumine",
+      "consecutiveRuns": 1
+    },
+    {
+      "store": "felissimo",
       "consecutiveRuns": 1
     }
   ],
