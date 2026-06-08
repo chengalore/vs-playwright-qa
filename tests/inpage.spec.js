@@ -509,19 +509,7 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
             await page.waitForTimeout(1000);
           }
           await stLoc.scrollIntoViewIfNeeded({ timeout: 3000 }).catch(() => {});
-          // Wait for measurement content to load — not just the container (which appears even
-          // during the loading placeholder state), but actual SVG/annotation children inside it.
-          await page.waitForFunction(() => {
-            const st = document.querySelector("#vs-smart-table");
-            if (!st?.shadowRoot) return false;
-            const root = st.shadowRoot;
-            // Measurement diagram has SVG lines/paths or many child nodes; loading state has very few
-            const svgs = root.querySelectorAll("svg");
-            if (svgs.length > 0) return true;
-            const fitVis = root.querySelector(".fit-vis-container, .fit-vis");
-            return fitVis ? fitVis.querySelectorAll("*").length > 5 : false;
-          }, { timeout: 10000 }).catch(() => {});
-          await page.waitForTimeout(800);
+          await page.waitForTimeout(5000); // give smart table content time to fully render
           const stBbox = await stLoc.boundingBox().catch(() => null);
           const stVp = page.viewportSize();
           const stPad = 40;
