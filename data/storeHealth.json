@@ -34,9 +34,14 @@
   },
   "coen": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 1,
+    "consecutiveWidgetMissing": 0,
     "autoBlacklisted": false,
     "recoveries": [
+      {
+        "resolvedAt": "2026-06-08T00:10:01.397Z",
+        "durationMs": 86495149,
+        "type": "widget_missing"
+      },
       {
         "resolvedAt": "2026-06-03T00:32:20.958Z",
         "durationMs": 74127250,
@@ -72,8 +77,7 @@
         "durationMs": 172850326,
         "type": "widget_missing"
       }
-    ],
-    "issueStartedAt": "2026-06-07T00:08:26.248Z"
+    ]
   },
   "frans_boone": {
     "consecutiveFailures": 0,
@@ -131,7 +135,7 @@
   },
   "hankyu_hanshin": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 2,
+    "consecutiveWidgetMissing": 3,
     "autoBlacklisted": false,
     "recoveries": [
       {
@@ -243,7 +247,7 @@
   },
   "hankyu_mens": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 2,
+    "consecutiveWidgetMissing": 3,
     "autoBlacklisted": false,
     "recoveries": [
       {
@@ -281,7 +285,7 @@
   },
   "poppy": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 17,
+    "consecutiveWidgetMissing": 18,
     "autoBlacklisted": false,
     "issueStartedAt": "2026-05-19T03:57:11.252Z"
   },
@@ -309,7 +313,7 @@
   },
   "reebok_korea": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 62,
+    "consecutiveWidgetMissing": 63,
     "autoBlacklisted": false,
     "issueStartedAt": "2026-04-13T09:15:18.244Z"
   },
@@ -530,7 +534,7 @@
   },
   "studio_nicholson": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 14,
+    "consecutiveWidgetMissing": 15,
     "autoBlacklisted": false,
     "issueStartedAt": "2026-05-21T03:06:04.311Z"
   },
@@ -548,7 +552,7 @@
   },
   "snidel": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 59,
+    "consecutiveWidgetMissing": 60,
     "autoBlacklisted": false,
     "issueStartedAt": "2026-04-13T09:15:18.244Z"
   },
@@ -675,7 +679,7 @@
   },
   "gelato_pique": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 62,
+    "consecutiveWidgetMissing": 63,
     "autoBlacklisted": false,
     "issueStartedAt": "2026-04-13T09:15:18.244Z"
   },

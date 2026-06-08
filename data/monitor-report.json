@@ -1,29 +1,21 @@
 {
-  "timestamp": "2026-06-07T00:08:26.000Z",
-  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/27077495933",
+  "timestamp": "2026-06-08T00:10:01.073Z",
+  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/27108829407",
   "summary": {
     "total": 78,
-    "passed": 70,
-    "widgetMissing": 8,
+    "passed": 71,
+    "widgetMissing": 7,
     "skipped": 0,
     "failed": 0,
-    "fallbackUsed": 72,
-    "avgWidgetVisibleMs": 28619,
-    "p95WidgetVisibleMs": 35592
+    "fallbackUsed": 71,
+    "avgWidgetVisibleMs": 28079,
+    "p95WidgetVisibleMs": 34930
   },
   "newIssues": [],
   "widgetMissingStores": [
     {
       "store": "hankyu_hanshin",
       "url": "https://web.hh-online.jp/fashion/goods/index.html?ggcd=508767628",
-      "browsers": [
-        "chrome",
-        "webkit"
-      ]
-    },
-    {
-      "store": "coen",
-      "url": "https://www.coen.co.jp/item/7600024S0452",
       "browsers": [
         "chrome",
         "webkit"
@@ -81,54 +73,34 @@
   "ongoingMissing": [
     {
       "store": "reebok_korea",
-      "consecutiveRuns": 61
+      "consecutiveRuns": 62
     },
     {
       "store": "gelato_pique",
-      "consecutiveRuns": 61
+      "consecutiveRuns": 62
     },
     {
       "store": "snidel",
-      "consecutiveRuns": 58
+      "consecutiveRuns": 59
     },
     {
       "store": "poppy",
-      "consecutiveRuns": 16
+      "consecutiveRuns": 17
     },
     {
       "store": "studio_nicholson",
-      "consecutiveRuns": 13
-    },
-    {
-      "store": "denimlife",
-      "consecutiveRuns": 2
-    },
-    {
-      "store": "standard_california",
-      "consecutiveRuns": 2
-    },
-    {
-      "store": "banana_republic",
-      "consecutiveRuns": 1
+      "consecutiveRuns": 14
     },
     {
       "store": "hankyu_hanshin",
-      "consecutiveRuns": 1
-    },
-    {
-      "store": "cox",
-      "consecutiveRuns": 1
+      "consecutiveRuns": 2
     },
     {
       "store": "hankyu_mens",
-      "consecutiveRuns": 1
+      "consecutiveRuns": 2
     },
     {
-      "store": "lumine",
-      "consecutiveRuns": 1
-    },
-    {
-      "store": "felissimo",
+      "store": "coen",
       "consecutiveRuns": 1
     }
   ],
