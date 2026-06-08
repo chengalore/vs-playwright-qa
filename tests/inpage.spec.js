@@ -511,19 +511,8 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
           await stLoc.scrollIntoViewIfNeeded({ timeout: 3000 }).catch(() => {});
           await page.waitForTimeout(5000); // give smart table content time to fully render
           const stBbox = await stLoc.boundingBox().catch(() => null);
-          const stVp = page.viewportSize();
-          const stPad = 40;
-          const stBuf = stBbox
-            ? await page.screenshot({
-                type: "jpeg", quality: 85,
-                clip: {
-                  x: Math.max(0, stBbox.x - stPad),
-                  y: Math.max(0, stBbox.y - stPad),
-                  width: Math.min((stVp?.width ?? 1280) - Math.max(0, stBbox.x - stPad), stBbox.width + stPad * 2),
-                  height: stBbox.height + stPad * 2,
-                },
-              }).catch(() => null)
-            : null;
+          // Use element screenshot — captures full element height even beyond viewport
+          const stBuf = await stLoc.screenshot({ type: "jpeg", quality: 85, timeout: 8000 }).catch(() => null);
           if (stBuf) {
             const { mkdirSync, writeFileSync } = await import("fs");
             const { join, dirname } = await import("path");
