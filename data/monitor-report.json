@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-06-10T01:47:45.909Z",
-  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/27244060335",
+  "timestamp": "2026-06-11T00:19:02.376Z",
+  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/27314795557",
   "summary": {
     "total": 78,
     "passed": 69,
@@ -8,8 +8,8 @@
     "skipped": 1,
     "failed": 0,
     "fallbackUsed": 69,
-    "avgWidgetVisibleMs": 28393,
-    "p95WidgetVisibleMs": 37972
+    "avgWidgetVisibleMs": 27854,
+    "p95WidgetVisibleMs": 33664
   },
   "newIssues": [],
   "widgetMissingStores": [
@@ -81,35 +81,35 @@
   "ongoingMissing": [
     {
       "store": "reebok_korea",
-      "consecutiveRuns": 64
+      "consecutiveRuns": 65
     },
     {
       "store": "gelato_pique",
-      "consecutiveRuns": 64
+      "consecutiveRuns": 65
     },
     {
       "store": "snidel",
-      "consecutiveRuns": 61
+      "consecutiveRuns": 62
     },
     {
       "store": "poppy",
-      "consecutiveRuns": 19
+      "consecutiveRuns": 20
     },
     {
       "store": "studio_nicholson",
-      "consecutiveRuns": 16
+      "consecutiveRuns": 17
     },
     {
       "store": "hankyu_hanshin",
-      "consecutiveRuns": 4
+      "consecutiveRuns": 5
     },
     {
       "store": "hankyu_mens",
-      "consecutiveRuns": 4
+      "consecutiveRuns": 5
     },
     {
       "store": "coen",
-      "consecutiveRuns": 1
+      "consecutiveRuns": 2
     }
   ],
   "botProtected": [
