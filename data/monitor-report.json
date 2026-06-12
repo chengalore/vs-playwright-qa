@@ -1,15 +1,15 @@
 {
-  "timestamp": "2026-06-11T00:19:02.376Z",
-  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/27314795557",
+  "timestamp": "2026-06-12T00:24:30.388Z",
+  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/27385907676",
   "summary": {
     "total": 78,
-    "passed": 69,
-    "widgetMissing": 8,
+    "passed": 66,
+    "widgetMissing": 11,
     "skipped": 1,
     "failed": 0,
-    "fallbackUsed": 69,
-    "avgWidgetVisibleMs": 27854,
-    "p95WidgetVisibleMs": 33664
+    "fallbackUsed": 68,
+    "avgWidgetVisibleMs": 28154,
+    "p95WidgetVisibleMs": 36350
   },
   "newIssues": [],
   "widgetMissingStores": [
@@ -46,6 +46,14 @@
       ]
     },
     {
+      "store": "cox",
+      "url": "https://tokyodesignchannel.com/c/lbc/26180639",
+      "browsers": [
+        "chrome",
+        "webkit"
+      ]
+    },
+    {
       "store": "snidel",
       "url": "https://snidel.com/Form/Product/ProductDetail.aspx?shop=0&pid=SHFT261075&vid=&bid=SNH01&cid=&_type=&cat=&swrd=",
       "browsers": [
@@ -56,6 +64,22 @@
     {
       "store": "poppy",
       "url": "https://poppy-tokyo.com/products/poppy-print-long-t-shirt-pink",
+      "browsers": [
+        "chrome",
+        "webkit"
+      ]
+    },
+    {
+      "store": "andar_japan",
+      "url": "https://andar-jp.com/collections/womens-all/products/best-airywin-%E3%83%9E%E3%82%AD%E3%82%B7%E3%83%AF%E3%82%A4%E3%83%89%E3%83%AC%E3%82%AE%E3%83%B3%E3%82%B9",
+      "browsers": [
+        "chrome",
+        "webkit"
+      ]
+    },
+    {
+      "store": "barneys_japan",
+      "url": "https://onlinestore.barneys.co.jp/items/2257767",
       "browsers": [
         "chrome",
         "webkit"
@@ -81,35 +105,35 @@
   "ongoingMissing": [
     {
       "store": "reebok_korea",
-      "consecutiveRuns": 65
+      "consecutiveRuns": 66
     },
     {
       "store": "gelato_pique",
-      "consecutiveRuns": 65
+      "consecutiveRuns": 66
     },
     {
       "store": "snidel",
-      "consecutiveRuns": 62
+      "consecutiveRuns": 63
     },
     {
       "store": "poppy",
-      "consecutiveRuns": 20
+      "consecutiveRuns": 21
     },
     {
       "store": "studio_nicholson",
-      "consecutiveRuns": 17
+      "consecutiveRuns": 18
     },
     {
       "store": "hankyu_hanshin",
-      "consecutiveRuns": 5
+      "consecutiveRuns": 6
     },
     {
       "store": "hankyu_mens",
-      "consecutiveRuns": 5
+      "consecutiveRuns": 6
     },
     {
       "store": "coen",
-      "consecutiveRuns": 2
+      "consecutiveRuns": 3
     }
   ],
   "botProtected": [
