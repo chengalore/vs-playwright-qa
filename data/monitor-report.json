@@ -1,29 +1,21 @@
 {
-  "timestamp": "2026-06-12T00:24:30.388Z",
-  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/27385907676",
+  "timestamp": "2026-06-13T00:24:20.341Z",
+  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/27450546892",
   "summary": {
     "total": 78,
-    "passed": 66,
+    "passed": 67,
     "widgetMissing": 11,
-    "skipped": 1,
+    "skipped": 0,
     "failed": 0,
-    "fallbackUsed": 68,
-    "avgWidgetVisibleMs": 28154,
-    "p95WidgetVisibleMs": 36350
+    "fallbackUsed": 69,
+    "avgWidgetVisibleMs": 27892,
+    "p95WidgetVisibleMs": 35408
   },
   "newIssues": [],
   "widgetMissingStores": [
     {
       "store": "hankyu_hanshin",
       "url": "https://web.hh-online.jp/fashion/goods/index.html?ggcd=508767628",
-      "browsers": [
-        "chrome",
-        "webkit"
-      ]
-    },
-    {
-      "store": "reebok_korea",
-      "url": "https://reebok.co.kr/goods/goods_view.php?goodsNo=1000002262",
       "browsers": [
         "chrome",
         "webkit"
@@ -38,8 +30,8 @@
       ]
     },
     {
-      "store": "hankyu_mens",
-      "url": "https://web.hh-online.jp/hankyu-mens/goods/index.html?ggcd=508732084",
+      "store": "reebok_korea",
+      "url": "https://reebok.co.kr/goods/goods_view.php?goodsNo=1000002262",
       "browsers": [
         "chrome",
         "webkit"
@@ -70,16 +62,24 @@
       ]
     },
     {
-      "store": "andar_japan",
-      "url": "https://andar-jp.com/collections/womens-all/products/best-airywin-%E3%83%9E%E3%82%AD%E3%82%B7%E3%83%AF%E3%82%A4%E3%83%89%E3%83%AC%E3%82%AE%E3%83%B3%E3%82%B9",
+      "store": "denimlife",
+      "url": "https://denimlife.jp/shopdetail/000000002987",
       "browsers": [
         "chrome",
         "webkit"
       ]
     },
     {
-      "store": "barneys_japan",
-      "url": "https://onlinestore.barneys.co.jp/items/2257767",
+      "store": "standard_california",
+      "url": "https://shop.standardcalifornia.com/shopdetail/000000005191/",
+      "browsers": [
+        "chrome",
+        "webkit"
+      ]
+    },
+    {
+      "store": "andar_japan",
+      "url": "https://andar-jp.com/collections/womens-all/products/best-airywin-%E3%83%9E%E3%82%AD%E3%82%B7%E3%83%AF%E3%82%A4%E3%83%89%E3%83%AC%E3%82%AE%E3%83%B3%E3%82%B9",
       "browsers": [
         "chrome",
         "webkit"
@@ -105,35 +105,47 @@
   "ongoingMissing": [
     {
       "store": "reebok_korea",
-      "consecutiveRuns": 66
+      "consecutiveRuns": 67
     },
     {
       "store": "gelato_pique",
-      "consecutiveRuns": 66
+      "consecutiveRuns": 67
     },
     {
       "store": "snidel",
-      "consecutiveRuns": 63
+      "consecutiveRuns": 64
     },
     {
       "store": "poppy",
-      "consecutiveRuns": 21
+      "consecutiveRuns": 22
     },
     {
       "store": "studio_nicholson",
-      "consecutiveRuns": 18
+      "consecutiveRuns": 19
     },
     {
       "store": "hankyu_hanshin",
-      "consecutiveRuns": 6
+      "consecutiveRuns": 7
     },
     {
       "store": "hankyu_mens",
-      "consecutiveRuns": 6
+      "consecutiveRuns": 7
     },
     {
       "store": "coen",
-      "consecutiveRuns": 3
+      "consecutiveRuns": 4
+    },
+    {
+      "store": "andar_japan",
+      "consecutiveRuns": 1
+    },
+    {
+      "store": "cox",
+      "consecutiveRuns": 1
+    },
+    {
+      "store": "barneys_japan",
+      "consecutiveRuns": 1
     }
   ],
   "botProtected": [
@@ -151,10 +163,5 @@
     "ralph_lauren_uk",
     "rl"
   ],
-  "skippedStores": [
-    {
-      "store": "id_look",
-      "reason": "navigation_error"
-    }
-  ]
+  "skippedStores": []
 }
