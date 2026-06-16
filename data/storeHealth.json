@@ -22,7 +22,7 @@
   },
   "andar_japan": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 4,
+    "consecutiveWidgetMissing": 5,
     "autoBlacklisted": false,
     "recoveries": [
       {
@@ -35,7 +35,7 @@
   },
   "coen": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 1,
+    "consecutiveWidgetMissing": 2,
     "autoBlacklisted": false,
     "recoveries": [
       {
@@ -142,7 +142,7 @@
   },
   "hankyu_hanshin": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 10,
+    "consecutiveWidgetMissing": 11,
     "autoBlacklisted": false,
     "recoveries": [
       {
@@ -180,8 +180,9 @@
   },
   "another_address": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 0,
-    "autoBlacklisted": false
+    "consecutiveWidgetMissing": 1,
+    "autoBlacklisted": false,
+    "issueStartedAt": "2026-06-16T00:35:37.813Z"
   },
   "brooks_brothers_korea": {
     "consecutiveFailures": 0,
@@ -212,7 +213,7 @@
   },
   "cox": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 0,
+    "consecutiveWidgetMissing": 1,
     "autoBlacklisted": false,
     "recoveries": [
       {
@@ -255,11 +256,12 @@
         "durationMs": 86775137,
         "type": "widget_missing"
       }
-    ]
+    ],
+    "issueStartedAt": "2026-06-16T00:35:37.813Z"
   },
   "hankyu_mens": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 2,
+    "consecutiveWidgetMissing": 3,
     "autoBlacklisted": false,
     "recoveries": [
       {
@@ -302,7 +304,7 @@
   },
   "poppy": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 25,
+    "consecutiveWidgetMissing": 26,
     "autoBlacklisted": false,
     "issueStartedAt": "2026-05-19T03:57:11.252Z"
   },
@@ -330,7 +332,7 @@
   },
   "reebok_korea": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 70,
+    "consecutiveWidgetMissing": 71,
     "autoBlacklisted": false,
     "issueStartedAt": "2026-04-13T09:15:18.244Z"
   },
@@ -419,7 +421,7 @@
   },
   "lumine": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 0,
+    "consecutiveWidgetMissing": 1,
     "autoBlacklisted": false,
     "recoveries": [
       {
@@ -437,7 +439,8 @@
         "durationMs": 13607522,
         "type": "widget_missing"
       }
-    ]
+    ],
+    "issueStartedAt": "2026-06-16T00:35:37.813Z"
   },
   "nagaileben": {
     "consecutiveFailures": 0,
@@ -451,9 +454,15 @@
   },
   "restir": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 1,
+    "consecutiveWidgetMissing": 0,
     "autoBlacklisted": false,
-    "issueStartedAt": "2026-06-15T00:12:28.818Z"
+    "recoveries": [
+      {
+        "resolvedAt": "2026-06-16T00:35:37.811Z",
+        "durationMs": 87788993,
+        "type": "widget_missing"
+      }
+    ]
   },
   "style_deli": {
     "consecutiveFailures": 0,
@@ -522,13 +531,19 @@
   },
   "buyma": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 1,
+    "consecutiveWidgetMissing": 0,
     "autoBlacklisted": false,
-    "issueStartedAt": "2026-06-15T00:12:28.819Z"
+    "recoveries": [
+      {
+        "resolvedAt": "2026-06-16T00:35:37.813Z",
+        "durationMs": 87788994,
+        "type": "widget_missing"
+      }
+    ]
   },
   "gap_japan": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 1,
+    "consecutiveWidgetMissing": 2,
     "autoBlacklisted": false,
     "issueStartedAt": "2026-06-15T00:12:28.819Z"
   },
@@ -576,7 +591,7 @@
   },
   "studio_nicholson": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 22,
+    "consecutiveWidgetMissing": 23,
     "autoBlacklisted": false,
     "issueStartedAt": "2026-05-21T03:06:04.311Z"
   },
@@ -594,7 +609,7 @@
   },
   "snidel": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 67,
+    "consecutiveWidgetMissing": 68,
     "autoBlacklisted": false,
     "issueStartedAt": "2026-04-13T09:15:18.244Z"
   },
@@ -731,7 +746,7 @@
   },
   "gelato_pique": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 70,
+    "consecutiveWidgetMissing": 71,
     "autoBlacklisted": false,
     "issueStartedAt": "2026-04-13T09:15:18.244Z"
   },

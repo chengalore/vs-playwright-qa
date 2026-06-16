@@ -1,29 +1,21 @@
 {
-  "timestamp": "2026-06-15T00:12:28.543Z",
-  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/27516378319",
+  "timestamp": "2026-06-16T00:35:37.503Z",
+  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/27585593133",
   "summary": {
     "total": 78,
-    "passed": 66,
-    "widgetMissing": 12,
+    "passed": 65,
+    "widgetMissing": 13,
     "skipped": 0,
     "failed": 0,
-    "fallbackUsed": 67,
-    "avgWidgetVisibleMs": 27916,
-    "p95WidgetVisibleMs": 34811
+    "fallbackUsed": 68,
+    "avgWidgetVisibleMs": 28189,
+    "p95WidgetVisibleMs": 34188
   },
   "newIssues": [],
   "widgetMissingStores": [
     {
       "store": "hankyu_hanshin",
       "url": "https://web.hh-online.jp/fashion/goods/index.html?ggcd=508767628",
-      "browsers": [
-        "chrome",
-        "webkit"
-      ]
-    },
-    {
-      "store": "coen",
-      "url": "https://www.coen.co.jp/item/7600024S0452",
       "browsers": [
         "chrome",
         "webkit"
@@ -38,16 +30,16 @@
       ]
     },
     {
-      "store": "hankyu_mens",
-      "url": "https://web.hh-online.jp/hankyu-mens/goods/index.html?ggcd=508732084",
+      "store": "coen",
+      "url": "https://www.coen.co.jp/item/7600024S0452",
       "browsers": [
         "chrome",
         "webkit"
       ]
     },
     {
-      "store": "restir",
-      "url": "https://www.restir.com/category/a/i/H526Y25X53S-13",
+      "store": "hankyu_mens",
+      "url": "https://web.hh-online.jp/hankyu-mens/goods/index.html?ggcd=508732084",
       "browsers": [
         "chrome",
         "webkit"
@@ -62,8 +54,24 @@
       ]
     },
     {
+      "store": "cox",
+      "url": "https://tokyodesignchannel.com/c/lbc/26180639",
+      "browsers": [
+        "chrome",
+        "webkit"
+      ]
+    },
+    {
       "store": "poppy",
       "url": "https://poppy-tokyo.com/products/poppy-print-long-t-shirt-pink",
+      "browsers": [
+        "chrome",
+        "webkit"
+      ]
+    },
+    {
+      "store": "lumine",
+      "url": "https://i.lumine.jp/items/306/30625005401.html",
       "browsers": [
         "chrome",
         "webkit"
@@ -86,8 +94,8 @@
       ]
     },
     {
-      "store": "buyma",
-      "url": "https://www.buyma.com/item/112350088/",
+      "store": "another_address",
+      "url": "https://www.anotheraddress.jp/products/detail/2322006032905",
       "browsers": [
         "chrome",
         "webkit"
@@ -113,50 +121,50 @@
   "ongoingMissing": [
     {
       "store": "reebok_korea",
-      "consecutiveRuns": 69
+      "consecutiveRuns": 70
     },
     {
       "store": "gelato_pique",
-      "consecutiveRuns": 69
+      "consecutiveRuns": 70
     },
     {
       "store": "snidel",
-      "consecutiveRuns": 66
+      "consecutiveRuns": 67
     },
     {
       "store": "poppy",
-      "consecutiveRuns": 24
+      "consecutiveRuns": 25
     },
     {
       "store": "studio_nicholson",
-      "consecutiveRuns": 21
+      "consecutiveRuns": 22
     },
     {
       "store": "hankyu_hanshin",
-      "consecutiveRuns": 9
+      "consecutiveRuns": 10
     },
     {
       "store": "andar_japan",
-      "consecutiveRuns": 3
-    },
-    {
-      "store": "cox",
-      "consecutiveRuns": 3
+      "consecutiveRuns": 4
     },
     {
       "store": "hankyu_mens",
+      "consecutiveRuns": 2
+    },
+    {
+      "store": "coen",
       "consecutiveRuns": 1
     },
     {
-      "store": "lumine",
+      "store": "restir",
       "consecutiveRuns": 1
     },
     {
-      "store": "ameri_vintage",
+      "store": "buyma",
       "consecutiveRuns": 1
     },
     {
-      "store": "levi_japan",
+      "store": "gap_japan",
       "consecutiveRuns": 1
     }
   ],
