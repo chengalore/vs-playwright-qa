@@ -1,5 +1,142 @@
 [
   {
+    "timestamp": "2026-06-17T14:12:26.565Z",
+    "url": "https://www.gap.co.jp/gap/kids-uniform-polo-shirt/763889016.html",
+    "phase": "full",
+    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/27695045041",
+    "store": "gap_japan",
+    "productType": null,
+    "flow": "kids",
+    "versionLabel": "vs-version=3.9.7",
+    "onboarding": {
+      "gender": "female",
+      "age": "35",
+      "height": "161",
+      "weight": "54"
+    },
+    "giftOnboarding": {
+      "gender": "female",
+      "age": "30-39",
+      "height": "160-164",
+      "bodyType": "52 - 63 kg"
+    },
+    "footwearOnboarding": {
+      "gender": "female",
+      "brand": "Adidas",
+      "size": "25.5 cm"
+    },
+    "kidsOnboarding": {
+      "gender": "girl",
+      "age": 8,
+      "height": "120",
+      "weight": "25"
+    },
+    "events": [
+      {
+        "event": "user-saw-product::integration",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-saw-widget-button::integration",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-saw-widget-kids::integration",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-opened-widget::kids",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-saw-onboarding-screen::kids",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-selected-gender::kids",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-clicked-age::kids",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-updated-body-measurements::kids",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-updated-body-measurements::kids",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-updated-body-measurements::kids",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-completed-onboarding::kids",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-created-silhouette::kids",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-selected-size-kids-rec::kids",
+        "phase": "onboarding"
+      }
+    ],
+    "browsers": [
+      {
+        "browser": "chrome",
+        "status": "failed",
+        "error": "page.waitForTimeout: Target page, context or browser has been closed",
+        "missingEvents": [],
+        "widgetVisibleMs": 6328,
+        "screenshotFile": "screenshots/2026-06-17T14-12-26-chrome.jpg",
+        "onboardingFile": "screenshots/2026-06-17T14-12-26-chrome-onboarding.jpg",
+        "onboardingFilledFile": null,
+        "resultFile": null,
+        "giftOnboardingFile": null,
+        "giftResultFile": null,
+        "smartTableFile": null,
+        "widgetType": "inpage",
+        "hasSmartTable": null,
+        "widgetTextLog": {
+          "widget-button": [],
+          "onboarding": [
+            "よくある質問",
+            "サポート",
+            "日本語",
+            "cm/kg",
+            "データを消去",
+            "ブラウザに保存されているVirtusizeのデータ (設定・環境情報) が削除されます。",
+            "消去",
+            "戻る",
+            "Virtusizeとは",
+            "フィードバックを送る",
+            "プライバシーポリシー",
+            "不具合・問題の報告",
+            "おすすめサイズを探し中...",
+            "1,000万以上の身体データをもとに、あなたに合う\n最適なサイズを探します",
+            "少しの情報でお子様に\nピッタリのお洋服を",
+            "日本語/JA",
+            "使い方ガイド",
+            "お子様の情報を入力",
+            "性別",
+            "女の子",
+            "男の子",
+            "年齢",
+            "Virtusizeの個人情報保護方針に同意する",
+            "次へ"
+          ],
+          "result": []
+        },
+        "textDiff": null,
+        "baselineExists": true
+      }
+    ]
+  },
+  {
     "timestamp": "2026-06-17T13:58:58.284Z",
     "url": "https://www.gap.co.jp/gap/kids-uniform-polo-shirt/763889016.html?dwvar_763889016_color=763889016",
     "phase": "full",
@@ -18732,125 +18869,6 @@
     "browsers": [
       {
         "browser": "chrome",
-        "status": "failed",
-        "error": "page.waitForFunction: Timeout 30000ms exceeded."
-      }
-    ]
-  },
-  {
-    "timestamp": "2026-05-06T02:34:46.576Z",
-    "url": "https://www.coen.co.jp/item/7600024S0452",
-    "phase": "full",
-    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/25413335183",
-    "store": null,
-    "productType": null,
-    "flow": "apparel",
-    "onboarding": {
-      "gender": "female",
-      "age": "35",
-      "height": "161",
-      "weight": "54"
-    },
-    "giftOnboarding": {
-      "gender": "female",
-      "age": "30-39",
-      "height": "160-164",
-      "bodyType": "52 - 63 kg"
-    },
-    "footwearOnboarding": {
-      "gender": "female",
-      "brand": "Adidas",
-      "size": "25.5 cm"
-    },
-    "kidsOnboarding": {
-      "gender": "girl",
-      "age": 8,
-      "height": "120",
-      "weight": "25"
-    },
-    "events": [
-      {
-        "event": "user-saw-product::integration",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-saw-widget-button::integration",
-        "phase": "onboarding"
-      },
-      {
-        "event": "inpage-mounted::integration",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-opened-widget::inpage",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-saw-onboarding-screen::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-selected-gender::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-selected-age::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-selected-height::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-selected-weight::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-completed-onboarding::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-created-silhouette::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-got-size-recommendation::integration",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-opened-panel-tryiton::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-selected-size::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-opened-panel-details::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-opened-panel-compare::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-added-product::fit-illustrator",
-        "phase": "onboarding"
-      }
-    ],
-    "browsers": [
-      {
-        "browser": "chrome",
-        "status": "failed",
-        "error": "page.waitForFunction: Timeout 30000ms exceeded."
-      },
-      {
-        "browser": "firefox",
-        "status": "failed",
-        "error": "page.waitForFunction: Timeout 30000ms exceeded."
-      },
-      {
-        "browser": "webkit",
         "status": "failed",
         "error": "page.waitForFunction: Timeout 30000ms exceeded."
       }
