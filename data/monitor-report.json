@@ -1,29 +1,21 @@
 {
-  "timestamp": "2026-06-16T00:35:37.503Z",
-  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/27585593133",
+  "timestamp": "2026-06-17T00:19:51.536Z",
+  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/27656790941",
   "summary": {
     "total": 78,
-    "passed": 65,
-    "widgetMissing": 13,
+    "passed": 67,
+    "widgetMissing": 11,
     "skipped": 0,
     "failed": 0,
-    "fallbackUsed": 68,
-    "avgWidgetVisibleMs": 28189,
-    "p95WidgetVisibleMs": 34188
+    "fallbackUsed": 69,
+    "avgWidgetVisibleMs": 28148,
+    "p95WidgetVisibleMs": 34934
   },
   "newIssues": [],
   "widgetMissingStores": [
     {
       "store": "hankyu_hanshin",
       "url": "https://web.hh-online.jp/fashion/goods/index.html?ggcd=508767628",
-      "browsers": [
-        "chrome",
-        "webkit"
-      ]
-    },
-    {
-      "store": "reebok_korea",
-      "url": "https://reebok.co.kr/goods/goods_view.php?goodsNo=1000002262",
       "browsers": [
         "chrome",
         "webkit"
@@ -38,16 +30,16 @@
       ]
     },
     {
-      "store": "hankyu_mens",
-      "url": "https://web.hh-online.jp/hankyu-mens/goods/index.html?ggcd=508732084",
+      "store": "reebok_korea",
+      "url": "https://reebok.co.kr/goods/goods_view.php?goodsNo=1000002262",
       "browsers": [
         "chrome",
         "webkit"
       ]
     },
     {
-      "store": "snidel",
-      "url": "https://snidel.com/Form/Product/ProductDetail.aspx?shop=0&pid=SHFT261075&vid=&bid=SNH01&cid=&_type=&cat=&swrd=",
+      "store": "hankyu_mens",
+      "url": "https://web.hh-online.jp/hankyu-mens/goods/index.html?ggcd=508732084",
       "browsers": [
         "chrome",
         "webkit"
@@ -62,16 +54,16 @@
       ]
     },
     {
-      "store": "poppy",
-      "url": "https://poppy-tokyo.com/products/poppy-print-long-t-shirt-pink",
+      "store": "snidel",
+      "url": "https://snidel.com/Form/Product/ProductDetail.aspx?shop=0&pid=SHFT261075&vid=&bid=SNH01&cid=&_type=&cat=&swrd=",
       "browsers": [
         "chrome",
         "webkit"
       ]
     },
     {
-      "store": "lumine",
-      "url": "https://i.lumine.jp/items/306/30625005401.html",
+      "store": "poppy",
+      "url": "https://poppy-tokyo.com/products/poppy-print-long-t-shirt-pink",
       "browsers": [
         "chrome",
         "webkit"
@@ -88,14 +80,6 @@
     {
       "store": "gap_japan",
       "url": "https://www.gap.co.jp/gap/relaxed-gap-logo-quarter-zip-sweatshirt/645759006.html?dwvar_645759006_color=645759006",
-      "browsers": [
-        "chrome",
-        "webkit"
-      ]
-    },
-    {
-      "store": "another_address",
-      "url": "https://www.anotheraddress.jp/products/detail/2322006032905",
       "browsers": [
         "chrome",
         "webkit"
@@ -121,50 +105,54 @@
   "ongoingMissing": [
     {
       "store": "reebok_korea",
-      "consecutiveRuns": 70
+      "consecutiveRuns": 71
     },
     {
       "store": "gelato_pique",
-      "consecutiveRuns": 70
+      "consecutiveRuns": 71
     },
     {
       "store": "snidel",
-      "consecutiveRuns": 67
+      "consecutiveRuns": 68
     },
     {
       "store": "poppy",
-      "consecutiveRuns": 25
+      "consecutiveRuns": 26
     },
     {
       "store": "studio_nicholson",
-      "consecutiveRuns": 22
+      "consecutiveRuns": 23
     },
     {
       "store": "hankyu_hanshin",
-      "consecutiveRuns": 10
+      "consecutiveRuns": 11
     },
     {
       "store": "andar_japan",
-      "consecutiveRuns": 4
+      "consecutiveRuns": 5
     },
     {
       "store": "hankyu_mens",
-      "consecutiveRuns": 2
+      "consecutiveRuns": 3
     },
     {
       "store": "coen",
-      "consecutiveRuns": 1
-    },
-    {
-      "store": "restir",
-      "consecutiveRuns": 1
-    },
-    {
-      "store": "buyma",
-      "consecutiveRuns": 1
+      "consecutiveRuns": 2
     },
     {
       "store": "gap_japan",
+      "consecutiveRuns": 2
+    },
+    {
+      "store": "another_address",
+      "consecutiveRuns": 1
+    },
+    {
+      "store": "cox",
+      "consecutiveRuns": 1
+    },
+    {
+      "store": "lumine",
       "consecutiveRuns": 1
     }
   ],
