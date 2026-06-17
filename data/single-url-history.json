@@ -1,5 +1,439 @@
 [
   {
+    "timestamp": "2026-06-17T13:15:11.192Z",
+    "url": "https://www.gap.co.jp/gap/gap-logo-pique-polo-shirt/586306036.html?dwvar_586306036_color=586306036",
+    "phase": "full",
+    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/27691491422",
+    "store": "gap_japan",
+    "productType": "tShirt",
+    "flow": "apparel",
+    "versionLabel": null,
+    "onboarding": {
+      "gender": "female",
+      "age": "35",
+      "height": "161",
+      "weight": "54"
+    },
+    "giftOnboarding": {
+      "gender": "female",
+      "age": "30-39",
+      "height": "160-164",
+      "bodyType": "52 - 63 kg"
+    },
+    "footwearOnboarding": {
+      "gender": "female",
+      "brand": "Adidas",
+      "size": "25.5 cm"
+    },
+    "kidsOnboarding": {
+      "gender": "girl",
+      "age": 8,
+      "height": "120",
+      "weight": "25"
+    },
+    "events": [
+      {
+        "event": "user-saw-product::integration",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-saw-widget-button::integration",
+        "phase": "onboarding"
+      },
+      {
+        "event": "inpage-mounted::integration",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-opened-widget::inpage",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-saw-onboarding-screen::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-selected-gender::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-selected-age::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-selected-height::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-selected-weight::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-completed-onboarding::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-created-silhouette::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-got-size-recommendation::integration",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-opened-panel-tryiton::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-selected-size::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-opened-panel-details::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-opened-panel-compare::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-added-product::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-saw-product::integration",
+        "phase": "refresh"
+      },
+      {
+        "event": "user-saw-widget-button::integration",
+        "phase": "refresh"
+      },
+      {
+        "event": "inpage-mounted::integration",
+        "phase": "refresh"
+      },
+      {
+        "event": "user-opened-widget::inpage",
+        "phase": "refresh"
+      },
+      {
+        "event": "user-opened-panel-tryiton::fit-illustrator",
+        "phase": "refresh"
+      },
+      {
+        "event": "user-selected-size::fit-illustrator",
+        "phase": "refresh"
+      },
+      {
+        "event": "user-got-size-recommendation::integration",
+        "phase": "refresh"
+      },
+      {
+        "event": "user-selected-size::inpage",
+        "phase": "refresh"
+      },
+      {
+        "event": "user-opened-widget::gift",
+        "phase": "gift"
+      },
+      {
+        "event": "user-saw-onboarding-screen::gift",
+        "phase": "gift"
+      },
+      {
+        "event": "user-selected-gender::gift",
+        "phase": "gift"
+      },
+      {
+        "event": "user-clicked-age::gift",
+        "phase": "gift"
+      },
+      {
+        "event": "user-selected-age-30_39::gift",
+        "phase": "gift"
+      },
+      {
+        "event": "user-clicked-height::gift",
+        "phase": "gift"
+      },
+      {
+        "event": "user-selected-height-160_164::gift",
+        "phase": "gift"
+      },
+      {
+        "event": "user-clicked-bodyType::gift",
+        "phase": "gift"
+      },
+      {
+        "event": "user-selected-bodyType-1::gift",
+        "phase": "gift"
+      },
+      {
+        "event": "user-completed-onboarding::gift",
+        "phase": "gift"
+      },
+      {
+        "event": "user-opened-panel-rec::gift",
+        "phase": "gift"
+      },
+      {
+        "event": "user-saw-product::integration",
+        "phase": "gift-refresh"
+      },
+      {
+        "event": "user-saw-widget-button::integration",
+        "phase": "gift-refresh"
+      },
+      {
+        "event": "inpage-mounted::integration",
+        "phase": "gift-refresh"
+      },
+      {
+        "event": "user-got-size-recommendation::integration",
+        "phase": "gift-refresh"
+      },
+      {
+        "event": "user-selected-size::inpage",
+        "phase": "gift-refresh"
+      },
+      {
+        "event": "user-opened-widget::inpage",
+        "phase": "gift-refresh"
+      },
+      {
+        "event": "user-opened-panel-tryiton::fit-illustrator",
+        "phase": "gift-refresh"
+      },
+      {
+        "event": "user-opened-widget::gift",
+        "phase": "gift-refresh"
+      },
+      {
+        "event": "user-opened-panel-rec::gift",
+        "phase": "gift-refresh"
+      }
+    ],
+    "browsers": [
+      {
+        "browser": "chrome",
+        "status": "passed",
+        "error": null,
+        "missingEvents": [],
+        "widgetVisibleMs": 9326,
+        "screenshotFile": "screenshots/2026-06-17T13-15-11-chrome.jpg",
+        "onboardingFile": "screenshots/2026-06-17T13-15-11-chrome-onboarding.jpg",
+        "onboardingFilledFile": "screenshots/2026-06-17T13-15-11-chrome-onboarding-filled.jpg",
+        "resultFile": "screenshots/2026-06-17T13-15-11-chrome-result.jpg",
+        "giftOnboardingFile": "screenshots/2026-06-17T13-15-11-chrome-gift-onboarding.jpg",
+        "giftResultFile": "screenshots/2026-06-17T13-15-11-chrome-gift-result.jpg",
+        "smartTableFile": null,
+        "widgetType": "inpage",
+        "hasSmartTable": null,
+        "widgetTextLog": {
+          "widget-button": [
+            "簡単サイズチェック",
+            "試着する",
+            "贈り物ですか?"
+          ],
+          "onboarding": [
+            "バーチャサイズはあなたの入力情報や購入履歴をもとにサイズの提案をしています。データの損失を防ぐためには、アカウントを作成してください。",
+            "アカウント作成を続ける",
+            "アカウントをお持ちの方はこちら",
+            "クローゼット",
+            "シルエット",
+            "アカウント",
+            "よくある質問",
+            "サポート",
+            "日本語",
+            "cm/kg",
+            "個人情報保護方針",
+            "戻る",
+            "Virtusizeとは",
+            "フィードバックを送る",
+            "プライバシーポリシー",
+            "不具合・問題の報告",
+            "おすすめサイズを探し中...",
+            "Virtusizeにログイン",
+            "1,000万以上の身体データをもとに、あなたに合う\n最適なサイズを探します",
+            "あなたの体型をもとに\nサイズを確認します",
+            "日本語/JA",
+            "使い方ガイド",
+            "性別",
+            "女性",
+            "男性",
+            "年齢",
+            "身長",
+            "cm",
+            "体重",
+            "kg",
+            "単位",
+            "ft/Ib",
+            "Virtusizeの個人情報保護方針に同意する",
+            "おすすめのサイズを確認",
+            "簡単サイズチェック",
+            "試着する",
+            "贈り物ですか?"
+          ],
+          "onboarding-filled": [
+            "バーチャサイズはあなたの入力情報や購入履歴をもとにサイズの提案をしています。データの損失を防ぐためには、アカウントを作成してください。",
+            "アカウント作成を続ける",
+            "アカウントをお持ちの方はこちら",
+            "クローゼット",
+            "シルエット",
+            "アカウント",
+            "よくある質問",
+            "サポート",
+            "日本語",
+            "cm/kg",
+            "個人情報保護方針",
+            "戻る",
+            "Virtusizeとは",
+            "フィードバックを送る",
+            "プライバシーポリシー",
+            "不具合・問題の報告",
+            "おすすめサイズを探し中...",
+            "Virtusizeにログイン",
+            "1,000万以上の身体データをもとに、あなたに合う\n最適なサイズを探します",
+            "あなたの体型をもとに\nサイズを確認します",
+            "日本語/JA",
+            "使い方ガイド",
+            "性別",
+            "女性",
+            "男性",
+            "年齢",
+            "身長",
+            "cm",
+            "体重",
+            "kg",
+            "単位",
+            "ft/Ib",
+            "Virtusizeの個人情報保護方針に同意する",
+            "おすすめのサイズを確認",
+            "簡単サイズチェック",
+            "試着する",
+            "贈り物ですか?"
+          ],
+          "result": [
+            "バーチャサイズはあなたの入力情報や購入履歴をもとにサイズの提案をしています。データの損失を防ぐためには、アカウントを作成してください。",
+            "アカウント作成を続ける",
+            "アカウントをお持ちの方はこちら",
+            "クローゼット",
+            "シルエット",
+            "アカウント",
+            "よくある質問",
+            "サポート",
+            "日本語",
+            "cm/kg",
+            "個人情報保護方針",
+            "戻る",
+            "Virtusizeとは",
+            "フィードバックを送る",
+            "プライバシーポリシー",
+            "不具合・問題の報告",
+            "おすすめサイズを探し中...",
+            "体型を編集",
+            "ひじから7 cm上",
+            "ヒップから12 cm下",
+            "ひじから4 cm上",
+            "ヒップから15 cm下",
+            "ひじから2 cm上",
+            "ヒップから18 cm下",
+            "身幅 ゆったり",
+            "ひじから2 cm下",
+            "ヒップから21 cm下",
+            "ひじから6 cm下",
+            "ヒップから25 cm下",
+            "身幅 とてもゆったり",
+            "最もおすすめのサイズ",
+            "XS",
+            "XL",
+            "サイズSをカートに入れる",
+            "あなたにフィットするサイズ",
+            "試着する",
+            "贈り物ですか?"
+          ],
+          "gift-onboarding": [
+            "バーチャサイズはあなたの入力情報や購入履歴をもとにサイズの提案をしています。データの損失を防ぐためには、アカウントを作成してください。",
+            "アカウント作成を続ける",
+            "アカウントをお持ちの方はこちら",
+            "クローゼット",
+            "シルエット",
+            "アカウント",
+            "よくある質問",
+            "サポート",
+            "日本語",
+            "cm/kg",
+            "個人情報保護方針",
+            "戻る",
+            "Virtusizeとは",
+            "フィードバックを送る",
+            "プライバシーポリシー",
+            "不具合・問題の報告",
+            "おすすめサイズを探し中...",
+            "1,000万以上の身体データをもとに、あなたに合う\n最適なサイズを探します",
+            "少しの情報で、\nぴったりの贈りものを",
+            "日本語/JA",
+            "使い方ガイド",
+            "お相手の情報を入力",
+            "自分のサイズを探す",
+            "性別",
+            "女性",
+            "男性",
+            "年齢",
+            "26-29",
+            "身長",
+            "150-154",
+            "cm",
+            "体型タイプ",
+            "54 - 64",
+            "kg",
+            "おすすめのサイズを確認",
+            "あなたにフィットするサイズ",
+            "試着する",
+            "贈り物ですか?"
+          ],
+          "gift-result": [
+            "バーチャサイズはあなたの入力情報や購入履歴をもとにサイズの提案をしています。データの損失を防ぐためには、アカウントを作成してください。",
+            "アカウント作成を続ける",
+            "アカウントをお持ちの方はこちら",
+            "クローゼット",
+            "シルエット",
+            "アカウント",
+            "よくある質問",
+            "サポート",
+            "日本語",
+            "cm/kg",
+            "個人情報保護方針",
+            "戻る",
+            "Virtusizeとは",
+            "フィードバックを送る",
+            "プライバシーポリシー",
+            "不具合・問題の報告",
+            "おすすめサイズを探し中...",
+            "お相手におすすめのサイズ",
+            "2番目におすすめのサイズ:",
+            "お相手のプロフィール",
+            "性別:",
+            "年齢:",
+            "身長:",
+            "予測体重:",
+            "女性",
+            "30-39",
+            "160-164cm",
+            "<49kg",
+            "やり直す",
+            "サイズSをカートに入れる",
+            "あなたにフィットするサイズ",
+            "試着する",
+            "お相手のおすすめサイズ:S"
+          ]
+        },
+        "textDiff": null,
+        "baselineExists": false
+      }
+    ]
+  },
+  {
     "timestamp": "2026-06-17T13:02:43.500Z",
     "url": "https://www.anotheraddress.jp/products/detail/2413258030309",
     "phase": "full",
@@ -18662,143 +19096,6 @@
       {
         "event": "user-opened-panel-rec::gift",
         "phase": "gift-refresh"
-      }
-    ],
-    "browsers": [
-      {
-        "browser": "chrome",
-        "status": "passed",
-        "error": null
-      }
-    ]
-  },
-  {
-    "timestamp": "2026-05-04T16:28:12.984Z",
-    "url": "https://www.japan.barbour.com/Form/Product/ProductDetail.aspx?shop=0&pid=252MWX1678&vid[…]X167800955&bid=BAB01&cid=&_type=&cat=&swrd=TRANSPORT+MODEL",
-    "phase": "full",
-    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/25330208865",
-    "store": "barbour",
-    "productType": "jacket",
-    "flow": "apparel",
-    "onboarding": {
-      "gender": "female",
-      "age": "35",
-      "height": "161",
-      "weight": "54"
-    },
-    "giftOnboarding": {
-      "gender": "female",
-      "age": "30-39",
-      "height": "160-164",
-      "bodyType": "52 - 63 kg"
-    },
-    "footwearOnboarding": {
-      "gender": "female",
-      "brand": "Adidas",
-      "size": "25.5 cm"
-    },
-    "kidsOnboarding": {
-      "gender": "girl",
-      "age": 8,
-      "height": "120",
-      "weight": "25"
-    },
-    "events": [
-      {
-        "event": "user-saw-product::integration",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-saw-widget-button::integration",
-        "phase": "onboarding"
-      },
-      {
-        "event": "inpage-mounted::integration",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-opened-widget::inpage",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-saw-onboarding-screen::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-selected-gender::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-selected-age::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-selected-height::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-selected-weight::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-completed-onboarding::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-created-silhouette::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-got-size-recommendation::integration",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-opened-panel-tryiton::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-selected-size::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-opened-panel-details::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-opened-panel-compare::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-added-product::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-saw-product::integration",
-        "phase": "refresh"
-      },
-      {
-        "event": "user-saw-widget-button::integration",
-        "phase": "refresh"
-      },
-      {
-        "event": "inpage-mounted::integration",
-        "phase": "refresh"
-      },
-      {
-        "event": "user-got-size-recommendation::integration",
-        "phase": "refresh"
-      },
-      {
-        "event": "user-selected-size::inpage",
-        "phase": "refresh"
-      },
-      {
-        "event": "user-opened-widget::inpage",
-        "phase": "refresh"
-      },
-      {
-        "event": "user-opened-panel-tryiton::fit-illustrator",
-        "phase": "refresh"
       }
     ],
     "browsers": [
