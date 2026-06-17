@@ -477,7 +477,7 @@ jobs:
                 fs.copyFileSync(smartTableSrc, `docs/screenshots/${filename}`);
                 smartTableFile = `screenshots/${filename}`;
               }
-              return { browser: r.browser, status: r.status, error: r.error || null, missingEvents: r.missingEvents || [], widgetVisibleMs: r.widgetVisibleMs || null, screenshotFile, onboardingFile, onboardingFilledFile, resultFile, giftOnboardingFile, giftResultFile, smartTableFile, widgetType: r.widgetType || null, hasSmartTable: r.hasSmartTable ?? null };
+              return { browser: r.browser, status: r.status, error: r.error || null, missingEvents: r.missingEvents || [], widgetVisibleMs: r.widgetVisibleMs || null, screenshotFile, onboardingFile, onboardingFilledFile, resultFile, giftOnboardingFile, giftResultFile, smartTableFile, widgetType: r.widgetType || null, hasSmartTable: r.hasSmartTable ?? null, widgetTextLog: r.widgetTextLog || null };
             }),
           };
 

@@ -489,7 +489,7 @@
   <div class="panel active" id="panel-monitor">
     <div class="page-hdr">
       <h1>Monitor Health</h1>
-      <p class="page-sub">Operational intelligence · Last updated 17 Jun 2026, 00:19 UTC</p>
+      <p class="page-sub">Operational intelligence · Last updated 17 Jun 2026, 08:19 GMT+8</p>
     </div>
 
     <div class="subtab-bar">
@@ -1684,6 +1684,35 @@ function renderSingleDetail(entry, idx) {
     <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.6px;color:#484f58;font-weight:600;margin-bottom:10px">Widget Screenshot — Desktop</div>
     <div style="display:flex;gap:16px;flex-wrap:wrap">${screenshotCardsHtml}</div>
   </div>` : ''}
+  ${(() => {
+    const TEXT_SNAPSHOTS = [
+      { key: 'widget-button',      label: 'Widget button' },
+      { key: 'onboarding',         label: 'Onboarding open' },
+      { key: 'onboarding-filled',  label: 'Onboarding filled' },
+      { key: 'result',             label: 'Size result' },
+      { key: 'gift-onboarding',    label: 'Gift onboarding' },
+      { key: 'gift-result',        label: 'Gift result' },
+    ];
+    const textBrowsers = (entry.browsers || []).filter(b => b.widgetTextLog);
+    if (!textBrowsers.length) return '';
+    const rows = textBrowsers.map(b => {
+      const snaps = TEXT_SNAPSHOTS.map(({ key, label }) => {
+        const texts = b.widgetTextLog?.[key];
+        if (!texts?.length) return '';
+        return `<div style="margin-bottom:8px">
+          <div style="font-size:10px;color:#484f58;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px">${label}</div>
+          <div style="font-size:12px;color:#c9d1d9;line-height:1.6;word-break:break-word">${texts.map(t => `<span style="display:inline-block;background:#161b22;border:1px solid #30363d;border-radius:4px;padding:1px 6px;margin:1px 3px 1px 0;font-size:11px">${t.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</span>`).join('')}</div>
+        </div>`;
+      }).join('');
+      if (!snaps) return '';
+      return `<div style="font-size:10px;color:#8b949e;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px">${b.browser}</div>${snaps}`;
+    }).join('');
+    if (!rows) return '';
+    return `<details style="margin-top:16px">
+      <summary style="cursor:pointer;font-size:11px;text-transform:uppercase;letter-spacing:0.6px;color:#484f58;font-weight:600;user-select:none">Widget Text Log</summary>
+      <div style="margin-top:10px">${rows}</div>
+    </details>`;
+  })()}
   <div style="margin-top:16px;padding-top:14px;border-top:1px solid #21262d">
     <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.6px;color:#484f58;font-weight:600;margin-bottom:10px">Compare screenshots with another run</div>
     <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">

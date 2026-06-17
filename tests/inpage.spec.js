@@ -179,6 +179,7 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
   let widgetVisibleMs = null;
   let flowDoneMs = null;
   let widgetMeta = { widgetType: null, hasSmartTable: null };
+  const widgetTextLog = {};
 
   try {
     console.log("Navigating to:", url);
@@ -462,6 +463,8 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
         }
       } catch { /* non-fatal */ }
 
+      widgetTextLog["widget-button"] = await captureWidgetText(page);
+
       // Smart table screenshot — taken here before the VS modal opens so it's never covered.
       // #vs-smart-table is a page-embedded element; may be inside a collapsed accordion.
       try {
@@ -533,6 +536,8 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
       } catch { /* non-fatal */ }
     }
 
+    widgetTextLog["onboarding"] = await captureWidgetText(page);
+
     // widget phase: widget element found and opened — check complete
     if (phase === "widget") {
       logResult({
@@ -588,6 +593,7 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
           mkdirSync(dir, { recursive: true });
           writeFileSync(join(dir, `${testInfo.project.name}-${name}.jpg`), buf);
         }
+        widgetTextLog[name] = await captureWidgetText(page);
       } catch { /* non-fatal */ }
     };
 
@@ -625,6 +631,8 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
         writeFileSync(join(dir, `${testInfo.project.name}-result.jpg`), resultBuf);
       }
     } catch { /* non-fatal */ }
+
+    widgetTextLog["result"] = await captureWidgetText(page);
 
     // onboarding phase: onboarding complete — skip full validation
     if (phase === "onboarding") {
@@ -761,6 +769,7 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
             mkdirSync(dir, { recursive: true });
             writeFileSync(join(dir, `${testInfo.project.name}-${name}.jpg`), buf);
           }
+          widgetTextLog[name] = await captureWidgetText(page);
         } catch { /* non-fatal */ }
       };
       await runGiftFlow(page, eventWatcher, giftOpts, giftScreenshotFn);
@@ -797,6 +806,7 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
       widgetType: widgetMeta.widgetType,
       hasSmartTable: widgetMeta.hasSmartTable,
       ...(inpageMountCount > 1 && { doubleMount: inpageMountCount }),
+      widgetTextLog: Object.keys(widgetTextLog).length ? widgetTextLog : undefined,
     });
   } catch (error) {
     logResult({
@@ -813,6 +823,7 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
       flowDoneMs,
       widgetType: widgetMeta.widgetType,
       hasSmartTable: widgetMeta.hasSmartTable,
+      widgetTextLog: Object.keys(widgetTextLog).length ? widgetTextLog : undefined,
     });
 
     throw error;
@@ -822,4 +833,22 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
 
 function logResult(result) {
   console.log("QA_RESULT:", JSON.stringify(result));
+}
+
+async function captureWidgetText(page) {
+  return page.evaluate(() => {
+    const seen = new Set();
+    const roots = [
+      document.querySelector('#router-view-wrapper')?.shadowRoot,
+      document.querySelector('#vs-inpage')?.shadowRoot,
+      document.querySelector('#vs-inpage-luxury')?.shadowRoot,
+    ].filter(Boolean);
+    return roots.flatMap(root =>
+      [...root.querySelectorAll('*')]
+        .flatMap(el => [...el.childNodes])
+        .filter(n => n.nodeType === 3)
+        .map(n => n.textContent.trim())
+        .filter(t => t.length > 1 && !seen.has(t) && seen.add(t))
+    );
+  }).catch(() => []);
 }
