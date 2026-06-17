@@ -418,6 +418,7 @@ jobs:
           const BASELINES_FILE = 'data/text-baselines.json';
           const baselines = fs.existsSync(BASELINES_FILE) ? readJSON(BASELINES_FILE, {}) : {};
           const storeKey = first.store || null;
+          const flowKey  = first.flow  || null;
 
           const computeTextDiff = (baseline, captured) => {
             if (!baseline || !captured) return null;
@@ -433,14 +434,15 @@ jobs:
           };
 
           const SET_BASELINE = process.env.SET_TEXT_BASELINE === 'true';
-          if (SET_BASELINE && storeKey) {
+          if (SET_BASELINE && storeKey && flowKey) {
             const src = browserResults.find(r => r.browser === 'chrome' && r.widgetTextLog) ||
                         browserResults.find(r => r.widgetTextLog);
             if (src?.widgetTextLog) {
-              baselines[storeKey] = src.widgetTextLog;
+              if (!baselines[storeKey]) baselines[storeKey] = {};
+              baselines[storeKey][flowKey] = src.widgetTextLog;
               fs.mkdirSync('data', { recursive: true });
               fs.writeFileSync(BASELINES_FILE, JSON.stringify(baselines, null, 2));
-              console.log(`Saved text baseline for: ${storeKey}`);
+              console.log(`Saved text baseline for: ${storeKey} / ${flowKey}`);
             }
           }
 
@@ -512,8 +514,9 @@ jobs:
                 fs.copyFileSync(smartTableSrc, `docs/screenshots/${filename}`);
                 smartTableFile = `screenshots/${filename}`;
               }
-              const textDiff = SET_BASELINE ? null : computeTextDiff(storeKey ? baselines[storeKey] : null, r.widgetTextLog || null);
-              return { browser: r.browser, status: r.status, error: r.error || null, missingEvents: r.missingEvents || [], widgetVisibleMs: r.widgetVisibleMs || null, screenshotFile, onboardingFile, onboardingFilledFile, resultFile, giftOnboardingFile, giftResultFile, smartTableFile, widgetType: r.widgetType || null, hasSmartTable: r.hasSmartTable ?? null, widgetTextLog: r.widgetTextLog || null, textDiff, baselineExists: !!(storeKey && baselines[storeKey]) };
+              const storeFlowBaseline = storeKey && flowKey ? baselines[storeKey]?.[flowKey] : null;
+              const textDiff = SET_BASELINE ? null : computeTextDiff(storeFlowBaseline, r.widgetTextLog || null);
+              return { browser: r.browser, status: r.status, error: r.error || null, missingEvents: r.missingEvents || [], widgetVisibleMs: r.widgetVisibleMs || null, screenshotFile, onboardingFile, onboardingFilledFile, resultFile, giftOnboardingFile, giftResultFile, smartTableFile, widgetType: r.widgetType || null, hasSmartTable: r.hasSmartTable ?? null, widgetTextLog: r.widgetTextLog || null, textDiff, baselineExists: !!storeFlowBaseline };
             }),
           };
 

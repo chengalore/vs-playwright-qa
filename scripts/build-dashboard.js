@@ -1967,9 +1967,10 @@ function renderSingleDetail(entry, idx) {
     if (!bs.length) return '';
     const noBaseline = bs.every(b => !b.baselineExists);
     if (noBaseline) {
+      const storeFlow = [entry.store, entry.flow].filter(Boolean).join(' / ');
       return \`<div style="margin-top:16px;padding-top:14px;border-top:1px solid #21262d">
         <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.6px;color:#484f58;font-weight:600;margin-bottom:8px">Translation Baseline</div>
-        <div style="font-size:12px;color:#8b949e">No baseline set for this store. Re-run with <span style="font-family:monospace;background:#161b22;border:1px solid #30363d;padding:1px 5px;border-radius:3px">Set text baseline</span> checked to establish one.</div>
+        <div style="font-size:12px;color:#8b949e">No baseline set for <span style="color:#c9d1d9">\${storeFlow || 'this store'}</span>. Re-run with <span style="font-family:monospace;background:#161b22;border:1px solid #30363d;padding:1px 5px;border-radius:3px">Set text baseline</span> checked to establish one.</div>
       </div>\`;
     }
     const hasRegressions = bs.some(b => b.textDiff && Object.keys(b.textDiff).length > 0);
