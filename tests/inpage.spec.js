@@ -843,6 +843,8 @@ async function captureWidgetText(page) {
       document.querySelector('#router-view-wrapper')?.shadowRoot,
       document.querySelector('#vs-inpage')?.shadowRoot,
       document.querySelector('#vs-inpage-luxury')?.shadowRoot,
+      document.querySelector('#vs-kid')?.shadowRoot,
+      document.querySelector('#vs-kid-app')?.nextElementSibling?.shadowRoot,
     ].filter(Boolean);
     return roots.flatMap(root =>
       [...root.querySelectorAll('*')]
