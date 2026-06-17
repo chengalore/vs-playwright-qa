@@ -128,6 +128,11 @@ on:
         required: false
         default: ""
         type: string
+      set_text_baseline:
+        description: "Save this run's widget text as the translation baseline for this store (overwrites existing)"
+        required: false
+        default: "false"
+        type: boolean
 
 jobs:
   # ── Run in selected browsers in parallel ──────────────────────────────────
@@ -409,6 +414,36 @@ jobs:
             weight: process.env.KIDS_WEIGHT || '25',
           };
 
+          // Text baseline comparison
+          const BASELINES_FILE = 'data/text-baselines.json';
+          const baselines = fs.existsSync(BASELINES_FILE) ? readJSON(BASELINES_FILE, {}) : {};
+          const storeKey = first.store || null;
+
+          const computeTextDiff = (baseline, captured) => {
+            if (!baseline || !captured) return null;
+            const diff = {};
+            for (const screen of Object.keys(baseline)) {
+              const expected = new Set(baseline[screen]);
+              const actual = new Set(captured[screen] || []);
+              const missing = [...expected].filter(t => !actual.has(t));
+              const added = [...actual].filter(t => !expected.has(t));
+              if (missing.length || added.length) diff[screen] = { missing, added };
+            }
+            return Object.keys(diff).length ? diff : null;
+          };
+
+          const SET_BASELINE = process.env.SET_TEXT_BASELINE === 'true';
+          if (SET_BASELINE && storeKey) {
+            const src = browserResults.find(r => r.browser === 'chrome' && r.widgetTextLog) ||
+                        browserResults.find(r => r.widgetTextLog);
+            if (src?.widgetTextLog) {
+              baselines[storeKey] = src.widgetTextLog;
+              fs.mkdirSync('data', { recursive: true });
+              fs.writeFileSync(BASELINES_FILE, JSON.stringify(baselines, null, 2));
+              console.log(`Saved text baseline for: ${storeKey}`);
+            }
+          }
+
           fs.mkdirSync('docs/screenshots', { recursive: true });
           const entryTimestamp = new Date().toISOString();
           const tsSlug = entryTimestamp.replace(/[:.]/g, '-').slice(0, 19);
@@ -477,7 +512,8 @@ jobs:
                 fs.copyFileSync(smartTableSrc, `docs/screenshots/${filename}`);
                 smartTableFile = `screenshots/${filename}`;
               }
-              return { browser: r.browser, status: r.status, error: r.error || null, missingEvents: r.missingEvents || [], widgetVisibleMs: r.widgetVisibleMs || null, screenshotFile, onboardingFile, onboardingFilledFile, resultFile, giftOnboardingFile, giftResultFile, smartTableFile, widgetType: r.widgetType || null, hasSmartTable: r.hasSmartTable ?? null, widgetTextLog: r.widgetTextLog || null };
+              const textDiff = SET_BASELINE ? null : computeTextDiff(storeKey ? baselines[storeKey] : null, r.widgetTextLog || null);
+              return { browser: r.browser, status: r.status, error: r.error || null, missingEvents: r.missingEvents || [], widgetVisibleMs: r.widgetVisibleMs || null, screenshotFile, onboardingFile, onboardingFilledFile, resultFile, giftOnboardingFile, giftResultFile, smartTableFile, widgetType: r.widgetType || null, hasSmartTable: r.hasSmartTable ?? null, widgetTextLog: r.widgetTextLog || null, textDiff, baselineExists: !!(storeKey && baselines[storeKey]) };
             }),
           };
 
@@ -510,6 +546,7 @@ jobs:
           KIDS_WEIGHT: ${{ github.event.inputs.kids_weight }}
           BROWSERS_INPUT: ${{ github.event.inputs.browsers }}
           VERSION_LABEL: ${{ github.event.inputs.version_label }}
+          SET_TEXT_BASELINE: ${{ github.event.inputs.set_text_baseline }}
 
       - name: Download compare view screenshots
         if: ${{ github.event.inputs.phase == 'compare' }}
@@ -528,7 +565,7 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git add data/single-url-history.json data/fallbackProducts.json docs/index.html docs/compare-view-screenshots/ docs/screenshots/
+          git add data/single-url-history.json data/fallbackProducts.json data/text-baselines.json docs/index.html docs/compare-view-screenshots/ docs/screenshots/
           git diff --staged --quiet || git commit -m "chore: update inpage QA result [skip ci]"
           for i in 1 2 3; do
             git pull --rebase origin ${{ github.ref_name }} && git push origin HEAD:${{ github.ref_name }} && break

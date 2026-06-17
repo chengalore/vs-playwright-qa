@@ -489,7 +489,7 @@
   <div class="panel active" id="panel-monitor">
     <div class="page-hdr">
       <h1>Monitor Health</h1>
-      <p class="page-sub">Operational intelligence · Last updated 17 Jun 2026, 00:19 UTC</p>
+      <p class="page-sub">Operational intelligence · Last updated 17 Jun 2026, 08:19 GMT+8</p>
     </div>
 
     <div class="subtab-bar">
@@ -694,6 +694,17 @@
           <input id="single-version-label" type="text" placeholder="e.g. 3.9.18, staging, before-fix"
             style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:6px 10px;font-size:12px">
           <div style="font-size:11px;color:#484f58;margin-top:5px">Tag this run — pick two labelled runs in History to compare screenshots side by side</div>
+        </div>
+
+        <!-- Set text baseline -->
+        <div style="padding:14px 16px;border-bottom:1px solid #21262d">
+          <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;user-select:none">
+            <input type="checkbox" id="single-set-baseline" style="accent-color:#3fb950;width:14px;height:14px;margin-top:2px;flex-shrink:0">
+            <div>
+              <div style="font-size:13px;color:#c9d1d9;font-weight:500">Set as text baseline</div>
+              <div style="font-size:11px;color:#484f58;margin-top:3px">Save this run's widget text as the translation reference for this store. Future runs will be compared against it.</div>
+            </div>
+          </label>
         </div>
 
         <!-- Body data -->
@@ -1713,6 +1724,45 @@ function renderSingleDetail(entry, idx) {
       <div style="margin-top:10px">${rows}</div>
     </details>`;
   })()}
+  ${(() => {
+    const TEXT_SNAPSHOTS = [
+      { key: 'widget-button',      label: 'Widget button' },
+      { key: 'onboarding',         label: 'Onboarding open' },
+      { key: 'onboarding-filled',  label: 'Onboarding filled' },
+      { key: 'result',             label: 'Size result' },
+      { key: 'gift-onboarding',    label: 'Gift onboarding' },
+      { key: 'gift-result',        label: 'Gift result' },
+    ];
+    const bs = (entry.browsers || []).filter(b => b.widgetTextLog);
+    if (!bs.length) return '';
+    const noBaseline = bs.every(b => !b.baselineExists);
+    if (noBaseline) {
+      return `<div style="margin-top:16px;padding-top:14px;border-top:1px solid #21262d">
+        <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.6px;color:#484f58;font-weight:600;margin-bottom:8px">Translation Baseline</div>
+        <div style="font-size:12px;color:#8b949e">No baseline set for this store. Re-run with <span style="font-family:monospace;background:#161b22;border:1px solid #30363d;padding:1px 5px;border-radius:3px">Set text baseline</span> checked to establish one.</div>
+      </div>`;
+    }
+    const hasRegressions = bs.some(b => b.textDiff && Object.keys(b.textDiff).length > 0);
+    const diffRows = bs.flatMap(b => {
+      if (!b.textDiff) {
+        return [`<div style="font-size:12px;color:#3fb950;padding:2px 0">✓ All translations match baseline (${b.browser})</div>`];
+      }
+      return Object.entries(b.textDiff).map(([screen, {missing, added}]) => {
+        const snapLabel = TEXT_SNAPSHOTS.find(s => s.key === screen)?.label || screen;
+        return `<div style="margin-bottom:10px">
+          <div style="font-size:10px;color:#484f58;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">${snapLabel} — ${b.browser}</div>
+          ${missing.map(t => `<div style="font-size:12px;color:#f85149;padding:2px 0;display:flex;gap:6px;align-items:baseline"><span style="font-size:10px;font-weight:700;flex-shrink:0">−</span><span>${t.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</span></div>`).join('')}
+          ${added.map(t => `<div style="font-size:12px;color:#e3b341;padding:2px 0;display:flex;gap:6px;align-items:baseline"><span style="font-size:10px;font-weight:700;flex-shrink:0">+</span><span>${t.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</span></div>`).join('')}
+        </div>`;
+      });
+    }).join('');
+    return `<div style="margin-top:16px;padding-top:14px;border-top:1px solid #21262d">
+      <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.6px;font-weight:600;margin-bottom:10px;color:${hasRegressions ? '#f85149' : '#3fb950'}">
+        Translation Baseline ${hasRegressions ? '⚠ Mismatches found' : '✓ All match'}
+      </div>
+      ${diffRows}
+    </div>`;
+  })()}
   <div style="margin-top:16px;padding-top:14px;border-top:1px solid #21262d">
     <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.6px;color:#484f58;font-weight:600;margin-bottom:10px">Compare screenshots with another run</div>
     <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
@@ -1774,7 +1824,7 @@ function renderSingleUrl() {
       <td style="font-size:12px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
         <a href="${entry.url}" target="_blank" rel="noopener" title="${entry.url}" onclick="event.stopPropagation()">${shortUrl(entry.url)}</a>
       </td>
-      <td style="font-size:13px">${entry.store || '—'}${entry.versionLabel ? ` <span style="font-size:10px;background:#1c2128;border:1px solid #30363d;color:#8b949e;padding:1px 6px;border-radius:4px;font-family:monospace">${entry.versionLabel}</span>` : ''}</td>
+      <td style="font-size:13px">${entry.store || '—'}${entry.versionLabel ? ` <span style="font-size:10px;background:#1c2128;border:1px solid #30363d;color:#8b949e;padding:1px 6px;border-radius:4px;font-family:monospace">${entry.versionLabel}</span>` : ''}${(entry.browsers||[]).some(b=>b.textDiff&&Object.keys(b.textDiff).length>0) ? ` <span style="font-size:10px;background:rgba(248,81,73,0.1);border:1px solid rgba(248,81,73,0.3);color:#f85149;padding:1px 5px;border-radius:4px" title="Translation regression detected">⚠ text</span>` : ''}</td>
       <td>${flowBadge}</td>
       <td><span class="phase-badge phase-${entry.phase || 'full'}">${entry.phase || 'full'}</span></td>
       ${statusCell('chrome')}
@@ -2032,6 +2082,7 @@ async function triggerSingleRun() {
   const kidsHeight  = document.getElementById('single-kids-height').value;
   const kidsWeight     = document.getElementById('single-kids-weight').value;
   const versionLabel   = document.getElementById('single-version-label').value.trim();
+  const setBaseline    = document.getElementById('single-set-baseline').checked;
   const browsers = ['chrome', 'firefox', 'webkit'].filter(b => {
     const el = document.getElementById('browser-' + b);
     return el && (el.checked || el.disabled); // chrome is disabled+checked
@@ -2064,6 +2115,7 @@ async function triggerSingleRun() {
       kids_height: kidsHeight,
       kids_weight: kidsWeight,
       version_label: versionLabel,
+      set_text_baseline: setBaseline ? 'true' : 'false',
     }}),
   });
 
