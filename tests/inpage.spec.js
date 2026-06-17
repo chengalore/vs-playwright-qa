@@ -838,6 +838,7 @@ function logResult(result) {
 async function captureWidgetText(page) {
   return page.evaluate(() => {
     const seen = new Set();
+    const SKIP_TAGS = new Set(['STYLE', 'SCRIPT', 'TEMPLATE', 'SVG', 'PATH', 'DEFS', 'G']);
     const roots = [
       document.querySelector('#router-view-wrapper')?.shadowRoot,
       document.querySelector('#vs-inpage')?.shadowRoot,
@@ -845,10 +846,17 @@ async function captureWidgetText(page) {
     ].filter(Boolean);
     return roots.flatMap(root =>
       [...root.querySelectorAll('*')]
+        .filter(el => !SKIP_TAGS.has(el.tagName))
         .flatMap(el => [...el.childNodes])
         .filter(n => n.nodeType === 3)
         .map(n => n.textContent.trim())
-        .filter(t => t.length > 1 && !seen.has(t) && seen.add(t))
+        .filter(t => {
+          if (t.length < 2) return false;
+          if (seen.has(t)) return false;
+          if (t.includes('{') || t.includes('@import') || t.length > 150) return false;
+          seen.add(t);
+          return true;
+        })
     );
   }).catch(() => []);
 }
