@@ -1,5 +1,286 @@
 [
   {
+    "timestamp": "2026-06-18T05:49:47.719Z",
+    "url": "https://www.gap.co.jp/gap/kids-uniform-polo-shirt/763889016.html?vs-version=3.9.7",
+    "phase": "full",
+    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/27739517391",
+    "store": "gap_japan",
+    "productType": "tShirt",
+    "flow": "kids",
+    "versionLabel": null,
+    "onboarding": {
+      "gender": "female",
+      "age": "35",
+      "height": "161",
+      "weight": "54"
+    },
+    "giftOnboarding": {
+      "gender": "female",
+      "age": "30-39",
+      "height": "160-164",
+      "bodyType": "52 - 63 kg"
+    },
+    "footwearOnboarding": {
+      "gender": "female",
+      "brand": "Adidas",
+      "size": "25.5 cm"
+    },
+    "kidsOnboarding": {
+      "gender": "girl",
+      "age": 8,
+      "height": "120",
+      "weight": "25"
+    },
+    "events": [
+      {
+        "event": "user-saw-product::integration",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-saw-widget-button::integration",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-saw-widget-kids::integration",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-opened-widget::kids",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-saw-onboarding-screen::kids",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-selected-gender::kids",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-clicked-age::kids",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-updated-body-measurements::kids",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-updated-body-measurements::kids",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-updated-body-measurements::kids",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-completed-onboarding::kids",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-created-silhouette::kids",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-selected-size-kids-rec::kids",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-saw-product::integration",
+        "phase": "refresh"
+      },
+      {
+        "event": "user-saw-widget-button::integration",
+        "phase": "refresh"
+      },
+      {
+        "event": "user-saw-widget-kids::integration",
+        "phase": "refresh"
+      },
+      {
+        "event": "user-selected-size-kids-rec::kids",
+        "phase": "refresh"
+      },
+      {
+        "event": "user-opened-widget::kids",
+        "phase": "refresh"
+      }
+    ],
+    "browsers": [
+      {
+        "browser": "chrome",
+        "status": "passed",
+        "error": null,
+        "missingEvents": [],
+        "widgetVisibleMs": 6391,
+        "screenshotFile": "screenshots/2026-06-18T05-49-47-chrome.jpg",
+        "onboardingFile": "screenshots/2026-06-18T05-49-47-chrome-onboarding.jpg",
+        "onboardingFilledFile": null,
+        "resultFile": "screenshots/2026-06-18T05-49-47-chrome-result.jpg",
+        "giftOnboardingFile": null,
+        "giftResultFile": null,
+        "smartTableFile": null,
+        "widgetType": "inpage",
+        "hasSmartTable": null,
+        "widgetTextLog": {
+          "widget-button": [
+            "お子様のサイズを確認",
+            "スタート",
+            "プライバシーポリシー"
+          ],
+          "onboarding": [
+            "バーチャサイズはあなたの入力情報や購入履歴をもとにサイズの提案をしています。データの損失を防ぐためには、アカウントを作成してください。",
+            "アカウント作成を続ける",
+            "アカウントをお持ちの方はこちら",
+            "クローゼット",
+            "シルエット",
+            "アカウント",
+            "よくある質問",
+            "サポート",
+            "日本語",
+            "cm/kg",
+            "個人情報保護方針",
+            "戻る",
+            "問題を報告",
+            "フィードバック",
+            "バーチャサイズとは",
+            "おすすめサイズを探し中...",
+            "1,000万以上の身体データをもとに、あなたに合う\n最適なサイズを探します",
+            "少しの情報で、\nぴったりの贈りものを",
+            "日本語/JA",
+            "使い方ガイド",
+            "お子様の情報を入力",
+            "性別",
+            "女の子",
+            "男の子",
+            "年齢",
+            "Virtusizeの個人情報保護方針に同意する",
+            "次へ",
+            "お子様のサイズを確認",
+            "スタート",
+            "プライバシーポリシー"
+          ],
+          "result": [
+            "バーチャサイズはあなたの入力情報や購入履歴をもとにサイズの提案をしています。データの損失を防ぐためには、アカウントを作成してください。",
+            "アカウント作成を続ける",
+            "アカウントをお持ちの方はこちら",
+            "クローゼット",
+            "シルエット",
+            "アカウント",
+            "よくある質問",
+            "サポート",
+            "日本語",
+            "cm/kg",
+            "個人情報保護方針",
+            "戻る",
+            "問題を報告",
+            "フィードバック",
+            "バーチャサイズとは",
+            "おすすめサイズを探し中...",
+            "1,000万以上の身体データをもとに、あなたに合う\n最適なサイズを探します",
+            "少しの情報で、\nぴったりの贈りものを",
+            "日本語/JA",
+            "使い方ガイド",
+            "お子様の情報を入力",
+            "性別",
+            "女の子",
+            "男の子",
+            "年齢",
+            "身長",
+            "cm",
+            "体重",
+            "kg",
+            "身長と体重の算出方法はこちら",
+            "ft/Ib",
+            "Virtusizeの個人情報保護方針に同意する",
+            "次へ",
+            "お子様のサイズを確認",
+            "スタート",
+            "プライバシーポリシー"
+          ]
+        },
+        "textDiff": {
+          "onboarding": {
+            "missing": [
+              "データを消去",
+              "ブラウザに保存されているVirtusizeのデータ (設定・環境情報) が削除されます。",
+              "消去",
+              "Virtusizeとは",
+              "フィードバックを送る",
+              "不具合・問題の報告",
+              "少しの情報でお子様に\nピッタリのお洋服を"
+            ],
+            "added": [
+              "バーチャサイズはあなたの入力情報や購入履歴をもとにサイズの提案をしています。データの損失を防ぐためには、アカウントを作成してください。",
+              "アカウント作成を続ける",
+              "アカウントをお持ちの方はこちら",
+              "クローゼット",
+              "シルエット",
+              "アカウント",
+              "個人情報保護方針",
+              "問題を報告",
+              "フィードバック",
+              "バーチャサイズとは",
+              "少しの情報で、\nぴったりの贈りものを"
+            ]
+          },
+          "result": {
+            "missing": [
+              "データを消去",
+              "ブラウザに保存されているVirtusizeのデータ (設定・環境情報) が削除されます。",
+              "消去",
+              "Virtusizeとは",
+              "フィードバックを送る",
+              "不具合・問題の報告",
+              "やり直す",
+              "今ぴったり",
+              "110cm",
+              "現在の体型に\nぴったりのサイズ",
+              "おすすめのサイズ",
+              "120cm",
+              "現在から\n数か月の間、\n最適なサイズ",
+              "ゆったり",
+              "130cm",
+              "長期間着用可能な\n少し大きめサイズ",
+              "サイズ120cmをカートに入れる",
+              "お子様へのおすすめサイズ"
+            ],
+            "added": [
+              "バーチャサイズはあなたの入力情報や購入履歴をもとにサイズの提案をしています。データの損失を防ぐためには、アカウントを作成してください。",
+              "アカウント作成を続ける",
+              "アカウントをお持ちの方はこちら",
+              "クローゼット",
+              "シルエット",
+              "アカウント",
+              "個人情報保護方針",
+              "問題を報告",
+              "フィードバック",
+              "バーチャサイズとは",
+              "1,000万以上の身体データをもとに、あなたに合う\n最適なサイズを探します",
+              "少しの情報で、\nぴったりの贈りものを",
+              "日本語/JA",
+              "使い方ガイド",
+              "お子様の情報を入力",
+              "性別",
+              "女の子",
+              "男の子",
+              "年齢",
+              "身長",
+              "cm",
+              "体重",
+              "kg",
+              "身長と体重の算出方法はこちら",
+              "ft/Ib",
+              "Virtusizeの個人情報保護方針に同意する",
+              "次へ",
+              "お子様のサイズを確認"
+            ]
+          }
+        },
+        "baselineExists": true
+      }
+    ]
+  },
+  {
     "timestamp": "2026-06-18T05:28:38.894Z",
     "url": "https://www.gap.co.jp/gap/kids-uniform-polo-shirt/763889016.html?vs-version=3.9.7",
     "phase": "full",
@@ -18793,128 +19074,6 @@
         "missingEvents": [],
         "widgetVisibleMs": 6079,
         "screenshotFile": "screenshots/2026-05-08T02-50-49-chrome.jpg",
-        "widgetType": "inpage",
-        "hasSmartTable": null
-      }
-    ]
-  },
-  {
-    "timestamp": "2026-05-08T02:38:29.966Z",
-    "url": "https://bananarepublic.gap.co.jp/br/bastian-suede-jacket/869499006.html?dwvar_869499006_color=869499006",
-    "phase": "full",
-    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/25533452598",
-    "store": "banana_republic",
-    "productType": "jacket",
-    "flow": "noVisor",
-    "onboarding": {
-      "gender": "female",
-      "age": "35",
-      "height": "161",
-      "weight": "54"
-    },
-    "giftOnboarding": {
-      "gender": "female",
-      "age": "30-39",
-      "height": "160-164",
-      "bodyType": "52 - 63 kg"
-    },
-    "footwearOnboarding": {
-      "gender": "female",
-      "brand": "Adidas",
-      "size": "25.5 cm"
-    },
-    "kidsOnboarding": {
-      "gender": "girl",
-      "age": 8,
-      "height": "120",
-      "weight": "25"
-    },
-    "events": [
-      {
-        "event": "user-saw-product::integration",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-saw-widget-button::integration",
-        "phase": "onboarding"
-      },
-      {
-        "event": "inpage-mounted::integration",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-opened-widget::inpage",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-saw-onboarding-screen::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-selected-gender::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-selected-age::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-selected-height::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-selected-weight::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-completed-onboarding::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-created-silhouette::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-got-size-recommendation::integration",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-opened-panel-rec::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-saw-product::integration",
-        "phase": "refresh"
-      },
-      {
-        "event": "user-saw-widget-button::integration",
-        "phase": "refresh"
-      },
-      {
-        "event": "inpage-mounted::integration",
-        "phase": "refresh"
-      },
-      {
-        "event": "user-opened-widget::inpage",
-        "phase": "refresh"
-      },
-      {
-        "event": "user-got-size-recommendation::integration",
-        "phase": "refresh"
-      },
-      {
-        "event": "user-selected-size::inpage",
-        "phase": "refresh"
-      }
-    ],
-    "browsers": [
-      {
-        "browser": "chrome",
-        "status": "passed",
-        "error": null,
-        "missingEvents": [],
-        "widgetVisibleMs": 8633,
-        "screenshotFile": "screenshots/2026-05-08T02-38-29-chrome.jpg",
         "widgetType": "inpage",
         "hasSmartTable": null
       }
