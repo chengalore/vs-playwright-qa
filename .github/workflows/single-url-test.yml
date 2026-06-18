@@ -414,6 +414,25 @@ jobs:
           const storeKey = first.store || null;
           const flowKey  = first.flow  || null;
 
+          // Detect language from URL domain / store name
+          const detectLang = (url, store) => {
+            if (url) {
+              if (/\.co\.jp(\/|$|\?|#)/.test(url)) return 'ja';
+              if (/\.co\.kr(\/|$|\?|#)/.test(url)) return 'ko';
+              if (/\.com\.tw(\/|$|\?|#)/.test(url) || /\.com\.hk(\/|$|\?|#)/.test(url)) return 'zh-tw';
+              if (/\.cn(\/|$|\?|#)/.test(url) && !/cdn/.test(url)) return 'zh-cn';
+            }
+            if (store) {
+              if (/japan/i.test(store)) return 'ja';
+              if (/korea/i.test(store)) return 'ko';
+              if (/taiwan|_tw\b/i.test(store)) return 'zh-tw';
+              if (/china|_cn\b/i.test(store)) return 'zh-cn';
+            }
+            return 'en';
+          };
+          const lang = detectLang(resolvedUrl, first.store);
+          const baselineKey = flowKey ? `${lang}:${flowKey}` : null;
+
           const computeTextDiff = (baseline, captured) => {
             if (!baseline || !captured) return null;
             const diff = {};
@@ -428,14 +447,14 @@ jobs:
           };
 
           const SET_BASELINE = process.env.SET_TEXT_BASELINE === 'true';
-          if (SET_BASELINE && flowKey) {
+          if (SET_BASELINE && baselineKey) {
             const src = browserResults.find(r => r.browser === 'chrome' && r.widgetTextLog) ||
                         browserResults.find(r => r.widgetTextLog);
             if (src?.widgetTextLog) {
-              baselines[flowKey] = src.widgetTextLog;
+              baselines[baselineKey] = src.widgetTextLog;
               fs.mkdirSync('data', { recursive: true });
               fs.writeFileSync(BASELINES_FILE, JSON.stringify(baselines, null, 2));
-              console.log(`Saved text baseline for flow: ${flowKey}`);
+              console.log(`Saved text baseline for ${lang}:${flowKey}`);
             }
           }
 
@@ -452,6 +471,8 @@ jobs:
             productType: first.productType || null,
             flow: first.flow || null,
             versionLabel: process.env.VERSION_LABEL || null,
+            language: lang || null,
+            wasSetAsBaseline: SET_BASELINE && !!baselineKey,
             onboarding,
             giftOnboarding,
             footwearOnboarding,
@@ -507,7 +528,7 @@ jobs:
                 fs.copyFileSync(smartTableSrc, `docs/screenshots/${filename}`);
                 smartTableFile = `screenshots/${filename}`;
               }
-              const flowBaseline = flowKey ? baselines[flowKey] : null;
+              const flowBaseline = baselineKey ? baselines[baselineKey] : null;
               const textDiff = SET_BASELINE ? null : computeTextDiff(flowBaseline, r.widgetTextLog || null);
               return { browser: r.browser, status: r.status, error: r.error || null, missingEvents: r.missingEvents || [], widgetVisibleMs: r.widgetVisibleMs || null, screenshotFile, onboardingFile, onboardingFilledFile, resultFile, giftOnboardingFile, giftResultFile, smartTableFile, widgetType: r.widgetType || null, hasSmartTable: r.hasSmartTable ?? null, widgetTextLog: r.widgetTextLog || null, textDiff, baselineExists: !!flowBaseline };
             }),

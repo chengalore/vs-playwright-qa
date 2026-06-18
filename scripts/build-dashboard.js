@@ -929,7 +929,7 @@ function generateDashboard(history, compareImages, singleUrlHistory, metrics) {
             <input type="checkbox" id="single-set-baseline" style="accent-color:#3fb950;width:14px;height:14px;margin-top:2px;flex-shrink:0">
             <div>
               <div style="font-size:13px;color:#c9d1d9;font-weight:500">Set as text baseline</div>
-              <div style="font-size:11px;color:#484f58;margin-top:3px">Save this run's widget text as the translation reference for this store. Future runs will be compared against it.</div>
+              <div style="font-size:11px;color:#484f58;margin-top:3px">Saves as the baseline for this run's language (<span id="single-baseline-lang" style="color:#8b949e">—</span>). Future runs will be compared against it.</div>
             </div>
           </label>
         </div>
@@ -1965,17 +1965,19 @@ function renderSingleDetail(entry, idx) {
     ];
     const bs = (entry.browsers || []).filter(b => b.widgetTextLog);
     if (!bs.length) return '';
+    const LANG_LABELS = { en: 'English', ja: '日本語', ko: '한국어', 'zh-tw': '繁體中文', 'zh-cn': '简体中文' };
+    const langLabel = entry.language ? (LANG_LABELS[entry.language] || entry.language) : '—';
     const noBaseline = bs.every(b => !b.baselineExists);
     if (noBaseline) {
       return \`<div style="margin-top:16px;padding-top:14px;border-top:1px solid #21262d">
-        <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.6px;color:#484f58;font-weight:600;margin-bottom:8px">Translation Baseline</div>
-        <div style="font-size:12px;color:#8b949e">No baseline set for the <span style="color:#c9d1d9">\${entry.flow || 'unknown'}</span> flow. Re-run with <span style="font-family:monospace;background:#161b22;border:1px solid #30363d;padding:1px 5px;border-radius:3px">Set text baseline</span> checked to establish one.</div>
+        <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.6px;color:#484f58;font-weight:600;margin-bottom:8px">Translation Baseline · \${langLabel}</div>
+        <div style="font-size:12px;color:#8b949e">No baseline set for the <span style="color:#c9d1d9">\${entry.flow || 'unknown'}</span> flow in <span style="color:#c9d1d9">\${langLabel}</span>. Re-run with <span style="font-family:monospace;background:#161b22;border:1px solid #30363d;padding:1px 5px;border-radius:3px">Set text baseline</span> checked to establish one.</div>
       </div>\`;
     }
     const hasRegressions = bs.some(b => b.textDiff && Object.keys(b.textDiff).length > 0);
     const diffRows = bs.flatMap(b => {
       if (!b.textDiff) {
-        return [\`<div style="font-size:12px;color:#3fb950;padding:2px 0">✓ All translations match baseline (\${b.browser})</div>\`];
+        return [\`<div style="font-size:12px;color:#3fb950;padding:2px 0">✓ All translations match baseline (\${b.browser} · \${langLabel})</div>\`];
       }
       return Object.entries(b.textDiff).map(([screen, {missing, added}]) => {
         const snapLabel = TEXT_SNAPSHOTS.find(s => s.key === screen)?.label || screen;
@@ -1988,7 +1990,7 @@ function renderSingleDetail(entry, idx) {
     }).join('');
     return \`<div style="margin-top:16px;padding-top:14px;border-top:1px solid #21262d">
       <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.6px;font-weight:600;margin-bottom:10px;color:\${hasRegressions ? '#f85149' : '#3fb950'}">
-        Translation Baseline \${hasRegressions ? '⚠ Mismatches found' : '✓ All match'}
+        Translation Baseline · \${langLabel} \${hasRegressions ? '⚠ Mismatches found' : '✓ All match'}
       </div>
       \${diffRows}
     </div>\`;
@@ -2054,7 +2056,7 @@ function renderSingleUrl() {
       <td style="font-size:12px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
         <a href="\${entry.url}" target="_blank" rel="noopener" title="\${entry.url}" onclick="event.stopPropagation()">\${shortUrl(entry.url)}</a>
       </td>
-      <td style="font-size:13px">\${entry.store || '—'}\${entry.versionLabel ? \` <span style="font-size:10px;background:#1c2128;border:1px solid #30363d;color:#8b949e;padding:1px 6px;border-radius:4px;font-family:monospace">\${entry.versionLabel}</span>\` : ''}\${(entry.browsers||[]).some(b=>b.textDiff&&Object.keys(b.textDiff).length>0) ? \` <span style="font-size:10px;background:rgba(248,81,73,0.1);border:1px solid rgba(248,81,73,0.3);color:#f85149;padding:1px 5px;border-radius:4px" title="Translation regression detected">⚠ text</span>\` : ''}</td>
+      <td style="font-size:13px">\${entry.store || '—'}\${entry.versionLabel ? \` <span style="font-size:10px;background:#1c2128;border:1px solid #30363d;color:#8b949e;padding:1px 6px;border-radius:4px;font-family:monospace">\${entry.versionLabel}</span>\` : ''}\${(entry.browsers||[]).some(b=>b.textDiff&&Object.keys(b.textDiff).length>0) ? \` <span style="font-size:10px;background:rgba(248,81,73,0.1);border:1px solid rgba(248,81,73,0.3);color:#f85149;padding:1px 5px;border-radius:4px" title="Translation regression detected">⚠ text</span>\` : ''}\${entry.wasSetAsBaseline ? \` <span style="font-size:10px;background:rgba(63,185,80,0.1);border:1px solid rgba(63,185,80,0.3);color:#3fb950;padding:1px 5px;border-radius:4px" title="This run is the active translation baseline">📌 baseline</span>\` : ''}</td>
       <td>\${flowBadge}</td>
       <td><span class="phase-badge phase-\${entry.phase || 'full'}">\${entry.phase || 'full'}</span></td>
       \${statusCell('chrome')}
@@ -2819,6 +2821,17 @@ function renderStoreMatrix() {
     </div>\`;
 }
 
+// ── Language detection for baseline preview ───────────────────────────────────
+function detectLangFromUrl(url) {
+  if (!url) return 'en';
+  if (/\.co\.jp(\/|$|\?|#)/.test(url)) return 'ja';
+  if (/\.co\.kr(\/|$|\?|#)/.test(url)) return 'ko';
+  if (/\.com\.tw(\/|$|\?|#)/.test(url) || /\.com\.hk(\/|$|\?|#)/.test(url)) return 'zh-tw';
+  if (/\.cn(\/|$|\?|#)/.test(url) && !/cdn/.test(url)) return 'zh-cn';
+  return 'en';
+}
+const LANG_LABELS = { en: 'English', ja: '日本語', ko: '한국어', 'zh-tw': '繁體中文', 'zh-cn': '简体中文' };
+
 // ── Init ──────────────────────────────────────────────────────────────────────
 renderTable();
 renderFlakyStores();
@@ -2831,6 +2844,19 @@ if (savedPat) {
   document.getElementById('gh-pat').value = savedPat;
   document.getElementById('single-pat').value = savedPat;
 }
+// Update language preview in baseline description when URL changes
+(function() {
+  const urlInput = document.getElementById('single-url-input');
+  const langSpan = document.getElementById('single-baseline-lang');
+  if (urlInput && langSpan) {
+    const update = () => {
+      const lang = detectLangFromUrl(urlInput.value.trim());
+      langSpan.textContent = LANG_LABELS[lang] || lang;
+    };
+    urlInput.addEventListener('input', update);
+    update();
+  }
+})();
 </script>
 </body>
 </html>`;
