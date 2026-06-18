@@ -1,5 +1,148 @@
 [
   {
+    "timestamp": "2026-06-18T05:01:46.636Z",
+    "url": "https://www.gap.co.jp/gap/fifa-world-cup%E2%84%A2-kids-oversized-jersey/895313006.html",
+    "phase": "full",
+    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/27737551998",
+    "store": "gap_japan",
+    "productType": null,
+    "flow": "kids",
+    "versionLabel": null,
+    "onboarding": {
+      "gender": "female",
+      "age": "35",
+      "height": "161",
+      "weight": "54"
+    },
+    "giftOnboarding": {
+      "gender": "female",
+      "age": "30-39",
+      "height": "160-164",
+      "bodyType": "52 - 63 kg"
+    },
+    "footwearOnboarding": {
+      "gender": "female",
+      "brand": "Adidas",
+      "size": "25.5 cm"
+    },
+    "kidsOnboarding": {
+      "gender": "girl",
+      "age": 8,
+      "height": "120",
+      "weight": "25"
+    },
+    "events": [
+      {
+        "event": "user-saw-product::integration",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-saw-widget-button::integration",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-saw-widget-kids::integration",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-opened-widget::kids",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-saw-onboarding-screen::kids",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-selected-gender::kids",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-clicked-age::kids",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-updated-body-measurements::kids",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-updated-body-measurements::kids",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-updated-body-measurements::kids",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-completed-onboarding::kids",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-created-silhouette::kids",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-selected-size-kids-rec::kids",
+        "phase": "onboarding"
+      }
+    ],
+    "browsers": [
+      {
+        "browser": "chrome",
+        "status": "failed",
+        "error": "page.waitForTimeout: Target page, context or browser has been closed",
+        "missingEvents": [],
+        "widgetVisibleMs": 6653,
+        "screenshotFile": "screenshots/2026-06-18T05-01-46-chrome.jpg",
+        "onboardingFile": "screenshots/2026-06-18T05-01-46-chrome-onboarding.jpg",
+        "onboardingFilledFile": null,
+        "resultFile": null,
+        "giftOnboardingFile": null,
+        "giftResultFile": null,
+        "smartTableFile": null,
+        "widgetType": "inpage",
+        "hasSmartTable": null,
+        "widgetTextLog": {
+          "widget-button": [
+            "お子様のサイズを確認",
+            "スタート",
+            "プライバシーポリシー"
+          ],
+          "onboarding": [
+            "よくある質問",
+            "サポート",
+            "日本語",
+            "cm/kg",
+            "データを消去",
+            "ブラウザに保存されているVirtusizeのデータ (設定・環境情報) が削除されます。",
+            "消去",
+            "戻る",
+            "Virtusizeとは",
+            "フィードバックを送る",
+            "プライバシーポリシー",
+            "不具合・問題の報告",
+            "おすすめサイズを探し中...",
+            "1,000万以上の身体データをもとに、あなたに合う\n最適なサイズを探します",
+            "少しの情報でお子様に\nピッタリのお洋服を",
+            "日本語/JA",
+            "使い方ガイド",
+            "お子様の情報を入力",
+            "性別",
+            "女の子",
+            "男の子",
+            "年齢",
+            "Virtusizeの個人情報保護方針に同意する",
+            "次へ",
+            "お子様のサイズを確認",
+            "スタート"
+          ],
+          "result": []
+        },
+        "textDiff": null,
+        "baselineExists": true
+      }
+    ]
+  },
+  {
     "timestamp": "2026-06-18T03:44:57.804Z",
     "url": "https://www.gap.co.jp/gap/fifa-world-cup%E2%84%A2-kids-oversized-jersey/895313006.html",
     "phase": "full",
@@ -18674,232 +18817,6 @@
         "missingEvents": [],
         "widgetVisibleMs": 17415,
         "screenshotFile": "screenshots/2026-05-07T09-24-29-chrome.jpg",
-        "widgetType": "inpage",
-        "hasSmartTable": null
-      }
-    ]
-  },
-  {
-    "timestamp": "2026-05-07T03:32:23.769Z",
-    "url": "https://www.beams.co.jp/item/beams/shirt/11011774803/?rid=312",
-    "phase": "full",
-    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/25474470825",
-    "store": "beams",
-    "productType": "shirt",
-    "flow": "apparel",
-    "onboarding": {
-      "gender": "female",
-      "age": "35",
-      "height": "161",
-      "weight": "54"
-    },
-    "giftOnboarding": {
-      "gender": "female",
-      "age": "30-39",
-      "height": "160-164",
-      "bodyType": "52 - 63 kg"
-    },
-    "footwearOnboarding": {
-      "gender": "female",
-      "brand": "Adidas",
-      "size": "25.5 cm"
-    },
-    "kidsOnboarding": {
-      "gender": "girl",
-      "age": 8,
-      "height": "120",
-      "weight": "25"
-    },
-    "events": [
-      {
-        "event": "user-saw-product::integration",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-saw-widget-button::integration",
-        "phase": "onboarding"
-      },
-      {
-        "event": "inpage-mounted::integration",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-opened-widget::inpage",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-saw-onboarding-screen::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-selected-gender::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-selected-age::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-selected-height::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-selected-weight::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-completed-onboarding::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-created-silhouette::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-got-size-recommendation::integration",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-opened-panel-tryiton::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-selected-size::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-opened-panel-details::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-opened-panel-compare::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-added-product::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-saw-product::integration",
-        "phase": "refresh"
-      },
-      {
-        "event": "user-saw-widget-button::integration",
-        "phase": "refresh"
-      },
-      {
-        "event": "inpage-mounted::integration",
-        "phase": "refresh"
-      },
-      {
-        "event": "user-opened-widget::inpage",
-        "phase": "refresh"
-      },
-      {
-        "event": "user-opened-panel-tryiton::fit-illustrator",
-        "phase": "refresh"
-      },
-      {
-        "event": "user-selected-size::fit-illustrator",
-        "phase": "refresh"
-      },
-      {
-        "event": "user-got-size-recommendation::integration",
-        "phase": "refresh"
-      },
-      {
-        "event": "user-selected-size::inpage",
-        "phase": "refresh"
-      },
-      {
-        "event": "user-opened-widget::gift",
-        "phase": "gift"
-      },
-      {
-        "event": "user-saw-onboarding-screen::gift",
-        "phase": "gift"
-      },
-      {
-        "event": "user-selected-gender::gift",
-        "phase": "gift"
-      },
-      {
-        "event": "user-clicked-age::gift",
-        "phase": "gift"
-      },
-      {
-        "event": "user-selected-age-30_39::gift",
-        "phase": "gift"
-      },
-      {
-        "event": "user-clicked-height::gift",
-        "phase": "gift"
-      },
-      {
-        "event": "user-selected-height-160_164::gift",
-        "phase": "gift"
-      },
-      {
-        "event": "user-clicked-bodyType::gift",
-        "phase": "gift"
-      },
-      {
-        "event": "user-selected-bodyType-1::gift",
-        "phase": "gift"
-      },
-      {
-        "event": "user-completed-onboarding::gift",
-        "phase": "gift"
-      },
-      {
-        "event": "user-opened-panel-rec::gift",
-        "phase": "gift"
-      },
-      {
-        "event": "user-saw-product::integration",
-        "phase": "gift-refresh"
-      },
-      {
-        "event": "user-saw-widget-button::integration",
-        "phase": "gift-refresh"
-      },
-      {
-        "event": "inpage-mounted::integration",
-        "phase": "gift-refresh"
-      },
-      {
-        "event": "user-got-size-recommendation::integration",
-        "phase": "gift-refresh"
-      },
-      {
-        "event": "user-selected-size::inpage",
-        "phase": "gift-refresh"
-      },
-      {
-        "event": "user-opened-widget::inpage",
-        "phase": "gift-refresh"
-      },
-      {
-        "event": "user-opened-panel-tryiton::fit-illustrator",
-        "phase": "gift-refresh"
-      },
-      {
-        "event": "user-opened-widget::gift",
-        "phase": "gift-refresh"
-      },
-      {
-        "event": "user-opened-panel-rec::gift",
-        "phase": "gift-refresh"
-      }
-    ],
-    "browsers": [
-      {
-        "browser": "chrome",
-        "status": "passed",
-        "error": null,
-        "missingEvents": [],
-        "widgetVisibleMs": 9457,
-        "screenshotFile": "screenshots/2026-05-07T03-32-23-chrome.jpg",
         "widgetType": "inpage",
         "hasSmartTable": null
       }
