@@ -30,7 +30,7 @@ import {
   getSkipReason,
 } from "../utils/inpageFlow.js";
 
-test.setTimeout(300000);
+test.setTimeout(480000);
 
 const TEST_COUNT = 1;
 

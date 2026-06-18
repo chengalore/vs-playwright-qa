@@ -139,6 +139,7 @@ export async function shadowExists(page, host, selector) {
 export async function clickKidsWidget(page) {
   await page.waitForFunction(() =>
     findInShadow('[data-test-id="kids-inpage-button"]'),
+    { timeout: 20000 },
   );
   await page.evaluate(() =>
     findInShadow('[data-test-id="kids-inpage-button"]')?.scrollIntoView({
