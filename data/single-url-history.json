@@ -1,5 +1,148 @@
 [
   {
+    "timestamp": "2026-06-18T03:44:57.804Z",
+    "url": "https://www.gap.co.jp/gap/fifa-world-cup%E2%84%A2-kids-oversized-jersey/895313006.html",
+    "phase": "full",
+    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/27735001491",
+    "store": "gap_japan",
+    "productType": null,
+    "flow": "kids",
+    "versionLabel": null,
+    "onboarding": {
+      "gender": "female",
+      "age": "35",
+      "height": "161",
+      "weight": "54"
+    },
+    "giftOnboarding": {
+      "gender": "female",
+      "age": "30-39",
+      "height": "160-164",
+      "bodyType": "52 - 63 kg"
+    },
+    "footwearOnboarding": {
+      "gender": "female",
+      "brand": "Adidas",
+      "size": "25.5 cm"
+    },
+    "kidsOnboarding": {
+      "gender": "girl",
+      "age": 8,
+      "height": "120",
+      "weight": "25"
+    },
+    "events": [
+      {
+        "event": "user-saw-product::integration",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-saw-widget-button::integration",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-saw-widget-kids::integration",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-opened-widget::kids",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-saw-onboarding-screen::kids",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-selected-gender::kids",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-clicked-age::kids",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-updated-body-measurements::kids",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-updated-body-measurements::kids",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-updated-body-measurements::kids",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-completed-onboarding::kids",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-created-silhouette::kids",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-selected-size-kids-rec::kids",
+        "phase": "onboarding"
+      }
+    ],
+    "browsers": [
+      {
+        "browser": "chrome",
+        "status": "failed",
+        "error": "page.waitForTimeout: Target page, context or browser has been closed",
+        "missingEvents": [],
+        "widgetVisibleMs": 12844,
+        "screenshotFile": "screenshots/2026-06-18T03-44-57-chrome.jpg",
+        "onboardingFile": "screenshots/2026-06-18T03-44-57-chrome-onboarding.jpg",
+        "onboardingFilledFile": null,
+        "resultFile": null,
+        "giftOnboardingFile": null,
+        "giftResultFile": null,
+        "smartTableFile": null,
+        "widgetType": "inpage",
+        "hasSmartTable": null,
+        "widgetTextLog": {
+          "widget-button": [
+            "お子様のサイズを確認",
+            "スタート",
+            "プライバシーポリシー"
+          ],
+          "onboarding": [
+            "よくある質問",
+            "サポート",
+            "日本語",
+            "cm/kg",
+            "データを消去",
+            "ブラウザに保存されているVirtusizeのデータ (設定・環境情報) が削除されます。",
+            "消去",
+            "戻る",
+            "Virtusizeとは",
+            "フィードバックを送る",
+            "プライバシーポリシー",
+            "不具合・問題の報告",
+            "おすすめサイズを探し中...",
+            "1,000万以上の身体データをもとに、あなたに合う\n最適なサイズを探します",
+            "少しの情報でお子様に\nピッタリのお洋服を",
+            "日本語/JA",
+            "使い方ガイド",
+            "お子様の情報を入力",
+            "性別",
+            "女の子",
+            "男の子",
+            "年齢",
+            "Virtusizeの個人情報保護方針に同意する",
+            "次へ",
+            "お子様のサイズを確認",
+            "スタート"
+          ],
+          "result": []
+        },
+        "textDiff": null,
+        "baselineExists": true
+      }
+    ]
+  },
+  {
     "timestamp": "2026-06-18T03:28:43.609Z",
     "url": "https://www.gap.co.jp/gap/kids-uniform-polo-shirt/763889016.html",
     "phase": "full",
@@ -18758,51 +18901,6 @@
         "widgetVisibleMs": 9457,
         "screenshotFile": "screenshots/2026-05-07T03-32-23-chrome.jpg",
         "widgetType": "inpage",
-        "hasSmartTable": null
-      }
-    ]
-  },
-  {
-    "timestamp": "2026-05-07T03:28:29.330Z",
-    "url": "beams.co.jp11011774803",
-    "phase": "full",
-    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/25474400980",
-    "store": "unknown",
-    "productType": null,
-    "flow": null,
-    "onboarding": {
-      "gender": "female",
-      "age": "35",
-      "height": "161",
-      "weight": "54"
-    },
-    "giftOnboarding": {
-      "gender": "female",
-      "age": "30-39",
-      "height": "160-164",
-      "bodyType": "52 - 63 kg"
-    },
-    "footwearOnboarding": {
-      "gender": "female",
-      "brand": "Adidas",
-      "size": "25.5 cm"
-    },
-    "kidsOnboarding": {
-      "gender": "girl",
-      "age": 8,
-      "height": "120",
-      "weight": "25"
-    },
-    "events": [],
-    "browsers": [
-      {
-        "browser": "chrome",
-        "status": "failed",
-        "error": "page.goto: Protocol error (Page.navigate): Cannot navigate to invalid URL\nCall log:\n\u001b[2m  - navigating to \"beams.co.jp11011774803\", waiting until \"load\"\u001b[22m\n",
-        "missingEvents": [],
-        "widgetVisibleMs": null,
-        "screenshotFile": null,
-        "widgetType": null,
         "hasSmartTable": null
       }
     ]
