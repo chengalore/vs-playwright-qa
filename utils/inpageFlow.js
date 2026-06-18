@@ -776,10 +776,11 @@ export async function runKidsFlow(page, _pdc, kidsOpts = {}, resultScreenshotFn 
   );
   console.log("[kids] Clicked See Your Perfect Fit");
 
+  await page.waitForTimeout(10000);
   if (resultScreenshotFn) {
     await resultScreenshotFn("result").catch(() => {});
   }
-  await page.waitForTimeout(5000);
+  await page.waitForTimeout(20000);
   console.log("[kids] Kids flow completed successfully");
 
   return true;

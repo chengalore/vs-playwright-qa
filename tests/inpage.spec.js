@@ -756,7 +756,7 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
     // Refresh Validation
     // -----------------------------
 
-    await page.waitForTimeout(flow === "kids" ? 15000 : 5000);
+    await page.waitForTimeout(5000);
 
     // REFRESH
     // For kids: the widget auto-transitions immediately after the recommendation,
