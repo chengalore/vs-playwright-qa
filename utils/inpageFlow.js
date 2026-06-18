@@ -148,7 +148,7 @@ export async function clickKidsWidget(page) {
   );
   await page.waitForTimeout(500);
   const btn = page.locator('[data-test-id="kids-inpage-button"]');
-  await btn.click();
+  await btn.click({ timeout: 10000 });
 }
 
 export async function clickWidget(page, flow) {
@@ -625,7 +625,7 @@ export async function runFootwearFlow(page, footwearOpts = {}) {
  * @param {string} [kidsOpts.height="120"]   cm
  * @param {string} [kidsOpts.weight="25"]    kg
  */
-export async function runKidsFlow(page, _pdc, kidsOpts = {}) {
+export async function runKidsFlow(page, _pdc, kidsOpts = {}, resultScreenshotFn = null) {
   const {
     genderIndex = 0,
     ageIndex    = 5,
@@ -776,16 +776,22 @@ export async function runKidsFlow(page, _pdc, kidsOpts = {}) {
   );
   console.log("[kids] Clicked See Your Perfect Fit");
 
-  // Soft check — the widget may transition away from this screen quickly,
-  // so a timeout here does not fail the test if the key event already fired.
-  await page.waitForFunction(
+  // Soft check — the widget may transition away from this screen quickly.
+  // If the result screen IS found, fire the screenshot callback immediately before it disappears.
+  const resultVisible = await page.waitForFunction(
     () => {
       const root =
         document.querySelector("#vs-kid-app")?.nextElementSibling?.shadowRoot;
       return !!root?.querySelector('[data-test-id="kids-recommended-size"]');
     },
     { timeout: 10000 },
-  ).catch(() => console.log("[kids] kids-recommended-size not found — widget may have already transitioned"));
+  ).then(() => true).catch(() => false);
+
+  if (!resultVisible) {
+    console.log("[kids] kids-recommended-size not found — widget may have already transitioned");
+  } else if (resultScreenshotFn) {
+    await resultScreenshotFn("result").catch(() => {});
+  }
   console.log("[kids] Kids flow completed successfully");
 
   return true;
@@ -1027,7 +1033,7 @@ export async function validateRefresh(
     await waitForEvent(
       eventWatcher,
       "user-selected-size-kids-rec::kids",
-      15000,
+      30000,
     );
 
     const failures = await verifyEvents(

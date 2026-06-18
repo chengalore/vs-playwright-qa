@@ -605,7 +605,22 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
       isNewUser = await runFootwearFlow(page, footwearOpts);
     }
     if (flow === "kids") {
-      isNewUser = await runKidsFlow(page, pdc, kidsOpts);
+      const kidsResultFn = async (name) => {
+        try {
+          const buf = await page.screenshot({ type: "jpeg", quality: 80, fullPage: false }).catch(() => null);
+          if (buf) {
+            const { mkdirSync, writeFileSync } = await import("fs");
+            const { join, dirname } = await import("path");
+            const { fileURLToPath } = await import("url");
+            const __dir = dirname(fileURLToPath(import.meta.url));
+            const dir = join(__dir, "../test-results/widget-screenshots");
+            mkdirSync(dir, { recursive: true });
+            writeFileSync(join(dir, `${testInfo.project.name}-${name}.jpg`), buf);
+          }
+          widgetTextLog[name] = await captureWidgetText(page);
+        } catch { /* non-fatal */ }
+      };
+      isNewUser = await runKidsFlow(page, pdc, kidsOpts, kidsResultFn);
     }
     if (flow === "noVisor") {
       isNewUser = await runNoVisorFlow(page, bodyAPI, onboardingOpts, onboardingScreenshotFn);
@@ -613,26 +628,29 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
     flowDoneMs = Date.now() - t_nav;
 
     // Screenshot 3: widget in result/recommendation state after onboarding completes.
-    // Scroll widget into view and wait for the silhouette + sizes to finish painting.
-    try {
-      const widgetResultLoc = page.locator(
-        "#vs-inpage, #vs-inpage-luxury, #vs-legacy-inpage, #vs-kid"
-      ).first();
-      await widgetResultLoc.scrollIntoViewIfNeeded({ timeout: 5000 }).catch(() => {});
-      await page.waitForTimeout(4000); // let silhouette image load from server
-      const resultBuf = await page.screenshot({ type: "jpeg", quality: 80, fullPage: false }).catch(() => null);
-      if (resultBuf) {
-        const { mkdirSync, writeFileSync } = await import("fs");
-        const { join, dirname } = await import("path");
-        const { fileURLToPath } = await import("url");
-        const __dir = dirname(fileURLToPath(import.meta.url));
-        const dir = join(__dir, "../test-results/widget-screenshots");
-        mkdirSync(dir, { recursive: true });
-        writeFileSync(join(dir, `${testInfo.project.name}-result.jpg`), resultBuf);
-      }
-    } catch { /* non-fatal */ }
+    // Skipped for kids — the result screen disappears quickly so it's captured inside runKidsFlow via callback.
+    if (flow !== "kids") {
+      try {
+        const widgetResultLoc = page.locator(
+          "#vs-inpage, #vs-inpage-luxury, #vs-legacy-inpage, #vs-kid"
+        ).first();
+        await widgetResultLoc.scrollIntoViewIfNeeded({ timeout: 5000 }).catch(() => {});
+        await page.waitForTimeout(4000); // let silhouette image load from server
+        const resultBuf = await page.screenshot({ type: "jpeg", quality: 80, fullPage: false }).catch(() => null);
+        if (resultBuf) {
+          const { mkdirSync, writeFileSync } = await import("fs");
+          const { join, dirname } = await import("path");
+          const { fileURLToPath } = await import("url");
+          const __dir = dirname(fileURLToPath(import.meta.url));
+          const dir = join(__dir, "../test-results/widget-screenshots");
+          mkdirSync(dir, { recursive: true });
+          writeFileSync(join(dir, `${testInfo.project.name}-result.jpg`), resultBuf);
+        }
+      } catch { /* non-fatal */ }
+    }
 
-    widgetTextLog["result"] = await captureWidgetText(page);
+    // For kids the callback already set this; for other flows capture it now.
+    widgetTextLog["result"] ??= await captureWidgetText(page);
 
     // onboarding phase: onboarding complete — skip full validation
     if (phase === "onboarding") {
