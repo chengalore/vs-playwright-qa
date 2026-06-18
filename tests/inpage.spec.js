@@ -513,6 +513,7 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
     if (flow === "kids") {
       await clickKidsWidget(page);
       await waitForKidsWidgetReady(page);
+      await page.waitForTimeout(2000); // let kids form content render before text capture
     } else {
       await clickWidget(page, flow);
 
