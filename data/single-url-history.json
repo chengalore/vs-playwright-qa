@@ -1,5 +1,199 @@
 [
   {
+    "timestamp": "2026-06-18T05:17:04.388Z",
+    "url": "https://www.gap.co.jp/gap/fifa-world-cup%E2%84%A2-kids-oversized-jersey/895313006.html",
+    "phase": "full",
+    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/27738325885",
+    "store": "gap_japan",
+    "productType": "sweater",
+    "flow": "kids",
+    "versionLabel": null,
+    "onboarding": {
+      "gender": "female",
+      "age": "35",
+      "height": "161",
+      "weight": "54"
+    },
+    "giftOnboarding": {
+      "gender": "female",
+      "age": "30-39",
+      "height": "160-164",
+      "bodyType": "52 - 63 kg"
+    },
+    "footwearOnboarding": {
+      "gender": "female",
+      "brand": "Adidas",
+      "size": "25.5 cm"
+    },
+    "kidsOnboarding": {
+      "gender": "girl",
+      "age": 8,
+      "height": "120",
+      "weight": "25"
+    },
+    "events": [
+      {
+        "event": "user-saw-product::integration",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-saw-widget-button::integration",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-saw-widget-kids::integration",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-opened-widget::kids",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-saw-onboarding-screen::kids",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-selected-gender::kids",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-clicked-age::kids",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-updated-body-measurements::kids",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-updated-body-measurements::kids",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-updated-body-measurements::kids",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-completed-onboarding::kids",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-created-silhouette::kids",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-selected-size-kids-rec::kids",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-saw-product::integration",
+        "phase": "refresh"
+      },
+      {
+        "event": "user-saw-widget-button::integration",
+        "phase": "refresh"
+      },
+      {
+        "event": "user-saw-widget-kids::integration",
+        "phase": "refresh"
+      },
+      {
+        "event": "user-created-silhouette::kids",
+        "phase": "refresh"
+      },
+      {
+        "event": "user-selected-size-kids-rec::kids",
+        "phase": "refresh"
+      },
+      {
+        "event": "user-opened-widget::kids",
+        "phase": "refresh"
+      }
+    ],
+    "browsers": [
+      {
+        "browser": "chrome",
+        "status": "passed",
+        "error": null,
+        "missingEvents": [],
+        "widgetVisibleMs": 7644,
+        "screenshotFile": "screenshots/2026-06-18T05-17-04-chrome.jpg",
+        "onboardingFile": "screenshots/2026-06-18T05-17-04-chrome-onboarding.jpg",
+        "onboardingFilledFile": null,
+        "resultFile": "screenshots/2026-06-18T05-17-04-chrome-result.jpg",
+        "giftOnboardingFile": null,
+        "giftResultFile": null,
+        "smartTableFile": null,
+        "widgetType": "inpage",
+        "hasSmartTable": null,
+        "widgetTextLog": {
+          "widget-button": [
+            "お子様のサイズを確認",
+            "スタート",
+            "プライバシーポリシー"
+          ],
+          "onboarding": [
+            "よくある質問",
+            "サポート",
+            "日本語",
+            "cm/kg",
+            "データを消去",
+            "ブラウザに保存されているVirtusizeのデータ (設定・環境情報) が削除されます。",
+            "消去",
+            "戻る",
+            "Virtusizeとは",
+            "フィードバックを送る",
+            "プライバシーポリシー",
+            "不具合・問題の報告",
+            "おすすめサイズを探し中...",
+            "1,000万以上の身体データをもとに、あなたに合う\n最適なサイズを探します",
+            "少しの情報でお子様に\nピッタリのお洋服を",
+            "日本語/JA",
+            "使い方ガイド",
+            "お子様の情報を入力",
+            "性別",
+            "女の子",
+            "男の子",
+            "年齢",
+            "Virtusizeの個人情報保護方針に同意する",
+            "次へ",
+            "お子様のサイズを確認",
+            "スタート"
+          ],
+          "result": [
+            "よくある質問",
+            "サポート",
+            "日本語",
+            "cm/kg",
+            "データを消去",
+            "ブラウザに保存されているVirtusizeのデータ (設定・環境情報) が削除されます。",
+            "消去",
+            "戻る",
+            "Virtusizeとは",
+            "フィードバックを送る",
+            "プライバシーポリシー",
+            "不具合・問題の報告",
+            "おすすめサイズを探し中...",
+            "やり直す",
+            "今ぴったり",
+            "110cm",
+            "現在の体型に\nぴったりのサイズ",
+            "おすすめのサイズ",
+            "120cm",
+            "現在から\n数か月の間、\n最適なサイズ",
+            "ゆったり",
+            "130cm",
+            "長期間着用可能な\n少し大きめサイズ",
+            "サイズ120cmをカートに入れる",
+            "お子様へのおすすめサイズ",
+            "スタート"
+          ]
+        },
+        "textDiff": null,
+        "baselineExists": true
+      }
+    ]
+  },
+  {
     "timestamp": "2026-06-18T05:01:46.636Z",
     "url": "https://www.gap.co.jp/gap/fifa-world-cup%E2%84%A2-kids-oversized-jersey/895313006.html",
     "phase": "full",
@@ -18731,92 +18925,6 @@
         "missingEvents": [],
         "widgetVisibleMs": 7059,
         "screenshotFile": "screenshots/2026-05-07T11-31-12-chrome.jpg",
-        "widgetType": "inpage",
-        "hasSmartTable": null
-      }
-    ]
-  },
-  {
-    "timestamp": "2026-05-07T09:24:29.584Z",
-    "url": "https://www.beams.co.jp/item/beamsheart/shoes/42330002819/",
-    "phase": "full",
-    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/25487223958",
-    "store": "beams",
-    "productType": null,
-    "flow": "footwear",
-    "onboarding": {
-      "gender": "female",
-      "age": "35",
-      "height": "161",
-      "weight": "54"
-    },
-    "giftOnboarding": {
-      "gender": "female",
-      "age": "30-39",
-      "height": "160-164",
-      "bodyType": "52 - 63 kg"
-    },
-    "footwearOnboarding": {
-      "gender": "female",
-      "brand": "Adidas",
-      "size": "25.5 cm"
-    },
-    "kidsOnboarding": {
-      "gender": "girl",
-      "age": 8,
-      "height": "120",
-      "weight": "25"
-    },
-    "events": [
-      {
-        "event": "user-saw-product::integration",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-saw-widget-button::integration",
-        "phase": "onboarding"
-      },
-      {
-        "event": "inpage-mounted::integration",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-opened-widget::inpage",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-saw-onboarding-screen::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-selected-narrow::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-clicked-proceed-foot-width::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-selected-egyptian::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-clicked-proceed-foot-shape::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-selected-gender::fit-illustrator",
-        "phase": "onboarding"
-      }
-    ],
-    "browsers": [
-      {
-        "browser": "chrome",
-        "status": "failed",
-        "error": "page.waitForFunction: Test timeout of 180000ms exceeded.",
-        "missingEvents": [],
-        "widgetVisibleMs": 17415,
-        "screenshotFile": "screenshots/2026-05-07T09-24-29-chrome.jpg",
         "widgetType": "inpage",
         "hasSmartTable": null
       }
