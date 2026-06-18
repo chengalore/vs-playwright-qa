@@ -10,7 +10,7 @@
   },
   "banana_republic": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 0,
+    "consecutiveWidgetMissing": 1,
     "autoBlacklisted": false,
     "recoveries": [
       {
@@ -18,7 +18,8 @@
         "durationMs": 172718380,
         "type": "widget_missing"
       }
-    ]
+    ],
+    "issueStartedAt": "2026-06-18T01:33:32.254Z"
   },
   "andar_japan": {
     "consecutiveFailures": 0,
@@ -271,8 +272,8 @@
     "autoBlacklisted": false,
     "recoveries": [
       {
-        "resolvedAt": "2026-06-18T00:20:18.267Z",
-        "durationMs": 346256495,
+        "resolvedAt": "2026-06-18T01:33:32.252Z",
+        "durationMs": 350650480,
         "type": "widget_missing"
       },
       {

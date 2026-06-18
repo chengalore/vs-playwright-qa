@@ -1,16 +1,16 @@
 [
   {
-    "timestamp": "2026-06-18T00:20:17.924Z",
+    "timestamp": "2026-06-18T01:33:31.880Z",
     "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/27728069289",
     "summary": {
-      "total": 62,
-      "passed": 52,
-      "widgetMissing": 10,
+      "total": 78,
+      "passed": 67,
+      "widgetMissing": 11,
       "skipped": 0,
       "failed": 0,
-      "fallbackUsed": 53,
-      "avgWidgetVisibleMs": 27842,
-      "p95WidgetVisibleMs": 34988
+      "fallbackUsed": 69,
+      "avgWidgetVisibleMs": 27651,
+      "p95WidgetVisibleMs": 32816
     },
     "newIssues": [],
     "widgetMissingStores": [
@@ -57,6 +57,14 @@
       {
         "store": "poppy",
         "url": "https://poppy-tokyo.com/products/poppy-print-long-t-shirt-pink",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "banana_republic",
+        "url": "https://bananarepublic.gap.co.jp/br/bastian-suede-jacket/869499006.html?dwvar_869499006_color=869499006",
         "browsers": [
           "chrome",
           "webkit"
