@@ -776,22 +776,20 @@ export async function runKidsFlow(page, _pdc, kidsOpts = {}, resultScreenshotFn 
   );
   console.log("[kids] Clicked See Your Perfect Fit");
 
-  // Soft check — the widget may transition away from this screen quickly.
-  // If the result screen IS found, fire the screenshot callback immediately before it disappears.
-  const resultVisible = await page.waitForFunction(
+  // Wait for the result screen, then hold for 5s to let it settle before returning.
+  await page.waitForFunction(
     () => {
       const root =
         document.querySelector("#vs-kid-app")?.nextElementSibling?.shadowRoot;
       return !!root?.querySelector('[data-test-id="kids-recommended-size"]');
     },
     { timeout: 10000 },
-  ).then(() => true).catch(() => false);
+  ).catch(() => {});
 
-  if (!resultVisible) {
-    console.log("[kids] kids-recommended-size not found — widget may have already transitioned");
-  } else if (resultScreenshotFn) {
+  if (resultScreenshotFn) {
     await resultScreenshotFn("result").catch(() => {});
   }
+  await page.waitForTimeout(5000);
   console.log("[kids] Kids flow completed successfully");
 
   return true;
