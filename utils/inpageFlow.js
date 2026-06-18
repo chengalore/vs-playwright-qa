@@ -776,16 +776,6 @@ export async function runKidsFlow(page, _pdc, kidsOpts = {}, resultScreenshotFn 
   );
   console.log("[kids] Clicked See Your Perfect Fit");
 
-  // Wait for the result screen, then hold for 5s to let it settle before returning.
-  await page.waitForFunction(
-    () => {
-      const root =
-        document.querySelector("#vs-kid-app")?.nextElementSibling?.shadowRoot;
-      return !!root?.querySelector('[data-test-id="kids-recommended-size"]');
-    },
-    { timeout: 10000 },
-  ).catch(() => {});
-
   if (resultScreenshotFn) {
     await resultScreenshotFn("result").catch(() => {});
   }
