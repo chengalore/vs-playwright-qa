@@ -2594,10 +2594,11 @@ function renderStoreMatrix() {
 // ── Language detection for baseline preview ───────────────────────────────────
 function detectLangFromUrl(url) {
   if (!url) return 'en';
-  if (/.co.jp(/|$|?|#)/.test(url)) return 'ja';
-  if (/.co.kr(/|$|?|#)/.test(url)) return 'ko';
-  if (/.com.tw(/|$|?|#)/.test(url) || /.com.hk(/|$|?|#)/.test(url)) return 'zh-tw';
-  if (/.cn(/|$|?|#)/.test(url) && !/cdn/.test(url)) return 'zh-cn';
+  const h = url.split('?')[0].split('#')[0];
+  if (h.includes('.co.jp')) return 'ja';
+  if (h.includes('.co.kr')) return 'ko';
+  if (h.includes('.com.tw') || h.includes('.com.hk')) return 'zh-tw';
+  if (h.includes('.cn') && !h.includes('cdn')) return 'zh-cn';
   return 'en';
 }
 const LANG_LABELS = { en: 'English', ja: '日本語', ko: '한국어', 'zh-tw': '繁體中文', 'zh-cn': '简体中文' };
