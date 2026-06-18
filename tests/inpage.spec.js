@@ -738,7 +738,7 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
     // Refresh Validation
     // -----------------------------
 
-    await page.waitForTimeout(5000);
+    await page.waitForTimeout(flow === "kids" ? 10000 : 5000);
 
     // REFRESH
     await validateRefresh(page, eventWatcher, recommendationAPI, flow);
