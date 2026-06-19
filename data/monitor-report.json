@@ -1,21 +1,29 @@
 {
-  "timestamp": "2026-06-18T01:33:31.880Z",
-  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/27728069289",
+  "timestamp": "2026-06-19T00:29:49.122Z",
+  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/27797613902",
   "summary": {
     "total": 78,
-    "passed": 67,
-    "widgetMissing": 11,
+    "passed": 70,
+    "widgetMissing": 8,
     "skipped": 0,
     "failed": 0,
-    "fallbackUsed": 69,
-    "avgWidgetVisibleMs": 27651,
-    "p95WidgetVisibleMs": 32816
+    "fallbackUsed": 72,
+    "avgWidgetVisibleMs": 28268,
+    "p95WidgetVisibleMs": 34681
   },
   "newIssues": [],
   "widgetMissingStores": [
     {
       "store": "hankyu_hanshin",
       "url": "https://web.hh-online.jp/fashion/goods/index.html?ggcd=508767628",
+      "browsers": [
+        "chrome",
+        "webkit"
+      ]
+    },
+    {
+      "store": "coen",
+      "url": "https://www.coen.co.jp/item/7600024S0452",
       "browsers": [
         "chrome",
         "webkit"
@@ -30,8 +38,8 @@
       ]
     },
     {
-      "store": "coen",
-      "url": "https://www.coen.co.jp/item/7600024S0452",
+      "store": "hankyu_mens",
+      "url": "https://web.hh-online.jp/hankyu-mens/goods/index.html?ggcd=508732084",
       "browsers": [
         "chrome",
         "webkit"
@@ -54,40 +62,8 @@
       ]
     },
     {
-      "store": "poppy",
-      "url": "https://poppy-tokyo.com/products/poppy-print-long-t-shirt-pink",
-      "browsers": [
-        "chrome",
-        "webkit"
-      ]
-    },
-    {
-      "store": "banana_republic",
-      "url": "https://bananarepublic.gap.co.jp/br/bastian-suede-jacket/869499006.html?dwvar_869499006_color=869499006",
-      "browsers": [
-        "chrome",
-        "webkit"
-      ]
-    },
-    {
-      "store": "andar_japan",
-      "url": "https://andar-jp.com/collections/womens-all/products/best-airywin-%E3%83%9E%E3%82%AD%E3%82%B7%E3%83%AF%E3%82%A4%E3%83%89%E3%83%AC%E3%82%AE%E3%83%B3%E3%82%B9",
-      "browsers": [
-        "chrome",
-        "webkit"
-      ]
-    },
-    {
       "store": "gap_japan",
       "url": "https://www.gap.co.jp/gap/relaxed-gap-logo-quarter-zip-sweatshirt/645759006.html?dwvar_645759006_color=645759006",
-      "browsers": [
-        "chrome",
-        "webkit"
-      ]
-    },
-    {
-      "store": "studio_nicholson",
-      "url": "https://japan.studionicholson.com/products/chalco-denim-pant-in-parchment",
       "browsers": [
         "chrome",
         "webkit"
@@ -105,47 +81,47 @@
   "ongoingMissing": [
     {
       "store": "reebok_korea",
-      "consecutiveRuns": 72
+      "consecutiveRuns": 73
     },
     {
       "store": "gelato_pique",
-      "consecutiveRuns": 72
+      "consecutiveRuns": 73
     },
     {
       "store": "snidel",
-      "consecutiveRuns": 69
+      "consecutiveRuns": 70
     },
     {
       "store": "poppy",
-      "consecutiveRuns": 27
+      "consecutiveRuns": 28
     },
     {
       "store": "studio_nicholson",
-      "consecutiveRuns": 24
+      "consecutiveRuns": 25
     },
     {
       "store": "hankyu_hanshin",
-      "consecutiveRuns": 12
+      "consecutiveRuns": 13
     },
     {
       "store": "andar_japan",
-      "consecutiveRuns": 6
-    },
-    {
-      "store": "hankyu_mens",
-      "consecutiveRuns": 4
+      "consecutiveRuns": 7
     },
     {
       "store": "coen",
-      "consecutiveRuns": 3
+      "consecutiveRuns": 4
     },
     {
       "store": "gap_japan",
-      "consecutiveRuns": 3
+      "consecutiveRuns": 4
     },
     {
       "store": "cox",
-      "consecutiveRuns": 2
+      "consecutiveRuns": 3
+    },
+    {
+      "store": "banana_republic",
+      "consecutiveRuns": 1
     }
   ],
   "botProtected": [
