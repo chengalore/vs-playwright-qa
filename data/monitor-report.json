@@ -1,15 +1,15 @@
 {
-  "timestamp": "2026-06-20T00:12:41.420Z",
-  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/27854058515",
+  "timestamp": "2026-06-21T00:09:37.745Z",
+  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/27887888586",
   "summary": {
     "total": 78,
-    "passed": 69,
+    "passed": 70,
     "widgetMissing": 8,
-    "skipped": 1,
+    "skipped": 0,
     "failed": 0,
-    "fallbackUsed": 70,
-    "avgWidgetVisibleMs": 28643,
-    "p95WidgetVisibleMs": 35396
+    "fallbackUsed": 71,
+    "avgWidgetVisibleMs": 28381,
+    "p95WidgetVisibleMs": 36773
   },
   "newIssues": [],
   "widgetMissingStores": [
@@ -46,16 +46,16 @@
       ]
     },
     {
-      "store": "cox",
-      "url": "https://tokyodesignchannel.com/c/lbc/26180639",
+      "store": "snidel",
+      "url": "https://snidel.com/Form/Product/ProductDetail.aspx?shop=0&pid=SHFT261075&vid=&bid=SNH01&cid=&_type=&cat=&swrd=",
       "browsers": [
         "chrome",
         "webkit"
       ]
     },
     {
-      "store": "snidel",
-      "url": "https://snidel.com/Form/Product/ProductDetail.aspx?shop=0&pid=SHFT261075&vid=&bid=SNH01&cid=&_type=&cat=&swrd=",
+      "store": "cox",
+      "url": "https://tokyodesignchannel.com/c/lbc/26180639",
       "browsers": [
         "chrome",
         "webkit"
@@ -81,35 +81,35 @@
   "ongoingMissing": [
     {
       "store": "reebok_korea",
-      "consecutiveRuns": 74
+      "consecutiveRuns": 75
     },
     {
       "store": "gelato_pique",
-      "consecutiveRuns": 74
+      "consecutiveRuns": 75
     },
     {
       "store": "snidel",
-      "consecutiveRuns": 71
+      "consecutiveRuns": 72
     },
     {
       "store": "hankyu_hanshin",
-      "consecutiveRuns": 14
+      "consecutiveRuns": 15
     },
     {
       "store": "coen",
-      "consecutiveRuns": 5
+      "consecutiveRuns": 6
     },
     {
       "store": "gap_japan",
-      "consecutiveRuns": 5
+      "consecutiveRuns": 6
     },
     {
       "store": "cox",
-      "consecutiveRuns": 4
+      "consecutiveRuns": 5
     },
     {
       "store": "hankyu_mens",
-      "consecutiveRuns": 1
+      "consecutiveRuns": 2
     }
   ],
   "botProtected": [
@@ -127,10 +127,5 @@
     "ralph_lauren_uk",
     "rl"
   ],
-  "skippedStores": [
-    {
-      "store": "id_look",
-      "reason": "navigation_error"
-    }
-  ]
+  "skippedStores": []
 }
