@@ -1,15 +1,15 @@
 {
-  "timestamp": "2026-06-21T00:09:37.745Z",
-  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/27887888586",
+  "timestamp": "2026-06-22T00:14:33.513Z",
+  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/27921899518",
   "summary": {
     "total": 78,
-    "passed": 70,
-    "widgetMissing": 8,
+    "passed": 72,
+    "widgetMissing": 6,
     "skipped": 0,
     "failed": 0,
-    "fallbackUsed": 71,
-    "avgWidgetVisibleMs": 28381,
-    "p95WidgetVisibleMs": 36773
+    "fallbackUsed": 72,
+    "avgWidgetVisibleMs": 27763,
+    "p95WidgetVisibleMs": 34481
   },
   "newIssues": [],
   "widgetMissingStores": [
@@ -30,14 +30,6 @@
       ]
     },
     {
-      "store": "coen",
-      "url": "https://www.coen.co.jp/item/7600024S0452",
-      "browsers": [
-        "chrome",
-        "webkit"
-      ]
-    },
-    {
       "store": "hankyu_mens",
       "url": "https://web.hh-online.jp/hankyu-mens/goods/index.html?ggcd=508732084",
       "browsers": [
@@ -48,14 +40,6 @@
     {
       "store": "snidel",
       "url": "https://snidel.com/Form/Product/ProductDetail.aspx?shop=0&pid=SHFT261075&vid=&bid=SNH01&cid=&_type=&cat=&swrd=",
-      "browsers": [
-        "chrome",
-        "webkit"
-      ]
-    },
-    {
-      "store": "cox",
-      "url": "https://tokyodesignchannel.com/c/lbc/26180639",
       "browsers": [
         "chrome",
         "webkit"
@@ -81,35 +65,35 @@
   "ongoingMissing": [
     {
       "store": "reebok_korea",
-      "consecutiveRuns": 75
+      "consecutiveRuns": 76
     },
     {
       "store": "gelato_pique",
-      "consecutiveRuns": 75
+      "consecutiveRuns": 76
     },
     {
       "store": "snidel",
-      "consecutiveRuns": 72
+      "consecutiveRuns": 73
     },
     {
       "store": "hankyu_hanshin",
-      "consecutiveRuns": 15
+      "consecutiveRuns": 16
     },
     {
       "store": "coen",
-      "consecutiveRuns": 6
+      "consecutiveRuns": 7
     },
     {
       "store": "gap_japan",
-      "consecutiveRuns": 6
+      "consecutiveRuns": 7
     },
     {
       "store": "cox",
-      "consecutiveRuns": 5
+      "consecutiveRuns": 6
     },
     {
       "store": "hankyu_mens",
-      "consecutiveRuns": 2
+      "consecutiveRuns": 3
     }
   ],
   "botProtected": [

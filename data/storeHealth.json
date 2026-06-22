@@ -44,9 +44,14 @@
   },
   "coen": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 7,
+    "consecutiveWidgetMissing": 0,
     "autoBlacklisted": false,
     "recoveries": [
+      {
+        "resolvedAt": "2026-06-22T00:14:33.808Z",
+        "durationMs": 604924990,
+        "type": "widget_missing"
+      },
       {
         "resolvedAt": "2026-06-14T00:09:21.771Z",
         "durationMs": 432001272,
@@ -92,8 +97,7 @@
         "durationMs": 172850326,
         "type": "widget_missing"
       }
-    ],
-    "issueStartedAt": "2026-06-15T00:12:28.818Z"
+    ]
   },
   "frans_boone": {
     "consecutiveFailures": 0,
@@ -151,7 +155,7 @@
   },
   "hankyu_hanshin": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 16,
+    "consecutiveWidgetMissing": 17,
     "autoBlacklisted": false,
     "recoveries": [
       {
@@ -228,9 +232,14 @@
   },
   "cox": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 6,
+    "consecutiveWidgetMissing": 0,
     "autoBlacklisted": false,
     "recoveries": [
+      {
+        "resolvedAt": "2026-06-22T00:14:33.809Z",
+        "durationMs": 517135996,
+        "type": "widget_missing"
+      },
       {
         "resolvedAt": "2026-06-15T00:12:28.818Z",
         "durationMs": 258478230,
@@ -271,12 +280,11 @@
         "durationMs": 86775137,
         "type": "widget_missing"
       }
-    ],
-    "issueStartedAt": "2026-06-16T00:35:37.813Z"
+    ]
   },
   "hankyu_mens": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 3,
+    "consecutiveWidgetMissing": 4,
     "autoBlacklisted": false,
     "recoveries": [
       {
@@ -358,7 +366,7 @@
   },
   "reebok_korea": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 76,
+    "consecutiveWidgetMissing": 77,
     "autoBlacklisted": false,
     "issueStartedAt": "2026-04-13T09:15:18.244Z"
   },
@@ -573,7 +581,7 @@
   },
   "gap_japan": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 7,
+    "consecutiveWidgetMissing": 8,
     "autoBlacklisted": false,
     "issueStartedAt": "2026-06-15T00:12:28.819Z"
   },
@@ -645,7 +653,7 @@
   },
   "snidel": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 73,
+    "consecutiveWidgetMissing": 74,
     "autoBlacklisted": false,
     "issueStartedAt": "2026-04-13T09:15:18.244Z"
   },
@@ -782,7 +790,7 @@
   },
   "gelato_pique": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 76,
+    "consecutiveWidgetMissing": 77,
     "autoBlacklisted": false,
     "issueStartedAt": "2026-04-13T09:15:18.244Z"
   },
