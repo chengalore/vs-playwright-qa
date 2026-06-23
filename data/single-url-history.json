@@ -1,5 +1,95 @@
 [
   {
+    "timestamp": "2026-06-23T10:01:42.499Z",
+    "url": "https://www.buyma.com/item/118841200/",
+    "phase": "full",
+    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/28017734412",
+    "store": "buyma",
+    "productType": null,
+    "flow": null,
+    "versionLabel": null,
+    "language": "en",
+    "wasSetAsBaseline": false,
+    "onboarding": {
+      "gender": "female",
+      "age": "35",
+      "height": "161",
+      "weight": "54"
+    },
+    "giftOnboarding": {
+      "gender": "female",
+      "age": "30-39",
+      "height": "160-164",
+      "bodyType": "52 - 63 kg"
+    },
+    "footwearOnboarding": {
+      "gender": "female",
+      "brand": "Adidas",
+      "size": "25.5 cm"
+    },
+    "kidsOnboarding": {
+      "gender": "girl",
+      "age": 8,
+      "height": "120",
+      "weight": "25"
+    },
+    "events": [
+      {
+        "event": "user-saw-product::integration",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-saw-widget-button::integration",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-saw-bag-disclaimer::smart-table",
+        "phase": "onboarding"
+      },
+      {
+        "event": "inpage-mounted::integration",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-opened-widget::inpage",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-opened-panel-compare::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-saw-bag-disclaimer::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-clicked-start::integration",
+        "phase": "onboarding"
+      }
+    ],
+    "browsers": [
+      {
+        "browser": "chrome",
+        "status": "failed",
+        "error": "page.waitForFunction: Test timeout of 480000ms exceeded.",
+        "missingEvents": [],
+        "widgetVisibleMs": null,
+        "screenshotFile": null,
+        "onboardingFile": null,
+        "onboardingFilledFile": null,
+        "resultFile": null,
+        "giftOnboardingFile": null,
+        "giftResultFile": null,
+        "smartTableFile": null,
+        "widgetType": null,
+        "hasSmartTable": null,
+        "widgetTextLog": null,
+        "textDiff": null,
+        "baselineExists": false
+      }
+    ]
+  },
+  {
     "timestamp": "2026-06-23T09:47:27.185Z",
     "url": "https://www.gap.co.jp/gap/gap-logo-pique-polo-shirt/586306036.html",
     "phase": "full",
@@ -19777,138 +19867,6 @@
         "missingEvents": [],
         "widgetVisibleMs": 6373,
         "screenshotFile": "screenshots/2026-05-13T03-29-49-chrome.jpg",
-        "widgetType": "inpage",
-        "hasSmartTable": null
-      }
-    ]
-  },
-  {
-    "timestamp": "2026-05-11T03:40:41.532Z",
-    "url": "https://bananarepublic.gap.co.jp/br/heirloom-linen-sweater-tee/8751120360002.html",
-    "phase": "full",
-    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/25648933397",
-    "store": "banana_republic",
-    "productType": "shirt",
-    "flow": "noVisor",
-    "onboarding": {
-      "gender": "female",
-      "age": "35",
-      "height": "161",
-      "weight": "54"
-    },
-    "giftOnboarding": {
-      "gender": "female",
-      "age": "30-39",
-      "height": "160-164",
-      "bodyType": "52 - 63 kg"
-    },
-    "footwearOnboarding": {
-      "gender": "female",
-      "brand": "Adidas",
-      "size": "25.5 cm"
-    },
-    "kidsOnboarding": {
-      "gender": "girl",
-      "age": 8,
-      "height": "120",
-      "weight": "25"
-    },
-    "events": [
-      {
-        "event": "user-saw-product::integration",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-saw-widget-button::integration",
-        "phase": "onboarding"
-      },
-      {
-        "event": "inpage-mounted::integration",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-opened-widget::inpage",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-saw-onboarding-screen::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-selected-gender::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-selected-age::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-selected-height::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-selected-weight::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-completed-onboarding::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-created-silhouette::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-got-size-recommendation::integration",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-opened-panel-rec::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-saw-product::integration",
-        "phase": "refresh"
-      },
-      {
-        "event": "user-saw-widget-button::integration",
-        "phase": "refresh"
-      },
-      {
-        "event": "inpage-mounted::integration",
-        "phase": "refresh"
-      },
-      {
-        "event": "user-got-size-recommendation::integration",
-        "phase": "refresh"
-      },
-      {
-        "event": "user-selected-size::inpage",
-        "phase": "refresh"
-      },
-      {
-        "event": "user-opened-widget::inpage",
-        "phase": "refresh"
-      }
-    ],
-    "browsers": [
-      {
-        "browser": "chrome",
-        "status": "passed",
-        "error": null,
-        "missingEvents": [],
-        "widgetVisibleMs": 7835,
-        "screenshotFile": "screenshots/2026-05-11T03-40-41-chrome.jpg",
-        "widgetType": "inpage",
-        "hasSmartTable": false
-      },
-      {
-        "browser": "webkit",
-        "status": "failed",
-        "error": "elementHandle.evaluateHandle: Test timeout of 180000ms exceeded.",
-        "missingEvents": [],
-        "widgetVisibleMs": 20169,
-        "screenshotFile": "screenshots/2026-05-11T03-40-41-webkit.jpg",
         "widgetType": "inpage",
         "hasSmartTable": null
       }
