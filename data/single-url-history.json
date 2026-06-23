@@ -1,5 +1,81 @@
 [
   {
+    "timestamp": "2026-06-23T09:00:17.396Z",
+    "url": "https://www.coen.co.jp/item/9600024F0072",
+    "phase": "full",
+    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/28014642561",
+    "store": "unknown",
+    "productType": "unknown",
+    "flow": null,
+    "versionLabel": null,
+    "language": "ja",
+    "wasSetAsBaseline": false,
+    "onboarding": {
+      "gender": "female",
+      "age": "35",
+      "height": "161",
+      "weight": "54"
+    },
+    "giftOnboarding": {
+      "gender": "female",
+      "age": "30-39",
+      "height": "160-164",
+      "bodyType": "52 - 63 kg"
+    },
+    "footwearOnboarding": {
+      "gender": "female",
+      "brand": "Adidas",
+      "size": "25.5 cm"
+    },
+    "kidsOnboarding": {
+      "gender": "girl",
+      "age": 8,
+      "height": "120",
+      "weight": "25"
+    },
+    "events": [],
+    "browsers": [
+      {
+        "browser": "chrome",
+        "status": "skipped",
+        "error": null,
+        "missingEvents": [],
+        "widgetVisibleMs": null,
+        "screenshotFile": null,
+        "onboardingFile": null,
+        "onboardingFilledFile": null,
+        "resultFile": null,
+        "giftOnboardingFile": null,
+        "giftResultFile": null,
+        "smartTableFile": null,
+        "widgetType": null,
+        "hasSmartTable": null,
+        "widgetTextLog": null,
+        "textDiff": null,
+        "baselineExists": false
+      },
+      {
+        "browser": "webkit",
+        "status": "skipped",
+        "error": null,
+        "missingEvents": [],
+        "widgetVisibleMs": null,
+        "screenshotFile": null,
+        "onboardingFile": null,
+        "onboardingFilledFile": null,
+        "resultFile": null,
+        "giftOnboardingFile": null,
+        "giftResultFile": null,
+        "smartTableFile": null,
+        "widgetType": null,
+        "hasSmartTable": null,
+        "widgetTextLog": null,
+        "textDiff": null,
+        "baselineExists": false
+      }
+    ]
+  },
+  {
     "timestamp": "2026-06-23T03:48:08.809Z",
     "url": "https://reebok.co.kr/goods/goods_view.php?goodsNo=1000004524",
     "phase": "full",
@@ -18863,128 +18939,6 @@
         "missingEvents": [],
         "widgetVisibleMs": 7658,
         "screenshotFile": "screenshots/2026-05-11T02-58-34-webkit.jpg",
-        "widgetType": "inpage",
-        "hasSmartTable": null
-      }
-    ]
-  },
-  {
-    "timestamp": "2026-05-11T02:53:10.519Z",
-    "url": "https://www.gap.co.jp/eyelet-tie-front-crop-peplum-top/896766026.html?dwvar_896766026_color=896766026&cid=1194622",
-    "phase": "full",
-    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/25647757471",
-    "store": "gap_japan",
-    "productType": "top",
-    "flow": "noVisor",
-    "onboarding": {
-      "gender": "female",
-      "age": "35",
-      "height": "161",
-      "weight": "54"
-    },
-    "giftOnboarding": {
-      "gender": "female",
-      "age": "30-39",
-      "height": "160-164",
-      "bodyType": "52 - 63 kg"
-    },
-    "footwearOnboarding": {
-      "gender": "female",
-      "brand": "Adidas",
-      "size": "25.5 cm"
-    },
-    "kidsOnboarding": {
-      "gender": "girl",
-      "age": 8,
-      "height": "120",
-      "weight": "25"
-    },
-    "events": [
-      {
-        "event": "user-saw-product::integration",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-saw-widget-button::integration",
-        "phase": "onboarding"
-      },
-      {
-        "event": "inpage-mounted::integration",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-opened-widget::inpage",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-saw-onboarding-screen::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-selected-gender::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-selected-age::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-selected-height::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-selected-weight::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-completed-onboarding::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-created-silhouette::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-got-size-recommendation::integration",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-opened-panel-rec::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-saw-product::integration",
-        "phase": "refresh"
-      },
-      {
-        "event": "user-saw-widget-button::integration",
-        "phase": "refresh"
-      },
-      {
-        "event": "inpage-mounted::integration",
-        "phase": "refresh"
-      },
-      {
-        "event": "user-opened-widget::inpage",
-        "phase": "refresh"
-      },
-      {
-        "event": "user-got-size-recommendation::integration",
-        "phase": "refresh"
-      },
-      {
-        "event": "user-selected-size::inpage",
-        "phase": "refresh"
-      }
-    ],
-    "browsers": [
-      {
-        "browser": "chrome",
-        "status": "passed",
-        "error": null,
-        "missingEvents": [],
-        "widgetVisibleMs": 9745,
-        "screenshotFile": "screenshots/2026-05-11T02-53-10-chrome.jpg",
         "widgetType": "inpage",
         "hasSmartTable": null
       }
