@@ -1,5 +1,300 @@
 [
   {
+    "timestamp": "2026-06-24T01:45:13.020Z",
+    "url": "https://www.underarmour.co.jp/f/dsg-1090661?vs-version=3.9.19",
+    "phase": "full",
+    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/28069333758",
+    "store": "under_armour",
+    "productType": "shoe",
+    "flow": "footwear",
+    "versionLabel": null,
+    "language": "ja",
+    "wasSetAsBaseline": true,
+    "onboarding": {
+      "gender": "female",
+      "age": "35",
+      "height": "161",
+      "weight": "54"
+    },
+    "giftOnboarding": {
+      "gender": "female",
+      "age": "30-39",
+      "height": "160-164",
+      "bodyType": "52 - 63 kg"
+    },
+    "footwearOnboarding": {
+      "gender": "female",
+      "brand": "Adidas",
+      "size": "25.5 cm"
+    },
+    "kidsOnboarding": {
+      "gender": "girl",
+      "age": 8,
+      "height": "120",
+      "weight": "25"
+    },
+    "events": [
+      {
+        "event": "user-saw-product::integration",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-saw-widget-button::integration",
+        "phase": "onboarding"
+      },
+      {
+        "event": "inpage-mounted::integration",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-opened-widget::inpage",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-saw-onboarding-screen::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-selected-narrow::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-clicked-proceed-foot-width::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-selected-egyptian::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-clicked-proceed-foot-shape::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-selected-gender::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-selected-shoe-brand::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-selected-shoe-size::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-created-footwear-silhouette::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-opened-panel-rec::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-saw-product::integration",
+        "phase": "refresh"
+      },
+      {
+        "event": "user-saw-widget-button::integration",
+        "phase": "refresh"
+      },
+      {
+        "event": "inpage-mounted::integration",
+        "phase": "refresh"
+      },
+      {
+        "event": "user-selected-size::inpage",
+        "phase": "refresh"
+      },
+      {
+        "event": "user-opened-widget::inpage",
+        "phase": "refresh"
+      },
+      {
+        "event": "user-opened-panel-rec::fit-illustrator",
+        "phase": "refresh"
+      }
+    ],
+    "browsers": [
+      {
+        "browser": "chrome",
+        "status": "passed",
+        "error": null,
+        "missingEvents": [],
+        "widgetVisibleMs": 10557,
+        "screenshotFile": "screenshots/2026-06-24T01-45-13-chrome.jpg",
+        "onboardingFile": "screenshots/2026-06-24T01-45-13-chrome-onboarding.jpg",
+        "onboardingFilledFile": null,
+        "resultFile": "screenshots/2026-06-24T01-45-13-chrome-result.jpg",
+        "giftOnboardingFile": null,
+        "giftResultFile": null,
+        "smartTableFile": null,
+        "widgetType": "inpage",
+        "hasSmartTable": false,
+        "widgetTextLog": {
+          "widget-button": [
+            "簡単サイズチェック",
+            "試着する",
+            "プライバシーポリシー"
+          ],
+          "onboarding": [
+            "バーチャサイズはあなたの入力情報や購入履歴をもとにサイズの提案をしています。データの損失を防ぐためには、アカウントを作成してください。",
+            "アカウント作成を続ける",
+            "アカウントをお持ちの方はこちら",
+            "クローゼット",
+            "シルエット",
+            "アカウント",
+            "よくある質問",
+            "サポート",
+            "日本語",
+            "cm/kg",
+            "個人情報保護方針",
+            "戻る",
+            "問題を報告",
+            "フィードバック",
+            "バーチャサイズとは",
+            "おすすめサイズを探し中...",
+            "日本語/JA",
+            "Virtusizeにログイン",
+            "あなたの足幅は",
+            "以下の中から当てはまるものを選んでください",
+            "狭いほうだ",
+            "普通",
+            "広いほうだ",
+            "次へ",
+            "簡単サイズチェック",
+            "試着する",
+            "プライバシーポリシー"
+          ],
+          "result": [
+            "バーチャサイズはあなたの入力情報や購入履歴をもとにサイズの提案をしています。データの損失を防ぐためには、アカウントを作成してください。",
+            "アカウント作成を続ける",
+            "アカウントをお持ちの方はこちら",
+            "クローゼット",
+            "シルエット",
+            "アカウント",
+            "よくある質問",
+            "サポート",
+            "日本語",
+            "cm/kg",
+            "個人情報保護方針",
+            "戻る",
+            "問題を報告",
+            "フィードバック",
+            "バーチャサイズとは",
+            "おすすめサイズを探し中...",
+            "Virtusizeにログイン",
+            "あなたにおすすめのサイズ",
+            "26.0",
+            "ゆるめのサイズなら:",
+            "26.5",
+            "あなたのシューズと足のサイズ",
+            "女性",
+            "Adidas",
+            "25.5 cm",
+            "変更する",
+            "足幅:",
+            "狭いほうだ",
+            "足の形:",
+            "エジプト型",
+            "このサイズをカートに入れる",
+            "あなたにフィットするサイズ",
+            "詳細",
+            "プライバシーポリシー"
+          ]
+        },
+        "textDiff": null,
+        "baselineExists": true
+      },
+      {
+        "browser": "webkit",
+        "status": "failed",
+        "error": "Timed out waiting for event: user-selected-size::inpage",
+        "missingEvents": [],
+        "widgetVisibleMs": 12567,
+        "screenshotFile": "screenshots/2026-06-24T01-45-13-webkit.jpg",
+        "onboardingFile": "screenshots/2026-06-24T01-45-13-webkit-onboarding.jpg",
+        "onboardingFilledFile": null,
+        "resultFile": "screenshots/2026-06-24T01-45-13-webkit-result.jpg",
+        "giftOnboardingFile": null,
+        "giftResultFile": null,
+        "smartTableFile": null,
+        "widgetType": "inpage",
+        "hasSmartTable": null,
+        "widgetTextLog": {
+          "widget-button": [],
+          "onboarding": [
+            "バーチャサイズはあなたの入力情報や購入履歴をもとにサイズの提案をしています。データの損失を防ぐためには、アカウントを作成してください。",
+            "アカウント作成を続ける",
+            "アカウントをお持ちの方はこちら",
+            "クローゼット",
+            "シルエット",
+            "アカウント",
+            "よくある質問",
+            "サポート",
+            "日本語",
+            "cm/kg",
+            "個人情報保護方針",
+            "戻る",
+            "問題を報告",
+            "フィードバック",
+            "バーチャサイズとは",
+            "おすすめサイズを探し中...",
+            "日本語/JA",
+            "Virtusizeにログイン",
+            "あなたの足幅は",
+            "以下の中から当てはまるものを選んでください",
+            "狭いほうだ",
+            "普通",
+            "広いほうだ",
+            "次へ",
+            "簡単サイズチェック",
+            "試着する",
+            "プライバシーポリシー"
+          ],
+          "result": [
+            "バーチャサイズはあなたの入力情報や購入履歴をもとにサイズの提案をしています。データの損失を防ぐためには、アカウントを作成してください。",
+            "アカウント作成を続ける",
+            "アカウントをお持ちの方はこちら",
+            "クローゼット",
+            "シルエット",
+            "アカウント",
+            "よくある質問",
+            "サポート",
+            "日本語",
+            "cm/kg",
+            "個人情報保護方針",
+            "戻る",
+            "問題を報告",
+            "フィードバック",
+            "バーチャサイズとは",
+            "おすすめサイズを探し中...",
+            "Virtusizeにログイン",
+            "あなたにおすすめのサイズ",
+            "26.0",
+            "ゆるめのサイズなら:",
+            "26.5",
+            "あなたのシューズと足のサイズ",
+            "女性",
+            "Adidas",
+            "25.5 cm",
+            "変更する",
+            "足幅:",
+            "狭いほうだ",
+            "足の形:",
+            "エジプト型",
+            "このサイズをカートに入れる",
+            "あなたにフィットするサイズ",
+            "詳細",
+            "プライバシーポリシー"
+          ]
+        },
+        "textDiff": null,
+        "baselineExists": true
+      }
+    ]
+  },
+  {
     "timestamp": "2026-06-24T01:27:16.871Z",
     "url": "https://www.underarmour.co.jp/f/dsg-1090661",
     "phase": "full",
@@ -19897,51 +20192,6 @@
         "screenshotFile": "screenshots/2026-05-14T05-11-57-chrome.jpg",
         "widgetType": "inpage_luxury",
         "hasSmartTable": false
-      }
-    ]
-  },
-  {
-    "timestamp": "2026-05-14T01:33:04.931Z",
-    "url": "https://gelatopique.com/Form/Product/ProductDetail.aspx?shop=0&pid=PWCO261297&vid=&bid=PIQ01&cid=&_type=&cat=WOM003001&swrd=",
-    "phase": "full",
-    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/25836336962",
-    "store": "unknown",
-    "productType": "unknown",
-    "flow": null,
-    "onboarding": {
-      "gender": "female",
-      "age": "35",
-      "height": "161",
-      "weight": "54"
-    },
-    "giftOnboarding": {
-      "gender": "female",
-      "age": "30-39",
-      "height": "160-164",
-      "bodyType": "52 - 63 kg"
-    },
-    "footwearOnboarding": {
-      "gender": "female",
-      "brand": "Adidas",
-      "size": "25.5 cm"
-    },
-    "kidsOnboarding": {
-      "gender": "girl",
-      "age": 8,
-      "height": "120",
-      "weight": "25"
-    },
-    "events": [],
-    "browsers": [
-      {
-        "browser": "chrome",
-        "status": "skipped",
-        "error": null,
-        "missingEvents": [],
-        "widgetVisibleMs": null,
-        "screenshotFile": null,
-        "widgetType": null,
-        "hasSmartTable": null
       }
     ]
   }
