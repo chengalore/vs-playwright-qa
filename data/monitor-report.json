@@ -1,29 +1,29 @@
 {
-  "timestamp": "2026-06-23T00:11:32.516Z",
-  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/27992487894",
+  "timestamp": "2026-06-24T00:00:04.503Z",
+  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/28065147723",
   "summary": {
     "total": 78,
     "passed": 70,
-    "widgetMissing": 8,
-    "skipped": 0,
+    "widgetMissing": 7,
+    "skipped": 1,
     "failed": 0,
-    "fallbackUsed": 72,
-    "avgWidgetVisibleMs": 28562,
-    "p95WidgetVisibleMs": 34228
+    "fallbackUsed": 71,
+    "avgWidgetVisibleMs": 27956,
+    "p95WidgetVisibleMs": 33883
   },
   "newIssues": [],
   "widgetMissingStores": [
     {
-      "store": "reebok_korea",
-      "url": "https://reebok.co.kr/goods/goods_view.php?goodsNo=1000002262",
+      "store": "hankyu_hanshin",
+      "url": "https://web.hh-online.jp/fashion/goods/index.html?ggcd=508767628",
       "browsers": [
         "chrome",
         "webkit"
       ]
     },
     {
-      "store": "coen",
-      "url": "https://www.coen.co.jp/item/7600024S0452",
+      "store": "reebok_korea",
+      "url": "https://reebok.co.kr/goods/goods_view.php?goodsNo=1000002262",
       "browsers": [
         "chrome",
         "webkit"
@@ -46,16 +46,8 @@
       ]
     },
     {
-      "store": "standard_california",
-      "url": "https://shop.standardcalifornia.com/shopdetail/000000005191/",
-      "browsers": [
-        "chrome",
-        "webkit"
-      ]
-    },
-    {
-      "store": "denimlife",
-      "url": "https://denimlife.jp/shopdetail/000000002987",
+      "store": "cox",
+      "url": "https://tokyodesignchannel.com/c/lbc/26180639",
       "browsers": [
         "chrome",
         "webkit"
@@ -81,27 +73,35 @@
   "ongoingMissing": [
     {
       "store": "reebok_korea",
-      "consecutiveRuns": 77
+      "consecutiveRuns": 78
     },
     {
       "store": "gelato_pique",
-      "consecutiveRuns": 77
+      "consecutiveRuns": 78
     },
     {
       "store": "snidel",
-      "consecutiveRuns": 74
-    },
-    {
-      "store": "hankyu_hanshin",
-      "consecutiveRuns": 17
+      "consecutiveRuns": 75
     },
     {
       "store": "gap_japan",
-      "consecutiveRuns": 8
+      "consecutiveRuns": 9
     },
     {
       "store": "hankyu_mens",
-      "consecutiveRuns": 4
+      "consecutiveRuns": 5
+    },
+    {
+      "store": "coen",
+      "consecutiveRuns": 1
+    },
+    {
+      "store": "denimlife",
+      "consecutiveRuns": 1
+    },
+    {
+      "store": "standard_california",
+      "consecutiveRuns": 1
     }
   ],
   "botProtected": [
@@ -119,5 +119,10 @@
     "ralph_lauren_uk",
     "rl"
   ],
-  "skippedStores": []
+  "skippedStores": [
+    {
+      "store": "id_look",
+      "reason": "navigation_error"
+    }
+  ]
 }
