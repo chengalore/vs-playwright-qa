@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-06-25T00:13:13.885Z",
-  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/28137772976",
+  "timestamp": "2026-06-26T00:12:45.065Z",
+  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/28208392263",
   "summary": {
     "total": 78,
     "passed": 72,
@@ -8,11 +8,19 @@
     "skipped": 0,
     "failed": 0,
     "fallbackUsed": 73,
-    "avgWidgetVisibleMs": 28263,
-    "p95WidgetVisibleMs": 34616
+    "avgWidgetVisibleMs": 28188,
+    "p95WidgetVisibleMs": 36626
   },
   "newIssues": [],
   "widgetMissingStores": [
+    {
+      "store": "hankyu_hanshin",
+      "url": "https://web.hh-online.jp/fashion/goods/index.html?ggcd=508767628",
+      "browsers": [
+        "chrome",
+        "webkit"
+      ]
+    },
     {
       "store": "coen",
       "url": "https://www.coen.co.jp/item/7600024S0452",
@@ -24,14 +32,6 @@
     {
       "store": "reebok_korea",
       "url": "https://reebok.co.kr/goods/goods_view.php?goodsNo=1000002262",
-      "browsers": [
-        "chrome",
-        "webkit"
-      ]
-    },
-    {
-      "store": "hankyu_mens",
-      "url": "https://web.hh-online.jp/hankyu-mens/goods/index.html?ggcd=508732084",
       "browsers": [
         "chrome",
         "webkit"
@@ -65,30 +65,26 @@
   "ongoingMissing": [
     {
       "store": "reebok_korea",
-      "consecutiveRuns": 79
+      "consecutiveRuns": 80
     },
     {
       "store": "gelato_pique",
-      "consecutiveRuns": 79
+      "consecutiveRuns": 80
     },
     {
       "store": "snidel",
-      "consecutiveRuns": 76
+      "consecutiveRuns": 77
     },
     {
       "store": "gap_japan",
-      "consecutiveRuns": 10
+      "consecutiveRuns": 11
     },
     {
       "store": "hankyu_mens",
-      "consecutiveRuns": 6
+      "consecutiveRuns": 7
     },
     {
-      "store": "hankyu_hanshin",
-      "consecutiveRuns": 1
-    },
-    {
-      "store": "cox",
+      "store": "coen",
       "consecutiveRuns": 1
     }
   ],
