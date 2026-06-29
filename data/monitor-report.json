@@ -1,21 +1,29 @@
 {
-  "timestamp": "2026-06-28T00:05:03.470Z",
-  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/28305703255",
+  "timestamp": "2026-06-29T00:54:07.529Z",
+  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/28340557657",
   "summary": {
-    "total": 78,
-    "passed": 72,
-    "widgetMissing": 6,
+    "total": 62,
+    "passed": 54,
+    "widgetMissing": 8,
     "skipped": 0,
     "failed": 0,
-    "fallbackUsed": 72,
-    "avgWidgetVisibleMs": 28320,
-    "p95WidgetVisibleMs": 36365
+    "fallbackUsed": 56,
+    "avgWidgetVisibleMs": 28380,
+    "p95WidgetVisibleMs": 36079
   },
   "newIssues": [],
   "widgetMissingStores": [
     {
       "store": "hankyu_hanshin",
       "url": "https://web.hh-online.jp/fashion/goods/index.html?ggcd=508767628",
+      "browsers": [
+        "chrome",
+        "webkit"
+      ]
+    },
+    {
+      "store": "coen",
+      "url": "https://www.coen.co.jp/item/7600024S0452",
       "browsers": [
         "chrome",
         "webkit"
@@ -32,6 +40,14 @@
     {
       "store": "hankyu_mens",
       "url": "https://web.hh-online.jp/hankyu-mens/goods/index.html?ggcd=508732084",
+      "browsers": [
+        "chrome",
+        "webkit"
+      ]
+    },
+    {
+      "store": "cox",
+      "url": "https://tokyodesignchannel.com/c/lbc/26180639",
       "browsers": [
         "chrome",
         "webkit"
@@ -65,26 +81,26 @@
   "ongoingMissing": [
     {
       "store": "reebok_korea",
-      "consecutiveRuns": 82
+      "consecutiveRuns": 83
     },
     {
       "store": "gelato_pique",
-      "consecutiveRuns": 82
+      "consecutiveRuns": 83
     },
     {
       "store": "snidel",
-      "consecutiveRuns": 79
+      "consecutiveRuns": 80
     },
     {
       "store": "gap_japan",
-      "consecutiveRuns": 13
-    },
-    {
-      "store": "coen",
-      "consecutiveRuns": 3
+      "consecutiveRuns": 14
     },
     {
       "store": "hankyu_mens",
+      "consecutiveRuns": 2
+    },
+    {
+      "store": "hankyu_hanshin",
       "consecutiveRuns": 1
     }
   ],
