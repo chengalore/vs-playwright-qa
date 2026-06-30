@@ -1,15 +1,15 @@
 {
-  "timestamp": "2026-06-29T00:54:07.529Z",
-  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/28340557657",
+  "timestamp": "2026-06-30T00:06:26.661Z",
+  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/28410720920",
   "summary": {
     "total": 62,
-    "passed": 54,
-    "widgetMissing": 8,
+    "passed": 56,
+    "widgetMissing": 6,
     "skipped": 0,
     "failed": 0,
-    "fallbackUsed": 56,
-    "avgWidgetVisibleMs": 28380,
-    "p95WidgetVisibleMs": 36079
+    "fallbackUsed": 57,
+    "avgWidgetVisibleMs": 28160,
+    "p95WidgetVisibleMs": 36031
   },
   "newIssues": [],
   "widgetMissingStores": [
@@ -46,24 +46,8 @@
       ]
     },
     {
-      "store": "cox",
-      "url": "https://tokyodesignchannel.com/c/lbc/26180639",
-      "browsers": [
-        "chrome",
-        "webkit"
-      ]
-    },
-    {
       "store": "snidel",
       "url": "https://snidel.com/Form/Product/ProductDetail.aspx?shop=0&pid=SHFT261075&vid=&bid=SNH01&cid=&_type=&cat=&swrd=",
-      "browsers": [
-        "chrome",
-        "webkit"
-      ]
-    },
-    {
-      "store": "gap_japan",
-      "url": "https://www.gap.co.jp/gap/relaxed-gap-logo-quarter-zip-sweatshirt/645759006.html?dwvar_645759006_color=645759006",
       "browsers": [
         "chrome",
         "webkit"
@@ -81,26 +65,34 @@
   "ongoingMissing": [
     {
       "store": "reebok_korea",
-      "consecutiveRuns": 83
+      "consecutiveRuns": 84
     },
     {
       "store": "gelato_pique",
-      "consecutiveRuns": 83
+      "consecutiveRuns": 84
     },
     {
       "store": "snidel",
-      "consecutiveRuns": 80
+      "consecutiveRuns": 81
     },
     {
       "store": "gap_japan",
-      "consecutiveRuns": 14
+      "consecutiveRuns": 15
     },
     {
       "store": "hankyu_mens",
-      "consecutiveRuns": 2
+      "consecutiveRuns": 3
     },
     {
       "store": "hankyu_hanshin",
+      "consecutiveRuns": 2
+    },
+    {
+      "store": "coen",
+      "consecutiveRuns": 1
+    },
+    {
+      "store": "cox",
       "consecutiveRuns": 1
     }
   ],
