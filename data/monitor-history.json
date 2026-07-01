@@ -1,5 +1,137 @@
 [
   {
+    "timestamp": "2026-07-01T00:09:42.488Z",
+    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/28483911748",
+    "summary": {
+      "total": 78,
+      "passed": 69,
+      "widgetMissing": 9,
+      "skipped": 0,
+      "failed": 0,
+      "fallbackUsed": 72,
+      "avgWidgetVisibleMs": 28897,
+      "p95WidgetVisibleMs": 36762
+    },
+    "newIssues": [],
+    "widgetMissingStores": [
+      {
+        "store": "reebok_korea",
+        "url": "https://reebok.co.kr/goods/goods_view.php?goodsNo=1000002262",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "hankyu_mens",
+        "url": "https://web.hh-online.jp/hankyu-mens/goods/index.html?ggcd=508732084",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "snidel",
+        "url": "https://snidel.com/Form/Product/ProductDetail.aspx?shop=0&pid=SHFT261075&vid=&bid=SNH01&cid=&_type=&cat=&swrd=",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "poppy",
+        "url": "https://poppy-tokyo.com/en/products/heart-button-leotard-yellow",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "retouch",
+        "url": "https://re-touch.tokyo/products/easy-slacks",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "andar_japan",
+        "url": "https://andar-jp.com/products/airywin-straight-fit-pants",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "studio_nicholson",
+        "url": "https://japan.studionicholson.com/products/bridges-pant-in-parcel",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "unitedarrows_global",
+        "url": "https://united-arrows-global.com/en-ph/products/16121000023",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "gelato_pique",
+        "url": "https://gelatopique.com/Form/Product/ProductDetail.aspx?shop=0&pid=PWCO261297&vid=&bid=PIQ01&cid=&_type=&cat=WOM003001&swrd=",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      }
+    ],
+    "ongoingMissing": [
+      {
+        "store": "reebok_korea",
+        "consecutiveRuns": 85
+      },
+      {
+        "store": "gelato_pique",
+        "consecutiveRuns": 85
+      },
+      {
+        "store": "snidel",
+        "consecutiveRuns": 82
+      },
+      {
+        "store": "hankyu_mens",
+        "consecutiveRuns": 4
+      },
+      {
+        "store": "hankyu_hanshin",
+        "consecutiveRuns": 3
+      },
+      {
+        "store": "coen",
+        "consecutiveRuns": 2
+      }
+    ],
+    "botProtected": [
+      "adidas",
+      "adidas_japan",
+      "adidas_korea",
+      "asics",
+      "asics_japan",
+      "ralph_lauren",
+      "ralph_lauren_australia",
+      "ralph_lauren_china",
+      "ralph_lauren_korea",
+      "ralph_lauren_singapore",
+      "ralph_lauren_taiwan",
+      "ralph_lauren_uk",
+      "rl"
+    ],
+    "skippedStores": [],
+    "phase": "widget"
+  },
+  {
     "timestamp": "2026-06-30T00:06:26.661Z",
     "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/28410720920",
     "summary": {
@@ -6991,94 +7123,6 @@
       {
         "store": "hankyu_mens",
         "consecutiveRuns": 5
-      }
-    ],
-    "botProtected": [
-      "adidas",
-      "adidas_japan",
-      "adidas_korea",
-      "asics",
-      "asics_japan",
-      "ralph_lauren",
-      "ralph_lauren_australia",
-      "ralph_lauren_china",
-      "ralph_lauren_korea",
-      "ralph_lauren_singapore",
-      "ralph_lauren_taiwan",
-      "ralph_lauren_uk",
-      "rl"
-    ],
-    "skippedStores": [],
-    "phase": "widget"
-  },
-  {
-    "timestamp": "2026-05-14T00:00:33.497Z",
-    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/25833209089",
-    "summary": {
-      "total": 82,
-      "passed": 78,
-      "widgetMissing": 4,
-      "skipped": 0,
-      "failed": 0,
-      "fallbackUsed": 78,
-      "avgWidgetVisibleMs": 28676,
-      "p95WidgetVisibleMs": 36720
-    },
-    "newIssues": [],
-    "widgetMissingStores": [
-      {
-        "store": "gelato_pique",
-        "url": "https://gelatopique.com/Form/Product/ProductDetail.aspx?shop=0&pid=PWCO261297&vid=&bid=PIQ01&cid=&_type=&cat=WOM003001&swrd=",
-        "browsers": [
-          "chrome",
-          "webkit"
-        ]
-      },
-      {
-        "store": "reebok_korea",
-        "url": "https://reebok.co.kr/goods/goods_view.php?goodsNo=1000002262",
-        "browsers": [
-          "chrome",
-          "webkit"
-        ]
-      },
-      {
-        "store": "hankyu_mens",
-        "url": "https://web.hh-online.jp/hankyu-mens/goods/index.html?ggcd=508732084",
-        "browsers": [
-          "chrome",
-          "webkit"
-        ]
-      },
-      {
-        "store": "snidel",
-        "url": "https://snidel.com/Form/Product/ProductDetail.aspx?shop=0&pid=SHFT261075&vid=&bid=SNH01&cid=&_type=&cat=&swrd=",
-        "browsers": [
-          "chrome",
-          "webkit"
-        ]
-      }
-    ],
-    "ongoingMissing": [
-      {
-        "store": "reebok_korea",
-        "consecutiveRuns": 39
-      },
-      {
-        "store": "gelato_pique",
-        "consecutiveRuns": 39
-      },
-      {
-        "store": "snidel",
-        "consecutiveRuns": 37
-      },
-      {
-        "store": "hankyu_mens",
-        "consecutiveRuns": 4
-      },
-      {
-        "store": "dinos",
-        "consecutiveRuns": 1
       }
     ],
     "botProtected": [

@@ -1,34 +1,18 @@
 {
-  "timestamp": "2026-06-30T00:06:26.661Z",
-  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/28410720920",
+  "timestamp": "2026-07-01T00:09:42.488Z",
+  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/28483911748",
   "summary": {
-    "total": 62,
-    "passed": 56,
-    "widgetMissing": 6,
+    "total": 78,
+    "passed": 69,
+    "widgetMissing": 9,
     "skipped": 0,
     "failed": 0,
-    "fallbackUsed": 57,
-    "avgWidgetVisibleMs": 28160,
-    "p95WidgetVisibleMs": 36031
+    "fallbackUsed": 72,
+    "avgWidgetVisibleMs": 28897,
+    "p95WidgetVisibleMs": 36762
   },
   "newIssues": [],
   "widgetMissingStores": [
-    {
-      "store": "hankyu_hanshin",
-      "url": "https://web.hh-online.jp/fashion/goods/index.html?ggcd=508767628",
-      "browsers": [
-        "chrome",
-        "webkit"
-      ]
-    },
-    {
-      "store": "coen",
-      "url": "https://www.coen.co.jp/item/7600024S0452",
-      "browsers": [
-        "chrome",
-        "webkit"
-      ]
-    },
     {
       "store": "reebok_korea",
       "url": "https://reebok.co.kr/goods/goods_view.php?goodsNo=1000002262",
@@ -54,6 +38,46 @@
       ]
     },
     {
+      "store": "poppy",
+      "url": "https://poppy-tokyo.com/en/products/heart-button-leotard-yellow",
+      "browsers": [
+        "chrome",
+        "webkit"
+      ]
+    },
+    {
+      "store": "retouch",
+      "url": "https://re-touch.tokyo/products/easy-slacks",
+      "browsers": [
+        "chrome",
+        "webkit"
+      ]
+    },
+    {
+      "store": "andar_japan",
+      "url": "https://andar-jp.com/products/airywin-straight-fit-pants",
+      "browsers": [
+        "chrome",
+        "webkit"
+      ]
+    },
+    {
+      "store": "studio_nicholson",
+      "url": "https://japan.studionicholson.com/products/bridges-pant-in-parcel",
+      "browsers": [
+        "chrome",
+        "webkit"
+      ]
+    },
+    {
+      "store": "unitedarrows_global",
+      "url": "https://united-arrows-global.com/en-ph/products/16121000023",
+      "browsers": [
+        "chrome",
+        "webkit"
+      ]
+    },
+    {
       "store": "gelato_pique",
       "url": "https://gelatopique.com/Form/Product/ProductDetail.aspx?shop=0&pid=PWCO261297&vid=&bid=PIQ01&cid=&_type=&cat=WOM003001&swrd=",
       "browsers": [
@@ -65,35 +89,27 @@
   "ongoingMissing": [
     {
       "store": "reebok_korea",
-      "consecutiveRuns": 84
+      "consecutiveRuns": 85
     },
     {
       "store": "gelato_pique",
-      "consecutiveRuns": 84
+      "consecutiveRuns": 85
     },
     {
       "store": "snidel",
-      "consecutiveRuns": 81
-    },
-    {
-      "store": "gap_japan",
-      "consecutiveRuns": 15
+      "consecutiveRuns": 82
     },
     {
       "store": "hankyu_mens",
-      "consecutiveRuns": 3
+      "consecutiveRuns": 4
     },
     {
       "store": "hankyu_hanshin",
-      "consecutiveRuns": 2
+      "consecutiveRuns": 3
     },
     {
       "store": "coen",
-      "consecutiveRuns": 1
-    },
-    {
-      "store": "cox",
-      "consecutiveRuns": 1
+      "consecutiveRuns": 2
     }
   ],
   "botProtected": [
