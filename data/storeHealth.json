@@ -27,9 +27,14 @@
   },
   "andar_japan": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 1,
+    "consecutiveWidgetMissing": 0,
     "autoBlacklisted": false,
     "recoveries": [
+      {
+        "resolvedAt": "2026-07-02T00:10:53.759Z",
+        "durationMs": 86470974,
+        "type": "widget_missing"
+      },
       {
         "resolvedAt": "2026-06-19T00:29:49.361Z",
         "durationMs": 605118773,
@@ -40,8 +45,7 @@
         "durationMs": 85829108,
         "type": "widget_missing"
       }
-    ],
-    "issueStartedAt": "2026-07-01T00:09:42.785Z"
+    ]
   },
   "coen": {
     "consecutiveFailures": 0,
@@ -257,8 +261,9 @@
   },
   "estnation": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 0,
-    "autoBlacklisted": false
+    "consecutiveWidgetMissing": 1,
+    "autoBlacklisted": false,
+    "issueStartedAt": "2026-07-02T00:10:53.758Z"
   },
   "fray_i_d": {
     "consecutiveFailures": 0,
@@ -329,7 +334,7 @@
   },
   "hankyu_mens": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 5,
+    "consecutiveWidgetMissing": 6,
     "autoBlacklisted": false,
     "recoveries": [
       {
@@ -382,16 +387,20 @@
   },
   "poppy": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 1,
+    "consecutiveWidgetMissing": 0,
     "autoBlacklisted": false,
     "recoveries": [
+      {
+        "resolvedAt": "2026-07-02T00:10:53.758Z",
+        "durationMs": 86470973,
+        "type": "widget_missing"
+      },
       {
         "resolvedAt": "2026-06-19T00:29:49.360Z",
         "durationMs": 2665958108,
         "type": "widget_missing"
       }
-    ],
-    "issueStartedAt": "2026-07-01T00:09:42.785Z"
+    ]
   },
   "shel_tter": {
     "consecutiveFailures": 0,
@@ -417,7 +426,7 @@
   },
   "reebok_korea": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 86,
+    "consecutiveWidgetMissing": 87,
     "autoBlacklisted": false,
     "issueStartedAt": "2026-04-13T09:15:18.244Z"
   },
@@ -681,9 +690,15 @@
   },
   "retouch": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 1,
+    "consecutiveWidgetMissing": 0,
     "autoBlacklisted": false,
-    "issueStartedAt": "2026-07-01T00:09:42.785Z"
+    "recoveries": [
+      {
+        "resolvedAt": "2026-07-02T00:10:53.759Z",
+        "durationMs": 86470974,
+        "type": "widget_missing"
+      }
+    ]
   },
   "natulan": {
     "consecutiveFailures": 0,
@@ -692,33 +707,41 @@
   },
   "studio_nicholson": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 1,
+    "consecutiveWidgetMissing": 0,
     "autoBlacklisted": false,
     "recoveries": [
+      {
+        "resolvedAt": "2026-07-02T00:10:53.760Z",
+        "durationMs": 86470975,
+        "type": "widget_missing"
+      },
       {
         "resolvedAt": "2026-06-19T00:29:49.361Z",
         "durationMs": 2496225050,
         "type": "widget_missing"
       }
-    ],
-    "issueStartedAt": "2026-07-01T00:09:42.785Z"
+    ]
   },
   "unitedarrows_global": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 1,
+    "consecutiveWidgetMissing": 0,
     "autoBlacklisted": false,
     "recoveries": [
+      {
+        "resolvedAt": "2026-07-02T00:10:53.760Z",
+        "durationMs": 86470975,
+        "type": "widget_missing"
+      },
       {
         "resolvedAt": "2026-05-25T00:04:43.695Z",
         "durationMs": 172430819,
         "type": "widget_missing"
       }
-    ],
-    "issueStartedAt": "2026-07-01T00:09:42.785Z"
+    ]
   },
   "snidel": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 83,
+    "consecutiveWidgetMissing": 84,
     "autoBlacklisted": false,
     "issueStartedAt": "2026-04-13T09:15:18.244Z"
   },
@@ -816,8 +839,9 @@
   },
   "world": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 0,
-    "autoBlacklisted": false
+    "consecutiveWidgetMissing": 1,
+    "autoBlacklisted": false,
+    "issueStartedAt": "2026-07-02T00:10:53.758Z"
   },
   "standard_california": {
     "consecutiveFailures": 0,
@@ -860,7 +884,7 @@
   },
   "gelato_pique": {
     "consecutiveFailures": 0,
-    "consecutiveWidgetMissing": 86,
+    "consecutiveWidgetMissing": 87,
     "autoBlacklisted": false,
     "issueStartedAt": "2026-04-13T09:15:18.244Z"
   },

@@ -1,21 +1,29 @@
 {
-  "timestamp": "2026-07-01T00:09:42.488Z",
-  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/28483911748",
+  "timestamp": "2026-07-02T00:10:53.550Z",
+  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/28555976969",
   "summary": {
     "total": 78,
-    "passed": 69,
-    "widgetMissing": 9,
+    "passed": 72,
+    "widgetMissing": 6,
     "skipped": 0,
     "failed": 0,
     "fallbackUsed": 72,
-    "avgWidgetVisibleMs": 28897,
-    "p95WidgetVisibleMs": 36762
+    "avgWidgetVisibleMs": 28075,
+    "p95WidgetVisibleMs": 35763
   },
   "newIssues": [],
   "widgetMissingStores": [
     {
       "store": "reebok_korea",
       "url": "https://reebok.co.kr/goods/goods_view.php?goodsNo=1000002262",
+      "browsers": [
+        "chrome",
+        "webkit"
+      ]
+    },
+    {
+      "store": "world",
+      "url": "https://store.world.co.jp/brand/untitled/item/BR15325F0152?link_id=wos_top_ranking",
       "browsers": [
         "chrome",
         "webkit"
@@ -38,40 +46,8 @@
       ]
     },
     {
-      "store": "poppy",
-      "url": "https://poppy-tokyo.com/en/products/heart-button-leotard-yellow",
-      "browsers": [
-        "chrome",
-        "webkit"
-      ]
-    },
-    {
-      "store": "retouch",
-      "url": "https://re-touch.tokyo/products/easy-slacks",
-      "browsers": [
-        "chrome",
-        "webkit"
-      ]
-    },
-    {
-      "store": "andar_japan",
-      "url": "https://andar-jp.com/products/airywin-straight-fit-pants",
-      "browsers": [
-        "chrome",
-        "webkit"
-      ]
-    },
-    {
-      "store": "studio_nicholson",
-      "url": "https://japan.studionicholson.com/products/bridges-pant-in-parcel",
-      "browsers": [
-        "chrome",
-        "webkit"
-      ]
-    },
-    {
-      "store": "unitedarrows_global",
-      "url": "https://united-arrows-global.com/en-ph/products/16121000023",
+      "store": "estnation",
+      "url": "https://www.estnation.co.jp/item/detail/1_890_4220007060009/419",
       "browsers": [
         "chrome",
         "webkit"
@@ -89,27 +65,39 @@
   "ongoingMissing": [
     {
       "store": "reebok_korea",
-      "consecutiveRuns": 85
+      "consecutiveRuns": 86
     },
     {
       "store": "gelato_pique",
-      "consecutiveRuns": 85
+      "consecutiveRuns": 86
     },
     {
       "store": "snidel",
-      "consecutiveRuns": 82
+      "consecutiveRuns": 83
     },
     {
       "store": "hankyu_mens",
-      "consecutiveRuns": 4
+      "consecutiveRuns": 5
     },
     {
-      "store": "hankyu_hanshin",
-      "consecutiveRuns": 3
+      "store": "andar_japan",
+      "consecutiveRuns": 1
     },
     {
-      "store": "coen",
-      "consecutiveRuns": 2
+      "store": "poppy",
+      "consecutiveRuns": 1
+    },
+    {
+      "store": "retouch",
+      "consecutiveRuns": 1
+    },
+    {
+      "store": "studio_nicholson",
+      "consecutiveRuns": 1
+    },
+    {
+      "store": "unitedarrows_global",
+      "consecutiveRuns": 1
     }
   ],
   "botProtected": [
