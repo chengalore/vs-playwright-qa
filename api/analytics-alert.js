@@ -23,6 +23,14 @@ const GITHUB_REPO = process.env.GITHUB_REPO;
 const GH_PAT = process.env.GH_PAT || process.env.GITHUB_TOKEN;
 const SLACK_SIGNING_SECRET = process.env.SLACK_SIGNING_SECRET;
 
+const COOLDOWN_MS = 2 * 60 * 60 * 1000; // 2 hours
+const lastTriggered = new Map(); // storeName → timestamp
+
+function isOnCooldown(storeName) {
+  const last = lastTriggered.get(storeName);
+  return last && Date.now() - last < COOLDOWN_MS;
+}
+
 async function verifySlackSignature(req, rawBody) {
   if (!SLACK_SIGNING_SECRET) return true;
   const timestamp = req.headers["x-slack-request-timestamp"];
@@ -103,13 +111,18 @@ export default async function handler(req, res) {
 
   // Dispatch a Single URL Test for each affected store that has a known URL
   for (const storeName of storeNames) {
+    if (isOnCooldown(storeName)) {
+      console.log(`analytics-alert: skipping ${storeName} — on cooldown`);
+      continue;
+    }
     const url = fallbackProducts[storeName];
     if (!url) {
       console.warn(`analytics-alert: no fallback URL for store "${storeName}"`);
       continue;
     }
     try {
-      await dispatchWorkflow({ url, phase: "full", slack_response_url: "" });
+      await dispatchWorkflow({ url, phase: "full", slack_response_url: "", notify_slack: "false" });
+      lastTriggered.set(storeName, Date.now());
       console.log(`analytics-alert: triggered test for ${storeName} → ${url}`);
     } catch (err) {
       console.error(`analytics-alert: dispatch failed for ${storeName}: ${err.message}`);
