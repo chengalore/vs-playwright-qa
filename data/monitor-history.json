@@ -1,5 +1,150 @@
 [
   {
+    "timestamp": "2026-07-03T00:09:40.857Z",
+    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/28629329493",
+    "summary": {
+      "total": 78,
+      "passed": 67,
+      "widgetMissing": 10,
+      "skipped": 1,
+      "failed": 0,
+      "fallbackUsed": 70,
+      "avgWidgetVisibleMs": 28062,
+      "p95WidgetVisibleMs": 35218
+    },
+    "newIssues": [],
+    "widgetMissingStores": [
+      {
+        "store": "hankyu_hanshin",
+        "url": "https://web.hh-online.jp/fashion/goods/index.html?ggcd=508767628",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "reebok_korea",
+        "url": "https://reebok.co.kr/goods/goods_view.php?goodsNo=1000002262",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "world",
+        "url": "https://store.world.co.jp/brand/untitled/item/BR15325F0152?link_id=wos_top_ranking",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "hankyu_mens",
+        "url": "https://web.hh-online.jp/hankyu-mens/goods/index.html?ggcd=508732084",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "snidel",
+        "url": "https://snidel.com/Form/Product/ProductDetail.aspx?shop=0&pid=SHFT261075&vid=&bid=SNH01&cid=&_type=&cat=&swrd=",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "estnation",
+        "url": "https://www.estnation.co.jp/item/detail/1_890_4220007060009/419",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "classico_global",
+        "url": "https://classico-global.com/en-ph/products/a39",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "levi_japan",
+        "url": "https://www.levi.jp/women/pants/jeans/slimskinny/plank%20%E3%82%B9%E3%83%88%E3%83%AC%E3%83%BC%E3%83%88%20%E3%83%80%E3%83%BC%E3%82%AF%E3%82%A4%E3%83%B3%E3%83%87%E3%82%A3%E3%82%B4%20stems%20made%20of%20japan/A91380000.html",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "unitedarrows_global",
+        "url": "https://united-arrows-global.com/en-ph/products/16121000023",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "gelato_pique",
+        "url": "https://gelatopique.com/Form/Product/ProductDetail.aspx?shop=0&pid=PWCO261297&vid=&bid=PIQ01&cid=&_type=&cat=WOM003001&swrd=",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      }
+    ],
+    "ongoingMissing": [
+      {
+        "store": "reebok_korea",
+        "consecutiveRuns": 87
+      },
+      {
+        "store": "gelato_pique",
+        "consecutiveRuns": 87
+      },
+      {
+        "store": "snidel",
+        "consecutiveRuns": 84
+      },
+      {
+        "store": "hankyu_mens",
+        "consecutiveRuns": 6
+      },
+      {
+        "store": "estnation",
+        "consecutiveRuns": 1
+      },
+      {
+        "store": "world",
+        "consecutiveRuns": 1
+      }
+    ],
+    "botProtected": [
+      "adidas",
+      "adidas_japan",
+      "adidas_korea",
+      "asics",
+      "asics_japan",
+      "ralph_lauren",
+      "ralph_lauren_australia",
+      "ralph_lauren_china",
+      "ralph_lauren_korea",
+      "ralph_lauren_singapore",
+      "ralph_lauren_taiwan",
+      "ralph_lauren_uk",
+      "rl"
+    ],
+    "skippedStores": [
+      {
+        "store": "re_edit",
+        "reason": "navigation_error"
+      }
+    ],
+    "phase": "widget"
+  },
+  {
     "timestamp": "2026-07-02T00:10:53.550Z",
     "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/28555976969",
     "summary": {
@@ -7014,126 +7159,6 @@
       },
       {
         "store": "coen",
-        "consecutiveRuns": 1
-      }
-    ],
-    "botProtected": [
-      "adidas",
-      "adidas_japan",
-      "adidas_korea",
-      "asics",
-      "asics_japan",
-      "ralph_lauren",
-      "ralph_lauren_australia",
-      "ralph_lauren_china",
-      "ralph_lauren_korea",
-      "ralph_lauren_singapore",
-      "ralph_lauren_taiwan",
-      "ralph_lauren_uk",
-      "rl"
-    ],
-    "skippedStores": [],
-    "phase": "widget"
-  },
-  {
-    "timestamp": "2026-05-16T00:01:54.977Z",
-    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/25946952196",
-    "summary": {
-      "total": 82,
-      "passed": 75,
-      "widgetMissing": 7,
-      "skipped": 0,
-      "failed": 0,
-      "fallbackUsed": 76,
-      "avgWidgetVisibleMs": 27806,
-      "p95WidgetVisibleMs": 34713
-    },
-    "newIssues": [],
-    "widgetMissingStores": [
-      {
-        "store": "gelato_pique",
-        "url": "https://gelatopique.com/Form/Product/ProductDetail.aspx?shop=0&pid=PWCO261297&vid=&bid=PIQ01&cid=&_type=&cat=WOM003001&swrd=",
-        "browsers": [
-          "chrome",
-          "webkit"
-        ]
-      },
-      {
-        "store": "seilin_online_shop",
-        "url": "https://www.hrm-eshop.com//shop/g/g1010671240006/",
-        "browsers": [
-          "chrome",
-          "webkit"
-        ]
-      },
-      {
-        "store": "coen",
-        "url": "https://www.coen.co.jp/item/7600024S0452",
-        "browsers": [
-          "chrome",
-          "webkit"
-        ]
-      },
-      {
-        "store": "reebok_korea",
-        "url": "https://reebok.co.kr/goods/goods_view.php?goodsNo=1000002262",
-        "browsers": [
-          "chrome",
-          "webkit"
-        ]
-      },
-      {
-        "store": "hankyu_mens",
-        "url": "https://web.hh-online.jp/hankyu-mens/goods/index.html?ggcd=508732084",
-        "browsers": [
-          "chrome",
-          "webkit"
-        ]
-      },
-      {
-        "store": "snidel",
-        "url": "https://snidel.com/Form/Product/ProductDetail.aspx?shop=0&pid=SHFT261075&vid=&bid=SNH01&cid=&_type=&cat=&swrd=",
-        "browsers": [
-          "chrome",
-          "webkit"
-        ]
-      },
-      {
-        "store": "bshop",
-        "url": "https://bshop-inc.com/shop/ec/item/view/shop_product_id/42078",
-        "browsers": [
-          "chrome",
-          "webkit"
-        ]
-      }
-    ],
-    "ongoingMissing": [
-      {
-        "store": "reebok_korea",
-        "consecutiveRuns": 41
-      },
-      {
-        "store": "gelato_pique",
-        "consecutiveRuns": 41
-      },
-      {
-        "store": "snidel",
-        "consecutiveRuns": 39
-      },
-      {
-        "store": "hankyu_mens",
-        "consecutiveRuns": 6
-      },
-      {
-        "store": "seilin_online_shop",
-        "consecutiveRuns": 1
-      },
-      {
-        "store": "bshop",
-        "consecutiveRuns": 1
-      },
-      {
-        "store": "fashion_square",
         "consecutiveRuns": 1
       }
     ],
