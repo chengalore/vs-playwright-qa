@@ -99,14 +99,20 @@ export default async function handler(req, res) {
   if (!valid) return res.status(401).end("Unauthorized");
 
   const event = payload.event;
+  console.log(`analytics-alert: event type=${event?.type} subtype=${event?.subtype} text="${(event?.text || "").slice(0, 80)}"`);
+
   if (!event || event.type !== "message") return res.status(200).end("ok");
 
   const text = event.text || "";
 
   // Only process messages that look like analytics alerts
-  if (!text.includes("Analytics Alert")) return res.status(200).end("ok");
+  if (!text.includes("Analytics Alert")) {
+    console.log(`analytics-alert: skipping — "Analytics Alert" not found in text`);
+    return res.status(200).end("ok");
+  }
 
   const storeNames = parseStoreNames(text);
+  console.log(`analytics-alert: parsed stores=${JSON.stringify(storeNames)}`);
   if (storeNames.length === 0) return res.status(200).end("ok");
 
   // Dispatch a Single URL Test for each affected store that has a known URL
