@@ -1,15 +1,15 @@
 {
-  "timestamp": "2026-07-03T00:09:40.857Z",
-  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/28629329493",
+  "timestamp": "2026-07-04T00:09:00.193Z",
+  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/28688613375",
   "summary": {
-    "total": 78,
-    "passed": 67,
-    "widgetMissing": 10,
-    "skipped": 1,
+    "total": 62,
+    "passed": 54,
+    "widgetMissing": 8,
+    "skipped": 0,
     "failed": 0,
-    "fallbackUsed": 70,
-    "avgWidgetVisibleMs": 28062,
-    "p95WidgetVisibleMs": 35218
+    "fallbackUsed": 55,
+    "avgWidgetVisibleMs": 29097,
+    "p95WidgetVisibleMs": 39310
   },
   "newIssues": [],
   "widgetMissingStores": [
@@ -62,24 +62,8 @@
       ]
     },
     {
-      "store": "classico_global",
-      "url": "https://classico-global.com/en-ph/products/a39",
-      "browsers": [
-        "chrome",
-        "webkit"
-      ]
-    },
-    {
-      "store": "levi_japan",
-      "url": "https://www.levi.jp/women/pants/jeans/slimskinny/plank%20%E3%82%B9%E3%83%88%E3%83%AC%E3%83%BC%E3%83%88%20%E3%83%80%E3%83%BC%E3%82%AF%E3%82%A4%E3%83%B3%E3%83%87%E3%82%A3%E3%82%B4%20stems%20made%20of%20japan/A91380000.html",
-      "browsers": [
-        "chrome",
-        "webkit"
-      ]
-    },
-    {
-      "store": "unitedarrows_global",
-      "url": "https://united-arrows-global.com/en-ph/products/16121000023",
+      "store": "makes",
+      "url": "https://www.makes.jp/c/womens/15255",
       "browsers": [
         "chrome",
         "webkit"
@@ -97,26 +81,42 @@
   "ongoingMissing": [
     {
       "store": "reebok_korea",
-      "consecutiveRuns": 87
+      "consecutiveRuns": 88
     },
     {
       "store": "gelato_pique",
-      "consecutiveRuns": 87
+      "consecutiveRuns": 88
     },
     {
       "store": "snidel",
-      "consecutiveRuns": 84
+      "consecutiveRuns": 85
     },
     {
       "store": "hankyu_mens",
-      "consecutiveRuns": 6
+      "consecutiveRuns": 7
     },
     {
       "store": "estnation",
-      "consecutiveRuns": 1
+      "consecutiveRuns": 2
     },
     {
       "store": "world",
+      "consecutiveRuns": 2
+    },
+    {
+      "store": "hankyu_hanshin",
+      "consecutiveRuns": 1
+    },
+    {
+      "store": "classico_global",
+      "consecutiveRuns": 1
+    },
+    {
+      "store": "unitedarrows_global",
+      "consecutiveRuns": 1
+    },
+    {
+      "store": "levi_japan",
       "consecutiveRuns": 1
     }
   ],
@@ -135,10 +135,5 @@
     "ralph_lauren_uk",
     "rl"
   ],
-  "skippedStores": [
-    {
-      "store": "re_edit",
-      "reason": "navigation_error"
-    }
-  ]
+  "skippedStores": []
 }
