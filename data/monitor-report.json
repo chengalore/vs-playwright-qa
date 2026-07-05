@@ -1,15 +1,15 @@
 {
-  "timestamp": "2026-07-04T00:09:00.193Z",
-  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/28688613375",
+  "timestamp": "2026-07-05T00:06:12.225Z",
+  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/28723731492",
   "summary": {
-    "total": 62,
-    "passed": 54,
-    "widgetMissing": 8,
-    "skipped": 0,
+    "total": 78,
+    "passed": 68,
+    "widgetMissing": 9,
+    "skipped": 1,
     "failed": 0,
-    "fallbackUsed": 55,
-    "avgWidgetVisibleMs": 29097,
-    "p95WidgetVisibleMs": 39310
+    "fallbackUsed": 69,
+    "avgWidgetVisibleMs": 28715,
+    "p95WidgetVisibleMs": 35044
   },
   "newIssues": [],
   "widgetMissingStores": [
@@ -40,6 +40,14 @@
     {
       "store": "hankyu_mens",
       "url": "https://web.hh-online.jp/hankyu-mens/goods/index.html?ggcd=508732084",
+      "browsers": [
+        "chrome",
+        "webkit"
+      ]
+    },
+    {
+      "store": "cox",
+      "url": "https://tokyodesignchannel.com/c/lbc/26180639",
       "browsers": [
         "chrome",
         "webkit"
@@ -81,42 +89,34 @@
   "ongoingMissing": [
     {
       "store": "reebok_korea",
-      "consecutiveRuns": 88
+      "consecutiveRuns": 89
     },
     {
       "store": "gelato_pique",
-      "consecutiveRuns": 88
+      "consecutiveRuns": 89
     },
     {
       "store": "snidel",
-      "consecutiveRuns": 85
+      "consecutiveRuns": 86
     },
     {
       "store": "hankyu_mens",
-      "consecutiveRuns": 7
+      "consecutiveRuns": 8
     },
     {
       "store": "estnation",
-      "consecutiveRuns": 2
+      "consecutiveRuns": 3
     },
     {
       "store": "world",
-      "consecutiveRuns": 2
+      "consecutiveRuns": 3
     },
     {
       "store": "hankyu_hanshin",
-      "consecutiveRuns": 1
+      "consecutiveRuns": 2
     },
     {
-      "store": "classico_global",
-      "consecutiveRuns": 1
-    },
-    {
-      "store": "unitedarrows_global",
-      "consecutiveRuns": 1
-    },
-    {
-      "store": "levi_japan",
+      "store": "makes",
       "consecutiveRuns": 1
     }
   ],
@@ -135,5 +135,10 @@
     "ralph_lauren_uk",
     "rl"
   ],
-  "skippedStores": []
+  "skippedStores": [
+    {
+      "store": "id_look",
+      "reason": "navigation_error"
+    }
+  ]
 }
