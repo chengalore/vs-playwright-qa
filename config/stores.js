@@ -68,7 +68,6 @@ export const STORES = {
   // ── E ────────────────────────────────────────────────────────────────
   edwin: { id: 770, monitor: true },
   emmi: { id: 786, monitor: true },
-  estnation: { id: 442, monitor: true, luxury: true },
 
   // ── F ────────────────────────────────────────────────────────────────
   fashion_square: { id: 757, monitor: true },
@@ -168,9 +167,6 @@ export const STORES = {
   underarmour: { id: 805 }, // shorthand
   unitedarrows: { id: 907 }, // shorthand
   unitedarrows_global: { id: 907, monitor: true, luxury: true },
-
-  // ── W ────────────────────────────────────────────────────────────────
-  world: { id: 739, monitor: true },
 
   // ── Y ────────────────────────────────────────────────────────────────
   yohji_wildside: { id: 826, monitor: true, luxury: true },

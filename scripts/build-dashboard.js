@@ -2561,7 +2561,7 @@ const STORE_LIST = [
   'adidas','callawaygolf','banana_republic','andar_japan','coen','frans_boone','emmi',
   'lily_brown','miesrohe','brooks_brothers','paul_smith','re_edit','seilin_online_shop',
   'strasburgo','top_floor','hankyu_hanshin','agnes_b','barbour','another_address',
-  'brooks_brothers_korea','camilla_and_marc','estnation','fray_i_d','cox','hankyu_mens',
+  'brooks_brothers_korea','camilla_and_marc','fray_i_d','cox','hankyu_mens',
   'llbean','milaowen','poppy','strasburgo_outlet','shel_tter','ua_taiwan','yohji_wildside',
   'reebok_korea','aoure','allsaints_korea','bshop','barneys_japan','celford',
   'fashion_square','furfur','denimlife','id_look','lumine','nagaileben','punyus','restir',
@@ -2569,7 +2569,7 @@ const STORE_LIST = [
   'ameri_vintage','buyma','gap_japan','felissimo','ragtag','jamie_kay','makes','retouch',
   'natulan','studio_nicholson','yosoou','unitedarrows_global','snidel','bottega_veneta',
   'by_malene_birger','classico_taiwan','and_mall','azul_by_moussy','edwin','levi_japan',
-  'flandre','ralph_lauren','marui','onward','sanyo_online_store','world',
+  'flandre','ralph_lauren','marui','onward','sanyo_online_store',
   'standard_california','taion_wear','zuica','gelato_pique','bottega_veneta_japan',
   'bottega_veneta_korea','bottega'
 ];
