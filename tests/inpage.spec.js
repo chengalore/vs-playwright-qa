@@ -494,6 +494,28 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
           }
           await stLoc.scrollIntoViewIfNeeded({ timeout: 3000 }).catch(() => {});
           await page.waitForTimeout(5000); // give smart table content time to fully render
+          // Strip any max-height/overflow clipping on the table or its ancestors — if the
+          // true content is taller than a constrained container, no amount of viewport
+          // resizing reveals it because the extra content is never laid out at all.
+          await page.evaluate(() => {
+            const st = document.querySelector("#vs-smart-table");
+            if (!st) return;
+            let el = st;
+            while (el && el !== document.body) {
+              const cs = getComputedStyle(el);
+              if (
+                cs.overflowY === "auto" || cs.overflowY === "scroll" ||
+                cs.overflow === "auto" || cs.overflow === "scroll" ||
+                (cs.maxHeight !== "none" && cs.maxHeight !== "")
+              ) {
+                el.style.setProperty("max-height", "none", "important");
+                el.style.setProperty("overflow", "visible", "important");
+                el.style.setProperty("height", "auto", "important");
+              }
+              el = el.parentElement;
+            }
+          }).catch(() => {});
+          await page.waitForTimeout(500);
           const originalViewport = page.viewportSize();
           // Screenshot a padded region around the table (not just the element itself) so
           // the page context is visible and nothing at the edges gets clipped. Grow the
