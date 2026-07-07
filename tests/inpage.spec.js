@@ -494,31 +494,36 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
           }
           await stLoc.scrollIntoViewIfNeeded({ timeout: 3000 }).catch(() => {});
           await page.waitForTimeout(5000); // give smart table content time to fully render
-          const stBbox = await stLoc.boundingBox().catch(() => null);
           const originalViewport = page.viewportSize();
           // Screenshot a padded region around the table (not just the element itself) so
           // the page context is visible and nothing at the edges gets clipped. Grow the
           // viewport in both dimensions to fit that padded region before capturing.
-          const PAD = 150;
+          const PAD_SIDE = 150;
+          const PAD_TOP = 150;
+          const PAD_BOTTOM = 500; // extra room below — content here tends to grow after resize
           let stBuf = null;
           let resized = false;
+          let stBbox = await stLoc.boundingBox().catch(() => null);
           if (stBbox && originalViewport) {
-            const clip = {
-              x: Math.max(0, stBbox.x - PAD),
-              y: Math.max(0, stBbox.y - PAD),
-              width: stBbox.width + PAD * 2,
-              height: stBbox.height + PAD * 2,
-            };
-            const neededWidth = Math.ceil(clip.x + clip.width);
-            const neededHeight = Math.ceil(clip.y + clip.height);
+            const neededWidth = Math.ceil(stBbox.x + stBbox.width + PAD_SIDE);
+            const neededHeight = Math.ceil(stBbox.y + stBbox.height + PAD_BOTTOM);
             resized = neededWidth > originalViewport.width || neededHeight > originalViewport.height;
             if (resized) {
               await page.setViewportSize({
                 width: Math.max(originalViewport.width, neededWidth),
                 height: Math.max(originalViewport.height, neededHeight),
               }).catch(() => {});
-              await page.waitForTimeout(500);
+              await page.waitForTimeout(1000);
+              // Re-measure — growing the viewport can bring more of the table into view
+              // and trigger additional lazy-rendered content, changing its true height.
+              stBbox = await stLoc.boundingBox().catch(() => stBbox);
             }
+            const clip = {
+              x: Math.max(0, stBbox.x - PAD_SIDE),
+              y: Math.max(0, stBbox.y - PAD_TOP),
+              width: stBbox.width + PAD_SIDE * 2,
+              height: stBbox.height + PAD_TOP + PAD_BOTTOM,
+            };
             stBuf = await page.screenshot({ type: "jpeg", quality: 85, clip, timeout: 8000 }).catch(() => null);
           } else {
             // Fallback: element screenshot if we couldn't measure the bounding box
