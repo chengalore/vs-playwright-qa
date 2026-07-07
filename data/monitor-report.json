@@ -1,15 +1,15 @@
 {
-  "timestamp": "2026-07-06T00:09:02.863Z",
-  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/28759460341",
+  "timestamp": "2026-07-07T00:15:53.683Z",
+  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/28831794300",
   "summary": {
     "total": 78,
-    "passed": 69,
-    "widgetMissing": 9,
+    "passed": 68,
+    "widgetMissing": 10,
     "skipped": 0,
     "failed": 0,
-    "fallbackUsed": 70,
-    "avgWidgetVisibleMs": 28719,
-    "p95WidgetVisibleMs": 37918
+    "fallbackUsed": 69,
+    "avgWidgetVisibleMs": 28513,
+    "p95WidgetVisibleMs": 34832
   },
   "newIssues": [],
   "widgetMissingStores": [
@@ -46,16 +46,16 @@
       ]
     },
     {
-      "store": "cox",
-      "url": "https://tokyodesignchannel.com/c/lbc/26180639",
+      "store": "snidel",
+      "url": "https://snidel.com/Form/Product/ProductDetail.aspx?shop=0&pid=SHFT261075&vid=&bid=SNH01&cid=&_type=&cat=&swrd=",
       "browsers": [
         "chrome",
         "webkit"
       ]
     },
     {
-      "store": "snidel",
-      "url": "https://snidel.com/Form/Product/ProductDetail.aspx?shop=0&pid=SHFT261075&vid=&bid=SNH01&cid=&_type=&cat=&swrd=",
+      "store": "cox",
+      "url": "https://tokyodesignchannel.com/c/lbc/26180639",
       "browsers": [
         "chrome",
         "webkit"
@@ -78,6 +78,14 @@
       ]
     },
     {
+      "store": "under_armour",
+      "url": "https://www.underarmour.co.jp/f/dsg-1092547",
+      "browsers": [
+        "chrome",
+        "webkit"
+      ]
+    },
+    {
       "store": "gelato_pique",
       "url": "https://gelatopique.com/Form/Product/ProductDetail.aspx?shop=0&pid=PWCO261297&vid=&bid=PIQ01&cid=&_type=&cat=WOM003001&swrd=",
       "browsers": [
@@ -89,39 +97,39 @@
   "ongoingMissing": [
     {
       "store": "reebok_korea",
-      "consecutiveRuns": 90
+      "consecutiveRuns": 91
     },
     {
       "store": "gelato_pique",
-      "consecutiveRuns": 90
+      "consecutiveRuns": 91
     },
     {
       "store": "snidel",
-      "consecutiveRuns": 87
+      "consecutiveRuns": 88
     },
     {
       "store": "hankyu_mens",
-      "consecutiveRuns": 9
+      "consecutiveRuns": 10
     },
     {
       "store": "estnation",
-      "consecutiveRuns": 4
+      "consecutiveRuns": 5
     },
     {
       "store": "world",
-      "consecutiveRuns": 4
+      "consecutiveRuns": 5
     },
     {
       "store": "hankyu_hanshin",
-      "consecutiveRuns": 3
+      "consecutiveRuns": 4
     },
     {
       "store": "makes",
-      "consecutiveRuns": 2
+      "consecutiveRuns": 3
     },
     {
       "store": "cox",
-      "consecutiveRuns": 1
+      "consecutiveRuns": 2
     }
   ],
   "botProtected": [
