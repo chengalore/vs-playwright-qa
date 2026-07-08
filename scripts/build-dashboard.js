@@ -99,8 +99,10 @@ const dstManifest = fs.existsSync(dstManifestPath) ? readJSON(dstManifestPath) :
 const dstPngs = new Set(fs.readdirSync(screenshotsDst).filter(f => f.endsWith('.png')));
 // Migrate old entries (no batch field) to 'older'
 for (const e of dstManifest) { if (!e.batch) e.batch = 'older'; }
-// Add any PNGs not yet in manifest
+// Add any PNGs not yet in manifest — skip smart-table companions, they attach
+// to their parent sku's card rather than appearing as standalone entries.
 for (const f of dstPngs) {
+  if (f.endsWith('-smart-table.png')) continue;
   const sku = f.replace('.png', '');
   if (!dstManifest.some(e => e.sku === sku)) dstManifest.push({ sku, url: null, batch: 'older' });
 }
@@ -562,6 +564,7 @@ function generateDashboard(history, compareImages, singleUrlHistory, metrics) {
       transition: border-color 0.15s;
     }
     .overlay-card img { width: 100%; display: block; }
+    .overlay-card .smart-table-thumb { border-top: 1px solid #21262d; }
     .overlay-card .card-footer {
       display: flex;
       align-items: center;
@@ -2160,9 +2163,10 @@ function updateTagSummary() {
 }
 
 function renderGrid(images) {
-  return images.map(({ sku, url }) => \`
+  return images.map(({ sku, url, hasSmartTable }) => \`
     <div class="overlay-card" id="card-\${sku}">
       <img src="compare-view-screenshots/\${sku}.png" alt="">
+      \${hasSmartTable ? \`<img class="smart-table-thumb" src="compare-view-screenshots/\${sku}-smart-table.png" alt="\${sku} smart table">\` : ''}
       <div class="card-footer">
         <div class="card-sku">\${url ? \`<a href="\${url}" target="_blank">\${sku}</a>\` : sku}</div>
       </div>

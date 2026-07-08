@@ -12,6 +12,15 @@ on:
         required: false
         default: ""
         type: string
+      capture_mode:
+        description: "What to screenshot"
+        required: false
+        default: "both"
+        type: choice
+        options:
+          - both
+          - smart_table_only
+          - compare_view_only
 
 jobs:
   screenshot:
@@ -47,6 +56,7 @@ jobs:
         env:
           TEST_URLS_FILE: data/compare-view-urls-run.txt
           BATCH_NAME: ${{ github.event.inputs.batch_name }}
+          CAPTURE_MODE: ${{ github.event.inputs.capture_mode }}
 
       - name: Show captured screenshots
         run: |

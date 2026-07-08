@@ -17,6 +17,13 @@
  *
  * Custom URLs file (optional):
  *   TEST_URLS_FILE=data/compare-view-screenshot-urls.txt npx playwright test compare-view-screenshot
+ *
+ * Capture mode (optional, default "both"):
+ *   CAPTURE_MODE=smart_table_only  — skip onboarding/compare-view entirely; the smart
+ *                                    table is page-embedded and doesn't need the widget
+ *                                    opened, so this is much faster when that's all you need.
+ *   CAPTURE_MODE=compare_view_only — skip the smart table capture, widget compare view only.
+ *   CAPTURE_MODE=both              — capture both (default).
  */
 
 import { test } from "@playwright/test";
@@ -26,6 +33,7 @@ import { dirname, join } from "path";
 import { startPDCWatcher } from "../utils/pdcWatcher.js";
 import { isBagProduct } from "../utils/inpageFlow.js";
 import { completeOnboarding } from "../utils/completeOnboarding.js";
+import { captureSmartTable } from "../utils/captureSmartTable.js";
 
 const RECOMMENDATION_EVENTS = [
   "user-got-size-recommendation",
@@ -74,6 +82,10 @@ if (urls.length === 0) {
 // BATCH_NAME is set by the workflow (e.g. "bottega-0421"); falls back to today's date.
 const runDate = process.env.BATCH_NAME?.trim() || new Date().toISOString().slice(0, 10);
 
+const VALID_CAPTURE_MODES = ["both", "smart_table_only", "compare_view_only"];
+const rawCaptureMode = process.env.CAPTURE_MODE?.trim();
+const CAPTURE_MODE = VALID_CAPTURE_MODES.includes(rawCaptureMode) ? rawCaptureMode : "both";
+
 test.setTimeout(180000); // 3 min per URL — Bottega Veneta pages load slowly
 
 // Shared browser context — created once, closed in afterAll.
@@ -110,6 +122,7 @@ test.afterAll(async () => {
     .card img { width: 100%; display: block; }
     .card .label { padding: 8px 12px; font-size: 12px; color: #555; word-break: break-all; }
     .card .sku { padding: 4px 12px 8px; font-size: 13px; font-weight: bold; color: #222; }
+    .card .smart-table { border-top: 1px solid #eee; }
   </style>
 </head>
 <body>
@@ -117,11 +130,12 @@ test.afterAll(async () => {
   <div class="grid">
     ${images
       .map(
-        ({ sku, url }) => `
+        ({ sku, url, hasSmartTable }) => `
     <div class="card">
       <img src="${sku}.png" alt="${sku}">
       <div class="sku">${sku}</div>
       <div class="label"><a href="${url}" target="_blank">${url}</a></div>
+      ${hasSmartTable ? `<img class="smart-table" src="${sku}-smart-table.png" alt="${sku} smart table">` : ""}
     </div>`
       )
       .join("")}
@@ -209,6 +223,34 @@ for (const url of urls) {
       const sku = pdc.externalProductId;
       if (!sku) {
         logResult({ url, status: "skipped", reason: "externalProductId missing from PDC", durationMs: Date.now() - startTime });
+        return;
+      }
+
+      // ── Smart-table-only fast path ───────────────────────────────────────────
+      // The smart table is page-embedded and independent of the widget, so onboarding
+      // and the compare view (both potentially slow) aren't needed to capture it.
+      if (CAPTURE_MODE === "smart_table_only") {
+        const smartTableBuf = await captureSmartTable(page, { type: "png" }).catch(() => null);
+        if (!smartTableBuf) {
+          logResult({ sku, url, status: "skipped", reason: "smart table not found", durationMs: Date.now() - startTime });
+          return;
+        }
+        const screenshotsDir = join(__dirname, "../test-results/compare-view-screenshots", runDate);
+        mkdirSync(screenshotsDir, { recursive: true });
+        writeFileSync(join(screenshotsDir, `${sku}.png`), smartTableBuf);
+
+        const manifestPath = join(screenshotsDir, "manifest.json");
+        const manifest = existsSync(manifestPath)
+          ? JSON.parse(readFileSync(manifestPath, "utf8"))
+          : [];
+        const existingIdx = manifest.findIndex((e) => e.sku === sku);
+        const entry = { sku, url };
+        if (existingIdx >= 0) manifest[existingIdx] = entry;
+        else manifest.push(entry);
+        writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
+
+        await testInfo.attach(`${sku}.png`, { body: smartTableBuf, contentType: "image/png" });
+        logResult({ sku, url, status: "screenshot_taken", durationMs: Date.now() - startTime });
         return;
       }
 
@@ -334,21 +376,34 @@ for (const url of urls) {
         return;
       }
 
+      // Smart table screenshot — separate from the widget compare view; present
+      // on stores that embed a page-level size guide alongside the widget.
+      const smartTableBuf = CAPTURE_MODE === "compare_view_only"
+        ? null
+        : await captureSmartTable(page, { type: "png" }).catch(() => null);
+
       // ── Save to disk ────────────────────────────────────────────────────────
       const screenshotsDir = join(__dirname, "../test-results/compare-view-screenshots", runDate);
       mkdirSync(screenshotsDir, { recursive: true });
       writeFileSync(join(screenshotsDir, `${sku}.png`), screenshot);
+      if (smartTableBuf) {
+        writeFileSync(join(screenshotsDir, `${sku}-smart-table.png`), smartTableBuf);
+      }
 
       const manifestPath = join(screenshotsDir, "manifest.json");
       const manifest = existsSync(manifestPath)
         ? JSON.parse(readFileSync(manifestPath, "utf8"))
         : [];
       const existingIdx = manifest.findIndex((e) => e.sku === sku);
-      if (existingIdx >= 0) manifest[existingIdx] = { sku, url };
-      else manifest.push({ sku, url });
+      const entry = { sku, url, hasSmartTable: !!smartTableBuf };
+      if (existingIdx >= 0) manifest[existingIdx] = entry;
+      else manifest.push(entry);
       writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
 
       await testInfo.attach(`${sku}.png`, { body: screenshot, contentType: "image/png" });
+      if (smartTableBuf) {
+        await testInfo.attach(`${sku}-smart-table.png`, { body: smartTableBuf, contentType: "image/png" });
+      }
 
       logResult({ sku, url, status: "screenshot_taken", durationMs: Date.now() - startTime });
     } finally {

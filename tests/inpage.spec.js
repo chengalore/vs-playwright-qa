@@ -11,6 +11,7 @@ import { expectedEvents } from "../config/expectedEvents.js";
 import { validateRecommendation } from "../utils/validateRecommendation.js";
 import { selectSizeIfMultiple } from "../utils/selectSizeIfMultiple.js";
 import { addItemToWardrobe } from "../utils/addItemToWardrobe.js";
+import { captureSmartTable } from "../utils/captureSmartTable.js";
 import {
   isBagProduct,
   detectFlow,
@@ -466,81 +467,16 @@ test("Inpage basic flow", async ({ page }, testInfo) => {
       widgetTextLog["widget-button"] = await captureWidgetText(page);
 
       // Smart table screenshot — taken here before the VS modal opens so it's never covered.
-      // #vs-smart-table is a page-embedded element; may be inside a collapsed accordion.
       try {
-        const stLoc = page.locator("#vs-smart-table").first();
-        if (await stLoc.count() > 0) {
-          const needsExpand = await page.evaluate(() => {
-            const st = document.querySelector("#vs-smart-table");
-            return st ? st.getBoundingClientRect().height === 0 : false;
-          }).catch(() => false);
-          if (needsExpand) {
-            await page.evaluate(() => {
-              const st = document.querySelector("#vs-smart-table");
-              if (!st) return;
-              let el = st.parentElement;
-              while (el && el !== document.body) {
-                const prev = el.previousElementSibling;
-                if (prev && (
-                  prev.classList.contains("js-accodion-tab") ||
-                  prev.getAttribute("role") === "tab" ||
-                  prev.getAttribute("role") === "button" ||
-                  prev.hasAttribute("aria-expanded")
-                )) { prev.click(); return; }
-                el = el.parentElement;
-              }
-            }).catch(() => {});
-            await page.waitForTimeout(1000);
-          }
-          await stLoc.scrollIntoViewIfNeeded({ timeout: 3000 }).catch(() => {});
-          await page.waitForTimeout(5000); // give smart table content time to fully render
-          const originalViewport = page.viewportSize();
-          // Screenshot a padded region around the table (not just the element itself) so
-          // the page context — including the size selector below the diagram — is visible.
-          // Grow the viewport in both dimensions to fit that padded region before capturing.
-          const PAD_SIDE = 150;
-          const PAD_TOP = 150;
-          const PAD_BOTTOM = 1000; // extra room below — size selector + footer branding live here
-          let stBuf = null;
-          let resized = false;
-          let stBbox = await stLoc.boundingBox().catch(() => null);
-          if (stBbox && originalViewport) {
-            const neededWidth = Math.ceil(stBbox.x + stBbox.width + PAD_SIDE);
-            const neededHeight = Math.ceil(stBbox.y + stBbox.height + PAD_BOTTOM);
-            resized = neededWidth > originalViewport.width || neededHeight > originalViewport.height;
-            if (resized) {
-              await page.setViewportSize({
-                width: Math.max(originalViewport.width, neededWidth),
-                height: Math.max(originalViewport.height, neededHeight),
-              }).catch(() => {});
-              await page.waitForTimeout(1000);
-              // Re-measure — growing the viewport can bring more of the table into view
-              // and trigger additional lazy-rendered content, changing its true height.
-              stBbox = await stLoc.boundingBox().catch(() => stBbox);
-            }
-            const clip = {
-              x: Math.max(0, stBbox.x - PAD_SIDE),
-              y: Math.max(0, stBbox.y - PAD_TOP),
-              width: stBbox.width + PAD_SIDE * 2,
-              height: stBbox.height + PAD_TOP + PAD_BOTTOM,
-            };
-            stBuf = await page.screenshot({ type: "jpeg", quality: 85, clip, timeout: 8000 }).catch(() => null);
-          } else {
-            // Fallback: element screenshot if we couldn't measure the bounding box
-            stBuf = await stLoc.screenshot({ type: "jpeg", quality: 85, timeout: 8000 }).catch(() => null);
-          }
-          if (resized) {
-            await page.setViewportSize(originalViewport).catch(() => {});
-          }
-          if (stBuf) {
-            const { mkdirSync, writeFileSync } = await import("fs");
-            const { join, dirname } = await import("path");
-            const { fileURLToPath } = await import("url");
-            const __dir = dirname(fileURLToPath(import.meta.url));
-            const dir = join(__dir, "../test-results/widget-screenshots");
-            mkdirSync(dir, { recursive: true });
-            writeFileSync(join(dir, `${testInfo.project.name}-smart-table.jpg`), stBuf);
-          }
+        const stBuf = await captureSmartTable(page);
+        if (stBuf) {
+          const { mkdirSync, writeFileSync } = await import("fs");
+          const { join, dirname } = await import("path");
+          const { fileURLToPath } = await import("url");
+          const __dir = dirname(fileURLToPath(import.meta.url));
+          const dir = join(__dir, "../test-results/widget-screenshots");
+          mkdirSync(dir, { recursive: true });
+          writeFileSync(join(dir, `${testInfo.project.name}-smart-table.jpg`), stBuf);
         }
       } catch { /* non-fatal */ }
     }
