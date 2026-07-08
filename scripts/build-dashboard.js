@@ -1144,6 +1144,15 @@ function generateDashboard(history, compareImages, singleUrlHistory, metrics) {
         <input id="compare-batch" type="text" placeholder="bottega-0421"
           style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:6px 10px;font-size:13px">
       </div>
+      <div style="margin-bottom:10px">
+        <label style="font-size:12px;color:#8b949e;display:block;margin-bottom:4px">What to capture</label>
+        <select id="compare-capture-mode"
+          style="width:100%;box-sizing:border-box;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:6px 10px;font-size:13px">
+          <option value="both">Both — compare view + smart table</option>
+          <option value="smart_table_only">Smart table only — skips onboarding/compare view, faster</option>
+          <option value="compare_view_only">Compare view only — skips smart table</option>
+        </select>
+      </div>
       <div style="margin-bottom:12px">
         <label style="font-size:12px;color:#8b949e;display:block;margin-bottom:4px">URLs — one per line</label>
         <textarea id="compare-urls" rows="6" placeholder="https://example.com/product-1&#10;https://example.com/product-2"
@@ -2271,6 +2280,7 @@ async function triggerCompareRun() {
   const pat = document.getElementById('gh-pat').value.trim();
   const urls = document.getElementById('compare-urls').value.trim();
   const batchName = document.getElementById('compare-batch').value.trim();
+  const captureMode = document.getElementById('compare-capture-mode').value;
   const status = document.getElementById('compare-trigger-status');
 
   if (!pat) { status.textContent = '⚠️ Enter a GitHub PAT first'; status.style.color = '#d29922'; return; }
@@ -2282,7 +2292,7 @@ async function triggerCompareRun() {
   const res = await fetch('https://api.github.com/repos/chengalore/vs-playwright-qa/actions/workflows/compare-view-screenshot.yml/dispatches', {
     method: 'POST',
     headers: { Authorization: 'Bearer ' + pat, Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' },
-    body: JSON.stringify({ ref: 'main', inputs: { urls, batch_name: batchName } }),
+    body: JSON.stringify({ ref: 'main', inputs: { urls, batch_name: batchName, capture_mode: captureMode } }),
   });
 
   if (res.status === 204) {
