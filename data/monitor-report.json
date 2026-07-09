@@ -1,26 +1,18 @@
 {
-  "timestamp": "2026-07-08T00:01:47.700Z",
-  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/28906992494",
+  "timestamp": "2026-07-09T00:12:09.946Z",
+  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/28984352705",
   "summary": {
     "total": 76,
-    "passed": 66,
-    "widgetMissing": 10,
+    "passed": 61,
+    "widgetMissing": 15,
     "skipped": 0,
     "failed": 0,
-    "fallbackUsed": 70,
-    "avgWidgetVisibleMs": 28614,
-    "p95WidgetVisibleMs": 37547
+    "fallbackUsed": 72,
+    "avgWidgetVisibleMs": 28867,
+    "p95WidgetVisibleMs": 37057
   },
   "newIssues": [],
   "widgetMissingStores": [
-    {
-      "store": "hankyu_mens",
-      "url": "https://web.hh-online.jp/hankyu-mens/goods/index.html?ggcd=508732084",
-      "browsers": [
-        "chrome",
-        "webkit"
-      ]
-    },
     {
       "store": "snidel",
       "url": "https://snidel.com/Form/Product/ProductDetail.aspx?shop=0&pid=SHFT261075&vid=&bid=SNH01&cid=&_type=&cat=&swrd=",
@@ -30,8 +22,24 @@
       ]
     },
     {
+      "store": "top_floor",
+      "url": "https://topfloor.jp/products/212277?pr_prod_strat=jac&pr_rec_id=ab0a3a908&pr_rec_pid=8058785628335&pr_ref_pid=8257059389615&pr_seq=uniform",
+      "browsers": [
+        "chrome",
+        "webkit"
+      ]
+    },
+    {
       "store": "beams",
       "url": "https://www.beams.co.jp/item/beams/blouson/11189110729/?color=19",
+      "browsers": [
+        "chrome",
+        "webkit"
+      ]
+    },
+    {
+      "store": "poppy",
+      "url": "https://poppy-tokyo.com/en/products/heart-button-leotard-yellow",
       "browsers": [
         "chrome",
         "webkit"
@@ -62,6 +70,22 @@
       ]
     },
     {
+      "store": "studio_nicholson",
+      "url": "https://japan.studionicholson.com/products/bridges-pant-in-parcel",
+      "browsers": [
+        "chrome",
+        "webkit"
+      ]
+    },
+    {
+      "store": "unitedarrows_global",
+      "url": "https://united-arrows-global.com/en-ph/products/16121000023",
+      "browsers": [
+        "chrome",
+        "webkit"
+      ]
+    },
+    {
       "store": "gelato_pique",
       "url": "https://gelatopique.com/Form/Product/ProductDetail.aspx?shop=0&pid=PWCO261297&vid=&bid=PIQ01&cid=&_type=&cat=WOM003001&swrd=",
       "browsers": [
@@ -70,8 +94,24 @@
       ]
     },
     {
+      "store": "classico_taiwan",
+      "url": "https://classicolabcoat.tw/products/305",
+      "browsers": [
+        "chrome",
+        "webkit"
+      ]
+    },
+    {
       "store": "taion_wear",
       "url": "https://taion-wear.jp/collections/women/products/taion-ts01bs-pr45",
+      "browsers": [
+        "chrome",
+        "webkit"
+      ]
+    },
+    {
+      "store": "frans_boone",
+      "url": "https://www.fransboonestore.com/products/the-real-mccoys-usn-alpaca-vest?pr_prod_strat=jac&pr_rec_id=ff99113b8&pr_rec_pid=8919767384388&pr_ref_pid=9359971057988&pr_seq=uniform",
       "browsers": [
         "chrome",
         "webkit"
@@ -97,19 +137,23 @@
   "ongoingMissing": [
     {
       "store": "reebok_korea",
-      "consecutiveRuns": 92
+      "consecutiveRuns": 93
     },
     {
       "store": "gelato_pique",
-      "consecutiveRuns": 92
+      "consecutiveRuns": 93
     },
     {
       "store": "snidel",
-      "consecutiveRuns": 89
+      "consecutiveRuns": 90
     },
     {
       "store": "hankyu_mens",
-      "consecutiveRuns": 11
+      "consecutiveRuns": 12
+    },
+    {
+      "store": "hankyu_hanshin",
+      "consecutiveRuns": 6
     },
     {
       "store": "estnation",
@@ -120,19 +164,23 @@
       "consecutiveRuns": 6
     },
     {
-      "store": "hankyu_hanshin",
-      "consecutiveRuns": 5
-    },
-    {
-      "store": "makes",
+      "store": "cox",
       "consecutiveRuns": 4
     },
     {
-      "store": "cox",
-      "consecutiveRuns": 3
+      "store": "beams",
+      "consecutiveRuns": 1
     },
     {
-      "store": "under_armour",
+      "store": "ameri_vintage",
+      "consecutiveRuns": 1
+    },
+    {
+      "store": "levi_japan",
+      "consecutiveRuns": 1
+    },
+    {
+      "store": "taion_wear",
       "consecutiveRuns": 1
     }
   ],

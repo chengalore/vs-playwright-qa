@@ -1,5 +1,209 @@
 [
   {
+    "timestamp": "2026-07-09T00:12:09.946Z",
+    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/28984352705",
+    "summary": {
+      "total": 76,
+      "passed": 61,
+      "widgetMissing": 15,
+      "skipped": 0,
+      "failed": 0,
+      "fallbackUsed": 72,
+      "avgWidgetVisibleMs": 28867,
+      "p95WidgetVisibleMs": 37057
+    },
+    "newIssues": [],
+    "widgetMissingStores": [
+      {
+        "store": "snidel",
+        "url": "https://snidel.com/Form/Product/ProductDetail.aspx?shop=0&pid=SHFT261075&vid=&bid=SNH01&cid=&_type=&cat=&swrd=",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "top_floor",
+        "url": "https://topfloor.jp/products/212277?pr_prod_strat=jac&pr_rec_id=ab0a3a908&pr_rec_pid=8058785628335&pr_ref_pid=8257059389615&pr_seq=uniform",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "beams",
+        "url": "https://www.beams.co.jp/item/beams/blouson/11189110729/?color=19",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "poppy",
+        "url": "https://poppy-tokyo.com/en/products/heart-button-leotard-yellow",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "cox",
+        "url": "https://tokyodesignchannel.com/c/lbc/26180639",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "ameri_vintage",
+        "url": "https://amerivintage.co.jp/products/0125201960030?_pos=4&_sid=eb5bcc531&_ss=r",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "levi_japan",
+        "url": "https://www.levi.jp/women/pants/jeans/slimskinny/plank%20%E3%82%B9%E3%83%88%E3%83%AC%E3%83%BC%E3%83%88%20%E3%83%80%E3%83%BC%E3%82%AF%E3%82%A4%E3%83%B3%E3%83%87%E3%82%A3%E3%82%B4%20stems%20made%20of%20japan/A91380000.html",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "studio_nicholson",
+        "url": "https://japan.studionicholson.com/products/bridges-pant-in-parcel",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "unitedarrows_global",
+        "url": "https://united-arrows-global.com/en-ph/products/16121000023",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "gelato_pique",
+        "url": "https://gelatopique.com/Form/Product/ProductDetail.aspx?shop=0&pid=PWCO261297&vid=&bid=PIQ01&cid=&_type=&cat=WOM003001&swrd=",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "classico_taiwan",
+        "url": "https://classicolabcoat.tw/products/305",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "taion_wear",
+        "url": "https://taion-wear.jp/collections/women/products/taion-ts01bs-pr45",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "frans_boone",
+        "url": "https://www.fransboonestore.com/products/the-real-mccoys-usn-alpaca-vest?pr_prod_strat=jac&pr_rec_id=ff99113b8&pr_rec_pid=8919767384388&pr_ref_pid=9359971057988&pr_seq=uniform",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "hankyu_hanshin",
+        "url": "https://web.hh-online.jp/fashion/goods/index.html?ggcd=508767628",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "reebok_korea",
+        "url": "https://reebok.co.kr/goods/goods_view.php?goodsNo=1000002262",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      }
+    ],
+    "ongoingMissing": [
+      {
+        "store": "reebok_korea",
+        "consecutiveRuns": 93
+      },
+      {
+        "store": "gelato_pique",
+        "consecutiveRuns": 93
+      },
+      {
+        "store": "snidel",
+        "consecutiveRuns": 90
+      },
+      {
+        "store": "hankyu_mens",
+        "consecutiveRuns": 12
+      },
+      {
+        "store": "hankyu_hanshin",
+        "consecutiveRuns": 6
+      },
+      {
+        "store": "estnation",
+        "consecutiveRuns": 6
+      },
+      {
+        "store": "world",
+        "consecutiveRuns": 6
+      },
+      {
+        "store": "cox",
+        "consecutiveRuns": 4
+      },
+      {
+        "store": "beams",
+        "consecutiveRuns": 1
+      },
+      {
+        "store": "ameri_vintage",
+        "consecutiveRuns": 1
+      },
+      {
+        "store": "levi_japan",
+        "consecutiveRuns": 1
+      },
+      {
+        "store": "taion_wear",
+        "consecutiveRuns": 1
+      }
+    ],
+    "botProtected": [
+      "adidas",
+      "adidas_japan",
+      "adidas_korea",
+      "asics",
+      "asics_japan",
+      "ralph_lauren",
+      "ralph_lauren_australia",
+      "ralph_lauren_china",
+      "ralph_lauren_korea",
+      "ralph_lauren_singapore",
+      "ralph_lauren_taiwan",
+      "ralph_lauren_uk",
+      "rl"
+    ],
+    "skippedStores": [],
+    "phase": "widget"
+  },
+  {
     "timestamp": "2026-07-08T00:01:47.700Z",
     "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/28906992494",
     "summary": {
@@ -7115,162 +7319,6 @@
       },
       {
         "store": "studio_nicholson",
-        "consecutiveRuns": 1
-      }
-    ],
-    "botProtected": [
-      "adidas",
-      "adidas_japan",
-      "adidas_korea",
-      "asics",
-      "asics_japan",
-      "ralph_lauren",
-      "ralph_lauren_australia",
-      "ralph_lauren_china",
-      "ralph_lauren_korea",
-      "ralph_lauren_singapore",
-      "ralph_lauren_taiwan",
-      "ralph_lauren_uk",
-      "rl"
-    ],
-    "skippedStores": [],
-    "phase": "widget"
-  },
-  {
-    "timestamp": "2026-05-21T03:06:03.937Z",
-    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/26197216056",
-    "summary": {
-      "total": 82,
-      "passed": 71,
-      "widgetMissing": 11,
-      "skipped": 0,
-      "failed": 0,
-      "fallbackUsed": 73,
-      "avgWidgetVisibleMs": 28423,
-      "p95WidgetVisibleMs": 35141
-    },
-    "newIssues": [],
-    "widgetMissingStores": [
-      {
-        "store": "gelato_pique",
-        "url": "https://gelatopique.com/Form/Product/ProductDetail.aspx?shop=0&pid=PWCO261297&vid=&bid=PIQ01&cid=&_type=&cat=WOM003001&swrd=",
-        "browsers": [
-          "chrome",
-          "webkit"
-        ]
-      },
-      {
-        "store": "seilin_online_shop",
-        "url": "https://www.hrm-eshop.com//shop/g/g1010671240006/",
-        "browsers": [
-          "chrome",
-          "webkit"
-        ]
-      },
-      {
-        "store": "coen",
-        "url": "https://www.coen.co.jp/item/7600024S0452",
-        "browsers": [
-          "chrome",
-          "webkit"
-        ]
-      },
-      {
-        "store": "reebok_korea",
-        "url": "https://reebok.co.kr/goods/goods_view.php?goodsNo=1000002262",
-        "browsers": [
-          "chrome",
-          "webkit"
-        ]
-      },
-      {
-        "store": "hankyu_hanshin",
-        "url": "https://web.hh-online.jp/fashion/goods/index.html?ggcd=508767628",
-        "browsers": [
-          "chrome",
-          "webkit"
-        ]
-      },
-      {
-        "store": "hankyu_mens",
-        "url": "https://web.hh-online.jp/hankyu-mens/goods/index.html?ggcd=508732084",
-        "browsers": [
-          "chrome",
-          "webkit"
-        ]
-      },
-      {
-        "store": "cox",
-        "url": "https://tokyodesignchannel.com/c/lbc/26180639",
-        "browsers": [
-          "chrome",
-          "webkit"
-        ]
-      },
-      {
-        "store": "poppy",
-        "url": "https://poppy-tokyo.com/products/poppy-print-long-t-shirt-pink",
-        "browsers": [
-          "chrome",
-          "webkit"
-        ]
-      },
-      {
-        "store": "snidel",
-        "url": "https://snidel.com/Form/Product/ProductDetail.aspx?shop=0&pid=SHFT261075&vid=&bid=SNH01&cid=&_type=&cat=&swrd=",
-        "browsers": [
-          "chrome",
-          "webkit"
-        ]
-      },
-      {
-        "store": "studio_nicholson",
-        "url": "https://japan.studionicholson.com/products/chalco-denim-pant-in-parchment",
-        "browsers": [
-          "chrome",
-          "webkit"
-        ]
-      },
-      {
-        "store": "sanyo_online_store",
-        "url": "https://store.sanyo-shokai.co.jp/products/k1n28457",
-        "browsers": [
-          "chrome",
-          "webkit"
-        ]
-      }
-    ],
-    "ongoingMissing": [
-      {
-        "store": "reebok_korea",
-        "consecutiveRuns": 47
-      },
-      {
-        "store": "gelato_pique",
-        "consecutiveRuns": 47
-      },
-      {
-        "store": "snidel",
-        "consecutiveRuns": 45
-      },
-      {
-        "store": "seilin_online_shop",
-        "consecutiveRuns": 7
-      },
-      {
-        "store": "hankyu_mens",
-        "consecutiveRuns": 3
-      },
-      {
-        "store": "poppy",
-        "consecutiveRuns": 2
-      },
-      {
-        "store": "hankyu_hanshin",
-        "consecutiveRuns": 1
-      },
-      {
-        "store": "sanyo_online_store",
         "consecutiveRuns": 1
       }
     ],
