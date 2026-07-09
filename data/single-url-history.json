@@ -1,5 +1,552 @@
 [
   {
+    "timestamp": "2026-07-09T01:45:39.490Z",
+    "url": "https://united-arrows-global.com/en-ph/products/16121000023?vs-staging=true&vs-stg-api=true&vs-prod-pdc=true",
+    "phase": "full",
+    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/28988139672",
+    "store": "unitedarrows_global",
+    "productType": null,
+    "flow": "apparel",
+    "versionLabel": null,
+    "language": "en",
+    "wasSetAsBaseline": false,
+    "onboarding": {
+      "gender": "female",
+      "age": "35",
+      "height": "161",
+      "weight": "54"
+    },
+    "giftOnboarding": {
+      "gender": "female",
+      "age": "30-39",
+      "height": "160-164",
+      "bodyType": "52 - 63 kg"
+    },
+    "footwearOnboarding": {
+      "gender": "female",
+      "brand": "Adidas",
+      "size": "25.5 cm"
+    },
+    "kidsOnboarding": {
+      "gender": "girl",
+      "age": 8,
+      "height": "120",
+      "weight": "25"
+    },
+    "events": [
+      {
+        "event": "user-saw-product::integration",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-saw-widget-button::integration",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-opened-widget::inpage",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-saw-onboarding-screen::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-selected-gender::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-selected-age::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-selected-height::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-selected-weight::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-completed-onboarding::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-created-silhouette::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-got-size-recommendation::integration",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-opened-panel-tryiton::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-opened-panel-details::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-opened-panel-compare::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-added-product::fit-illustrator",
+        "phase": "onboarding"
+      },
+      {
+        "event": "user-saw-product::integration",
+        "phase": "refresh"
+      },
+      {
+        "event": "user-saw-widget-button::integration",
+        "phase": "refresh"
+      },
+      {
+        "event": "user-opened-widget::inpage",
+        "phase": "refresh"
+      },
+      {
+        "event": "user-saw-onboarding-screen::fit-illustrator",
+        "phase": "refresh"
+      }
+    ],
+    "browsers": [
+      {
+        "browser": "chrome",
+        "status": "failed",
+        "error": "Refresh missing events: user-selected-size::inpage, user-got-size-recommendation::integration",
+        "missingEvents": [
+          "user-selected-size::inpage",
+          "user-got-size-recommendation::integration"
+        ],
+        "widgetVisibleMs": 8423,
+        "screenshotFile": "screenshots/2026-07-09T01-45-39-chrome.jpg",
+        "onboardingFile": "screenshots/2026-07-09T01-45-39-chrome-onboarding.jpg",
+        "onboardingFilledFile": "screenshots/2026-07-09T01-45-39-chrome-onboarding-filled.jpg",
+        "resultFile": "screenshots/2026-07-09T01-45-39-chrome-result.jpg",
+        "giftOnboardingFile": null,
+        "giftResultFile": null,
+        "smartTableFile": null,
+        "widgetType": "inpage_luxury",
+        "hasSmartTable": null,
+        "widgetTextLog": {
+          "widget-button": [],
+          "onboarding": [
+            "Save your silhouette and items for next time. Finish setting up, it only takes a second!",
+            "Finish signing up",
+            "I already have an account",
+            "My wardrobe",
+            "My silhouette",
+            "My account",
+            "FAQ",
+            "Support",
+            "cm/kg",
+            "Privacy policy",
+            "Back",
+            "What is Virtusize?",
+            "Give Feedback",
+            "Privacy Policy",
+            "Report a Problem",
+            "Finding the best fit...",
+            "Login to Virtusize",
+            "Hold on, analyzing your fit...",
+            "We are analyzing your fit based on more than\n 10 million pieces of data",
+            "Find your \nperfect fit.",
+            "How it works",
+            "Gender",
+            "Female",
+            "Male",
+            "Age",
+            "years",
+            "Height",
+            "cm",
+            "Weight",
+            "kg",
+            "Measurement unit",
+            "ft/Ib",
+            "I agree to Virtusize's privacy policy.",
+            "See your ideal fit",
+            "Size:  FREE",
+            "See how it fits you"
+          ],
+          "onboarding-filled": [
+            "Save your silhouette and items for next time. Finish setting up, it only takes a second!",
+            "Finish signing up",
+            "I already have an account",
+            "My wardrobe",
+            "My silhouette",
+            "My account",
+            "FAQ",
+            "Support",
+            "cm/kg",
+            "Privacy policy",
+            "Back",
+            "What is Virtusize?",
+            "Give Feedback",
+            "Privacy Policy",
+            "Report a Problem",
+            "Finding the best fit...",
+            "Login to Virtusize",
+            "Hold on, analyzing your fit...",
+            "We are analyzing your fit based on more than\n 10 million pieces of data",
+            "Find your \nperfect fit.",
+            "How it works",
+            "Gender",
+            "Female",
+            "Male",
+            "Age",
+            "years",
+            "Height",
+            "cm",
+            "Weight",
+            "kg",
+            "Measurement unit",
+            "ft/Ib",
+            "I agree to Virtusize's privacy policy.",
+            "See your ideal fit",
+            "Size:  FREE",
+            "See how it fits you"
+          ],
+          "result": [
+            "Save your silhouette and items for next time. Finish setting up, it only takes a second!",
+            "Finish signing up",
+            "I already have an account",
+            "My wardrobe",
+            "My silhouette",
+            "My account",
+            "FAQ",
+            "Support",
+            "cm/kg",
+            "Privacy policy",
+            "Back",
+            "What is Virtusize?",
+            "Give Feedback",
+            "Privacy Policy",
+            "Report a Problem",
+            "Finding the best fit...",
+            "Edit Body",
+            "6 cm below wrist",
+            "3 cm above hip",
+            "Chest Regular fit",
+            "ONE SIZE ONLY",
+            "Back to store",
+            "Size:  FREE",
+            "See how it fits you"
+          ]
+        },
+        "textDiff": {
+          "widget-button": {
+            "missing": [
+              "簡単サイズチェック",
+              "試着する",
+              "贈り物ですか?"
+            ],
+            "added": []
+          },
+          "onboarding": {
+            "missing": [
+              "バーチャサイズはあなたの入力情報や購入履歴をもとにサイズの提案をしています。データの損失を防ぐためには、アカウントを作成してください。",
+              "アカウント作成を続ける",
+              "アカウントをお持ちの方はこちら",
+              "クローゼット",
+              "シルエット",
+              "アカウント",
+              "よくある質問",
+              "サポート",
+              "日本語",
+              "個人情報保護方針",
+              "戻る",
+              "Virtusizeとは",
+              "フィードバックを送る",
+              "プライバシーポリシー",
+              "不具合・問題の報告",
+              "おすすめサイズを探し中...",
+              "Virtusizeにログイン",
+              "1,000万以上の身体データをもとに、あなたに合う\n最適なサイズを探します",
+              "あなたの体型をもとに\nサイズを確認します",
+              "日本語/JA",
+              "使い方ガイド",
+              "性別",
+              "女性",
+              "男性",
+              "年齢",
+              "身長",
+              "体重",
+              "単位",
+              "Virtusizeの個人情報保護方針に同意する",
+              "おすすめのサイズを確認",
+              "簡単サイズチェック",
+              "試着する",
+              "贈り物ですか?"
+            ],
+            "added": [
+              "Save your silhouette and items for next time. Finish setting up, it only takes a second!",
+              "Finish signing up",
+              "I already have an account",
+              "My wardrobe",
+              "My silhouette",
+              "My account",
+              "FAQ",
+              "Support",
+              "Privacy policy",
+              "Back",
+              "What is Virtusize?",
+              "Give Feedback",
+              "Privacy Policy",
+              "Report a Problem",
+              "Finding the best fit...",
+              "Login to Virtusize",
+              "Hold on, analyzing your fit...",
+              "We are analyzing your fit based on more than\n 10 million pieces of data",
+              "Find your \nperfect fit.",
+              "How it works",
+              "Gender",
+              "Female",
+              "Male",
+              "Age",
+              "years",
+              "Height",
+              "Weight",
+              "Measurement unit",
+              "I agree to Virtusize's privacy policy.",
+              "See your ideal fit",
+              "Size:  FREE",
+              "See how it fits you"
+            ]
+          },
+          "onboarding-filled": {
+            "missing": [
+              "バーチャサイズはあなたの入力情報や購入履歴をもとにサイズの提案をしています。データの損失を防ぐためには、アカウントを作成してください。",
+              "アカウント作成を続ける",
+              "アカウントをお持ちの方はこちら",
+              "クローゼット",
+              "シルエット",
+              "アカウント",
+              "よくある質問",
+              "サポート",
+              "日本語",
+              "個人情報保護方針",
+              "戻る",
+              "Virtusizeとは",
+              "フィードバックを送る",
+              "プライバシーポリシー",
+              "不具合・問題の報告",
+              "おすすめサイズを探し中...",
+              "Virtusizeにログイン",
+              "1,000万以上の身体データをもとに、あなたに合う\n最適なサイズを探します",
+              "あなたの体型をもとに\nサイズを確認します",
+              "日本語/JA",
+              "使い方ガイド",
+              "性別",
+              "女性",
+              "男性",
+              "年齢",
+              "身長",
+              "体重",
+              "単位",
+              "Virtusizeの個人情報保護方針に同意する",
+              "おすすめのサイズを確認",
+              "簡単サイズチェック",
+              "試着する",
+              "贈り物ですか?"
+            ],
+            "added": [
+              "Save your silhouette and items for next time. Finish setting up, it only takes a second!",
+              "Finish signing up",
+              "I already have an account",
+              "My wardrobe",
+              "My silhouette",
+              "My account",
+              "FAQ",
+              "Support",
+              "Privacy policy",
+              "Back",
+              "What is Virtusize?",
+              "Give Feedback",
+              "Privacy Policy",
+              "Report a Problem",
+              "Finding the best fit...",
+              "Login to Virtusize",
+              "Hold on, analyzing your fit...",
+              "We are analyzing your fit based on more than\n 10 million pieces of data",
+              "Find your \nperfect fit.",
+              "How it works",
+              "Gender",
+              "Female",
+              "Male",
+              "Age",
+              "years",
+              "Height",
+              "Weight",
+              "Measurement unit",
+              "I agree to Virtusize's privacy policy.",
+              "See your ideal fit",
+              "Size:  FREE",
+              "See how it fits you"
+            ]
+          },
+          "result": {
+            "missing": [
+              "バーチャサイズはあなたの入力情報や購入履歴をもとにサイズの提案をしています。データの損失を防ぐためには、アカウントを作成してください。",
+              "アカウント作成を続ける",
+              "アカウントをお持ちの方はこちら",
+              "クローゼット",
+              "シルエット",
+              "アカウント",
+              "よくある質問",
+              "サポート",
+              "日本語",
+              "個人情報保護方針",
+              "戻る",
+              "Virtusizeとは",
+              "フィードバックを送る",
+              "プライバシーポリシー",
+              "不具合・問題の報告",
+              "おすすめサイズを探し中...",
+              "体型を編集",
+              "ひじから1 cm上",
+              "ヒップから9 cm下",
+              "ひじから3 cm下",
+              "ヒップから12 cm下",
+              "身幅 ゆったり",
+              "ひじから6 cm下",
+              "ヒップから15 cm下",
+              "肩幅 ゆったり",
+              "ひじから9 cm下",
+              "ヒップから18 cm下",
+              "ひじから12 cm下",
+              "ヒップから21 cm下",
+              "ひじから15 cm下",
+              "ヒップから24 cm下",
+              "身幅 とてもゆったり",
+              "肩幅 とてもゆったり",
+              "ひじから18 cm下",
+              "ヒップから27 cm下",
+              "最もおすすめのサイズ",
+              "XS",
+              "XL",
+              "2XL",
+              "3XL",
+              "商品ページへ戻る",
+              "あなたにフィットするサイズ",
+              "試着する",
+              "贈り物ですか?"
+            ],
+            "added": [
+              "Save your silhouette and items for next time. Finish setting up, it only takes a second!",
+              "Finish signing up",
+              "I already have an account",
+              "My wardrobe",
+              "My silhouette",
+              "My account",
+              "FAQ",
+              "Support",
+              "Privacy policy",
+              "Back",
+              "What is Virtusize?",
+              "Give Feedback",
+              "Privacy Policy",
+              "Report a Problem",
+              "Finding the best fit...",
+              "Edit Body",
+              "6 cm below wrist",
+              "3 cm above hip",
+              "Chest Regular fit",
+              "ONE SIZE ONLY",
+              "Back to store",
+              "Size:  FREE",
+              "See how it fits you"
+            ]
+          },
+          "gift-onboarding": {
+            "missing": [
+              "バーチャサイズはあなたの入力情報や購入履歴をもとにサイズの提案をしています。データの損失を防ぐためには、アカウントを作成してください。",
+              "アカウント作成を続ける",
+              "アカウントをお持ちの方はこちら",
+              "クローゼット",
+              "シルエット",
+              "アカウント",
+              "よくある質問",
+              "サポート",
+              "日本語",
+              "cm/kg",
+              "個人情報保護方針",
+              "戻る",
+              "Virtusizeとは",
+              "フィードバックを送る",
+              "プライバシーポリシー",
+              "不具合・問題の報告",
+              "おすすめサイズを探し中...",
+              "1,000万以上の身体データをもとに、あなたに合う\n最適なサイズを探します",
+              "少しの情報で、\nぴったりの贈りものを",
+              "日本語/JA",
+              "使い方ガイド",
+              "お相手の情報を入力",
+              "自分のサイズを探す",
+              "性別",
+              "女性",
+              "男性",
+              "年齢",
+              "26-29",
+              "身長",
+              "150-154",
+              "cm",
+              "体型タイプ",
+              "54 - 64",
+              "kg",
+              "おすすめのサイズを確認",
+              "あなたにフィットするサイズ",
+              "試着する",
+              "贈り物ですか?"
+            ],
+            "added": []
+          },
+          "gift-result": {
+            "missing": [
+              "バーチャサイズはあなたの入力情報や購入履歴をもとにサイズの提案をしています。データの損失を防ぐためには、アカウントを作成してください。",
+              "アカウント作成を続ける",
+              "アカウントをお持ちの方はこちら",
+              "クローゼット",
+              "シルエット",
+              "アカウント",
+              "よくある質問",
+              "サポート",
+              "日本語",
+              "cm/kg",
+              "個人情報保護方針",
+              "戻る",
+              "Virtusizeとは",
+              "フィードバックを送る",
+              "プライバシーポリシー",
+              "不具合・問題の報告",
+              "おすすめサイズを探し中...",
+              "お相手におすすめのサイズ",
+              "XS",
+              "2番目におすすめのサイズ:",
+              "お相手のプロフィール",
+              "性別:",
+              "年齢:",
+              "身長:",
+              "予測体重:",
+              "女性",
+              "30-39",
+              "160-164cm",
+              "<49kg",
+              "やり直す",
+              "商品ページへ戻る",
+              "あなたにフィットするサイズ",
+              "試着する",
+              "お相手のおすすめサイズ:XS"
+            ],
+            "added": []
+          }
+        },
+        "baselineExists": true
+      }
+    ]
+  },
+  {
     "timestamp": "2026-07-08T10:08:34.722Z",
     "url": "https://edwin-mall.jp/shop/g/gMEB011-75-01?vs-test=&vs-staging=true&vs-stg-api=true&vs-prod-pdc=true",
     "phase": "full",
@@ -25134,84 +25681,6 @@
         "widgetVisibleMs": 8986,
         "screenshotFile": "screenshots/2026-05-25T01-42-15-chrome.jpg",
         "widgetType": "inpage",
-        "hasSmartTable": null
-      }
-    ]
-  },
-  {
-    "timestamp": "2026-05-21T04:02:15.414Z",
-    "url": "https://www.bottegaveneta.com/ja-jp/%E3%82%A2%E3%83%B3%E3%82%B4%E3%83%AD-%E3%83%A1%E3%83%83%E3%82%BB%E3%83%B3%E3%82%B8%E3%83%A3%E3%83%BC-%E3%83%96%E3%83%A9%E3%83%83%E3%82%AF-867404V6HU08803.html",
-    "phase": "full",
-    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/26204629449",
-    "store": "bottega_veneta_japan",
-    "productType": "bag",
-    "flow": "bag",
-    "onboarding": {
-      "gender": "female",
-      "age": "35",
-      "height": "161",
-      "weight": "54"
-    },
-    "giftOnboarding": {
-      "gender": "female",
-      "age": "30-39",
-      "height": "160-164",
-      "bodyType": "52 - 63 kg"
-    },
-    "footwearOnboarding": {
-      "gender": "female",
-      "brand": "Adidas",
-      "size": "25.5 cm"
-    },
-    "kidsOnboarding": {
-      "gender": "girl",
-      "age": 8,
-      "height": "120",
-      "weight": "25"
-    },
-    "events": [
-      {
-        "event": "user-saw-product::integration",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-saw-widget-button::integration",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-opened-widget::inpage",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-opened-panel-compare::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-saw-bag-disclaimer::fit-illustrator",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-clicked-start::integration",
-        "phase": "onboarding"
-      },
-      {
-        "event": "user-saw-product::integration",
-        "phase": "refresh"
-      },
-      {
-        "event": "user-saw-widget-button::integration",
-        "phase": "refresh"
-      }
-    ],
-    "browsers": [
-      {
-        "browser": "chrome",
-        "status": "passed",
-        "error": null,
-        "missingEvents": [],
-        "widgetVisibleMs": null,
-        "screenshotFile": null,
-        "widgetType": null,
         "hasSmartTable": null
       }
     ]
