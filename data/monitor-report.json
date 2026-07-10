@@ -1,18 +1,26 @@
 {
-  "timestamp": "2026-07-09T00:12:09.946Z",
-  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/28984352705",
+  "timestamp": "2026-07-10T00:07:26.996Z",
+  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/29058866100",
   "summary": {
     "total": 76,
-    "passed": 61,
-    "widgetMissing": 15,
+    "passed": 60,
+    "widgetMissing": 16,
     "skipped": 0,
     "failed": 0,
-    "fallbackUsed": 72,
-    "avgWidgetVisibleMs": 28867,
-    "p95WidgetVisibleMs": 37057
+    "fallbackUsed": 70,
+    "avgWidgetVisibleMs": 28324,
+    "p95WidgetVisibleMs": 39017
   },
   "newIssues": [],
   "widgetMissingStores": [
+    {
+      "store": "hankyu_mens",
+      "url": "https://web.hh-online.jp/hankyu-mens/goods/index.html?ggcd=508732084",
+      "browsers": [
+        "chrome",
+        "webkit"
+      ]
+    },
     {
       "store": "snidel",
       "url": "https://snidel.com/Form/Product/ProductDetail.aspx?shop=0&pid=SHFT261075&vid=&bid=SNH01&cid=&_type=&cat=&swrd=",
@@ -46,14 +54,6 @@
       ]
     },
     {
-      "store": "cox",
-      "url": "https://tokyodesignchannel.com/c/lbc/26180639",
-      "browsers": [
-        "chrome",
-        "webkit"
-      ]
-    },
-    {
       "store": "ameri_vintage",
       "url": "https://amerivintage.co.jp/products/0125201960030?_pos=4&_sid=eb5bcc531&_ss=r",
       "browsers": [
@@ -80,6 +80,14 @@
     {
       "store": "unitedarrows_global",
       "url": "https://united-arrows-global.com/en-ph/products/16121000023",
+      "browsers": [
+        "chrome",
+        "webkit"
+      ]
+    },
+    {
+      "store": "re_edit",
+      "url": "https://reedit.jp/products/137264",
       "browsers": [
         "chrome",
         "webkit"
@@ -137,23 +145,19 @@
   "ongoingMissing": [
     {
       "store": "reebok_korea",
-      "consecutiveRuns": 93
+      "consecutiveRuns": 94
     },
     {
       "store": "gelato_pique",
-      "consecutiveRuns": 93
+      "consecutiveRuns": 94
     },
     {
       "store": "snidel",
-      "consecutiveRuns": 90
-    },
-    {
-      "store": "hankyu_mens",
-      "consecutiveRuns": 12
+      "consecutiveRuns": 91
     },
     {
       "store": "hankyu_hanshin",
-      "consecutiveRuns": 6
+      "consecutiveRuns": 7
     },
     {
       "store": "estnation",
@@ -165,22 +169,46 @@
     },
     {
       "store": "cox",
-      "consecutiveRuns": 4
+      "consecutiveRuns": 5
     },
     {
       "store": "beams",
-      "consecutiveRuns": 1
+      "consecutiveRuns": 2
     },
     {
       "store": "ameri_vintage",
-      "consecutiveRuns": 1
+      "consecutiveRuns": 2
     },
     {
       "store": "levi_japan",
-      "consecutiveRuns": 1
+      "consecutiveRuns": 2
     },
     {
       "store": "taion_wear",
+      "consecutiveRuns": 2
+    },
+    {
+      "store": "frans_boone",
+      "consecutiveRuns": 1
+    },
+    {
+      "store": "top_floor",
+      "consecutiveRuns": 1
+    },
+    {
+      "store": "poppy",
+      "consecutiveRuns": 1
+    },
+    {
+      "store": "studio_nicholson",
+      "consecutiveRuns": 1
+    },
+    {
+      "store": "unitedarrows_global",
+      "consecutiveRuns": 1
+    },
+    {
+      "store": "classico_taiwan",
       "consecutiveRuns": 1
     }
   ],
