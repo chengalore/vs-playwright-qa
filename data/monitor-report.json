@@ -1,15 +1,15 @@
 {
-  "timestamp": "2026-07-10T00:07:26.996Z",
-  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/29058866100",
+  "timestamp": "2026-07-11T00:01:37.321Z",
+  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/29131436638",
   "summary": {
     "total": 76,
-    "passed": 60,
-    "widgetMissing": 16,
+    "passed": 55,
+    "widgetMissing": 21,
     "skipped": 0,
     "failed": 0,
     "fallbackUsed": 70,
-    "avgWidgetVisibleMs": 28324,
-    "p95WidgetVisibleMs": 39017
+    "avgWidgetVisibleMs": 29341,
+    "p95WidgetVisibleMs": 39225
   },
   "newIssues": [],
   "widgetMissingStores": [
@@ -54,8 +54,48 @@
       ]
     },
     {
+      "store": "camilla_and_marc",
+      "url": "https://www.camillaandmarc.com/products/nestor-blazer-choc-marle",
+      "browsers": [
+        "chrome",
+        "webkit"
+      ]
+    },
+    {
+      "store": "retouch",
+      "url": "https://re-touch.tokyo/products/easy-slacks",
+      "browsers": [
+        "chrome",
+        "webkit"
+      ]
+    },
+    {
       "store": "ameri_vintage",
       "url": "https://amerivintage.co.jp/products/0125201960030?_pos=4&_sid=eb5bcc531&_ss=r",
+      "browsers": [
+        "chrome",
+        "webkit"
+      ]
+    },
+    {
+      "store": "sanyo_online_store",
+      "url": "https://store.sanyo-shokai.co.jp/products/k1n28457",
+      "browsers": [
+        "chrome",
+        "webkit"
+      ]
+    },
+    {
+      "store": "classico_global",
+      "url": "https://classico-global.com/en-ph/products/a39",
+      "browsers": [
+        "chrome",
+        "webkit"
+      ]
+    },
+    {
+      "store": "andar_japan",
+      "url": "https://andar-jp.com/products/airywin-straight-fit-pants",
       "browsers": [
         "chrome",
         "webkit"
@@ -145,19 +185,19 @@
   "ongoingMissing": [
     {
       "store": "reebok_korea",
-      "consecutiveRuns": 94
+      "consecutiveRuns": 95
     },
     {
       "store": "gelato_pique",
-      "consecutiveRuns": 94
+      "consecutiveRuns": 95
     },
     {
       "store": "snidel",
-      "consecutiveRuns": 91
+      "consecutiveRuns": 92
     },
     {
       "store": "hankyu_hanshin",
-      "consecutiveRuns": 7
+      "consecutiveRuns": 8
     },
     {
       "store": "estnation",
@@ -168,47 +208,51 @@
       "consecutiveRuns": 6
     },
     {
-      "store": "cox",
-      "consecutiveRuns": 5
-    },
-    {
       "store": "beams",
-      "consecutiveRuns": 2
+      "consecutiveRuns": 3
     },
     {
       "store": "ameri_vintage",
-      "consecutiveRuns": 2
+      "consecutiveRuns": 3
     },
     {
       "store": "levi_japan",
-      "consecutiveRuns": 2
+      "consecutiveRuns": 3
     },
     {
       "store": "taion_wear",
-      "consecutiveRuns": 2
+      "consecutiveRuns": 3
     },
     {
       "store": "frans_boone",
-      "consecutiveRuns": 1
+      "consecutiveRuns": 2
     },
     {
       "store": "top_floor",
-      "consecutiveRuns": 1
+      "consecutiveRuns": 2
     },
     {
       "store": "poppy",
-      "consecutiveRuns": 1
+      "consecutiveRuns": 2
     },
     {
       "store": "studio_nicholson",
-      "consecutiveRuns": 1
+      "consecutiveRuns": 2
     },
     {
       "store": "unitedarrows_global",
-      "consecutiveRuns": 1
+      "consecutiveRuns": 2
     },
     {
       "store": "classico_taiwan",
+      "consecutiveRuns": 2
+    },
+    {
+      "store": "re_edit",
+      "consecutiveRuns": 1
+    },
+    {
+      "store": "hankyu_mens",
       "consecutiveRuns": 1
     }
   ],
