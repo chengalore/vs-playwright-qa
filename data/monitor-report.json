@@ -1,15 +1,15 @@
 {
-  "timestamp": "2026-07-11T00:01:37.321Z",
-  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/29131436638",
+  "timestamp": "2026-07-11T23:57:47.688Z",
+  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/29172758218",
   "summary": {
     "total": 76,
     "passed": 55,
     "widgetMissing": 21,
     "skipped": 0,
     "failed": 0,
-    "fallbackUsed": 70,
-    "avgWidgetVisibleMs": 29341,
-    "p95WidgetVisibleMs": 39225
+    "fallbackUsed": 69,
+    "avgWidgetVisibleMs": 29201,
+    "p95WidgetVisibleMs": 43331
   },
   "newIssues": [],
   "widgetMissingStores": [
@@ -94,16 +94,16 @@
       ]
     },
     {
-      "store": "andar_japan",
-      "url": "https://andar-jp.com/products/airywin-straight-fit-pants",
+      "store": "levi_japan",
+      "url": "https://www.levi.jp/women/pants/jeans/slimskinny/plank%20%E3%82%B9%E3%83%88%E3%83%AC%E3%83%BC%E3%83%88%20%E3%83%80%E3%83%BC%E3%82%AF%E3%82%A4%E3%83%B3%E3%83%87%E3%82%A3%E3%82%B4%20stems%20made%20of%20japan/A91380000.html",
       "browsers": [
         "chrome",
         "webkit"
       ]
     },
     {
-      "store": "levi_japan",
-      "url": "https://www.levi.jp/women/pants/jeans/slimskinny/plank%20%E3%82%B9%E3%83%88%E3%83%AC%E3%83%BC%E3%83%88%20%E3%83%80%E3%83%BC%E3%82%AF%E3%82%A4%E3%83%B3%E3%83%87%E3%82%A3%E3%82%B4%20stems%20made%20of%20japan/A91380000.html",
+      "store": "andar_japan",
+      "url": "https://andar-jp.com/products/airywin-straight-fit-pants",
       "browsers": [
         "chrome",
         "webkit"
@@ -185,19 +185,19 @@
   "ongoingMissing": [
     {
       "store": "reebok_korea",
-      "consecutiveRuns": 95
+      "consecutiveRuns": 96
     },
     {
       "store": "gelato_pique",
-      "consecutiveRuns": 95
+      "consecutiveRuns": 96
     },
     {
       "store": "snidel",
-      "consecutiveRuns": 92
+      "consecutiveRuns": 93
     },
     {
       "store": "hankyu_hanshin",
-      "consecutiveRuns": 8
+      "consecutiveRuns": 9
     },
     {
       "store": "estnation",
@@ -209,50 +209,70 @@
     },
     {
       "store": "beams",
-      "consecutiveRuns": 3
+      "consecutiveRuns": 4
     },
     {
       "store": "ameri_vintage",
-      "consecutiveRuns": 3
+      "consecutiveRuns": 4
     },
     {
       "store": "levi_japan",
-      "consecutiveRuns": 3
+      "consecutiveRuns": 4
     },
     {
       "store": "taion_wear",
-      "consecutiveRuns": 3
+      "consecutiveRuns": 4
     },
     {
       "store": "frans_boone",
-      "consecutiveRuns": 2
+      "consecutiveRuns": 3
     },
     {
       "store": "top_floor",
-      "consecutiveRuns": 2
+      "consecutiveRuns": 3
     },
     {
       "store": "poppy",
-      "consecutiveRuns": 2
+      "consecutiveRuns": 3
     },
     {
       "store": "studio_nicholson",
-      "consecutiveRuns": 2
+      "consecutiveRuns": 3
     },
     {
       "store": "unitedarrows_global",
-      "consecutiveRuns": 2
+      "consecutiveRuns": 3
     },
     {
       "store": "classico_taiwan",
-      "consecutiveRuns": 2
+      "consecutiveRuns": 3
     },
     {
       "store": "re_edit",
-      "consecutiveRuns": 1
+      "consecutiveRuns": 2
     },
     {
       "store": "hankyu_mens",
+      "consecutiveRuns": 2
+    },
+    {
+      "store": "andar_japan",
+      "consecutiveRuns": 1
+    },
+    {
+      "store": "camilla_and_marc",
+      "consecutiveRuns": 1
+    },
+    {
+      "store": "classico_global",
+      "consecutiveRuns": 1
+    },
+    {
+      "store": "retouch",
+      "consecutiveRuns": 1
+    },
+    {
+      "store": "sanyo_online_store",
       "consecutiveRuns": 1
     }
   ],

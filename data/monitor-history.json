@@ -1,5 +1,301 @@
 [
   {
+    "timestamp": "2026-07-11T23:57:47.688Z",
+    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/29172758218",
+    "summary": {
+      "total": 76,
+      "passed": 55,
+      "widgetMissing": 21,
+      "skipped": 0,
+      "failed": 0,
+      "fallbackUsed": 69,
+      "avgWidgetVisibleMs": 29201,
+      "p95WidgetVisibleMs": 43331
+    },
+    "newIssues": [],
+    "widgetMissingStores": [
+      {
+        "store": "hankyu_mens",
+        "url": "https://web.hh-online.jp/hankyu-mens/goods/index.html?ggcd=508732084",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "snidel",
+        "url": "https://snidel.com/Form/Product/ProductDetail.aspx?shop=0&pid=SHFT261075&vid=&bid=SNH01&cid=&_type=&cat=&swrd=",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "top_floor",
+        "url": "https://topfloor.jp/products/212277?pr_prod_strat=jac&pr_rec_id=ab0a3a908&pr_rec_pid=8058785628335&pr_ref_pid=8257059389615&pr_seq=uniform",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "beams",
+        "url": "https://www.beams.co.jp/item/beams/blouson/11189110729/?color=19",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "poppy",
+        "url": "https://poppy-tokyo.com/en/products/heart-button-leotard-yellow",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "camilla_and_marc",
+        "url": "https://www.camillaandmarc.com/products/nestor-blazer-choc-marle",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "retouch",
+        "url": "https://re-touch.tokyo/products/easy-slacks",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "ameri_vintage",
+        "url": "https://amerivintage.co.jp/products/0125201960030?_pos=4&_sid=eb5bcc531&_ss=r",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "sanyo_online_store",
+        "url": "https://store.sanyo-shokai.co.jp/products/k1n28457",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "classico_global",
+        "url": "https://classico-global.com/en-ph/products/a39",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "levi_japan",
+        "url": "https://www.levi.jp/women/pants/jeans/slimskinny/plank%20%E3%82%B9%E3%83%88%E3%83%AC%E3%83%BC%E3%83%88%20%E3%83%80%E3%83%BC%E3%82%AF%E3%82%A4%E3%83%B3%E3%83%87%E3%82%A3%E3%82%B4%20stems%20made%20of%20japan/A91380000.html",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "andar_japan",
+        "url": "https://andar-jp.com/products/airywin-straight-fit-pants",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "studio_nicholson",
+        "url": "https://japan.studionicholson.com/products/bridges-pant-in-parcel",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "unitedarrows_global",
+        "url": "https://united-arrows-global.com/en-ph/products/16121000023",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "re_edit",
+        "url": "https://reedit.jp/products/137264",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "gelato_pique",
+        "url": "https://gelatopique.com/Form/Product/ProductDetail.aspx?shop=0&pid=PWCO261297&vid=&bid=PIQ01&cid=&_type=&cat=WOM003001&swrd=",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "classico_taiwan",
+        "url": "https://classicolabcoat.tw/products/305",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "taion_wear",
+        "url": "https://taion-wear.jp/collections/women/products/taion-ts01bs-pr45",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "frans_boone",
+        "url": "https://www.fransboonestore.com/products/the-real-mccoys-usn-alpaca-vest?pr_prod_strat=jac&pr_rec_id=ff99113b8&pr_rec_pid=8919767384388&pr_ref_pid=9359971057988&pr_seq=uniform",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "hankyu_hanshin",
+        "url": "https://web.hh-online.jp/fashion/goods/index.html?ggcd=508767628",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      },
+      {
+        "store": "reebok_korea",
+        "url": "https://reebok.co.kr/goods/goods_view.php?goodsNo=1000002262",
+        "browsers": [
+          "chrome",
+          "webkit"
+        ]
+      }
+    ],
+    "ongoingMissing": [
+      {
+        "store": "reebok_korea",
+        "consecutiveRuns": 96
+      },
+      {
+        "store": "gelato_pique",
+        "consecutiveRuns": 96
+      },
+      {
+        "store": "snidel",
+        "consecutiveRuns": 93
+      },
+      {
+        "store": "hankyu_hanshin",
+        "consecutiveRuns": 9
+      },
+      {
+        "store": "estnation",
+        "consecutiveRuns": 6
+      },
+      {
+        "store": "world",
+        "consecutiveRuns": 6
+      },
+      {
+        "store": "beams",
+        "consecutiveRuns": 4
+      },
+      {
+        "store": "ameri_vintage",
+        "consecutiveRuns": 4
+      },
+      {
+        "store": "levi_japan",
+        "consecutiveRuns": 4
+      },
+      {
+        "store": "taion_wear",
+        "consecutiveRuns": 4
+      },
+      {
+        "store": "frans_boone",
+        "consecutiveRuns": 3
+      },
+      {
+        "store": "top_floor",
+        "consecutiveRuns": 3
+      },
+      {
+        "store": "poppy",
+        "consecutiveRuns": 3
+      },
+      {
+        "store": "studio_nicholson",
+        "consecutiveRuns": 3
+      },
+      {
+        "store": "unitedarrows_global",
+        "consecutiveRuns": 3
+      },
+      {
+        "store": "classico_taiwan",
+        "consecutiveRuns": 3
+      },
+      {
+        "store": "re_edit",
+        "consecutiveRuns": 2
+      },
+      {
+        "store": "hankyu_mens",
+        "consecutiveRuns": 2
+      },
+      {
+        "store": "andar_japan",
+        "consecutiveRuns": 1
+      },
+      {
+        "store": "camilla_and_marc",
+        "consecutiveRuns": 1
+      },
+      {
+        "store": "classico_global",
+        "consecutiveRuns": 1
+      },
+      {
+        "store": "retouch",
+        "consecutiveRuns": 1
+      },
+      {
+        "store": "sanyo_online_store",
+        "consecutiveRuns": 1
+      }
+    ],
+    "botProtected": [
+      "adidas",
+      "adidas_japan",
+      "adidas_korea",
+      "asics",
+      "asics_japan",
+      "ralph_lauren",
+      "ralph_lauren_australia",
+      "ralph_lauren_china",
+      "ralph_lauren_korea",
+      "ralph_lauren_singapore",
+      "ralph_lauren_taiwan",
+      "ralph_lauren_uk",
+      "rl"
+    ],
+    "skippedStores": [],
+    "phase": "widget"
+  },
+  {
     "timestamp": "2026-07-11T00:01:37.321Z",
     "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/29131436638",
     "summary": {
@@ -7295,174 +7591,6 @@
       },
       {
         "store": "unitedarrows_global",
-        "consecutiveRuns": 1
-      }
-    ],
-    "botProtected": [
-      "adidas",
-      "adidas_japan",
-      "adidas_korea",
-      "asics",
-      "asics_japan",
-      "ralph_lauren",
-      "ralph_lauren_australia",
-      "ralph_lauren_china",
-      "ralph_lauren_korea",
-      "ralph_lauren_singapore",
-      "ralph_lauren_taiwan",
-      "ralph_lauren_uk",
-      "rl"
-    ],
-    "skippedStores": [],
-    "phase": "widget"
-  },
-  {
-    "timestamp": "2026-05-24T00:01:21.718Z",
-    "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/26346832128",
-    "summary": {
-      "total": 66,
-      "passed": 59,
-      "widgetMissing": 7,
-      "skipped": 0,
-      "failed": 0,
-      "fallbackUsed": 60,
-      "avgWidgetVisibleMs": 27928,
-      "p95WidgetVisibleMs": 34291
-    },
-    "newIssues": [],
-    "widgetMissingStores": [
-      {
-        "store": "gelato_pique",
-        "url": "https://gelatopique.com/Form/Product/ProductDetail.aspx?shop=0&pid=PWCO261297&vid=&bid=PIQ01&cid=&_type=&cat=WOM003001&swrd=",
-        "browsers": [
-          "chrome",
-          "webkit"
-        ]
-      },
-      {
-        "store": "seilin_online_shop",
-        "url": "https://www.hrm-eshop.com//shop/g/g1010671240006/",
-        "browsers": [
-          "chrome",
-          "webkit"
-        ]
-      },
-      {
-        "store": "reebok_korea",
-        "url": "https://reebok.co.kr/goods/goods_view.php?goodsNo=1000002262",
-        "browsers": [
-          "chrome",
-          "webkit"
-        ]
-      },
-      {
-        "store": "hankyu_hanshin",
-        "url": "https://web.hh-online.jp/fashion/goods/index.html?ggcd=508767628",
-        "browsers": [
-          "chrome",
-          "webkit"
-        ]
-      },
-      {
-        "store": "hankyu_mens",
-        "url": "https://web.hh-online.jp/hankyu-mens/goods/index.html?ggcd=508732084",
-        "browsers": [
-          "chrome",
-          "webkit"
-        ]
-      },
-      {
-        "store": "cox",
-        "url": "https://tokyodesignchannel.com/c/lbc/26180639",
-        "browsers": [
-          "chrome",
-          "webkit"
-        ]
-      },
-      {
-        "store": "poppy",
-        "url": "https://poppy-tokyo.com/products/poppy-print-long-t-shirt-pink",
-        "browsers": [
-          "chrome",
-          "webkit"
-        ]
-      }
-    ],
-    "ongoingMissing": [
-      {
-        "store": "reebok_korea",
-        "consecutiveRuns": 50
-      },
-      {
-        "store": "gelato_pique",
-        "consecutiveRuns": 50
-      },
-      {
-        "store": "snidel",
-        "consecutiveRuns": 48
-      },
-      {
-        "store": "seilin_online_shop",
-        "consecutiveRuns": 10
-      },
-      {
-        "store": "poppy",
-        "consecutiveRuns": 5
-      },
-      {
-        "store": "hankyu_hanshin",
-        "consecutiveRuns": 4
-      },
-      {
-        "store": "studio_nicholson",
-        "consecutiveRuns": 3
-      },
-      {
-        "store": "andar_japan",
-        "consecutiveRuns": 1
-      },
-      {
-        "store": "coen",
-        "consecutiveRuns": 1
-      },
-      {
-        "store": "frans_boone",
-        "consecutiveRuns": 1
-      },
-      {
-        "store": "re_edit",
-        "consecutiveRuns": 1
-      },
-      {
-        "store": "camilla_and_marc",
-        "consecutiveRuns": 1
-      },
-      {
-        "store": "classico_global",
-        "consecutiveRuns": 1
-      },
-      {
-        "store": "ameri_vintage",
-        "consecutiveRuns": 1
-      },
-      {
-        "store": "unitedarrows_global",
-        "consecutiveRuns": 1
-      },
-      {
-        "store": "classico_taiwan",
-        "consecutiveRuns": 1
-      },
-      {
-        "store": "levi_japan",
-        "consecutiveRuns": 1
-      },
-      {
-        "store": "sanyo_online_store",
-        "consecutiveRuns": 1
-      },
-      {
-        "store": "taion_wear",
         "consecutiveRuns": 1
       }
     ],
