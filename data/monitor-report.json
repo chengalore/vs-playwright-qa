@@ -1,15 +1,15 @@
 {
-  "timestamp": "2026-07-11T23:57:47.688Z",
-  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/29172758218",
+  "timestamp": "2026-07-12T23:57:41.621Z",
+  "githubRunUrl": "https://github.com/chengalore/vs-playwright-qa/actions/runs/29214091818",
   "summary": {
     "total": 76,
-    "passed": 55,
+    "passed": 54,
     "widgetMissing": 21,
-    "skipped": 0,
+    "skipped": 1,
     "failed": 0,
-    "fallbackUsed": 69,
-    "avgWidgetVisibleMs": 29201,
-    "p95WidgetVisibleMs": 43331
+    "fallbackUsed": 70,
+    "avgWidgetVisibleMs": 29094,
+    "p95WidgetVisibleMs": 38727
   },
   "newIssues": [],
   "widgetMissingStores": [
@@ -126,16 +126,16 @@
       ]
     },
     {
-      "store": "re_edit",
-      "url": "https://reedit.jp/products/137264",
+      "store": "gelato_pique",
+      "url": "https://gelatopique.com/Form/Product/ProductDetail.aspx?shop=0&pid=PWCO261297&vid=&bid=PIQ01&cid=&_type=&cat=WOM003001&swrd=",
       "browsers": [
         "chrome",
         "webkit"
       ]
     },
     {
-      "store": "gelato_pique",
-      "url": "https://gelatopique.com/Form/Product/ProductDetail.aspx?shop=0&pid=PWCO261297&vid=&bid=PIQ01&cid=&_type=&cat=WOM003001&swrd=",
+      "store": "re_edit",
+      "url": "https://reedit.jp/products/137264",
       "browsers": [
         "chrome",
         "webkit"
@@ -185,19 +185,19 @@
   "ongoingMissing": [
     {
       "store": "reebok_korea",
-      "consecutiveRuns": 96
+      "consecutiveRuns": 97
     },
     {
       "store": "gelato_pique",
-      "consecutiveRuns": 96
+      "consecutiveRuns": 97
     },
     {
       "store": "snidel",
-      "consecutiveRuns": 93
+      "consecutiveRuns": 94
     },
     {
       "store": "hankyu_hanshin",
-      "consecutiveRuns": 9
+      "consecutiveRuns": 10
     },
     {
       "store": "estnation",
@@ -209,71 +209,71 @@
     },
     {
       "store": "beams",
-      "consecutiveRuns": 4
+      "consecutiveRuns": 5
     },
     {
       "store": "ameri_vintage",
-      "consecutiveRuns": 4
+      "consecutiveRuns": 5
     },
     {
       "store": "levi_japan",
-      "consecutiveRuns": 4
+      "consecutiveRuns": 5
     },
     {
       "store": "taion_wear",
-      "consecutiveRuns": 4
+      "consecutiveRuns": 5
     },
     {
       "store": "frans_boone",
-      "consecutiveRuns": 3
+      "consecutiveRuns": 4
     },
     {
       "store": "top_floor",
-      "consecutiveRuns": 3
+      "consecutiveRuns": 4
     },
     {
       "store": "poppy",
-      "consecutiveRuns": 3
+      "consecutiveRuns": 4
     },
     {
       "store": "studio_nicholson",
-      "consecutiveRuns": 3
+      "consecutiveRuns": 4
     },
     {
       "store": "unitedarrows_global",
-      "consecutiveRuns": 3
+      "consecutiveRuns": 4
     },
     {
       "store": "classico_taiwan",
-      "consecutiveRuns": 3
+      "consecutiveRuns": 4
     },
     {
       "store": "re_edit",
-      "consecutiveRuns": 2
+      "consecutiveRuns": 3
     },
     {
       "store": "hankyu_mens",
-      "consecutiveRuns": 2
+      "consecutiveRuns": 3
     },
     {
       "store": "andar_japan",
-      "consecutiveRuns": 1
+      "consecutiveRuns": 2
     },
     {
       "store": "camilla_and_marc",
-      "consecutiveRuns": 1
+      "consecutiveRuns": 2
     },
     {
       "store": "classico_global",
-      "consecutiveRuns": 1
+      "consecutiveRuns": 2
     },
     {
       "store": "retouch",
-      "consecutiveRuns": 1
+      "consecutiveRuns": 2
     },
     {
       "store": "sanyo_online_store",
-      "consecutiveRuns": 1
+      "consecutiveRuns": 2
     }
   ],
   "botProtected": [
@@ -291,5 +291,10 @@
     "ralph_lauren_uk",
     "rl"
   ],
-  "skippedStores": []
+  "skippedStores": [
+    {
+      "store": "id_look",
+      "reason": "navigation_error"
+    }
+  ]
 }
