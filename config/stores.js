@@ -39,7 +39,6 @@ export const STORES = {
   barbour: { id: 882, monitor: true },
   barneys: { id: 731 }, // shorthand
   barneys_japan: { id: 731, monitor: true },
-  beams: { id: 792, monitor: true },
   bottega: { id: 914, monitor: true },
   bottega_veneta: { id: 914, monitor: true },
   bottega_veneta_japan: { id: 914, monitor: true },

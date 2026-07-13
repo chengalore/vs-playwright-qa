@@ -2579,7 +2579,7 @@ const STORE_LIST = [
   'llbean','milaowen','poppy','strasburgo_outlet','shel_tter','ua_taiwan','yohji_wildside',
   'reebok_korea','aoure','allsaints_korea','bshop','barneys_japan','celford',
   'fashion_square','furfur','denimlife','id_look','lumine','nagaileben','punyus','restir',
-  'style_deli','under_armour','sixpad','asics_japan','beams','classico_global','dinos',
+  'style_deli','under_armour','sixpad','asics_japan','classico_global','dinos',
   'ameri_vintage','buyma','gap_japan','felissimo','ragtag','jamie_kay','makes','retouch',
   'natulan','studio_nicholson','yosoou','unitedarrows_global','snidel','bottega_veneta',
   'by_malene_birger','classico_taiwan','and_mall','azul_by_moussy','edwin','levi_japan',
