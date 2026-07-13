@@ -1,8 +1,8 @@
 name: Inpage Monitor
 
 on:
-  schedule:
-    - cron: '3 23 * * *'   # 8:03 AM JST (UTC+9) = 23:03 UTC previous day
+  # schedule disabled — cron paused, trigger manually via workflow_dispatch
+  # - cron: '3 23 * * *'   # 8:03 AM JST (UTC+9) = 23:03 UTC previous day
   workflow_dispatch:
     inputs:
       phase:
