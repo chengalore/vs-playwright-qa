@@ -1,9 +1,9 @@
 name: Slack Digest
 
 on:
-  schedule:
-    - cron: '0 0 * * *'    # Daily digest   09:00 JST (00:00 UTC)
-    - cron: '30 0 * * 1'   # Weekly summary 09:30 JST Monday (00:30 UTC Mon)
+  # schedule disabled — cron paused, trigger manually via workflow_dispatch
+  # - cron: '0 0 * * *'    # Daily digest   09:00 JST (00:00 UTC)
+  # - cron: '30 0 * * 1'   # Weekly summary 09:30 JST Monday (00:30 UTC Mon)
   workflow_dispatch:
     inputs:
       type:
